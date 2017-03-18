@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'BaseController@index');
+Route::resource('systems', 'SystemController');
+Route::resource('factions', 'FactionController'); 
+
