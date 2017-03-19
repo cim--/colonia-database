@@ -15,6 +15,7 @@ class MakeStationsTable extends Migration
     {
         Schema::create('stations', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('system_id');
             $table->string('name');
             $table->string('planet');
             $table->integer('stationclass_id');

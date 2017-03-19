@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\System;
 use Illuminate\Http\Request;
 
 class SystemController extends Controller
@@ -40,21 +41,30 @@ class SystemController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\System  $system
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(System $system)
     {
-        //
+        if (!$system->x) {
+            $system->refreshCoordinates();
+        }
+        
+        $system->load('phase', 'economy', 'stations');
+        $others = System::where('id', '!=', $system->id)->get();
+        return view('systems/show', [
+            'system' => $system,
+            'others' => $others
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\System  $system
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(System $system)
     {
         //
     }
@@ -63,10 +73,10 @@ class SystemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\System  $system
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, System $system)
     {
         //
     }
@@ -74,10 +84,10 @@ class SystemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\System  $system
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(System $system)
     {
         //
     }
