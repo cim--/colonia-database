@@ -14,5 +14,19 @@
     "laravel-mix": "^0.8.1",
     "lodash": "^4.17.4",
     "vue": "^2.1.10"
+  },
+  "dependencies": {
+    "buble": "^0.15.2",
+    "css-loader": "^0.27.3",
+    "datatables.net": "^1.10.13",
+    "datatables.net-bs": "^1.10.13",
+    "gulp": "^3.9.1",
+    "jquery-ui": "^1.12.1",
+    "laravel-elixir": "^6.0.0-9",
+    "laravel-elixir-vue-2": "^0.3.0",
+    "laravel-elixir-webpack-official": "^1.0.10",
+    "vue-loader": "^11.1.4",
+    "vue-resource": "^1.2.1",
+    "vue-template-compiler": "^2.2.4"
   }
 }
