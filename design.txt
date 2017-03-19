@@ -1,0 +1,41 @@
+Phase: name, sequence number
+System: catalogue, name, x, y, z, edsm, @economy, population, @phase
+Station: @system, name, planet, @class, @faction, @economy, isPrimary, distance, eddb
+Faction: name, @government, isPlayer, url, eddb
+Influence: @system, @faction, @state, influence, date
+State: name, icon
+Economy: name, icon
+Government: name, icon
+User: {standard user table}
+History: @system, @faction, date, isExpansion //expansion or retreat cache
+StationClass: name, isOrbital, hasSmall, hasMedium, hasLarge
+
+/
+ - system list, faction list, recent expansions/retreats/conflicts
+ (if authed, show whether systems have influence update today yet)
+/systems/{system}
+ - base info, stations, factions, influence/state history
+/systems/{system}/editinfluence
+ - edit influence for current day (if authed)
+/factions/{faction}
+ - base info, influence/state history                          
+/login                                                         
+/logout
+
+Specials:
+IconComposer - produces map for s/e/g icons
+datatables.net-bs npm
+
+Link to EDSM and EDDB for extra information
+Finish off resource controllers for station, system, faction
+Add permissions model so that particular data can be edited only by a faction.
+Allow factions to post requests for public action
+Distance chart for systems plus expansion predictor for each faction
+Catalogue of combat opportunities (RES, etc)
+Catalogue of mining opportunities (rings, belts)
+Record of 'normal state' mission types available and effects (inbound + outbound) - note if mission partners are also trade partners
+Properly log specifics of states (factions in conflict, systems for retreat/expand)
+Allow recording of Pending states
+Percentage of time factions have spent in particular states
+Record station facilities (then record details of outfitting, shipyard, market?)
+Track traffic, bounty, crime reports

@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Influence extends Model
 {
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'date'
+    ];
+    
     public function system() {
         return $this->belongsTo('App\Models\System');
     }
@@ -18,4 +24,8 @@ class Influence extends Model
         return $this->belongsTo('App\Models\State');
     }
 
+
+    public function displayDate() {
+        return $this->date->format("j F ").(1286+$this->date->format("Y")); 
+    }
 }

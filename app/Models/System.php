@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class System extends Model
 {
+
+    
     public function phase() {
         return $this->belongsTo('App\Models\Phase');
     }
@@ -62,5 +65,24 @@ class System extends Model
         } else {
             $this->x = $this->y = $this->z = $this->edsm = 0;
         }
+    }
+
+    public function controllingFaction()
+    {
+        $station = $this->stations()->where('primary', true)->first();
+        if ($station) {
+            return $station->faction;
+        }
+        return null;
+    }
+    
+    public function latestFactions() {
+        $date = new Carbon($this->influences()->max('date'));
+        return $this->factions($date);
+    }
+
+    public function factions(Carbon $date) {
+        return $this->influences()->whereDate('date', $date->format("Y-m-d"))
+            ->with('faction', 'state')->orderBy('influence', 'desc')->get();
     }
 }

@@ -54,7 +54,9 @@ class SystemController extends Controller
         $others = System::where('id', '!=', $system->id)->get();
         return view('systems/show', [
             'system' => $system,
-            'others' => $others
+            'others' => $others,
+            'controlling' => $system->controllingFaction(),
+            'factions' => $system->latestFactions()
         ]);
     }
 

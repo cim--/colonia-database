@@ -22,7 +22,7 @@
 <div class='row'>
   <div class='col-sm-6'>
 	<h2>Stations</h2>
-	<table class='table table-bordered datatable'>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false'>
 	  <thead>
 		<tr><th>Name</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
@@ -39,11 +39,31 @@
   </div>
   <div class='col-sm-6'>
 	<h2>Factions</h2>
-	<table class='table table-bordered datatable'>
+	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
 		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
 	  </thead>
+	  <tfoot>
+		<tr>
+		  <td colspan='3'>
+			Last updated: {{ $factions[0]->displayDate() }}
+		  </td>
+		</tr>
+	  </tfoot>
 	  <tbody>
+		@foreach ($factions as $faction)
+		<tr class='
+			@if ($faction->faction->id == $controlling->id)
+		  controlling-faction
+		  @else
+		  other-faction
+		  @endif
+			'>
+		  <td><a href="{{route('factions.show', $faction->faction->id)}}">{{$faction->faction->name}}</a></td>
+		  <td>{{number_format($faction->influence, 1)}}</td>
+		  <td>{{$faction->state->name}}</td>
+		</tr>
+		@endforeach
 	  </tbody>
 	</table>
   </div>

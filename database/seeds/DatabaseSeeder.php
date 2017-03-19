@@ -15,12 +15,16 @@ class DatabaseSeeder extends Seeder
             $this->call(PhaseSeeder::class);
             $this->call(EconomySeeder::class);
             $this->call(GovernmentSeeder::class);
+            $this->call(StateSeeder::class);
             $this->call(StationclassSeeder::class);
             $this->call(SystemSeeder::class);
             $this->call(FactionSeeder::class);
             $this->call(StationSeeder::class);
 
-
+            // random for testing
+            // $this->call(InfluenceTestSeeder::class);
+            
+            // separate from SystemSeeder for faster testing
             $this->call(EDSMSeeder::class);
         });
     }
