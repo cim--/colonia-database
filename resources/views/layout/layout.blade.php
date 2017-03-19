@@ -13,9 +13,22 @@
       <div id='main'>
 		<nav>
 		  <div class='row'>
-			<div class='col-sm-2'><a href="{{route('index')}}">Home</a></div>
+			<div class='col-sm-1'><a href="{{route('index')}}">Home</a></div>
+			@if (Auth::user())
+			<div class='col-sm-2'><a href="{{route('logout')}}">Logout</a></div>
+			@else
+			<div class='col-sm-1'><a href="{{route('login')}}">Login</a></div>
+			<div class='col-sm-1'><a href="{{route('register')}}">Register</a></div>
+			@endif
 		  </div>
 		</nav>
+		@if (session('status'))
+		@foreach (session('status') as $status => $message)
+		<div class='alert alert-{{$status}}'>
+		  {{$message}}
+		</div>
+		@endforeach
+		@endif
 		<h1>@yield ('title')</h1>
 		<div id='maincontent'>
 		  @yield('content')

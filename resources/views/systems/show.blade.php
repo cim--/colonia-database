@@ -46,7 +46,14 @@
 	  <tfoot>
 		<tr>
 		  <td colspan='3'>
+			@if ($factions->count() > 0)
 			Last updated: {{ $factions[0]->displayDate() }}
+			@else
+			Last updated: never
+			@endif
+			@if ($userrank > 0)
+			<a class='edit' href='{{route('systems.edit', $system->id)}}'>Update</a>
+			@endif
 		  </td>
 		</tr>
 	  </tfoot>
