@@ -11,6 +11,11 @@
     </head>
     <body>
       <div id='main'>
+		<nav>
+		  <div class='row'>
+			<div class='col-sm-2'><a href="{{route('index')}}">Home</a></div>
+		  </div>
+		</nav>
 		<h1>@yield ('title')</h1>
 		<div id='maincontent'>
 		  @yield('content')

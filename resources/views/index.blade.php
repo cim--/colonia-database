@@ -13,7 +13,7 @@
 	  </thead>
 	  <tbody>
 		@foreach ($systems as $system)
-		<tr>
+		<tr class="{{$system->inhabited() ? 'inhabited-system' : 'uninhabited-system'}}">
 		  <td data-sort='{{$system->phase->sequence}}'>{{$system->phase->name}}</td>
 		  <td><a href="{{route('systems.show', $system->id)}}">{{$system->displayName()}}</a></td>
 		  @if ($system->economy)

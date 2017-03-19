@@ -9,11 +9,16 @@
 <div class='row'>
   <div class='col-sm-12'>
 	<p>{{$system->catalogue}}</p>
+	@if ($system->inhabited())
 	<p>Economy: {{$system->economy->name}}</p>
 	<p>Population: {{$system->population}}</p>
+	@else
+	<p>Uninhabited system</p>
+	@endif
   </div>
 </div>
 
+@if ($system->inhabited())
 <div class='row'>
   <div class='col-sm-6'>
 	<h2>Stations</h2>
@@ -22,6 +27,13 @@
 		<tr><th>Name</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
 	  <tbody>
+		@foreach ($system->stations as $station)
+		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
+		  <td>{{$station->name}}</td>
+		  <td>{{$station->planet}}</td>
+		  <td>{{$station->stationclass->name}}</td>
+		</tr>
+		@endforeach
 	  </tbody>
 	</table>
   </div>
@@ -36,6 +48,7 @@
 	</table>
   </div>
 </div>
+@endif
 
 <div class='row'>
   <div class='col-sm-6'>

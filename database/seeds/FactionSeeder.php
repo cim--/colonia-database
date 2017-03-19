@@ -16,7 +16,7 @@ class FactionSeeder extends Seeder
     {
         $factions = [
             ["Brian’s Thugs", "Anarchy", 0],
-            ["Cannon Deep Space Research", "Cooperative", 1],
+            ["Canonn Deep Space Research", "Cooperative", 1],
             ["Colonia Agricultural Co-operative", "Cooperative", 0],
             ["Colonia Co-operative", "Cooperative", 0],
             ["Colonia Council", "Cooperative", 0],

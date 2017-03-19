@@ -50,7 +50,7 @@ class SystemController extends Controller
             $system->refreshCoordinates();
         }
         
-        $system->load('phase', 'economy', 'stations');
+        $system->load('phase', 'economy', 'stations', 'stations.stationclass');
         $others = System::where('id', '!=', $system->id)->get();
         return view('systems/show', [
             'system' => $system,

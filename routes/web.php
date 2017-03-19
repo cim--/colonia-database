@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'BaseController@index');
+Route::get('/', 'BaseController@index')->name('index');
 Route::resource('systems', 'SystemController');
 Route::resource('factions', 'FactionController'); 
 

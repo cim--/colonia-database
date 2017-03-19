@@ -23,7 +23,7 @@ class MakeStationsTable extends Migration
             $table->integer('economy_id');
             $table->boolean('primary');
             $table->integer('distance');
-            $table->string('eddb');
+            $table->string('eddb')->nullable();
             $table->timestamps();
         });
     }

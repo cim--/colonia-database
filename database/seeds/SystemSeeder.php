@@ -69,7 +69,7 @@ class SystemSeeder extends Seeder
                 $economy = Economy::where('name', $system[3])->first();
                 $obj->economy_id = $economy->id;
             }
-            $obj->refreshEDSM();
+            $obj->x = $obj->y = $obj->z = 0; // temp
             $obj->save();
         }
 
