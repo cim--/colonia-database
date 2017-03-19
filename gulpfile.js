@@ -23,6 +23,9 @@ elixir(mix => {
 		'../../../node_modules/datatables.net-bs/js/dataTables.bootstrap.js',
 		'*.js'
 	], 'public/js/cdb.js')
-		.sass('resources/assets/sass/app.scss', 'public/css/cdb.css');
-
+		.sass('resources/assets/sass/app.scss', 'public/css/cdb.css')
+		.copy([
+            './node_modules/bootstrap/fonts',
+            './node_modules/font-awesome/fonts'
+        ], 'public/fonts');
 });

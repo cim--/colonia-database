@@ -22,4 +22,11 @@ class System extends Model
         return $this->hasMany('App\Models\Station');
     }
 //
+    public function displayName() {
+        if ($this->name) {
+            return $this->name;
+        } else {
+            return $this->catalogue;
+        }
+    }
 }

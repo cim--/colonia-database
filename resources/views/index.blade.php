@@ -14,9 +14,13 @@
 	  <tbody>
 		@foreach ($systems as $system)
 		<tr>
-		  <td>{{$system->phase->name}}</td>
-		  <td>{{$system->name}}</td>
+		  <td data-sort='{{$system->phase->sequence}}'>{{$system->phase->name}}</td>
+		  <td><a href="{{route('systems.show', $system->id)}}">{{$system->displayName()}}</a></td>
+		  @if ($system->economy)
 		  <td>{{$system->economy->name}}</td>
+		  @else
+		  <td>None</td>
+		  @endif
 		</tr>
 		@endforeach
 	  </tbody>

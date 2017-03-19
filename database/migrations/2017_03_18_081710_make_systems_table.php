@@ -16,12 +16,12 @@ class MakeSystemsTable extends Migration
         Schema::create('systems', function (Blueprint $table) {
             $table->increments('id');
             $table->string('catalogue');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->decimal('x', 10, 5);
             $table->decimal('y', 10, 5);
             $table->decimal('z', 10, 5);
-            $table->string('edsm');
-            $table->integer('economy_id');
+            $table->string('edsm')->nullable();
+            $table->integer('economy_id')->nullable();
             $table->integer('population');
             $table->integer('phase_id');
             $table->timestamps();
