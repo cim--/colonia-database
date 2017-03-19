@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faction;
 use Illuminate\Http\Request;
 
 class FactionController extends Controller
@@ -40,21 +41,24 @@ class FactionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Faction  $faction
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Faction $faction)
     {
-        //
+        $faction->load('government');
+        return view('factions/show', [
+            'faction' => $faction
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Faction  $faction
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Faction $faction)
     {
         //
     }
@@ -63,10 +67,10 @@ class FactionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Faction  $faction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Faction $faction)
     {
         //
     }
@@ -74,10 +78,10 @@ class FactionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Faction  $faction
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Faction $faction)
     {
         //
     }

@@ -18,8 +18,8 @@ class MakeFactionsTable extends Migration
             $table->string('name');
             $table->integer('government_id');
             $table->boolean('player');
-            $table->string('url');
-            $table->string('eddb');
+            $table->string('url')->nullable();
+            $table->string('eddb')->nullable();
             $table->timestamps();
         });
     }

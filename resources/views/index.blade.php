@@ -35,7 +35,7 @@
 	  <tbody>
 		@foreach ($factions as $faction)
 		<tr>
-		  <td>{{$faction->name}}</td>
+		  <td><a href="{{route('factions.show', $faction->id)}}">{{$faction->name}}</a></td>
 		  <td>{{$faction->government->name}}</td>
 		  <td>{{$faction->player ? 'Yes' : 'No'}}</td>
 		</tr>

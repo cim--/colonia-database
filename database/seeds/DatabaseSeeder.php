@@ -14,7 +14,9 @@ class DatabaseSeeder extends Seeder
         DB::transaction(function() {
             $this->call(PhaseSeeder::class);
             $this->call(EconomySeeder::class);
+            $this->call(GovernmentSeeder::class);
             $this->call(SystemSeeder::class);
+            $this->call(FactionSeeder::class);
         });
     }
 }
