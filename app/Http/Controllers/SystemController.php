@@ -77,7 +77,7 @@ class SystemController extends Controller
         if ($user->rank < 1) {
             \App::abort(403);
         }
-        if (date("h") < 15) {
+        if (date("H") < 15) {
             $target = Carbon::yesterday();
         } else {
             $target = Carbon::now();
@@ -116,7 +116,7 @@ class SystemController extends Controller
             \App::abort(403);
         }
 
-        if (date("h") < 15) {
+        if (date("H") < 15) {
             $target = Carbon::yesterday();
         } else {
             $target = Carbon::now();
