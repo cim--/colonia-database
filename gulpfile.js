@@ -25,7 +25,7 @@ elixir(mix => {
 	], 'public/js/cdb.js')
 		.sass('resources/assets/sass/app.scss', 'public/css/cdb.css')
 		.copy([
-            './node_modules/bootstrap/fonts',
+            './node_modules/bootstrap-sass/assets/fonts/bootstrap',
             './node_modules/font-awesome/fonts'
         ], 'public/fonts');
 });
