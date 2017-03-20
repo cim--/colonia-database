@@ -18,8 +18,8 @@
   </div>
 </div>
 
-@if ($system->inhabited())
 <div class='row'>
+@if ($system->inhabited())
   <div class='col-sm-6'>
 	<h2>Stations</h2>
 	<table class='table table-bordered datatable' data-paging='false' data-searching='false'>
@@ -36,8 +36,6 @@
 		@endforeach
 	  </tbody>
 	</table>
-  </div>
-  <div class='col-sm-6'>
 	<h2>Factions</h2>
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
@@ -74,10 +72,8 @@
 	  </tbody>
 	</table>
   </div>
-</div>
 @endif
 
-<div class='row'>
   <div class='col-sm-6'>
 	<h2>Distances</h2>
 	<table class='table table-bordered datatable' data-order='[[1, "asc"]]'>
