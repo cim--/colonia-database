@@ -77,11 +77,7 @@ class SystemController extends Controller
         if ($user->rank < 1) {
             \App::abort(403);
         }
-        if (date("H") < 15) {
-            $target = Carbon::yesterday();
-        } else {
-            $target = Carbon::now();
-        }
+        $target = \App\Util::tick();
 
         $today = $system->factions($target);
         $yesterday = $system->factions($target->copy()->subDay());
@@ -115,12 +111,8 @@ class SystemController extends Controller
         if ($user->rank < 1) {
             \App::abort(403);
         }
+        $target = \App\Util::tick();
 
-        if (date("H") < 15) {
-            $target = Carbon::yesterday();
-        } else {
-            $target = Carbon::now();
-        }
         $factions = $request->input('faction');
         $influences = $request->input('influence');
         $states = $request->input('state');

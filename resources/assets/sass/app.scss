@@ -29,3 +29,9 @@ a.edit {
 	color: #900;
 }
 
+ul.compact {
+	@include make-row();
+	li {
+		@include make-sm-column(3);
+	}
+}

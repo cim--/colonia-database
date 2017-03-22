@@ -14,6 +14,7 @@
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout2');
 Route::get('/', 'BaseController@index')->name('index');
+Route::get('/progress', 'BaseController@progress')->name('progress');
 Route::resource('systems', 'SystemController');
 Route::resource('factions', 'FactionController'); 
 

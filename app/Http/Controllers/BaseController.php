@@ -18,4 +18,27 @@ class BaseController extends Controller
         ]);
     }
 //
+    public function progress() {
+        $user = \Auth::user();
+        if (!$user) {
+            \App::abort(403);
+        }
+
+        if ($user->rank == 0) {
+            return view('progressno');
+        }
+
+        $target = \App\Util::tick();
+        $influenceupdate = System::where('population', '>', 0)
+            ->whereDoesntHave('influences', function($q) use ($target) {
+                $q->where('date', $target);
+            })->orderBy('catalogue')->get();
+
+
+
+        return view('progress', [
+            'userrank' => $user->rank, // TODO: Composer
+            'influenceupdate' => $influenceupdate
+        ]);
+    }
 }
