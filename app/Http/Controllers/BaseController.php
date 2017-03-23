@@ -31,12 +31,13 @@ class BaseController extends Controller
         $target = \App\Util::tick();
         $influenceupdate = System::where('population', '>', 0)
             ->whereDoesntHave('influences', function($q) use ($target) {
-                $q->where('date', $target);
+                $q->where('date', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
 
 
 
         return view('progress', [
+            'target' => $target,
             'userrank' => $user->rank, // TODO: Composer
             'influenceupdate' => $influenceupdate
         ]);

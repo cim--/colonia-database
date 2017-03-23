@@ -5,6 +5,7 @@
 @section('content')
 
 @if($userrank > 0)
+    <p>Updates for tick {{\App\Util::displayDate($target) }}</p>
 <h2>Systems needing influence update</h2>
 @if (count($influenceupdate) > 0)
 <p>The following systems do not have influence updates on todays tick. Please ensure before starting that the tick is complete. Collect influence data from the system map only - this does not require you to be in the system.</p>

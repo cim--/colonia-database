@@ -26,6 +26,6 @@ class Influence extends Model
 
 
     public function displayDate() {
-        return $this->date->format("j F ").(1286+$this->date->format("Y")); 
+        return \App\Util::displayDate($this->date); 
     }
 }
