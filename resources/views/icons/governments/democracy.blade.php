@@ -1,0 +1,1 @@
+<span class='icon-government-democracy'>&#x2718;</span>

@@ -1,0 +1,1 @@
+<span class='icon-government-communist'>&#x262D;</span>

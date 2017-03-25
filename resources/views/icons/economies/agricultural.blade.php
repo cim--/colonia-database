@@ -1,0 +1,1 @@
+<span class='icon-economy-agricultural'>&#x2698;</span>

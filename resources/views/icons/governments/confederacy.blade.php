@@ -1,0 +1,1 @@
+<span class='icon-government-confederacy'>&#x2724;</span>

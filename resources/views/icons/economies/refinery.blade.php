@@ -1,0 +1,1 @@
+<span class='icon-economy-refinery'>&#x2697;</span>

@@ -1,0 +1,1 @@
+<span class='icon-state-boom'>&#x25B2;</span>

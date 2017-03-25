@@ -1,0 +1,1 @@
+<span class='icon-state-retreat'>&#x23EA;</span>

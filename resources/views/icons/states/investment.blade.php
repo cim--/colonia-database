@@ -1,0 +1,1 @@
+<span class='icon-state-investment'>&#x21E5;</span>

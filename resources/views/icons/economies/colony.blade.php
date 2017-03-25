@@ -1,0 +1,1 @@
+<span class='icon-economy-colony'>&#x26FA;</span>

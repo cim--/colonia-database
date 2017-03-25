@@ -1,0 +1,1 @@
+<span class='icon-state-outbreak'>&#x2623;</span>

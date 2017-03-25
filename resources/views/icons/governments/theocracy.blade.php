@@ -1,0 +1,1 @@
+<span class='icon-government-theocracy'>&#x26EA;</span>

@@ -1,0 +1,1 @@
+<span class='icon-economy-military'>&#x2694;</span>

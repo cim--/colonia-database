@@ -1,0 +1,1 @@
+<span class='icon-economy-hightech'>&#x269B;</span>

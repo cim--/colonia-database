@@ -1,0 +1,1 @@
+<span class='icon-economy-industrial'>&#x2699;</span>
