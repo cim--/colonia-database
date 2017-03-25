@@ -7,12 +7,29 @@
 @section('content')
 
 <div class='row'>
-  <div class='col-sm-12'>
+  <div class='col-sm-12 faction-properties'>
     @if ($faction->player)
     <p>Player faction</p>
     @endif
-	<p>Government: {{$faction->government->name}}
+	<p><span class='faction-property'>Government</span>: 
 	  @include($faction->government->icon)
+	  {{$faction->government->name}}
+	</p>
+	<p><span class='faction-property'>Pending States</span>:
+	  @if (count($faction->states) > 0)
+	  @foreach ($faction->states as $state)
+	  <span class='pending-state'>
+		@include($state->icon)
+		{{$state->name}}
+	  </span>
+	  @endforeach
+	  @else
+	  Unknown
+	  @endif
+
+	  @if ($userrank > 0)
+	  <a class='edit' href='{{route('factions.edit', $faction->id)}}'>Update</a>
+	  @endif
 	</p>
   </div>
 </div>

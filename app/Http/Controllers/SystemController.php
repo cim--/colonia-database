@@ -210,7 +210,7 @@ class SystemController extends Controller
         !is_numeric($bounties) || (int)$bounties < 0) {
             return redirect()->route('systems.editreport', $system->id)->with('status',
             [
-                'danger' => 'All reports must be non-negative integers'
+                'warning' => 'All reports must be non-negative integers'
             ]);
         }
         

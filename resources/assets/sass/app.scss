@@ -39,10 +39,12 @@ ul.compact {
 	}
 }
 
+.faction-properties,
 .system-properties {
 	p {
 		margin: 0;
 	}
+	.faction-property,
 	.system-property {
 		font-weight: bold;
 	}
