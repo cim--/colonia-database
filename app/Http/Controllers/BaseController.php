@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\System;
 use App\Models\Faction;
@@ -28,18 +29,25 @@ class BaseController extends Controller
             return view('progressno');
         }
 
+        $today = Carbon::now();
         $target = \App\Util::tick();
         $influenceupdate = System::where('population', '>', 0)
             ->whereDoesntHave('influences', function($q) use ($target) {
                 $q->where('date', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
 
+        $reportsupdate = System::where('population', '>', 0)
+            ->whereDoesntHave('systemreports', function($q) use ($target) {
+                $q->where('date', $target->format("Y-m-d 00:00:00"));
+            })->orderBy('catalogue')->get();
 
 
         return view('progress', [
             'target' => $target,
+            'today' => $today,
             'userrank' => $user->rank, // TODO: Composer
-            'influenceupdate' => $influenceupdate
+            'influenceupdate' => $influenceupdate,
+            'reportsupdate' => $reportsupdate,
         ]);
     }
 }
