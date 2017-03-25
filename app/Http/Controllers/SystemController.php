@@ -55,7 +55,7 @@ class SystemController extends Controller
         }
         
         $system->load('phase', 'economy', 'stations', 'stations.stationclass');
-        $others = System::where('id', '!=', $system->id)->get();
+        $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
         return view('systems/show', [
             'system' => $system,
             'others' => $others,

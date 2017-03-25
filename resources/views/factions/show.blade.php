@@ -11,7 +11,9 @@
     @if ($faction->player)
     <p>Player faction</p>
     @endif
-	<p>Government: {{$faction->government->name}}</p>
+	<p>Government: {{$faction->government->name}}
+	  @include($faction->government->icon)
+	</p>
   </div>
 </div>
 
@@ -25,8 +27,12 @@
 	  <tbody>
 		@foreach ($faction->stations as $station)
 		<tr>
-		  <td>{{$station->name}}</td>
-		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a></td>
+		  <td>
+			{{$station->name}}
+			@include($station->economy->icon)
+		  </td>
+		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>
+		  </td>
 		  <td>{{$station->planet}}</td>
 		  <td>{{$station->stationclass->name}}</td>
 		</tr>
@@ -50,9 +56,14 @@
 		  uncontrolled-system
 		  @endif
 			'>
-		  <td><a href="{{route('systems.show', $system->system->id)}}">{{$system->system->displayName()}}</a></td>
+		  <td><a href="{{route('systems.show', $system->system->id)}}">{{$system->system->displayName()}}</a>
+			@include($station->economy->icon)
+		  </td>
 		  <td>{{number_format($system->influence,1)}}</td>
-		  <td>{{$system->state->name}}</td>
+		  <td>
+			@include($system->state->icon)
+			{{$system->state->name}}
+		  </td>
 		</tr>
 		@endif
 		@endforeach

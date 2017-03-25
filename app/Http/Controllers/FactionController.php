@@ -46,7 +46,7 @@ class FactionController extends Controller
      */
     public function show(Faction $faction)
     {
-        $faction->load('government', 'stations', 'stations.system', 'stations.stationclass');
+        $faction->load('government', 'stations', 'stations.system', 'stations.stationclass', 'stations.economy');
         return view('factions/show', [
             'faction' => $faction,
             'systems' => $faction->latestSystems()

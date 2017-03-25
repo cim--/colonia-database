@@ -17,7 +17,10 @@
 		  <td data-sort='{{$system->phase->sequence}}'>{{$system->phase->name}}</td>
 		  <td><a href="{{route('systems.show', $system->id)}}">{{$system->displayName()}}</a></td>
 		  @if ($system->economy)
-		  <td>{{$system->economy->name}}</td>
+          <td>
+			@include($system->economy->icon)
+			{{$system->economy->name}}
+		  </td>
 		  @else
 		  <td>None</td>
 		  @endif
@@ -36,7 +39,10 @@
 		@foreach ($factions as $faction)
 		<tr>
 		  <td><a href="{{route('factions.show', $faction->id)}}">{{$faction->name}}</a></td>
-		  <td>{{$faction->government->name}}</td>
+		  <td>
+			@include($faction->government->icon)
+			{{$faction->government->name}}
+		  </td>
 		  <td>{{$faction->player ? 'Yes' : 'No'}}</td>
 		</tr>
 		@endforeach

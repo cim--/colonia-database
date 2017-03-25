@@ -27,6 +27,7 @@ class Faction extends Model
 
     public function systems(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
-            ->with('system', 'state')->orderBy('influence', 'desc')->get();
+                    ->with('system', 'state', 'system.economy')
+                    ->orderBy('influence', 'desc')->get();
     }
 }

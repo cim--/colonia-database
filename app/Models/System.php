@@ -69,7 +69,7 @@ class System extends Model
 
     public function controllingFaction()
     {
-        $station = $this->stations()->where('primary', true)->first();
+        $station = $this->stations->where('primary', true)->first();
         if ($station) {
             return $station->faction;
         }
