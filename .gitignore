@@ -5,6 +5,7 @@
 /public/fonts
 /public/js
 /storage/*.key
+/storage/debugbar
 /vendor
 /.idea
 Homestead.json
