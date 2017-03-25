@@ -58,6 +58,7 @@ class SystemController extends Controller
         $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
         return view('systems/show', [
             'system' => $system,
+            'colcoords' => $system->coloniaCoordinates(),
             'others' => $others,
             'controlling' => $system->controllingFaction(),
             'factions' => $system->latestFactions(),

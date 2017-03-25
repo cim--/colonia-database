@@ -7,7 +7,7 @@
 @section('content')
 
 <div class='row'>
-  <div class='col-sm-12'>
+  <div class='col-sm-6'>
 	<p>{{$system->catalogue}}</p>
 	@if ($system->inhabited())
 	<p>
@@ -19,6 +19,28 @@
 	@else
 	<p>Uninhabited system</p>
 	@endif
+  </div>
+  <div class='col-sm-6'>
+	<table class='table'>
+	  <tr>
+		<td></td>
+		<th>X</th>
+		<th>Y</th>
+		<th>Z</th>
+	  </tr>
+	  <tr>
+		<td>Colonial</td>
+		<td>{{number_format($colcoords->x, 5)}}</td>
+		<td>{{number_format($colcoords->y, 5)}}</td>
+		<td>{{number_format($colcoords->z, 5)}}</td>
+	  </tr>
+	  <tr>
+		<td>Traditional</td>
+		<td>{{number_format($system->x, 5)}}</td>
+		<td>{{number_format($system->y, 5)}}</td>
+		<td>{{number_format($system->z, 5)}}</td>
+	  </tr>
+	  </table>
   </div>
 </div>
 

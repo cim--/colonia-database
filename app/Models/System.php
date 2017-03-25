@@ -37,6 +37,22 @@ class System extends Model
         }
     }
 
+    public function coloniaCoordinates() {
+        // translate
+        $x = $this->x + 9530.5;
+        $cy = $this->y + 910.28125;
+        $z = $this->z - 19808.125;
+        // rotate
+        $theta = -1.0033;
+        $cx = ($x*cos($theta))+($z*sin($theta));
+        $cz = (-$x*sin($theta))+($z*cos($theta));
+        $coords = new \StdClass;
+        $coords->x = $cx;
+        $coords->y = $cy;
+        $coords->z = $cz;
+        return $coords;
+    }
+    
     public function distanceTo(System $other) {
         $distance = sqrt(
             (($this->x - $other->x)*($this->x - $other->x)) +
