@@ -138,7 +138,7 @@ class SystemController extends Controller
         }
         
         Influence::where('system_id', $system->id)
-            ->where('date', $target)
+            ->where('date', $target->format("Y-m-d 00:00:00"))
             ->delete();
         
         for($i=0;$i<=7;$i++) {
