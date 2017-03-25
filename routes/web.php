@@ -12,10 +12,22 @@
 */
 
 Auth::routes();
+
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout2');
 Route::get('/', 'BaseController@index')->name('index');
 Route::get('/progress', 'BaseController@progress')->name('progress');
+
+
 Route::resource('systems', 'SystemController');
+Route::get('/systems/{system}/editreport', [
+    'as' => 'systems.editreport',
+    'uses' => 'SystemController@editreport'
+]);
+Route::put('/systems/{system}/updatereport', [
+    'as' => 'systems.updatereport',
+    'uses' => 'SystemController@updatereport'
+]);
+
 Route::resource('factions', 'FactionController'); 
 
 

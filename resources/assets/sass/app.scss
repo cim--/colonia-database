@@ -38,3 +38,12 @@ ul.compact {
 		@include make-sm-column(3);
 	}
 }
+
+.system-properties {
+	p {
+		margin: 0;
+	}
+	.system-property {
+		font-weight: bold;
+	}
+}

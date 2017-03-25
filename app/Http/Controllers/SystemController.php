@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\System;
+use App\Models\Systemreport;
 use App\Models\Faction;
 use App\Models\State;
 use App\Models\Influence;
@@ -62,6 +63,7 @@ class SystemController extends Controller
             'others' => $others,
             'controlling' => $system->controllingFaction(),
             'factions' => $system->latestFactions(),
+            'report' => $system->latestReport(),
             'userrank' => \Auth::user() ? \Auth::user()->rank : 0
         ]);
     }
@@ -99,6 +101,31 @@ class SystemController extends Controller
         ]);
     }
 
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\System  $system
+     * @return \Illuminate\Http\Response
+     */
+    public function editReport(System $system)
+    {
+        $user = \Auth::user();
+        if ($user->rank < 1) {
+            \App::abort(403);
+        }
+        $target = Carbon::now();
+
+        $latest = $system->latestReport();
+
+        return view('systems/editreport', [
+            'latest' => $latest,
+            'target' => $target,
+            'system' => $system
+        ]);
+    }
+
+    
     /**
      * Update the specified resource in storage.
      *
@@ -160,6 +187,50 @@ class SystemController extends Controller
 //
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\System  $system
+     * @return \Illuminate\Http\Response
+     */
+    public function updateReport(Request $request, System $system)
+    {
+        $user = \Auth::user();
+        if ($user->rank < 1) {
+            \App::abort(403);
+        }
+
+        $traffic = $request->input('traffic');
+        $crime = $request->input('crime');
+        $bounties = $request->input('bounties');
+
+        if (!is_numeric($traffic) || (int)$traffic < 0 ||
+        !is_numeric($crime) || (int)$crime < 0 ||
+        !is_numeric($bounties) || (int)$bounties < 0) {
+            return redirect()->route('systems.editreport', $system->id)->with('status',
+            [
+                'danger' => 'All reports must be non-negative integers'
+            ]);
+        }
+        
+        $today = Carbon::now();
+        
+        $report = Systemreport::firstOrNew([
+            'date' => $today->format("Y-m-d 00:00:00"),
+            'system_id' => $system->id
+        ]);
+        $report->traffic = (int)$traffic;
+        $report->bounties = (int)$bounties;
+        $report->crime = (int)$crime;
+        $report->save();
+        
+        return redirect()->route('systems.show', $system->id)->with('status',
+        [
+            'success' => 'Reports updated'
+        ]);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *

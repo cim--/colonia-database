@@ -24,6 +24,10 @@ class System extends Model
     public function stations() {
         return $this->hasMany('App\Models\Station');
     }
+
+    public function systemreports() {
+        return $this->hasMany('App\Models\Systemreport');
+    }
 //
     public function inhabited() {
         return $this->population > 0;
@@ -101,4 +105,16 @@ class System extends Model
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
             ->with('faction', 'state')->orderBy('influence', 'desc')->get();
     }
+
+    public function latestReport() {
+        $date = new Carbon($this->systemreports()->max('date'));
+        return $this->report($date);
+    }
+
+    public function report(Carbon $date) {
+        return $this->systemreports()
+                    ->whereDate('date', $date->format("Y-m-d"))
+                    ->first();
+    }
+
 }

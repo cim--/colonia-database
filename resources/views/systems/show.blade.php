@@ -2,20 +2,34 @@
 
 @section('title')
 {{$system->displayName()}}
+@if ($system->name)
+({{$system->catalogue}})
+@endif
 @endsection
 
 @section('content')
 
 <div class='row'>
-  <div class='col-sm-6'>
-	<p>{{$system->catalogue}}</p>
+  <div class='col-sm-6 system-properties'>
 	@if ($system->inhabited())
 	<p>
-	  Economy:
+	  <span class='system-property'>Economy</span>:
 	  @include($system->economy->icon)
 	  {{$system->economy->name}}
 	</p>
-	<p>Population: {{$system->population}}</p>
+	<p><span class='system-property'>Population</span>: {{$system->population}}</p>
+	@if ($report)
+	<p><span class='system-property'>Traffic Report</span>: {{$report->traffic}}</p>
+	<p><span class='system-property'>Crime Report</span>: {{$report->crime}}</p>
+	<p><span class='system-property'>Bounty Report</span>: {{$report->bounties}}</p>
+	<p>Last update: {{\App\Util::displayDate($report->date)}}
+	  @else
+	<p>Last update: never
+	@endif
+	  @if ($userrank > 0)
+	  <a class='edit' href='{{route('systems.editreport', $system->id)}}'>Update</a>
+	  @endif
+	</p>
 	@else
 	<p>Uninhabited system</p>
 	@endif
