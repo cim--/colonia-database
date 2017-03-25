@@ -41,13 +41,24 @@ class BaseController extends Controller
                 $q->where('date', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
 
-
+        $pendingupdate = [];
+        $factions = Faction::with('states')->orderBy('name')->get();
+        foreach ($factions as $faction) {
+            if ($faction->states->count() > 0 &&
+            $target->isSameDay(new Carbon($faction->states[0]->pivot->date))) {
+                // pending states up to date
+            } else {
+                $pendingupdate[] = $faction;
+            }
+        }
+        
         return view('progress', [
             'target' => $target,
             'today' => $today,
             'userrank' => $user->rank, // TODO: Composer
             'influenceupdate' => $influenceupdate,
             'reportsupdate' => $reportsupdate,
+            'pendingupdate' => $pendingupdate,
         ]);
     }
 }
