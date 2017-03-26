@@ -74,7 +74,7 @@
 		  @endif
 			'>
 		  <td><a href="{{route('systems.show', $system->system->id)}}">{{$system->system->displayName()}}</a>
-			@include($station->economy->icon)
+			@include($system->system->economy->icon)
 		  </td>
 		  <td>{{number_format($system->influence,1)}}</td>
 		  <td>
