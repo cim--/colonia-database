@@ -17,6 +17,7 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout2');
 Route::get('/', 'BaseController@index')->name('index');
 Route::get('/progress', 'BaseController@progress')->name('progress');
 
+Route::get('/distances', 'DistancesController@index')->name('distances');
 
 Route::resource('systems', 'SystemController');
 Route::get('/systems/{system}/editreport', [

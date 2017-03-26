@@ -1,0 +1,73 @@
+#distancegrid {
+	.phase0 {
+		background: #ffdddd;
+	}
+	.phase1 {
+		background: #ffeedd;
+	}
+	.phase2 {
+		background: #ddffdd;
+	}
+	.phase3 {
+		background: #ddffff;
+	}
+	.phase4 {
+		background: #ddddff;
+	}
+	.phase5 {
+		background: #eeddff;
+	}
+
+	.present-system {
+		font-weight: bold;
+		color: #009000;
+	}
+	.target-system {
+		font-weight: bold;
+		color: #900000;
+	}
+	.future-system {
+		font-weight: bold;
+		color: #800080;
+	}
+	.full-system {
+		font-weight: bold;
+		color: #000000;
+	}
+
+	.same-system {
+		background: #000000;
+		color: #000000;
+	}
+	.mission-system {
+		background: #7090a0;
+	}
+	.expandable-system {
+		background: #a0d0f0;
+	}
+
+	th, td {
+		padding: 0.15em;
+		border: thin black solid;
+	}
+	
+	tbody th {
+		min-width: 15em;
+		text-align: right;
+		border-right: 3px black solid;
+	}
+	thead th {
+		border-bottom: 3px black solid;
+		width: 1.75em;
+		max-width: 1.75em;
+		height: 15em;
+		vertical-align: bottom;
+		text-align: left;
+		div {
+			transform: rotate(-90deg);
+			transform-origin: 0.75em 0.25em 0;
+			width: 15em;
+		}
+	}
+
+}

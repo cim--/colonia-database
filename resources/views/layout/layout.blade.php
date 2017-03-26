@@ -14,6 +14,8 @@
 		<nav>
 		  <div class='row'>
 			<div class='col-sm-1'><a href="{{route('index')}}">Home</a></div>
+			<div class='col-sm-1'><a href="{{route('distances')}}">Distances</a></div>
+            <div class='col-sm-8'></div>
 			@if (Auth::user())
 			<div class='col-sm-1'><a href="{{route('progress')}}">Update Progress</a></div>
 			<div class='col-sm-1'><a href="{{route('logout')}}">Logout</a></div>
