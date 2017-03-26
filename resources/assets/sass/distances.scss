@@ -18,6 +18,10 @@
 		background: #eeddff;
 	}
 
+	.controller {
+		min-width: 5em;
+	}
+
 	.present-system {
 		font-weight: bold;
 		color: #009000;
@@ -50,7 +54,7 @@
 		padding: 0.15em;
 		border: thin black solid;
 	}
-	
+
 	tbody th {
 		min-width: 15em;
 		text-align: right;

@@ -7,7 +7,7 @@
 <table class='table table-bordered' id='distancegrid'>
   <thead>
 	<tr>
-	  <td></td>
+	  <td colspan='3'></td>
 	  @foreach ($systems as $system)
 	  <th class='phase{{$system->phase->sequence}}'>
 		<div>{{$system->displayName()}}</div>
@@ -18,6 +18,18 @@
   <tbody>
 	@foreach ($systems as $system)
 	<tr>
+	  <td class='controller phase{{$system->phase->sequence}}'>
+		@if ($system->inhabited())
+		<span title='{{$system->controllingFaction()->name}}'>
+		  {{$system->controllingFaction()->abbreviation()}}
+		</span>
+		@endif
+	  </td>
+	  <td class='controller-size phase{{$system->phase->sequence}}'>
+		@if ($system->inhabited())
+		{{$system->controllingFaction()->latestSystems()->count()}}
+		@endif
+	  </td>
 	  <th class='phase{{$system->phase->sequence}}'>
 		{{$system->displayName()}}
 	  </th>

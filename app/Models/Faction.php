@@ -29,11 +29,28 @@ class Faction extends Model
         $date = new Carbon($this->influences()->max('date'));
         return $this->systems($date);
     }
-
     
     public function systems(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
                     ->with('system', 'state', 'system.economy')
                     ->orderBy('influence', 'desc')->get();
+    }
+
+    public function abbreviation() {
+        $words = explode(" ", $this->name);
+        $abbrev = "";
+        if (count($words) == 1) {
+            return $this->name;
+        }
+        foreach ($words as $word) {
+            if (in_array($word, ['and', 'the', 'de', 'of'])) {
+                $abbrev .= substr($word, 0, 1);
+            } else if (is_numeric($word)) {
+                $abbrev .= $word;
+            } else {
+                $abbrev .= strtoupper(substr($word, 0, 1));
+            }
+        }
+        return $abbrev;
     }
 }
