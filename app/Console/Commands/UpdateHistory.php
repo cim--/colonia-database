@@ -54,11 +54,15 @@ class UpdateHistory extends Command
 
             $systems = System::where('population', '>', 0)->get();
             foreach ($systems as $system) {
-                $factions = $system->factions($tick);
-                $lastfactions = $system->factions($previous);
-                if (count($factions) == 0 || count($lastfactions) == 0) {
+                $getfactions = $system->factions($tick);
+                $getlastfactions = $system->factions($previous);
+                if (count($getfactions) == 0 || count($getlastfactions) == 0) {
                     continue; // no data
                 }
+
+                $factions = $this->map($getfactions);
+                $lastfactions = $this->map($getlastfactions);
+                
 
                 foreach ($factions as $faction) {
                     if (!$lastfactions->contains($faction)) {
@@ -93,5 +97,13 @@ class UpdateHistory extends Command
 
         });
         //
+    }
+
+    private function map($infs) {
+        $factions = [];
+        foreach ($infs as $inf) {
+            $factions[] = $inf->faction;
+        }
+        return $factions;
     }
 }
