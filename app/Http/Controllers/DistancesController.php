@@ -60,7 +60,7 @@ class DistancesController extends Controller
                     $details = [
                         'distance' => $system->distanceTo($system2),
                         'present' => isset($presents[$idx2][$faction->id]),
-                        'full' => count($presents[$idx2]) > 7 || $system2->name == "Colonia" || $system2->catalogue == "Eol Prou LW-L c8-76",
+                        'full' => count($presents[$idx2]) >= 7 || $system2->name == "Colonia" || $system2->catalogue == "Eol Prou LW-L c8-76",
                         'available' => ($system2->phase->sequence <= $maxphase) || ($system->phase->sequence >= $system2->phase->sequence),
                         'candidate' => false,
                         'target' => false
