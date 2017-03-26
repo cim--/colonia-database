@@ -53,14 +53,14 @@ class DistancesController extends Controller
                         'target' => false
                     ];
                 } else {
-                    if (!isset($presents[$idx2])) {
-                        $presents[$idx2] = $this->currentFactions($system2);
+                    if (!isset($presents[$system2->id])) {
+                        $presents[$system2->id] = $this->currentFactions($system2);
                     }
                     
                     $details = [
                         'distance' => $system->distanceTo($system2),
-                        'present' => isset($presents[$idx2][$faction->id]),
-                        'full' => count($presents[$idx2]) >= 7 || $system2->name == "Colonia" || $system2->catalogue == "Eol Prou LW-L c8-76",
+                        'present' => isset($presents[$system2->id][$faction->id]),
+                        'full' => count($presents[$system2->id]) >= 7 || $system2->name == "Colonia" || $system2->catalogue == "Eol Prou LW-L c8-76",
                         'available' => ($system2->phase->sequence <= $maxphase) || ($system->phase->sequence >= $system2->phase->sequence),
                         'candidate' => false,
                         'target' => false
@@ -100,6 +100,7 @@ class DistancesController extends Controller
         return view('distances/index', [
             'systems' => $systems,
             'grid' => $grid,
+            'presents' => $presents,
             'expansion' => self::EXPANSION_LIMIT,
             'missions' => self::MISSION_LIMIT,
         ]);

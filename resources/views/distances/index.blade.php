@@ -7,11 +7,18 @@
 <table class='table table-bordered' id='distancegrid'>
   <thead>
 	<tr>
-	  <td colspan='3'></td>
+	  <td rowspan='2' colspan='3'></td>
 	  @foreach ($systems as $system)
 	  <th class='phase{{$system->phase->sequence}}'>
 		<div>{{$system->displayName()}}</div>
 	  </th>
+	  @endforeach
+	</tr>
+	<tr>
+	  @foreach ($systems as $system)
+	  <td class='phase{{$system->phase->sequence}}'>
+		{{count($presents[$system->id])}}
+	  </td>
 	  @endforeach
 	</tr>
   </thead>

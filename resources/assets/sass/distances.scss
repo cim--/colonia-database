@@ -61,7 +61,6 @@
 		border-right: 3px black solid;
 	}
 	thead th {
-		border-bottom: 3px black solid;
 		width: 1.75em;
 		max-width: 1.75em;
 		height: 15em;
@@ -73,5 +72,8 @@
 			width: 15em;
 		}
 	}
-
+	thead td {
+		text-align: center;
+		border-bottom: 3px black solid;
+	}
 }
