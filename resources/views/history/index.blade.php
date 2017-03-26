@@ -14,7 +14,9 @@
 	  <td data-sort='{{$history->date->format('Y-m-d')}}'>{{\App\Util::displayDate($history->date)}}</td>
 	  <td>
 		@include($history->faction->government->icon)
-		{{$history->faction->name}}
+		<a href='{{route('factions.show', $history->faction->id)}}'>
+		  {{$history->faction->name}}
+		</a>
 	  </td>
 	  <td>
 		@if ($history->expansion)
@@ -25,7 +27,9 @@
 	  </td>
 	  <td>
 		@include($history->system->economy->icon)
-		{{$history->system->displayName()}}
+		<a href='{{route('systems.show', $history->system->id)}}'>
+		  {{$history->system->displayName()}}
+		</a>
 	  </td>
 	</tr>
 	@endforeach

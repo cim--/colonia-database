@@ -10,7 +10,11 @@
 	  <td rowspan='2' colspan='3'></td>
 	  @foreach ($systems as $system)
 	  <th class='phase{{$system->phase->sequence}}'>
-		<div>{{$system->displayName()}}</div>
+		<div>
+		  <a href='{{route('systems.show', $system->id)}}'>
+			{{$system->displayName()}}
+		  </a>
+		</div>
 	  </th>
 	  @endforeach
 	</tr>
@@ -28,7 +32,9 @@
 	  <td class='controller phase{{$system->phase->sequence}}'>
 		@if ($system->inhabited())
 		<span title='{{$system->controllingFaction()->name}}'>
-		  {{$system->controllingFaction()->abbreviation()}}
+		  <a href='{{route('factions.show', $system->controllingFaction()->id)}}'>
+			{{$system->controllingFaction()->abbreviation()}}
+		  </a>
 		</span>
 		@endif
 	  </td>
@@ -38,7 +44,9 @@
 		@endif
 	  </td>
 	  <th class='phase{{$system->phase->sequence}}'>
-		{{$system->displayName()}}
+		<a href='{{route('systems.show', $system->id)}}'>
+		  {{$system->displayName()}}
+		</a>
 	  </th>
 	  @foreach ($systems as $system2)
 	  @include('distances/cell', ['cell' => $grid[$system->id][$system2->id]])

@@ -6,16 +6,43 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\System;
 use App\Models\Faction;
+use App\Models\History;
+use App\Models\Influence;
 
 class BaseController extends Controller
 {
     public function index() {
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
         $factions = Faction::with('government')->orderBy('name')->get();
+        
+        $history = History::with('system', 'system.economy', 'faction', 'faction.government')
+            ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
+            ->orderBy('date', 'desc')->get();
+
+        $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
+            ->where('date', '>=', \App\Util::tick()->format("Y-m-d"))
+            ->get();
+        $important = $influences->filter(function ($value, $key) {
+            $states = ['Boom', 'Investment', 'None'];
+            // ignore uninteresting states
+            if (in_array($value->state->name, $states)) {
+                return false;
+            }
+            $states = ['War', 'Election'];
+            if (!in_array($value->state->name, $states)) {
+                if ($value->system->controllingFaction()->id != $value->faction->id) {
+                    return false; // ignore most states for non-controlling factions
+                }
+            }
+            return true;
+        });
 
         return view('index', [
             'systems' => $systems,
             'factions' => $factions,
+            'historys' => $history,
+            'importants' => $important,
+            'fakeglobals' => ['Retreat', 'Expansion'],
         ]);
     }
 //

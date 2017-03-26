@@ -11,6 +11,10 @@
 @import "icons";
 @import "distances";
 
+h1 {
+   margin-top: 0;
+}
+
 div#main {
 	padding: 0.5em;
 }
@@ -26,6 +30,13 @@ div#main {
 a.edit {
 	font-family: monospace;
 	color: #900;
+}
+
+ul#major-events {
+	@include make-row();
+	li {
+		@include make-sm-column(6);
+	}
 }
 
 ul.compact {

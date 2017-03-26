@@ -4,6 +4,45 @@
 
 @section('content')
 
+<ul id='major-events'>
+  @foreach ($importants as $important)
+  <li>
+	@include($important->faction->government->icon)
+	<a href='{{route('factions.show', $important->faction->id)}}'>
+	  {{$important->faction->name}}
+	</a>
+	in
+	@include($important->state->icon)
+	{{$important->state->name}}
+	@if (!in_array($important->state->name, $fakeglobals))
+	in
+	@include($important->system->economy->icon)
+	<a href='{{route('systems.show', $important->system->id)}}'>
+	  {{$important->system->displayName()}}
+	</a>
+	@endif
+  </li>
+  @endforeach
+  @foreach ($historys as $history)
+  <li>
+	@include($history->faction->government->icon)
+	<a href='{{route('factions.show', $history->faction->id)}}'>
+	  {{$history->faction->name}}
+	</a>
+	@if ($history->expansion)
+	expanded to
+	@else
+	retreated from
+	@endif
+	@include($history->system->economy->icon)
+	<a href='{{route('systems.show', $history->system->id)}}'>
+	  {{$history->system->displayName()}}
+	</a>
+  </li>
+  @endforeach
+</ul>
+
+    
 <div class='row'>
   <div class='col-sm-6'>
 	<h2>Systems</h2>
