@@ -104,6 +104,6 @@ class UpdateHistory extends Command
         foreach ($infs as $inf) {
             $factions[] = $inf->faction;
         }
-        return $factions;
+        return collect($factions);
     }
 }
