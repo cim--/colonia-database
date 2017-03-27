@@ -36,7 +36,7 @@
 
 
 <h2>Systems needing report updates</h2>
-@if (count($influenceupdate) > 0)
+@if (count($reportsupdate) > 0)
 <p>The following systems do not have report updates today. You will need to dock at a station in the system to view traffic, crime and bounty reports in the local Galnet. This does not need daily updates for everywhere!</p>
 <ul class='compact'>
   @foreach ($reportsupdate as $system)
