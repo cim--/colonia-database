@@ -45,7 +45,7 @@
     
 <div class='row'>
   <div class='col-sm-6'>
-	<h2>Systems</h2>
+	<h2><a href="{{route('systems.index')}}">Systems</a></h2>
 	<table class='table table-bordered datatable'>
 	  <thead>
 		<tr><th>Phase</th><th>Name</th><th>Economy</th></tr>

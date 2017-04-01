@@ -7,6 +7,8 @@ use App\Models\System;
 use App\Models\Systemreport;
 use App\Models\Faction;
 use App\Models\State;
+use App\Models\Phase;
+use App\Models\Economy;
 use App\Models\Influence;
 use Illuminate\Http\Request;
 
@@ -19,7 +21,11 @@ class SystemController extends Controller
      */
     public function index()
     {
+        $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
         //
+        return view('systems/index', [
+            'systems' => $systems
+        ]);
     }
 
     /**
@@ -29,7 +35,18 @@ class SystemController extends Controller
      */
     public function create()
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+
+        $phases = Phase::orderBy('sequence')->get();
+        $economies = Economy::orderBy('name')->get();
+
+        return view('systems/create', [
+            'phases' => \App\Util::selectMap($phases),
+            'economies' => \App\Util::selectMap($economies, true)
+        ]);
     }
 
     /**
@@ -40,7 +57,16 @@ class SystemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'catalogue' => 'required',
+            'x' => 'required|numeric',
+            'y' => 'required|numeric',
+            'z' => 'required|numeric',
+            'population' => 'required|numeric|min:0',
+        ]);
+        
+        $system = new System();
+        return $this->updateModel($request, $system);
     }
 
     /**
@@ -63,8 +89,7 @@ class SystemController extends Controller
             'others' => $others,
             'controlling' => $system->controllingFaction(),
             'factions' => $system->latestFactions(),
-            'report' => $system->latestReport(),
-            'userrank' => \Auth::user() ? \Auth::user()->rank : 0
+            'report' => $system->latestReport()
         ]);
     }
 
@@ -90,6 +115,9 @@ class SystemController extends Controller
 
         $factions = \App\Util::selectMap($factions);
         $factions[0] = "(No faction)";
+
+        $phases = Phase::orderBy('sequence')->get();
+        $economies = Economy::orderBy('name')->get();
         
         return view('systems/edit', [
             'today' => $today->count() > 0 ? $today : $yesterday,
@@ -98,6 +126,8 @@ class SystemController extends Controller
             'system' => $system,
             'factions' => $factions,
             'states' => \App\Util::selectMap($states),
+            'phases' => \App\Util::selectMap($phases),
+            'economies' => \App\Util::selectMap($economies, true)
         ]);
     }
 
@@ -138,6 +168,21 @@ class SystemController extends Controller
         $user = \Auth::user();
         if ($user->rank < 1) {
             \App::abort(403);
+        }
+
+        if ($request->input('editmain', 0) == 1) {
+            if ($user->rank < 2) {
+                \App::abort(403);
+            }
+            $this->validate($request, [
+                'catalogue' => 'required',
+                'x' => 'required|numeric',
+                'y' => 'required|numeric',
+                'z' => 'required|numeric',
+                'population' => 'required|numeric|min:0',
+            ]);
+
+            return $this->updateModel($request, $system);
         }
         $target = \App\Util::tick();
 
@@ -187,6 +232,22 @@ class SystemController extends Controller
 //
     }
 
+    private function updateModel(Request $request, System $system)
+    {
+        $system->catalogue = $request->input('catalogue');
+        $system->name = $request->input('name');
+        $system->x = $request->input('x');
+        $system->y = $request->input('y');
+        $system->z = $request->input('z');
+        $system->edsm = $request->input('edsm');
+        $system->population = $request->input('population');
+        $system->phase_id = $request->input('phase_id');
+        $system->economy_id = $request->input('economy_id');
+        $system->save();
+
+        return redirect()->route('systems.edit', $system->id);
+    }
+    
     /**
      * Update the specified resource in storage.
      *

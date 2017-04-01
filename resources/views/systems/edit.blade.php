@@ -69,5 +69,18 @@
 
 </div>
 
+@if ($userrank > 1)
+<div class='modelform'>
+{!! Form::model($system, ['route' => ['systems.update', $system->id], 'method' => 'PUT']) !!}
+
+@include('systems/form')
+
+{!! Form::submit('Update system') !!}
+
+{!! Form::hidden('editmain', 1) !!}
+{!! Form::close() !!}
+</div>
+@endif
+
 
 @endsection

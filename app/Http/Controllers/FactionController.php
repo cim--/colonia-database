@@ -52,7 +52,6 @@ class FactionController extends Controller
         return view('factions/show', [
             'faction' => $faction,
             'systems' => $faction->latestSystems(),
-            'userrank' => \Auth::user() ? \Auth::user()->rank : 0
         ]);
     }
 
