@@ -34,6 +34,18 @@
 {!! Form::token() !!}
 {!! Form::close() !!}
 
+@if ($userrank > 1)
+<div class='modelform'>
+{!! Form::model($faction, ['route' => ['factions.update', $faction->id], 'method' => 'PUT']) !!}
+
+@include('factions/form')
+
+{!! Form::submit('Update faction') !!}
+
+{!! Form::hidden('editmain', 1) !!}
+{!! Form::close() !!}
+</div>
+@endif
 
 
 @endsection

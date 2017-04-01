@@ -36,28 +36,6 @@
 
 <div class='row'>
   <div class='col-sm-6'>
-	<h2>Stations</h2>
-	<table class='table table-bordered datatable'>
-	  <thead>
-		<tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
-	  </thead>
-	  <tbody>
-		@foreach ($faction->stations as $station)
-		<tr>
-		  <td>
-			{{$station->name}}
-			@include($station->economy->icon)
-		  </td>
-		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>
-		  </td>
-		  <td>{{$station->planet}}</td>
-		  <td>{{$station->stationclass->name}}</td>
-		</tr>
-		@endforeach
-	  </tbody>
-	</table>
-  </div>
-  <div class='col-sm-6'>
 	<h2>Systems</h2>
 	<table class='table table-bordered datatable'>
 	  <thead>
@@ -83,6 +61,28 @@
 		  </td>
 		</tr>
 		@endif
+		@endforeach
+	  </tbody>
+	</table>
+  </div>
+  <div class='col-sm-6'>
+	<h2>Stations</h2>
+	<table class='table table-bordered datatable'>
+	  <thead>
+		<tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
+	  </thead>
+	  <tbody>
+		@foreach ($faction->stations as $station)
+		<tr>
+		  <td>
+			{{$station->name}}
+			@include($station->economy->icon)
+		  </td>
+		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>
+		  </td>
+		  <td>{{$station->planet}}</td>
+		  <td>{{$station->stationclass->name}}</td>
+		</tr>
 		@endforeach
 	  </tbody>
 	</table>

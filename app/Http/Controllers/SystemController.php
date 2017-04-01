@@ -57,6 +57,11 @@ class SystemController extends Controller
      */
     public function store(Request $request)
     {
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+
         $this->validate($request, [
             'catalogue' => 'required',
             'x' => 'required|numeric',
@@ -245,7 +250,7 @@ class SystemController extends Controller
         $system->economy_id = $request->input('economy_id');
         $system->save();
 
-        return redirect()->route('systems.edit', $system->id);
+        return redirect()->route('systems.show', $system->id);
     }
     
     /**
