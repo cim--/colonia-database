@@ -6,13 +6,17 @@ use Carbon\Carbon;
 
 class Util {
 
-    public static function selectMap($items, $empty=false) {
+    public static function selectMap($items, $empty=false, $alt=null) {
         $map = [];
         if ($empty) {
             $map[0] = "None";
         }
         foreach ($items as $item) {
-            $map[$item->id] = $item->name;
+            if ($alt) {
+                $map[$item->id] = $item->$alt();
+            } else {
+                $map[$item->id] = $item->name;
+            }
         }
         return $map;
     }

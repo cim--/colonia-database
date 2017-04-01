@@ -30,7 +30,8 @@ Route::put('/systems/{system}/updatereport', [
     'uses' => 'SystemController@updatereport'
 ]);
 
-Route::resource('factions', 'FactionController'); 
+Route::resource('factions', 'FactionController');
+Route::resource('stations', 'StationController'); 
 
 
 
