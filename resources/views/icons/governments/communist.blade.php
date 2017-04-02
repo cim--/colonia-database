@@ -1,1 +1,1 @@
-<span class='icon-government-communist'>&#x262D;</span>
+<span title='Communist' class='icon-government-communist'>&#x262D;</span>

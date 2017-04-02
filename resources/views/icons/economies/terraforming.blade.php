@@ -1,1 +1,1 @@
-<span class='icon-economy-terraforming'>&#x2641;</span>
+<span title='Terraforming' class='icon-economy-terraforming'>&#x2641;</span>

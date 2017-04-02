@@ -1,1 +1,1 @@
-<span class='icon-state-expansion'>&#x23E9;</span>
+<span title='Expansion' class='icon-state-expansion'>&#x23E9;</span>

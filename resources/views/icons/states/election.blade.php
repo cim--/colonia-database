@@ -1,1 +1,1 @@
-<span class='icon-state-election'>&#x2612;</span>
+<span title='Election' class='icon-state-election'>&#x2612;</span>

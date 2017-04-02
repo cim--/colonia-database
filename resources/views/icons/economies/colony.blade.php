@@ -1,1 +1,1 @@
-<span class='icon-economy-colony'>&#x26FA;</span>
+<span title='Colony' class='icon-economy-colony'>&#x26FA;</span>

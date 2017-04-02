@@ -1,1 +1,1 @@
-<span class='icon-government-theocracy'>&#x26EA;</span>
+<span title='Theocracy' class='icon-government-theocracy'>&#x26EA;</span>
