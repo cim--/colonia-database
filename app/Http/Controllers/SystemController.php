@@ -98,6 +98,37 @@ class SystemController extends Controller
         ]);
     }
 
+    public function showHistory(System $system)
+    {
+        $influences = Influence::where('system_id', $system->id)
+            ->where('date', '>', date("Y-m-d", strtotime("-30 days")))
+            ->with('faction')
+            ->with('state')
+            ->get();
+
+        $factions = [];
+        $dates = [];
+        $entries = [];
+        foreach ($influences as $influence) {
+            $date = $influence->date->format("Y-m-d");
+            $faction = $influence->faction_id;
+
+            $dates[$date] = 1;
+            $factions[$faction] = $influence->faction;
+
+            $entries[$date][$faction] = [$influence->influence, $influence->state];
+        }
+
+        krsort($dates);
+        
+        return view('systems/showhistory', [
+            'system' => $system,
+            'history' => $entries,
+            'factions' => $factions,
+            'dates' => $dates
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

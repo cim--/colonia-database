@@ -21,6 +21,10 @@ Route::get('/distances', 'DistancesController@index')->name('distances');
 Route::get('/history', 'HistoryController@index')->name('history');
 
 Route::resource('systems', 'SystemController');
+Route::get('/systems/{system}/history', [
+    'as' => 'systems.showhistory',
+    'uses' => 'SystemController@showhistory'
+]);
 Route::get('/systems/{system}/editreport', [
     'as' => 'systems.editreport',
     'uses' => 'SystemController@editreport'

@@ -116,6 +116,7 @@
 		@endforeach
 	  </tbody>
 	</table>
+    <p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
   </div>
 @endif
 
