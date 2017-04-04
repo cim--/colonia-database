@@ -20,7 +20,7 @@
 </div>
 <div class='form-field'>
 {!! Form::label('population', "Population") !!}
-{!! Form::text('population', 0) !!}
+{!! Form::text('population') !!}
 </div>
 <div class='form-field'>
 {!! Form::label('phase_id', "Phase") !!}
