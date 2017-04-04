@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Faction;
 use App\Models\State;
+use App\Models\Influence;
 use App\Models\Government;
 use Illuminate\Http\Request;
 
@@ -88,6 +89,38 @@ class FactionController extends Controller
             'systems' => $faction->latestSystems(),
         ]);
     }
+
+    public function showHistory(Faction $faction)
+    {
+        $influences = Influence::where('faction_id', $faction->id)
+            ->where('date', '>', date("Y-m-d", strtotime("-30 days")))
+            ->with('system')
+            ->with('state')
+            ->get();
+
+        $systems = [];
+        $dates = [];
+        $entries = [];
+        foreach ($influences as $influence) {
+            $date = $influence->date->format("Y-m-d");
+            $system = $influence->system_id;
+
+            $dates[$date] = 1;
+            $systems[$system] = $influence->system;
+
+            $entries[$date][$system] = [$influence->influence, $influence->state];
+        }
+
+        krsort($dates);
+        
+        return view('factions/showhistory', [
+            'faction' => $faction,
+            'history' => $entries,
+            'systems' => $systems,
+            'dates' => $dates
+        ]);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

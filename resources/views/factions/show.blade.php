@@ -64,6 +64,7 @@
 		@endforeach
 	  </tbody>
 	</table>
+	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
   </div>
   <div class='col-sm-6'>
 	<h2>Stations</h2>
