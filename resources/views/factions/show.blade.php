@@ -31,6 +31,9 @@
 	  <a class='edit' href='{{route('factions.edit', $faction->id)}}'>Update</a>
 	  @endif
 	</p>
+	@if ($faction->eddb)
+	<p><a href='https://eddb.io/faction/{{$faction->eddb}}'>EDDB Record</a></p>
+	@endif
   </div>
 </div>
 
@@ -89,5 +92,6 @@
 	</table>
   </div>
 </div>
+
 
 @endsection

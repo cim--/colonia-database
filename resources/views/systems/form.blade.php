@@ -19,6 +19,10 @@
 {!! Form::text('edsm') !!}
 </div>
 <div class='form-field'>
+{!! Form::label('eddb', "EDDB") !!}
+{!! Form::text('eddb') !!}
+</div>
+<div class='form-field'>
 {!! Form::label('population', "Population") !!}
 {!! Form::text('population') !!}
 </div>

@@ -45,6 +45,14 @@
 		@if (!$facility->pivot->enabled)</span>@endif
 	  @endforeach
 	</p>
+
+	@if ($system->eddb)
+	<p><a href='https://eddb.io/system/{{$system->eddb}}'>EDDB Record</a></p>
+	@endif
+	@if ($system->edsm)
+	<p><a href='https://www.edsm.net/en/system/id/{{$system->edsm}}/name/{{urlencode($system->displayName())}}'>EDSM Record</a></p>
+	@endif
+	
   </div>
   <div class='col-sm-6'>
 	<table class='table'>

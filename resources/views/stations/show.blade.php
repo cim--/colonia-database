@@ -64,6 +64,9 @@
   </tr>
 </table>
 
+@if ($station->eddb)
+<p><a href='https://eddb.io/station/{{$station->eddb}}'>EDDB Record</a></p>
+@endif
     
 
 @endsection
