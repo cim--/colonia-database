@@ -37,6 +37,12 @@
 	  @endif
     </p>
 	@endif
+	<p>
+	@foreach ($system->facilities as $facility)
+	@include ($facility->icon)
+	{{$facility->name}}@if (!$loop->last),@endif
+	@endforeach
+	</p>
   </div>
   <div class='col-sm-6'>
 	<table class='table'>

@@ -17,6 +17,7 @@ Stations
 	  <th>Type</th>
 	  <th>Location</th>
 	  <th>Distance (Ls)</th>
+      <th>Facilities</th>
 	  <th>Economy</th>
 	  <th>Controlling Faction</th>
       <th>Primary?</th>
@@ -29,6 +30,11 @@ Stations
 	  <td>{{$station->stationclass->name}}</td>
 	  <td><a href='{{route("systems.show", $station->system->id)}}'>{{$station->system->displayName()}}</a> {{$station->planet}}</td>
 	  <td>{{$station->distance}}</td>
+	  <td>
+		@foreach ($station->facilities as $facility)
+		@include ($facility->icon)
+		@endforeach
+	  </td>
 	  <td>
 		@include($station->economy->icon)
 		{{$station->economy->name}}

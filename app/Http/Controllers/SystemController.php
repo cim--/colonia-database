@@ -22,7 +22,7 @@ class SystemController extends Controller
      */
     public function index()
     {
-        $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
+        $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government', 'facilities')->get();
         //
         return view('systems/index', [
             'systems' => $systems
@@ -88,7 +88,7 @@ class SystemController extends Controller
             $system->refreshCoordinates();
         }
         
-        $system->load('phase', 'economy', 'stations', 'stations.stationclass');
+        $system->load('phase', 'economy', 'stations', 'stations.stationclass', 'facilities');
         $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
         return view('systems/show', [
             'system' => $system,

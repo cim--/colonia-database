@@ -25,6 +25,15 @@
 	<td>{{$station->distance}}</td>
   </tr>
   <tr>
+	<th>Facilities</th>
+	<td>
+	  @foreach ($station->facilities as $facility)
+	  @include ($facility->icon)
+	  {{$facility->name}}<br>
+	  @endforeach
+	</td>
+  </tr>
+  <tr>
 	<th>Economy</th>
 	<td>
 	  @include($station->economy->icon)
@@ -36,7 +45,7 @@
 	<th>Controlling Faction</th>
 	<td>
 	  @include($station->faction->government->icon)
-	  {{$station->faction->name}}
+	  <a href='{{route('factions.show', $station->faction->id)}}'>{{$station->faction->name}}</a>
 	</td>
 
   </tr>

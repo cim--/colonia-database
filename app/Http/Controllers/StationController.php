@@ -19,7 +19,7 @@ class StationController extends Controller
      */
     public function index()
     {
-        $stations = Station::with('system', 'economy', 'stationclass', 'faction', 'faction.government')->get();
+        $stations = Station::with('system', 'economy', 'stationclass', 'faction', 'faction.government', 'facilities')->get();
         //
         return view('stations/index', [
             'stations' => $stations

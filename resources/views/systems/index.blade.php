@@ -19,6 +19,7 @@ Systems
 	  <th>Economy</th>
 	  <th>Government</th>
 	  <th>Controlling Faction</th>
+      <th>Locations</th>
 	</tr>
   </thead>
   <tbody>
@@ -43,6 +44,11 @@ Systems
 	  <td></td>
 	  <td></td>
 	  @endif
+	  <td>
+		@foreach ($system->facilities as $facility)
+		@include ($facility->icon)
+		@endforeach
+	  </td>
 	</tr>
 	@endforeach
   </tbody>
