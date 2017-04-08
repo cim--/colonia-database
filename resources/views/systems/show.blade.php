@@ -38,10 +38,12 @@
     </p>
 	@endif
 	<p>
-	@foreach ($system->facilities as $facility)
-	@include ($facility->icon)
-	{{$facility->name}}@if (!$loop->last),@endif
-	@endforeach
+	  @foreach ($system->facilities as $facility)
+	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
+		@include ($facility->icon)
+		{{$facility->name}}@if (!$loop->last),@endif
+		@if (!$facility->pivot->enabled)</span>@endif
+	  @endforeach
 	</p>
   </div>
   <div class='col-sm-6'>

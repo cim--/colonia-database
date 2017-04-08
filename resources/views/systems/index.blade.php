@@ -46,8 +46,10 @@ Systems
 	  @endif
 	  <td>
 		@foreach ($system->facilities as $facility)
-		@include ($facility->icon)
-		@endforeach
+		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
+		  @include ($facility->icon)
+		  @if (!$facility->pivot->enabled)</span>@endif
+  		@endforeach
 	  </td>
 	</tr>
 	@endforeach

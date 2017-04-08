@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Facility extends Model
 {
     public function stations() {
-        return $this->belongsToMany('App\Models\Station');
+        return $this->belongsToMany('App\Models\Station')->withPivot('enabled');
     }
 
     public function systems() {
-        return $this->belongsToMany('App\Models\System');
+        return $this->belongsToMany('App\Models\System')->withPivot('enabled');
     }
 
     public static function stationFacilities() {

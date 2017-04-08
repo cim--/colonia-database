@@ -32,7 +32,9 @@ Stations
 	  <td>{{$station->distance}}</td>
 	  <td>
 		@foreach ($station->facilities as $facility)
-		@include ($facility->icon)
+		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
+		  @include ($facility->icon)
+		  @if (!$facility->pivot->enabled)</span>@endif
 		@endforeach
 	  </td>
 	  <td>

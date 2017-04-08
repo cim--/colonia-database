@@ -28,8 +28,11 @@
 	<th>Facilities</th>
 	<td>
 	  @foreach ($station->facilities as $facility)
+	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 	  @include ($facility->icon)
-	  {{$facility->name}}<br>
+	  {{$facility->name}}
+	  @if (!$facility->pivot->enabled)</span>@endif
+	  <br>
 	  @endforeach
 	</td>
   </tr>

@@ -23,7 +23,7 @@ class Station extends Model
     }
 
     public function facilities() {
-        return $this->belongsToMany('App\Models\Facility');
+        return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');
     }
 //
 }
