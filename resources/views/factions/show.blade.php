@@ -76,7 +76,7 @@
 		@foreach ($faction->stations as $station)
 		<tr>
 		  <td>
-			{{$station->name}}
+			<a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
 			@include($station->economy->icon)
 		  </td>
 		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>

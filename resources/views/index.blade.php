@@ -69,7 +69,7 @@
 	</table>
   </div>
   <div class='col-sm-6'>
-	<h2>Factions</h2>
+	<h2><a href="{{route('factions.index')}}">Factions</a></h2>
 	<table class='table table-bordered datatable'>
 	  <thead>
 		<tr><th>Name</th><th>Government</th><th>Player?</th></tr>

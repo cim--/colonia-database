@@ -31,7 +31,11 @@
 	  @endif
 	</p>
 	@else
-	<p>Uninhabited system</p>
+	<p>Uninhabited system
+	  @if ($userrank > 0)
+	  <a class='edit' href='{{route('systems.editreport', $system->id)}}'>Update</a>
+	  @endif
+    </p>
 	@endif
   </div>
   <div class='col-sm-6'>
@@ -69,7 +73,7 @@
 	  <tbody>
 		@foreach ($system->stations as $station)
 		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
-		  <td>{{$station->name}}</td>
+		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a></td>
 		  <td>{{$station->planet}}</td>
 		  <td>{{$station->stationclass->name}}</td>
 		</tr>

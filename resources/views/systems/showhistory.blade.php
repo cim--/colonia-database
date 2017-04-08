@@ -17,7 +17,9 @@
 	<tr>
 	  <th>Date</th>
 	  @foreach ($factions as $faction)
-	  <th>{{$faction->name}}</th>
+	  <th data-orderable='false'>
+		<a href='{{route('factions.showhistory', $faction->id)}}'>{{$faction->name}}</a>
+	  </th>
 	  @endforeach
 	</tr>
   </thead>

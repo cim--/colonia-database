@@ -8,12 +8,14 @@
 
 <p><a href='{{route("factions.show", $faction->id)}}'>Faction details</a></p>
 
-<table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-pageLength='25'>
+<table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
   <thead>
 	<tr>
 	  <th>Date</th>
 	  @foreach ($systems as $system)
-    <th>{{$system->displayName()}}</th>
+      <th data-orderable='false'>
+		<a href='{{route('systems.showhistory', $system->id)}}'>{{$system->displayName()}}</a>
+	  </th>
 	  @endforeach
 	</tr>
   </thead>
