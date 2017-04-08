@@ -14,5 +14,12 @@ class Facility extends Model
         return $this->belongsToMany('App\Models\System');
     }
 
+    public static function stationFacilities() {
+        return self::where('type', 'Station')->orderBy('name')->get();
+    }
+
+    public static function systemFacilities() {
+        return self::where('type', 'System')->orderBy('name')->get();
+    }
 //
 }

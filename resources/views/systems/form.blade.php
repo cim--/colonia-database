@@ -30,3 +30,17 @@
 {!! Form::label('economy_id', "Economy") !!}
 {!! Form::select('economy_id', $economies) !!}
 </div>
+
+@foreach ($systemFacilities as $facility)
+<div class='form-field'>
+  <input type='checkbox' name='facility[{{$facility->id}}]' value='{{$facility->id}}'
+  @if (isset($system) && $system->facilities->contains($facility))
+  checked='checked'
+  @endif
+  id='facility{{$facility->id}}'>
+  <label for='facility{{$facility->id}}'>
+	@includeIf($facility->icon)
+	{{$facility->name}}
+  </label>
+</div>
+@endforeach

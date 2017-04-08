@@ -34,3 +34,17 @@
 {!! Form::label('eddb', "EDDB") !!}
 {!! Form::text('eddb') !!}
 </div>
+
+@foreach ($stationFacilities as $facility)
+<div class='form-field'>
+  <input type='checkbox' name='facility[{{$facility->id}}]' value='{{$facility->id}}'
+  @if (isset($station) && $station->facilities->contains($facility))
+  checked='checked'
+  @endif
+  id='facility{{$facility->id}}'>
+  <label for='facility{{$facility->id}}'>
+	@includeIf($facility->icon)
+	{{$facility->name}}
+  </label>
+</div>
+@endforeach

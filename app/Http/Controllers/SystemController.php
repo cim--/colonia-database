@@ -10,6 +10,7 @@ use App\Models\State;
 use App\Models\Phase;
 use App\Models\Economy;
 use App\Models\Influence;
+use App\Models\Facility;
 use Illuminate\Http\Request;
 
 class SystemController extends Controller
@@ -44,6 +45,7 @@ class SystemController extends Controller
         $economies = Economy::orderBy('name')->get();
 
         return view('systems/create', [
+            'systemFacilities' => Facility::systemFacilities(),
             'phases' => \App\Util::selectMap($phases),
             'economies' => \App\Util::selectMap($economies, true)
         ]);
@@ -163,7 +165,8 @@ class SystemController extends Controller
             'factions' => $factions,
             'states' => \App\Util::selectMap($states),
             'phases' => \App\Util::selectMap($phases),
-            'economies' => \App\Util::selectMap($economies, true)
+            'economies' => \App\Util::selectMap($economies, true),
+            'systemFacilities' => Facility::systemFacilities()
         ]);
     }
 
@@ -280,6 +283,8 @@ class SystemController extends Controller
         $system->phase_id = $request->input('phase_id');
         $system->economy_id = $request->input('economy_id');
         $system->save();
+
+        $system->facilities()->sync($request->input('facility'));
 
         return redirect()->route('systems.show', $system->id);
     }

@@ -7,6 +7,7 @@ use App\Models\Stationclass;
 use App\Models\Faction;
 use App\Models\Economy;
 use App\Models\System;
+use App\Models\Facility;
 use Illuminate\Http\Request;
 
 class StationController extends Controller
@@ -44,6 +45,7 @@ class StationController extends Controller
         $systems = System::where('population', '>', 0)->orderBy('name')->get();
         
         return view('stations/create', [
+            'stationFacilities' => Facility::stationFacilities(),
             'classes' => \App\Util::selectMap($classes),
             'factions' => \App\Util::selectMap($factions),
             'economies' => \App\Util::selectMap($economies),
@@ -87,6 +89,8 @@ class StationController extends Controller
         $station->eddb = $request->input('eddb');
         $station->save();
 
+        $station->facilities()->sync($request->input('facility'));
+        
         return redirect()->route('stations.show', $station->id);
     }
     
@@ -123,6 +127,7 @@ class StationController extends Controller
         
         return view('stations/edit', [
             'station' => $station,
+            'stationFacilities' => Facility::stationFacilities(),
             'classes' => \App\Util::selectMap($classes),
             'factions' => \App\Util::selectMap($factions),
             'economies' => \App\Util::selectMap($economies),
