@@ -2,15 +2,15 @@
 
 @section('title')
 {{$system->displayName()}}
-@if ($system->name)
-({{$system->catalogue}})
-@endif
 @endsection
 
 @section('content')
 
 <div class='row'>
   <div class='col-sm-6 system-properties'>
+	@if ($system->name)
+	<span class='system-catalogue'>({{$system->catalogue}})</span>
+	@endif
 	@if ($system->inhabited())
 	<p>
 	  <span class='system-property'>Economy</span>:
