@@ -22,5 +22,8 @@ class Station extends Model
         return $this->belongsTo('App\Models\Economy');
     }
 
+    public function facilities() {
+        return $this->belongsToMany('App\Models\Facility');
+    }
 //
 }

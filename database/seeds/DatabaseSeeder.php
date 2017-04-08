@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             $this->call(GovernmentSeeder::class);
             $this->call(StateSeeder::class);
             $this->call(StationclassSeeder::class);
+            $this->call(FacilitySeeder::class);
             $this->call(SystemSeeder::class);
             $this->call(FactionSeeder::class);
             $this->call(StationSeeder::class);

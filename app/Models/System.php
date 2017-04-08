@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class System extends Model
 {
-
-    
     public function phase() {
         return $this->belongsTo('App\Models\Phase');
     }
@@ -27,6 +25,10 @@ class System extends Model
 
     public function systemreports() {
         return $this->hasMany('App\Models\Systemreport');
+    }
+
+    public function facilities() {
+        return $this->belongsToMany('App\Models\Facility');
     }
 //
     public function inhabited() {
