@@ -142,9 +142,22 @@ class FactionController extends Controller
                             'type' => 'linear',
                             'position' => 'bottom',
                             'ticks' => [
-                                'callback' => "chart_xaxis_callback"
+                                'callback' => "@@chart_xaxis_callback@@"
                             ]
                         ]
+                    ],
+                    'yAxes' => [
+                        [
+                            'ticks' => [
+                                'min' => 0
+                            ]
+                        ]
+                    ]
+                ],
+                'tooltips' => [
+                    'callbacks' => [
+                        'title' => "@@tooltip_label_title@@",
+                        'label' => "@@tooltip_label_percent@@"
                     ]
                 ]
             ]);
