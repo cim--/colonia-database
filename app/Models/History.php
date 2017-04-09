@@ -14,8 +14,8 @@ class History extends Model
         'date'
     ];
 
-    public function system() {
-        return $this->belongsTo('App\Models\System');
+    public function location() {
+        return $this->morphTo();
     }
 
     public function faction() {

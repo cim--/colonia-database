@@ -30,6 +30,10 @@ class System extends Model
     public function facilities() {
         return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');
     }
+
+    public function history() {
+        return $this->morphMany('App\Models\History', 'location');
+    }
 //
     public function inhabited() {
         return $this->population > 0;

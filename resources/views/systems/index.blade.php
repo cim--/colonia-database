@@ -10,7 +10,7 @@ Systems
 <p><a class='edit' href='{{route('systems.create')}}'>New system</a></p>
 @endif
     
-<table class='table table-bordered datatable' data-order='[[0, "asc"]]'>
+<table class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"]]'>
   <thead>
 	<tr>
 	  <th>Phase</th>

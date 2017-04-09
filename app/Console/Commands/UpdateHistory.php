@@ -70,7 +70,8 @@ class UpdateHistory extends Command
                             $this->line($system->displayName().": expansion - ".$faction->name);
                         }
                         $history = new History;
-                        $history->system_id = $system->id;
+                        $history->location_id = $system->id;
+                        $history->location_type = 'App\Models\System';
                         $history->faction_id = $faction->id;
                         $history->date = $tick;
                         $history->expansion = true;
@@ -84,7 +85,8 @@ class UpdateHistory extends Command
                             $this->line($system->displayName().": retreat - ".$faction->name);
                         }
                         $history = new History;
-                        $history->system_id = $system->id;
+                        $history->location_id = $system->id;
+                        $history->location_type = 'App\Models\System';
                         $history->faction_id = $faction->id;
                         $history->date = $tick;
                         $history->expansion = false;

@@ -8,6 +8,7 @@ use App\Models\Faction;
 use App\Models\Economy;
 use App\Models\System;
 use App\Models\Facility;
+use App\Models\History;
 use Illuminate\Http\Request;
 
 class StationController extends Controller
@@ -78,6 +79,8 @@ class StationController extends Controller
 
     private function updateModel(Request $request, Station $station)
     {
+        $oldfaction = $station->faction_id;
+        
         $station->name = $request->input('name');
         $station->system_id = $request->input('system_id');
         $station->planet = $request->input('planet');
@@ -90,6 +93,26 @@ class StationController extends Controller
         $station->save();
 
         $station->facilities()->sync($request->input('facility',[]));
+
+        if ($oldfaction && $oldfaction != $station->faction_id) {
+            $tick = \App\Util::tick();
+            // station has changed ownership
+            $loss = new History;
+            $loss->location_id = $station->id;
+            $loss->location_type = 'App\Models\Station';
+            $loss->faction_id = $oldfaction;
+            $loss->date = $tick;
+            $loss->expansion = false;
+            $loss->save();
+
+            $gain = new History;
+            $gain->location_id = $station->id;
+            $gain->location_type = 'App\Models\Station';
+            $gain->faction_id = $station->faction_id;
+            $gain->date = $tick;
+            $gain->expansion = true;
+            $gain->save();
+        }
         
         return redirect()->route('stations.show', $station->id);
     }

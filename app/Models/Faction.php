@@ -20,6 +20,10 @@ class Faction extends Model
         return $this->hasMany('App\Models\Influence');
     }
 
+    public function history() {
+        return $this->hasMany('App\Models\History');
+    }
+    
     // pending states
     public function states() {
         return $this->belongsToMany('App\Models\State')->withPivot('date');
