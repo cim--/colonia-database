@@ -24,6 +24,7 @@ class SystemController extends Controller
     {
         $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government', 'facilities')->get();
         //
+        
         return view('systems/index', [
             'systems' => $systems
         ]);
@@ -90,8 +91,98 @@ class SystemController extends Controller
         
         $system->load('phase', 'economy', 'stations', 'stations.stationclass', 'facilities');
         $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
+
+
+        $reports = Systemreport::where('system_id', $system->id)->orderBy('date')->get();
+        $datasets = [
+            'traffic' => [
+                'label' => "Traffic",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#000090',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'ships',
+            ],
+            'crime' => [
+                'label' => "Crime",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#900000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'credits',
+            ],
+            'bounties' => [
+                'label' => "Bounties",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#009000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'credits',
+            ],
+        ];
+        $properties = ['traffic', 'crime', 'bounties'];
+        foreach ($reports as $report) {
+            foreach ($properties as $prop) {
+                $datasets[$prop]['data'][] = [
+                    'x' => \App\Util::graphDisplayDate($report->date),
+                    'y' => $report->$prop
+                ];
+            }
+        }
+        sort($datasets); // compact
+        
+        $chart = app()->chartjs
+            ->name("reporthistory")
+            ->type("line")
+            ->size(["height" => 400, "width"=>1000])
+            ->datasets($datasets)
+            ->options(['scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'bottom',
+                            'ticks' => [
+                                'callback' => "@@chart_xaxis_callback@@"
+                            ]
+                        ]
+                    ],
+                    'yAxes' => [
+                        [
+                            'id' => 'ships',
+                            'scaleLabel' => [
+                                'labelString' => "Ships",
+                                'display' => true
+                            ],
+                            'ticks' => [
+                                'min' => 0
+                            ]
+                        ],
+                        [
+                            'id' => 'credits',
+                            'scaleLabel' => [
+                                'labelString' => "Credits",
+                                'display' => true
+                            ],
+                            'position' => 'right',
+                            'ticks' => [
+                                'min' => 0
+                            ]
+                        ]
+                    ]
+                ],
+                'tooltips' => [
+                    'callbacks' => [
+                        'title' => "@@tooltip_label_title@@",
+                        'label' => "@@tooltip_label_number@@"
+                    ]
+                ]
+            ]);
+
+
+        
         return view('systems/show', [
             'system' => $system,
+            'chart' => $chart,
             'colcoords' => $system->coloniaCoordinates(),
             'others' => $others,
             'controlling' => $system->controllingFaction(),

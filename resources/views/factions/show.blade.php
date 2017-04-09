@@ -40,6 +40,7 @@
 <div class='row'>
   <div class='col-sm-6'>
 	<h2>Systems</h2>
+	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
 	<table class='table table-bordered datatable'>
 	  <thead>
 		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
@@ -67,7 +68,6 @@
 		@endforeach
 	  </tbody>
 	</table>
-	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
   </div>
   <div class='col-sm-6'>
 	<h2>Stations</h2>

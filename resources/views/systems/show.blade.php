@@ -18,22 +18,34 @@
 	  {{$system->economy->name}}
 	</p>
 	<p><span class='system-property'>Population</span>: {{$system->population}}</p>
-	@if ($report)
-	<p><span class='system-property'>Traffic Report</span>: {{$report->traffic}}</p>
-	<p><span class='system-property'>Crime Report</span>: {{$report->crime}}</p>
-	<p><span class='system-property'>Bounty Report</span>: {{$report->bounties}}</p>
-	<p>Last update: {{\App\Util::displayDate($report->date)}}
-	  @else
-	<p>Last update: never
-	@endif
-	  @if ($userrank > 0)
-	  <a class='edit' href='{{route('systems.editreport', $system->id)}}'>Update</a>
-	  @endif
-	</p>
+	<div class='row'>
+	  <div class='col-sm-6'>
+		@if ($report)
+		<p><span class='system-property'>Traffic Report</span>: {{$report->traffic}}</p>
+		<p><span class='system-property'>Crime Report</span>: {{$report->crime}}</p>
+		<p><span class='system-property'>Bounty Report</span>: {{$report->bounties}}</p>
+	  </div>
+	  <div class='col-sm-6'>
+		<p><a href='#reporthistory'>Reports history</a></p>
+		<p>Last update: {{\App\Util::displayDate($report->date)}}
+		  @else
+		<p><span class='system-property'>Traffic Report</span>: ?</p>
+		<p><span class='system-property'>Crime Report</span>: ?</p>
+		<p><span class='system-property'>Bounty Report</span>: ?</p>
+	  </div>
+	  <div class='col-sm-6'>
+		<p>Last update: never
+		  @endif
+		  @if ($userrank > 0)
+		  <a class='edit' href='{{route('systems.editreport', $system->id)}}'>Update</a>
+		  @endif
+		</p>
+	  </div>
+	</div>
 	@else
 	<p>Uninhabited system
 	  @if ($userrank > 0)
-	  <a class='edit' href='{{route('systems.editreport', $system->id)}}'>Update</a>
+	  <a class='edit' href='{{route('systems.edit', $system->id)}}'>Update</a>
 	  @endif
     </p>
 	@endif
@@ -97,6 +109,8 @@
 	  </tbody>
 	</table>
 	<h2>Factions</h2>
+	<p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
+
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
 		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
@@ -136,7 +150,6 @@
 		@endforeach
 	  </tbody>
 	</table>
-    <p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
   </div>
 @endif
 
@@ -166,5 +179,9 @@
 	  
   </div>
 </div>
+@if ($system->inhabited())
+<h2>Report history</h2>
+@include('layout/chart')
+@endif
 
 @endsection
