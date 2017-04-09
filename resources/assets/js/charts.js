@@ -7,6 +7,5 @@ Chart.defaults.global.tooltips.callbacks.label = function (t, d) {
 	return chart_xaxis_callback(t.xLabel)+" = "+t.yLabel + "%";
 };
 Chart.defaults.global.tooltips.callbacks.title = function (t, d) {
-	console.log(t, d);
 	return d.datasets[t[0].datasetIndex].label;
 };
