@@ -44,7 +44,11 @@ Systems
 	  <td></td>
 	  <td></td>
 	  @endif
-	  <td>
+	  <td data-search='
+		@foreach ($system->facilities as $facility)
+{{$facility->name}}
+@endforeach
+'>
 		@foreach ($system->facilities as $facility)
 		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		  @include ($facility->icon)

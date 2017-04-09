@@ -30,7 +30,11 @@ Stations
 	  <td>{{$station->stationclass->name}}</td>
 	  <td><a href='{{route("systems.show", $station->system->id)}}'>{{$station->system->displayName()}}</a> {{$station->planet}}</td>
 	  <td>{{$station->distance}}</td>
-	  <td>
+	  <td data-search='
+		@foreach ($station->facilities as $facility)
+{{$facility->name}}
+@endforeach
+'>
 		@foreach ($station->facilities as $facility)
 		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		  @include ($facility->icon)
