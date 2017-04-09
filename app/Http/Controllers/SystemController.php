@@ -149,6 +149,9 @@ class SystemController extends Controller
                     'yAxes' => [
                         [
                             'id' => 'ships',
+                            'gridLines' => [
+                                'display' => false
+                            ],
                             'scaleLabel' => [
                                 'labelString' => "Ships",
                                 'display' => true
@@ -159,6 +162,9 @@ class SystemController extends Controller
                         ],
                         [
                             'id' => 'credits',
+                            'gridLines' => [
+                                'display' => false
+                            ],
                             'scaleLabel' => [
                                 'labelString' => "Credits",
                                 'display' => true

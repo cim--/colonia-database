@@ -10,8 +10,11 @@
 		<script type='text/javascript' src='/js/cdb.js'></script>
     </head>
     <body>
-      <div id='main'>
+      <header>
 		@include('layout/navbar')
+      </header>
+      <div id='main'>
+
 		@if (session('status'))
 		@foreach (session('status') as $status => $message)
 		<div class='alert alert-{{$status}}'>
@@ -24,5 +27,11 @@
 		  @yield('content')
 		</div>
 	  </div>
+      <footer>
+		@include('layout/navbar')
+		<p>
+		  To discuss this information, volunteer to help collect it, or suggest site improvements, use the #colonia-bgs channel on <a href="https://eliteccn.com/welcome/join-ccn/">the CCN Discord</a>, or contact Ian Doncaster
+		</p>
+      </footer>
 	</body>
 </html>
