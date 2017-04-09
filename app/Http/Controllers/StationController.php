@@ -89,7 +89,7 @@ class StationController extends Controller
         $station->eddb = $request->input('eddb');
         $station->save();
 
-        $station->facilities()->sync($request->input('facility'));
+        $station->facilities()->sync($request->input('facility',[]));
         
         return redirect()->route('stations.show', $station->id);
     }

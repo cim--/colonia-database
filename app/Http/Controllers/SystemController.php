@@ -285,7 +285,7 @@ class SystemController extends Controller
         $system->economy_id = $request->input('economy_id');
         $system->save();
 
-        $system->facilities()->sync($request->input('facility'));
+        $system->facilities()->sync($request->input('facility',[]));
 
         return redirect()->route('systems.show', $system->id);
     }
