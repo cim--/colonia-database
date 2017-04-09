@@ -15,7 +15,7 @@ class BaseController extends Controller
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
         $factions = Faction::with('government')->orderBy('name')->get();
         
-        $history = History::with('system', 'system.economy', 'faction', 'faction.government')
+        $history = History::with('location', 'location.economy', 'faction', 'faction.government')
             ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
             ->orderBy('date', 'desc')->get();
 
