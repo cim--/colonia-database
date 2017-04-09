@@ -15,7 +15,7 @@ class HistoryAddStations extends Migration
     {
         Schema::table('historys', function (Blueprint $table) {
             $table->renameColumn('system_id', 'location_id');
-            $table->string('location_type')->default('App\Models\System')->after('location_id');
+            $table->string('location_type')->default('App\Models\System');
         });
     }
 
