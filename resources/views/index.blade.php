@@ -35,9 +35,9 @@
 	@else
 	retreated from
 	@endif
-	@include($history->system->economy->icon)
-	<a href='{{route('systems.show', $history->system->id)}}'>
-	  {{$history->system->displayName()}}
+	@include($history->location->economy->icon)
+	<a href='{{route('systems.show', $history->location->id)}}'>
+	  {{$history->location->displayName()}}
 	</a>
 	@elseif ($history->location_type == 'App\Models\Station')
 	@if ($history->expansion)
