@@ -33,4 +33,7 @@ class Util {
     public static function displayDate($date) {
         return $date->format("j F ").(1286+$date->format("Y"));
     }
+    public static function graphDisplayDate($date) {
+        return $date->diffInDays(new Carbon("2017-03-01"));
+    }
 }

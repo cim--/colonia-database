@@ -8,6 +8,12 @@
 
 <p><a href='{{route("factions.show", $faction->id)}}'>Faction details</a></p>
 
+{!! str_replace(
+    '"chart_xaxis_callback"',
+    'chart_xaxis_callback',
+    $chart->render()
+) !!}
+    
 <table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
   <thead>
 	<tr>

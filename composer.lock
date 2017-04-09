@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6501717f54508382a1f70a688c1f374c",
+    "content-hash": "b741d1ec33bd65ec5e699440ce4f7b2c",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -604,6 +604,51 @@
                 "parser"
             ],
             "time": "2016-11-02T15:56:58+00:00"
+        },
+        {
+            "name": "fx3costa/laravelchartjs",
+            "version": "2.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fxcosta/laravel-chartjs.git",
+                "reference": "0ad6991a406a4172175c30632f6ce63cdef4e676"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fxcosta/laravel-chartjs/zipball/0ad6991a406a4172175c30632f6ce63cdef4e676",
+                "reference": "0ad6991a406a4172175c30632f6ce63cdef4e676",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.1.* || 5.2.* || 5.3.* || 5.4.*",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fx3costa\\LaravelChartJs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felix",
+                    "email": "fx3costa@gmail.com"
+                }
+            ],
+            "description": "Simple package to facilitate and automate the use of charts in Laravel 5.x using Chartjs v2 library",
+            "keywords": [
+                "chart",
+                "chartjs",
+                "fx3costa",
+                "graphics",
+                "laravel5",
+                "reports"
+            ],
+            "time": "2017-04-08T04:47:45+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

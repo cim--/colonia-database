@@ -18,9 +18,11 @@ elixir(mix => {
 	mix.scripts([
 		'../../../node_modules/jquery/dist/jquery.js',
 		'../../../node_modules/jquery-ui/ui/jquery-1-7.js',
+		'../../../node_modules/moment/moment.js',
 		'../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
 		'../../../node_modules/datatables.net/js/jquery.dataTables.js',
 		'../../../node_modules/datatables.net-bs/js/dataTables.bootstrap.js',
+		'../../../node_modules/chart.js/dist/Chart.js', 
 		'*.js'
 	], 'public/js/cdb.js')
 		.sass('resources/assets/sass/app.scss', 'public/css/cdb.css')

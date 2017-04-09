@@ -12,6 +12,12 @@
 
 <p><a href='{{route("systems.show", $system->id)}}'>System details</a></p>
 
+{!! str_replace(
+    '"chart_xaxis_callback"',
+    'chart_xaxis_callback',
+    $chart->render()
+) !!}
+    
 <table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-pageLength='25'>
   <thead>
 	<tr>

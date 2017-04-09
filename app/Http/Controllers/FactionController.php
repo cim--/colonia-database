@@ -93,27 +93,64 @@ class FactionController extends Controller
     public function showHistory(Faction $faction)
     {
         $influences = Influence::where('faction_id', $faction->id)
-            ->where('date', '>', date("Y-m-d", strtotime("-30 days")))
             ->with('system')
             ->with('state')
+            ->orderBy('date')
             ->get();
 
         $systems = [];
         $dates = [];
         $entries = [];
+        $datasets = [];
+
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
             $system = $influence->system_id;
 
+            if (!isset($datasets[$influence->system_id])) {
+                $datasets[$influence->system_id] = [
+                    'label' => $influence->system->displayName(),
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => '#'.substr(md5($influence->system->catalogue), 0, 6),
+                    'fill' => false,
+                    'data' => []
+                ];
+            }
+            
             $dates[$date] = 1;
             $systems[$system] = $influence->system;
 
             $entries[$date][$system] = [$influence->influence, $influence->state];
+            $datasets[$influence->system_id]['data'][] = [
+                'x' => \App\Util::graphDisplayDate($influence->date),
+                'y' => $influence->influence
+            ];
         }
 
+        sort($datasets); // compact
         krsort($dates);
+
+        $chart = app()->chartjs
+            ->name("influencehistory")
+            ->type("line")
+            ->size(["height" => 350, "width"=>1000])
+            ->datasets($datasets)
+            ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'bottom',
+                            'ticks' => [
+                                'callback' => "chart_xaxis_callback"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
         
         return view('factions/showhistory', [
+            'chart' => $chart,
             'faction' => $faction,
             'history' => $entries,
             'systems' => $systems,
