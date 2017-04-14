@@ -22,7 +22,7 @@ class Util {
     }
 
     public static function tick() {
-        if (date("H") < 15) {
+        if (date("H") < env("TICK_TIME",15)) {
             $target = Carbon::yesterday();
         } else {
             $target = Carbon::now();
