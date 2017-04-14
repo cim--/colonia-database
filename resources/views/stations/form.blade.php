@@ -46,5 +46,9 @@
 	@includeIf($facility->icon)
 	{{$facility->name}}
   </label>
+  <select name='state[{{$facility->id}}]'>
+	<option value='1' selected='selected'>Enable</option>
+	<option value='0'>Disable</option>
+  </select>
 </div>
 @endforeach

@@ -25,6 +25,14 @@
 	<td>{{$station->distance}}</td>
   </tr>
   <tr>
+	<th>Docking Pads</th>
+	<td>
+	  @if ($station->stationclass->hasSmall) Small @endif
+	  @if ($station->stationclass->hasMedium) Medium @endif
+	  @if ($station->stationclass->hasLarge) Large @endif
+	</td>
+  </tr>
+  <tr>
 	<th>Facilities</th>
 	<td>
 	  @foreach ($station->facilities as $facility)

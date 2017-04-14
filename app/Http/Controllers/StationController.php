@@ -92,7 +92,18 @@ class StationController extends Controller
         $station->eddb = $request->input('eddb');
         $station->save();
 
-        $station->facilities()->sync($request->input('facility',[]));
+        $states = $request->input('state');
+        $facs = $request->input('facility',[]);
+        $facsettings = [];
+        foreach ($facs as $fac) {
+            if ($states[$fac] == 1) {
+                $facsettings[$fac] = ['enabled' => 1];
+            } else {
+                $facsettings[$fac] = ['enabled' => 0];
+            }
+        }
+        
+        $station->facilities()->sync($facsettings);
 
         if ($oldfaction && $oldfaction != $station->faction_id) {
             $tick = \App\Util::tick();
