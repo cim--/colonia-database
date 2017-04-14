@@ -33,4 +33,16 @@
   ]
   )</script>
 
+<ul>
+  @if($projection != 'XZ')
+  <li><a href='{{route('map')}}?projection=XZ'>XZ Projection</a></li>
+  @endif
+  @if($projection != 'XY')
+  <li><a href='{{route('map')}}?projection=XY'>XY Projection</a></li>
+  @endif
+  @if($projection != 'ZY')
+  <li><a href='{{route('map')}}?projection=ZY'>ZY Projection</a></li>
+  @endif
+</ul>
+
 @endsection
