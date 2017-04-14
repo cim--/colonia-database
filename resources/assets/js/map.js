@@ -3,7 +3,8 @@ var CDBMap = function() {
 		systemdata: [],
 		canvas: null,
 		systemobjects: {},
-		systemlinks: {}
+		systemlinks: {},
+		systemtexts: {}
 	};
 
 	var phaseColors = [
@@ -16,17 +17,19 @@ var CDBMap = function() {
 		'#ffff77'
 	];
 
+	var scaleFactor = 12.5;
+
 	var getCircle = function(sdata) {
 		if (sdata.population > 0) {
-			var radius = Math.ceil(Math.log(sdata.population));
+			var radius = 2+Math.ceil(Math.log10(sdata.population));
 		} else {
-			var radius = 2;
+			var radius = 1;
 		}
 
 		return [
 			radius,
-			500 + (10 * sdata.x) - radius,
-			400 - (10 * sdata.z) - radius
+			600 + (scaleFactor * sdata.x) - radius,
+			500 - (scaleFactor * sdata.z) - radius
 		];
 	};
 
@@ -93,20 +96,34 @@ var CDBMap = function() {
 
 	};
 
+	var AddNames = function() {
+		var nameobjs = [];
+		for (var i=0;i<obj.systemdata.length;i++) {
+			var sdata = obj.systemdata[i];
+			var props = {};
+			var circle = getCircle(sdata);
+			props.left = circle[1]+circle[0]*2;
+			props.top = circle[2]+circle[0];
+			props.fill = '#cccccc';
+			props.fontSize = 10;
+			props.fontFamily = "Verdana";
+			var name = sdata.name.replace(/^Eol Prou [A-Z][A-Z]-[A-Z] /, "");
+			var systemname = new fabric.Text(name, props);
+			obj.systemtexts[sdata.name] = systemname;
+			nameobjs.push(systemname);
+		}
+		obj.canvas.add(new fabric.Group(nameobjs));	
+	}
+
 	obj.Init = function(systems) {
 		obj.systemdata = systems;
 		obj.canvas = new fabric.Canvas('cdbmap');
 
 		obj.canvas.selection = false;
 		
-		obj.canvas.add(new fabric.Rect({
-			width: 1000,
-			height: 800,
-			fill: 'black'
-		}));
-
 		AddSystems();
 		AddLinks();
+		AddNames();
 	};
 
 	return obj;

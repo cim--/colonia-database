@@ -11,13 +11,18 @@ use App\Models\Influences;
 class MapController extends Controller
 {
     
-    public function index() {
+    public function index(Request $request) {
         $systems = System::with('phase')->get();
 
-        
-        
+        $projection = 'XZ';
+        if ($request->input('projection') == "XY") {
+            $projection = 'XY';
+        } else if ($request->input('projection') == "ZY") {
+            $projection = 'ZY';
+        }
         return view('map/index', [
-            'systems' => $systems
+            'systems' => $systems,
+            'projection' => $projection
         ]);
     }
 
