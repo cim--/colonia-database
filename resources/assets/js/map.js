@@ -17,7 +17,7 @@ var CDBMap = function() {
 		'#ffff77'
 	];
 
-	var scaleFactor = 12.5;
+	var scaleFactor = 12;
 
 	var getCircle = function(sdata) {
 		if (sdata.population > 0) {
@@ -117,7 +117,7 @@ var CDBMap = function() {
 
 	obj.Init = function(systems) {
 		obj.systemdata = systems;
-		obj.canvas = new fabric.Canvas('cdbmap');
+		obj.canvas = new fabric.StaticCanvas('cdbmap');
 
 		obj.canvas.selection = false;
 		

@@ -6,8 +6,9 @@
 
 <p><strong>Projection</strong>: {{$projection}} ; <strong>Links</strong>: 15 LY ; <strong>Colour</strong>: Phase ; <strong>Size</strong>: Population</p>
 
-<canvas id='cdbmap' width='1200' height='1000'></canvas>
-<script type='text/javascript'>CDBMap.Init(
+<div id='cdbmapcontainer'>
+  <canvas id='cdbmap' width='1200' height='1000'></canvas>
+  <script type='text/javascript'>CDBMap.Init(
   [
   @foreach ($systems as $system)
   {
@@ -31,8 +32,9 @@
   @if (!$loop->last) , @endif
   @endforeach
   ]
-  )</script>
-
+  )
+  </script>
+</div>
 <ul>
   @if($projection != 'XZ')
   <li><a href='{{route('map')}}?projection=XZ'>XZ Projection</a></li>
