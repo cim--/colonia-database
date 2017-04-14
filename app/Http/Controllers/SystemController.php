@@ -403,6 +403,10 @@ class SystemController extends Controller
         Influence::where('system_id', $system->id)
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->delete();
+
+        Influence::where('system_id', $system->id)
+            ->where('current', true)
+            ->update(['current' => false]);
         
         for($i=0;$i<=7;$i++) {
             if ($factions[$i] != 0) {
@@ -412,6 +416,7 @@ class SystemController extends Controller
                 $obj->state_id = $states[$i];
                 $obj->date = $target;
                 $obj->influence = $influences[$i];
+                $obj->current = true;
                 $obj->save();
             }
         }

@@ -103,13 +103,15 @@ class System extends Model
     }
     
     public function latestFactions() {
-        $date = new Carbon($this->influences()->max('date'));
-        return $this->factions($date);
+        return $this->influences()->where('current', 1)
+                    ->with('faction', 'state')->orderBy('influence', 'desc')
+                    ->get();
     }
 
     public function factions(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
-            ->with('faction', 'state')->orderBy('influence', 'desc')->get();
+                    ->with('faction', 'state')->orderBy('influence', 'desc')
+                    ->get();
     }
 
     public function latestReport() {

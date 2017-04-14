@@ -15,7 +15,10 @@ class StationclassSeeder extends Seeder
             ["Outpost", false, true, true, false],
             ["Coriolis", false, true, true, true],
             ["Orbis", false, true, true, true],
-            ["Planetary Outpost", true, true, true, true]
+            ["Planetary Outpost", true, true, true, true],
+            ["Small Planetary Settlement", true, false, false, false],
+            ["Medium Planetary Settlement", true, false, false, false],
+            ["Large Planetary Settlement", true, false, false, false],
         ];
         foreach ($classes as $class) {
             $obj = new App\Models\Stationclass;

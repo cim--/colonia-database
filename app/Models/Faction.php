@@ -30,8 +30,9 @@ class Faction extends Model
     }
 
     public function latestSystems() {
-        $date = new Carbon($this->influences()->max('date'));
-        return $this->systems($date);
+        return $this->influences()->where('current', 1)
+                    ->with('system', 'state', 'system.economy')
+                    ->orderBy('influence', 'desc')->get();
     }
     
     public function systems(Carbon $date) {
