@@ -21,6 +21,7 @@
     "css-loader": "^0.27.3",
     "datatables.net": "^1.10.13",
     "datatables.net-bs": "^1.10.13",
+    "fabric": "^1.7.9",
     "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
     "jquery-ui": "^1.12.1",

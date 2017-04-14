@@ -40,7 +40,12 @@ Route::get('/factions/{faction}/history', [
     'uses' => 'FactionController@showhistory'
 ]);
 
-Route::resource('stations', 'StationController'); 
+Route::resource('stations', 'StationController');
+
+Route::get('/map', [
+    'as' => 'map',
+    'uses' => 'MapController@index'
+]);
 
 
 
