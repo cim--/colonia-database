@@ -4,7 +4,16 @@
 
 @section('content')
 
-<p><strong>Projection</strong>: {{$projection}} ; <strong>Links</strong>: 15 LY ; <strong>Colour</strong>: Phase ; <strong>Size</strong>: Population</p>
+<p>
+  <strong>Projection</strong>: <select id='mapctrlprojection' name='projection'>
+	<option selected='selected'>XZ</option>
+	<option>XY</option>
+	<option>ZY</option>
+  </select> ;
+  <strong>Links</strong>: 15 LY ;
+  <strong>Colour</strong>: Phase ;
+  <strong>Size</strong>: Population
+</p>
 
 <div id='cdbmapcontainer'>
   <canvas id='cdbmap' width='1200' height='1000'></canvas>
@@ -35,16 +44,5 @@
   )
   </script>
 </div>
-<ul>
-  @if($projection != 'XZ')
-  <li><a href='{{route('map')}}?projection=XZ'>XZ Projection</a></li>
-  @endif
-  @if($projection != 'XY')
-  <li><a href='{{route('map')}}?projection=XY'>XY Projection</a></li>
-  @endif
-  @if($projection != 'ZY')
-  <li><a href='{{route('map')}}?projection=ZY'>ZY Projection</a></li>
-  @endif
-</ul>
 
 @endsection

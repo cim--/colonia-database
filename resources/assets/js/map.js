@@ -1,10 +1,15 @@
 var CDBMap = function() {
+
+	var reposition = false;
+	var recolour = false;
+	
 	var obj = {
 		systemdata: [],
 		canvas: null,
 		systemobjects: {},
 		systemlinks: {},
-		systemtexts: {}
+		systemtexts: {},
+		projection: 'XZ'
 	};
 
 	var phaseColors = [
@@ -14,7 +19,8 @@ var CDBMap = function() {
 		'#77ffff',
 		'#7777ff',
 		'#aa77ff',
-		'#ffff77'
+		'#ffff77',
+		'#aaff77',
 	];
 
 	var scaleFactor = 12;
@@ -25,12 +31,25 @@ var CDBMap = function() {
 		} else {
 			var radius = 1;
 		}
-
-		return [
-			radius,
-			600 + (scaleFactor * sdata.x) - radius,
-			500 - (scaleFactor * sdata.z) - radius
-		];
+		if (obj.projection == "XZ") {
+			return [
+				radius,
+				600 + (scaleFactor * sdata.x) - radius,
+				500 - (scaleFactor * sdata.z) - radius
+			];
+		} else if (obj.projection == "XY") {
+			return [
+				radius,
+				600 + (scaleFactor * sdata.x) - radius,
+				500 - (scaleFactor * sdata.y) - radius
+			];
+		} else if (obj.projection == "ZY") {
+			return [
+				radius,
+				600 + (scaleFactor * sdata.z) - radius,
+				500 - (scaleFactor * sdata.y) - radius
+			];
+		}
 	};
 
 	var getDistance = function(s1, s2) {
@@ -53,16 +72,15 @@ var CDBMap = function() {
 			props.strokeWidth = 1;
 			var system = new fabric.Circle(props);
 			obj.systemobjects[sdata.name] = system;
-			obj.systemlinks[sdata.name] = {};
-			sysobjs.push(system);
+			obj.canvas.add(system);
 		}
-		obj.canvas.add(new fabric.Group(sysobjs));
 	};
 
 	var AddLinks = function() {
 		var linkobjs = [];
 		for (var i=0;i<obj.systemdata.length;i++) {
 			var s1data = obj.systemdata[i];
+			obj.systemlinks[s1data.name] = {};
 			for (var j=i+1;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
 				if (getDistance(s1data, s2data) <= 15) {
@@ -85,19 +103,15 @@ var CDBMap = function() {
 
 					var link = new fabric.Line(coords, props);
 					obj.systemlinks[s1data.name][s2data.name] = link;
-					obj.systemlinks[s2data.name][s1data.name] = link;
-					linkobjs.push(link);
+					obj.canvas.add(link);
 				}
 			}
 		}
-		var linkgroup = new fabric.Group(linkobjs)
-		obj.canvas.add(linkgroup);
-		linkgroup.sendBackwards();
+
 
 	};
 
 	var AddNames = function() {
-		var nameobjs = [];
 		for (var i=0;i<obj.systemdata.length;i++) {
 			var sdata = obj.systemdata[i];
 			var props = {};
@@ -110,9 +124,8 @@ var CDBMap = function() {
 			var name = sdata.name.replace(/^Eol Prou [A-Z][A-Z]-[A-Z] /, "");
 			var systemname = new fabric.Text(name, props);
 			obj.systemtexts[sdata.name] = systemname;
-			nameobjs.push(systemname);
+			obj.canvas.add(systemname);
 		}
-		obj.canvas.add(new fabric.Group(nameobjs));	
 	}
 
 	obj.Init = function(systems) {
@@ -121,10 +134,60 @@ var CDBMap = function() {
 
 		obj.canvas.selection = false;
 		
+		AddLinks(); // have to do this first
 		AddSystems();
-		AddLinks();
 		AddNames();
 	};
 
+	obj.setProjection = function(newp) {
+		reposition = true;
+		obj.projection = newp;
+		obj.Redraw();
+	}
+
+	obj.Redraw = function() {
+		if (reposition) {
+			for (var i=0;i<obj.systemdata.length;i++) {
+				var s1data = obj.systemdata[i];
+				var c1 = getCircle(s1data);
+				console.log(c1);
+				// move system
+				var spot = obj.systemobjects[s1data.name];
+				spot.set({
+					'left': c1[1],
+					'top': c1[2]
+				});
+
+				var text = obj.systemtexts[s1data.name];
+				text.set({
+					'left': c1[1]+c1[0]*2,
+					'top': c1[2]+c1[0]
+				});
+				
+				for (var j=i+1;j<obj.systemdata.length;j++) {
+					var s2data = obj.systemdata[j];
+					var c2 = getCircle(s2data);
+					// move line if it exists
+					if (obj.systemlinks[s1data.name][s2data.name]) {
+						var link = obj.systemlinks[s1data.name][s2data.name];
+						link.set({
+							'x1': c1[1] + c1[0],
+							'y1': c1[2] + c1[0],
+							'x2': c2[1] + c2[0],
+							'y2': c2[2] + c2[0]
+						});
+					}
+				}
+			}
+		}
+		obj.canvas.renderAll();
+	}
+	
 	return obj;
 }();
+
+$(document).ready(function() {
+	$('#mapctrlprojection').change(function() {
+		CDBMap.setProjection($(this).val());
+	});
+});
