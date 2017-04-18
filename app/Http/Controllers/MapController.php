@@ -12,7 +12,7 @@ class MapController extends Controller
 {
     
     public function index(Request $request) {
-        $systems = System::with('phase')->get();
+        $systems = System::with('phase', 'stations', 'stations.faction')->get();
 
         $projection = 'XZ';
         if ($request->input('projection') == "XY") {
@@ -22,7 +22,8 @@ class MapController extends Controller
         }
         return view('map/index', [
             'systems' => $systems,
-            'projection' => $projection
+            'projection' => $projection,
+            'factions' => Faction::orderBy('name')->get()
         ]);
     }
 

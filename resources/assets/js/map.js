@@ -9,7 +9,8 @@ var CDBMap = function() {
 		systemobjects: {},
 		systemlinks: {},
 		systemtexts: {},
-		projection: 'XZ'
+		projection: 'XZ',
+		highlight: 'C:phase'
 	};
 
 	var phaseColors = [
@@ -59,7 +60,25 @@ var CDBMap = function() {
 				(s1.z-s2.z) * (s1.z-s2.z)
 		);
 		return dist;
-	}
+	};
+
+	var SystemColour = function(sdata) {
+		if (obj.highlight == "C:phase") {
+			return phaseColors[sdata.phase];
+		} else if (obj.highlight.substr(0,2) == "F:") {
+			var faction = obj.highlight.substr(2);
+			if (sdata.controlling == faction) {
+				return "#FF0000";
+			} else if (sdata.factions.indexOf(faction) > -1) {
+				return "#AAAA00";
+			} else if (sdata.population > 0) {
+				return "#888888";
+			} else {
+				return "#444444";
+			}
+		}
+		return "#777777"; // unrecognised highlight
+	};
 	
 	var AddSystems = function() {
 		var sysobjs = [];
@@ -68,7 +87,7 @@ var CDBMap = function() {
 			var props = {};
 			var circle = getCircle(sdata);
 			props.radius = circle[0]; props.left = circle[1]; props.top = circle[2];
-			props.stroke = phaseColors[sdata.phase];
+			props.stroke = SystemColour(sdata);
 			props.strokeWidth = 1;
 			var system = new fabric.Circle(props);
 			obj.systemobjects[sdata.name] = system;
@@ -145,49 +164,78 @@ var CDBMap = function() {
 		obj.Redraw();
 	}
 
-	obj.Redraw = function() {
-		if (reposition) {
-			for (var i=0;i<obj.systemdata.length;i++) {
-				var s1data = obj.systemdata[i];
-				var c1 = getCircle(s1data);
-				console.log(c1);
-				// move system
-				var spot = obj.systemobjects[s1data.name];
-				spot.set({
-					'left': c1[1],
-					'top': c1[2]
-				});
+	obj.setHighlight = function(newc) {
+		recolour = true;
+		obj.highlight = newc;
+		obj.Redraw();
+	}
+	
+	var RedrawReposition = function() {
+		for (var i=0;i<obj.systemdata.length;i++) {
+			var s1data = obj.systemdata[i];
+			var c1 = getCircle(s1data);
+			console.log(c1);
+			// move system
+			var spot = obj.systemobjects[s1data.name];
+			spot.set({
+				'left': c1[1],
+				'top': c1[2]
+			});
 
-				var text = obj.systemtexts[s1data.name];
-				text.set({
-					'left': c1[1]+c1[0]*2,
-					'top': c1[2]+c1[0]
-				});
-				
-				for (var j=i+1;j<obj.systemdata.length;j++) {
-					var s2data = obj.systemdata[j];
-					var c2 = getCircle(s2data);
-					// move line if it exists
-					if (obj.systemlinks[s1data.name][s2data.name]) {
-						var link = obj.systemlinks[s1data.name][s2data.name];
-						link.set({
-							'x1': c1[1] + c1[0],
-							'y1': c1[2] + c1[0],
-							'x2': c2[1] + c2[0],
-							'y2': c2[2] + c2[0]
-						});
-					}
+			var text = obj.systemtexts[s1data.name];
+			text.set({
+				'left': c1[1]+c1[0]*2,
+				'top': c1[2]+c1[0]
+			});
+			
+			for (var j=i+1;j<obj.systemdata.length;j++) {
+				var s2data = obj.systemdata[j];
+				var c2 = getCircle(s2data);
+				// move line if it exists
+				if (obj.systemlinks[s1data.name][s2data.name]) {
+					var link = obj.systemlinks[s1data.name][s2data.name];
+					link.set({
+						'x1': c1[1] + c1[0],
+						'y1': c1[2] + c1[0],
+						'x2': c2[1] + c2[0],
+						'y2': c2[2] + c2[0]
+					});
 				}
 			}
 		}
+	};
+	
+	var RedrawRecolour = function() {
+		for (var i=0;i<obj.systemdata.length;i++) {
+			var s1data = obj.systemdata[i];
+			var spot = obj.systemobjects[s1data.name];
+			spot.set({
+				'stroke': SystemColour(s1data)
+			});
+		}
+	};
+	
+	obj.Redraw = function() {
+		if (reposition) {
+			RedrawReposition();
+		}
+		if (recolour) {
+			RedrawRecolour();
+		}
 		obj.canvas.renderAll();
-	}
+	};
 	
 	return obj;
 }();
 
+/* Set up map ctrls */
 $(document).ready(function() {
 	$('#mapctrlprojection').change(function() {
 		CDBMap.setProjection($(this).val());
 	});
+
+	$('#mapctrlcolour').change(function() {
+		CDBMap.setHighlight($(this).val());
+	});
+
 });
