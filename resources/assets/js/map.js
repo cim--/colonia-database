@@ -10,7 +10,8 @@ var CDBMap = function() {
 		systemlinks: {},
 		systemtexts: {},
 		projection: 'XZ',
-		highlight: 'C:phase'
+		highlight: 'C:phase',
+		radius: 'P'
 	};
 
 	var phaseColors = [
@@ -27,10 +28,17 @@ var CDBMap = function() {
 	var scaleFactor = 12;
 
 	var getCircle = function(sdata) {
+		var radius = 1;
 		if (sdata.population > 0) {
-			var radius = 2+Math.ceil(Math.log10(sdata.population));
-		} else {
-			var radius = 1;
+			if (obj.radius == "P") {
+				var radius = 2+Math.ceil(Math.log10(sdata.population+1));
+			} else if (obj.radius == "T") {
+				var radius = 1+Math.ceil(2*Math.log(sdata.traffic+1));
+			} else if (obj.radius == "C") {
+				var radius = 1+Math.ceil(Math.log10(sdata.crime+1));
+			} else if (obj.radius == "B") {
+				var radius = 1+Math.ceil(Math.log10(sdata.bounties+1));
+			} 
 		}
 		if (obj.projection == "XZ") {
 			return [
@@ -169,6 +177,13 @@ var CDBMap = function() {
 		obj.highlight = newc;
 		obj.Redraw();
 	}
+
+	obj.setRadius = function(newr) {
+		reposition = true;
+		obj.radius = newr;
+		obj.Redraw();
+	}
+
 	
 	var RedrawReposition = function() {
 		for (var i=0;i<obj.systemdata.length;i++) {
@@ -179,7 +194,8 @@ var CDBMap = function() {
 			var spot = obj.systemobjects[s1data.name];
 			spot.set({
 				'left': c1[1],
-				'top': c1[2]
+				'top': c1[2],
+				'radius': c1[0]
 			});
 
 			var text = obj.systemtexts[s1data.name];
@@ -236,6 +252,10 @@ $(document).ready(function() {
 
 	$('#mapctrlcolour').change(function() {
 		CDBMap.setHighlight($(this).val());
+	});
+
+	$('#mapctrlsize').change(function() {
+		CDBMap.setRadius($(this).val());
 	});
 
 });
