@@ -10,7 +10,14 @@
 	<option>XY</option>
 	<option>ZY</option>
   </select> ;
-  <strong>Links</strong>: 15 LY ;
+  <strong>Links</strong>: <select id='mapctrllinks'>
+	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
+	<optgroup label='Expansions from'>
+	  @foreach ($systems as $system)
+	  <option value='S:{{$system->displayName()}}'>{{$system->displayName()}}</option>
+	  @endforeach
+	</optgroup>
+  </select> ;
   <strong>Colour</strong>: <select id='mapctrlcolour'>
 	<option selected='selected' value='C:phase'>Settlement Phase</option>
 	<optgroup label='Factions'>

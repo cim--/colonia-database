@@ -7,10 +7,12 @@ var CDBMap = function() {
 		systemdata: [],
 		canvas: null,
 		systemobjects: {},
-		systemlinks: {},
+		systemlinks1: {}, // 15 LY
+		systemlinks2: {}, // 30 LY
 		systemtexts: {},
 		projection: 'XZ',
 		highlight: 'C:phase',
+		links: 'C:mission',
 		radius: 'P'
 	};
 
@@ -107,10 +109,12 @@ var CDBMap = function() {
 		var linkobjs = [];
 		for (var i=0;i<obj.systemdata.length;i++) {
 			var s1data = obj.systemdata[i];
-			obj.systemlinks[s1data.name] = {};
+			obj.systemlinks1[s1data.name] = {};
+			obj.systemlinks2[s1data.name] = {};
 			for (var j=i+1;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
-				if (getDistance(s1data, s2data) <= 15) {
+				var dist = getDistance(s1data, s2data);
+				if (dist <= 30) {
 					var props = {};
 					var coords = [];
 					var cen1 = getCircle(s1data);
@@ -126,10 +130,17 @@ var CDBMap = function() {
 					} else {
 						props.stroke = '#002200';
 					}
-					props.strokeWidth = 1;
+					if (dist <= 15) {
+						props.strokeWidth = 1;
+					} else {
+						props.strokeWidth = 0;
+					}
 
 					var link = new fabric.Line(coords, props);
-					obj.systemlinks[s1data.name][s2data.name] = link;
+					obj.systemlinks2[s1data.name][s2data.name] = link;
+					if (dist <= 15) {
+						obj.systemlinks1[s1data.name][s2data.name] = link;
+					}
 					obj.canvas.add(link);
 				}
 			}
@@ -184,12 +195,17 @@ var CDBMap = function() {
 		obj.Redraw();
 	}
 
+	obj.setLinks = function(newl) {
+		recolour = true;
+		obj.links = newl;
+		obj.Redraw();
+	}
+
 	
 	var RedrawReposition = function() {
 		for (var i=0;i<obj.systemdata.length;i++) {
 			var s1data = obj.systemdata[i];
 			var c1 = getCircle(s1data);
-			console.log(c1);
 			// move system
 			var spot = obj.systemobjects[s1data.name];
 			spot.set({
@@ -208,8 +224,17 @@ var CDBMap = function() {
 				var s2data = obj.systemdata[j];
 				var c2 = getCircle(s2data);
 				// move line if it exists
-				if (obj.systemlinks[s1data.name][s2data.name]) {
-					var link = obj.systemlinks[s1data.name][s2data.name];
+				if (obj.systemlinks1[s1data.name][s2data.name]) {
+					var link = obj.systemlinks1[s1data.name][s2data.name];
+					link.set({
+						'x1': c1[1] + c1[0],
+						'y1': c1[2] + c1[0],
+						'x2': c2[1] + c2[0],
+						'y2': c2[2] + c2[0]
+					});
+				}
+				if (obj.systemlinks2[s1data.name][s2data.name]) {
+					var link = obj.systemlinks2[s1data.name][s2data.name];
 					link.set({
 						'x1': c1[1] + c1[0],
 						'y1': c1[2] + c1[0],
@@ -229,6 +254,30 @@ var CDBMap = function() {
 				'stroke': SystemColour(s1data)
 			});
 		}
+		for (var i=0;i<obj.systemdata.length;i++) {
+			var s1data = obj.systemdata[i];
+			for (var j=0;j<obj.systemdata.length;j++) {
+				var s2data = obj.systemdata[j];
+				if (obj.systemlinks2[s1data.name][s2data.name]) {
+					var link = obj.systemlinks2[s1data.name][s2data.name];
+					var width = 0;
+					if (obj.links == 'C:mission') {
+						if (obj.systemlinks1[s1data.name][s2data.name]) {
+							width = 1;
+						}
+					} else if (obj.links.substr(0,2) == "S:") {
+						var sn = obj.links.substr(2);
+						if (s1data.name == sn || s2data.name == sn) {
+							width = 1;
+						}
+					}
+					link.set({
+						'strokeWidth': width
+					});
+				}
+			}
+		}
+		
 	};
 	
 	obj.Redraw = function() {
@@ -258,4 +307,7 @@ $(document).ready(function() {
 		CDBMap.setRadius($(this).val());
 	});
 
+	$('#mapctrllinks').change(function() {
+		CDBMap.setLinks($(this).val());
+	});
 });
