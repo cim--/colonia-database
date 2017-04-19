@@ -17,9 +17,37 @@ var CDBMap = function() {
 		highlight: 'C:phase',
 		links: 'C:mission',
 		radius: 'P',
-		filter: '1'
+		filter: '0'
 	};
 
+	var ReadConfig = function() {
+		opts = decodeURI(location.hash).substr(1).split("~");
+		config.projection = opts[0];
+		config.highlight = opts[1];
+		config.links = opts[2];
+		config.radius = opts[3];
+		config.filter = opts[4];
+	};
+
+	var WriteConfig = function() {
+		console.log(config);
+		location.hash = [config.projection, config.highlight, config.links, config.radius, config.filter].join("~");
+	};
+
+
+	obj.SetSelectors = function() {
+		$('#mapctrlprojection').val(config.projection);
+		$('#mapctrlcolour').val(config.highlight);
+		$('#mapctrllinks').val(config.links);
+		$('#mapctrlsize').val(config.radius);
+		$('#mapctrlfilter').val(config.filter);
+	};
+	
+	if (location.hash) {
+		ReadConfig();
+		console.log(config);
+	}
+	
 	var phaseColors = [
 		'#ff7777',
 		'#ffaa77',
@@ -191,6 +219,10 @@ var CDBMap = function() {
 		AddLinks(); // have to do this first
 		AddSystems();
 		AddNames();
+
+		reposition = true;
+		recolour = true;
+		obj.Redraw();
 	};
 
 	obj.setProjection = function(newp) {
@@ -317,11 +349,14 @@ var CDBMap = function() {
 	obj.Redraw = function() {
 		if (reposition) {
 			RedrawReposition();
+			reposition = false;
 		}
 		if (recolour) {
 			RedrawRecolour();
+			recolour = false;
 		}
 		obj.canvas.renderAll();
+		WriteConfig();
 	};
 	
 	return obj;
@@ -349,4 +384,7 @@ $(document).ready(function() {
 		CDBMap.setFilter($(this).val());
 	});
 
+	if (location.hash) {
+		CDBMap.SetSelectors();
+	}
 });
