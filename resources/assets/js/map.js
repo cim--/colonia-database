@@ -59,6 +59,18 @@ var CDBMap = function() {
 		'#aaff77',
 	];
 
+	var factionColors = [
+		'#444444',
+		'#55ff55',
+		'#77ff55',
+		'#99ff55',
+		'#ccff33', // 4 = retreatable
+		'#eeff33',
+		'#ffee33',
+		'#ffaa33', // 7 = full
+		'#ff3333', // 8 = overfull
+	];
+
 	var scaleFactor = 12;
 
 	var getCircle = function(sdata) {
@@ -107,6 +119,8 @@ var CDBMap = function() {
 	var SystemColour = function(sdata) {
 		if (config.highlight == "C:phase") {
 			return phaseColors[sdata.phase];
+		} else if (config.highlight == "C:factions") {
+			return factionColors[sdata.factions.length];
 		} else if (config.highlight.substr(0,2) == "F:") {
 			var faction = config.highlight.substr(2);
 			if (sdata.controlling == faction) {
