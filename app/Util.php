@@ -30,6 +30,10 @@ class Util {
         return $target;
     }
 
+    public static function age($date) {
+        return (new Carbon($date))->diffInDays(Carbon::now());
+    }
+    
     public static function displayDate($date) {
         return $date->format("j F ").(1286+$date->format("Y"));
     }
