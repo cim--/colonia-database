@@ -5,12 +5,12 @@
 @section('content')
 
 <p>
-  <strong>Projection</strong>: <select id='mapctrlprojection'>
+  <label for='mapctrlprojection'>Projection</label>: <select id='mapctrlprojection'>
 	<option selected='selected'>XZ</option>
 	<option>XY</option>
 	<option>ZY</option>
   </select> ;
-  <strong>Links</strong>: <select id='mapctrllinks'>
+  <label for='mapctrllinks'>Links</label>: <select id='mapctrllinks'>
 	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
 	<optgroup label='Expansions from'>
 	  @foreach ($systems as $system)
@@ -18,7 +18,7 @@
 	  @endforeach
 	</optgroup>
   </select> ;
-  <strong>Colour</strong>: <select id='mapctrlcolour'>
+  <label for='mapctrlcolour'>Colour</label>: <select id='mapctrlcolour'>
 	<option selected='selected' value='C:phase'>Settlement Phase</option>
 	<optgroup label='Factions'>
 	  @foreach ($factions as $faction)
@@ -26,11 +26,15 @@
 	  @endforeach
 	</optgroup>
   </select> ;
-  <strong>Size</strong>: <select id='mapctrlsize'>
+  <label for='mapctrlsize'>Size</label>: <select id='mapctrlsize'>
 	<option selected='selected' value='P'>Population</option>
 	<option value='T'>Traffic</option>
 	<option value='C'>Crime</option>
 	<option value='B'>Bounties</option>
+  </select> ;
+  <label for='mapctrlfilter'>Filter?</label>: <select id='mapctrlfilter'>
+	<option selected='selected' value='0'>All Systems</option>
+	<option value='1'>Inhabited Only</option>
   </select>
 </p>
 

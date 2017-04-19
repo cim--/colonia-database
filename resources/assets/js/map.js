@@ -9,11 +9,15 @@ var CDBMap = function() {
 		systemobjects: {},
 		systemlinks1: {}, // 15 LY
 		systemlinks2: {}, // 30 LY
-		systemtexts: {},
+		systemtexts: {}
+	}
+
+	var config = {
 		projection: 'XZ',
 		highlight: 'C:phase',
 		links: 'C:mission',
-		radius: 'P'
+		radius: 'P',
+		filter: '1'
 	};
 
 	var phaseColors = [
@@ -32,29 +36,29 @@ var CDBMap = function() {
 	var getCircle = function(sdata) {
 		var radius = 1;
 		if (sdata.population > 0) {
-			if (obj.radius == "P") {
+			if (config.radius == "P") {
 				var radius = 2+Math.ceil(Math.log10(sdata.population+1));
-			} else if (obj.radius == "T") {
+			} else if (config.radius == "T") {
 				var radius = 1+Math.ceil(2*Math.log(sdata.traffic+1));
-			} else if (obj.radius == "C") {
+			} else if (config.radius == "C") {
 				var radius = 1+Math.ceil(Math.log10(sdata.crime+1));
-			} else if (obj.radius == "B") {
+			} else if (config.radius == "B") {
 				var radius = 1+Math.ceil(Math.log10(sdata.bounties+1));
 			} 
 		}
-		if (obj.projection == "XZ") {
+		if (config.projection == "XZ") {
 			return [
 				radius,
 				600 + (scaleFactor * sdata.x) - radius,
 				500 - (scaleFactor * sdata.z) - radius
 			];
-		} else if (obj.projection == "XY") {
+		} else if (config.projection == "XY") {
 			return [
 				radius,
 				600 + (scaleFactor * sdata.x) - radius,
 				500 - (scaleFactor * sdata.y) - radius
 			];
-		} else if (obj.projection == "ZY") {
+		} else if (config.projection == "ZY") {
 			return [
 				radius,
 				600 + (scaleFactor * sdata.z) - radius,
@@ -73,10 +77,10 @@ var CDBMap = function() {
 	};
 
 	var SystemColour = function(sdata) {
-		if (obj.highlight == "C:phase") {
+		if (config.highlight == "C:phase") {
 			return phaseColors[sdata.phase];
-		} else if (obj.highlight.substr(0,2) == "F:") {
-			var faction = obj.highlight.substr(2);
+		} else if (config.highlight.substr(0,2) == "F:") {
+			var faction = config.highlight.substr(2);
 			if (sdata.controlling == faction) {
 				return "#FF0000";
 			} else if (sdata.factions.indexOf(faction) > -1) {
@@ -88,6 +92,18 @@ var CDBMap = function() {
 			}
 		}
 		return "#777777"; // unrecognised highlight
+	};
+
+	var IsFiltered = function(s1data, s2data) {
+		if (config.filter == "1") {
+			if (s1data.population == 0) {
+				return 0;
+			}
+			if (s2data && s2data.population == 0) {
+				return 0;
+			}
+		}
+		return 1;
 	};
 	
 	var AddSystems = function() {
@@ -179,25 +195,31 @@ var CDBMap = function() {
 
 	obj.setProjection = function(newp) {
 		reposition = true;
-		obj.projection = newp;
+		config.projection = newp;
 		obj.Redraw();
 	}
 
 	obj.setHighlight = function(newc) {
 		recolour = true;
-		obj.highlight = newc;
+		config.highlight = newc;
 		obj.Redraw();
 	}
 
 	obj.setRadius = function(newr) {
 		reposition = true;
-		obj.radius = newr;
+		config.radius = newr;
 		obj.Redraw();
 	}
 
 	obj.setLinks = function(newl) {
 		recolour = true;
-		obj.links = newl;
+		config.links = newl;
+		obj.Redraw();
+	}
+
+	obj.setFilter = function(newf) {
+		recolour = true;
+		config.filter = newf;
 		obj.Redraw();
 	}
 
@@ -251,24 +273,36 @@ var CDBMap = function() {
 			var s1data = obj.systemdata[i];
 			var spot = obj.systemobjects[s1data.name];
 			spot.set({
-				'stroke': SystemColour(s1data)
+				'stroke': SystemColour(s1data),
+				'strokeWidth': IsFiltered(s1data)
 			});
-		}
-		for (var i=0;i<obj.systemdata.length;i++) {
-			var s1data = obj.systemdata[i];
+			var label = obj.systemtexts[s1data.name];
+			if (IsFiltered(s1data)) {
+				label.set({
+					'fontSize': 10
+				});
+			} else {
+				label.set({
+					'fontSize': 0
+				});
+			}
+
+			
 			for (var j=0;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
 				if (obj.systemlinks2[s1data.name][s2data.name]) {
 					var link = obj.systemlinks2[s1data.name][s2data.name];
 					var width = 0;
-					if (obj.links == 'C:mission') {
-						if (obj.systemlinks1[s1data.name][s2data.name]) {
-							width = 1;
-						}
-					} else if (obj.links.substr(0,2) == "S:") {
-						var sn = obj.links.substr(2);
-						if (s1data.name == sn || s2data.name == sn) {
-							width = 1;
+					if (IsFiltered(s1data, s2data)) {
+						if (config.links == 'C:mission') {
+							if (obj.systemlinks1[s1data.name][s2data.name]) {
+								width = 1;
+							}
+						} else if (config.links.substr(0,2) == "S:") {
+							var sn = config.links.substr(2);
+							if (s1data.name == sn || s2data.name == sn) {
+								width = 1;
+							}
 						}
 					}
 					link.set({
@@ -310,4 +344,9 @@ $(document).ready(function() {
 	$('#mapctrllinks').change(function() {
 		CDBMap.setLinks($(this).val());
 	});
+
+	$('#mapctrlfilter').change(function() {
+		CDBMap.setFilter($(this).val());
+	});
+
 });
