@@ -40,6 +40,16 @@ Route::get('/factions/{faction}/history', [
     'uses' => 'FactionController@showhistory'
 ]);
 
+
+Route::get('/users', [
+    'as' => 'users.index',
+    'uses' => 'UserController@index'
+]);
+Route::post('/users', [
+    'as' => 'users.update',
+    'uses' => 'UserController@update'
+]);
+
 Route::resource('stations', 'StationController');
 
 Route::get('/map', [
