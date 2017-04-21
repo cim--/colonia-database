@@ -72,6 +72,25 @@ ul.compact {
 	@include make-row();
 	li {
 		@include make-sm-column(3);
+		padding: 0 0.2em;
+	}
+}
+
+ul.compact2 {
+	@include make-row();
+	li {
+		@include make-sm-column(4);
+		padding: 0 0.2em;
+	}
+}
+
+ul#economyflow {
+	@include make-row();
+	padding: 0 15px;
+	li {
+		@include make-sm-column(3);
+		padding: 0;
+		list-style-type: none;
 	}
 }
 
@@ -112,4 +131,9 @@ ul.compact {
 }
 #cdbmap {
 	background: black;
+}
+
+h2 {
+   margin-top: 0.2em;
+   margin-bottom: 0.2em;
 }

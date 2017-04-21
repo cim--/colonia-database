@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\System;
 use App\Models\Faction;
+use App\Models\Station;
 use App\Models\History;
 use App\Models\Influence;
 
@@ -37,16 +38,47 @@ class BaseController extends Controller
 
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
         $factions = Faction::with('government')->orderBy('name')->get();
+        $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
         $population = System::sum('population');
+
+        $iconmap = [];
+        $economies = [];
+        foreach ($stations as $station) {
+            if ($station->stationclass->hasSmall) {
+                if (!isset($economies[$station->economy->name])) {
+                    $economies[$station->economy->name] = 0;
+                }
+                $economies[$station->economy->name]++;
+                $iconmap[$station->economy->name] = $station->economy->icon;
+            }
+        }
+
+        $governments = [];
+        foreach ($factions as $faction) {
+            if (!isset($governments[$faction->government->name])) {
+                $governments[$faction->government->name] = 0;
+            }
+            $governments[$faction->government->name]++;
+            $iconmap[$faction->government->name] = $faction->government->icon;
+        }
+        arsort($governments);
         
         return view('index', [
             'population' => $population,
+            'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
+            'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
+            'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
+            'players' => $factions->filter(function($v) { return $v->player; })->count(),
+            'economies' => $economies,
+            'governments' => $governments,
             'systems' => $systems,
             'factions' => $factions,
+            'stations' => $stations,
             'historys' => $history,
             'importants' => $important,
             'fakeglobals' => ['Retreat', 'Expansion'],
+            'iconmap' => $iconmap
         ]);
     }
 //
