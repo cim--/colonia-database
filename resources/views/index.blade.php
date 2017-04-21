@@ -4,6 +4,8 @@
 
 @section('content')
 
+    <p>Welcome to Colonia, population {{number_format($population)}}</p>
+
 <ul id='major-events'>
   @foreach ($importants as $important)
   <li>

@@ -12,15 +12,13 @@ use App\Models\Influence;
 class BaseController extends Controller
 {
     public function index() {
-        $systems = System::with('phase', 'economy')->orderBy('name')->get();
-        $factions = Faction::with('government')->orderBy('name')->get();
-        
+
         $history = History::with('location', 'location.economy', 'faction', 'faction.government')
             ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
             ->orderBy('date', 'desc')->get();
 
         $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
-            ->where('date', '>=', \App\Util::tick()->format("Y-m-d"))
+            ->where('current', 1)
             ->get();
         $important = $influences->filter(function ($value, $key) {
             $states = ['Boom', 'Investment', 'None'];
@@ -37,7 +35,13 @@ class BaseController extends Controller
             return true;
         });
 
+        $systems = System::with('phase', 'economy')->orderBy('name')->get();
+        $factions = Faction::with('government')->orderBy('name')->get();
+
+        $population = System::sum('population');
+        
         return view('index', [
+            'population' => $population,
             'systems' => $systems,
             'factions' => $factions,
             'historys' => $history,
