@@ -17,5 +17,5 @@
     expandable-system
     @endif
   '>
-  {{number_format($cell['distance'], 2)}}
+{{number_format($cell['distance'], 2)}}
 </td>

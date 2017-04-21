@@ -3,25 +3,28 @@
 		background: #ffdddd;
 	}
 	.phase1 {
-		background: #ffeedd;
+		background: #fff6dd;
 	}
 	.phase2 { /* CEI 1 */
 		background: #ddffdd;
 	}
 	.phase3 {
+		background: #ddffee;
+	}
+	.phase4 { /* CEI 3 */
 		background: #ddffff;
 	}
-	.phase4 {
+	.phase5 { /* CCS 2 */
+		background: #ffeedd;
+	}
+	.phase6 { /* CEI 4 */
+		background: #ddeeff;
+	}
+	.phase7 { 
 		background: #ddddff;
 	}
-	.phase5 {
+	.phase8 { /* CEI 6 */
 		background: #eeddff;
-	}
-	.phase6 {
-		background: #ffffdd;
-	}
-	.phase7 { /* CEI 6 */
-		background: #eeffdd;
 	}
 	.controller {
 		min-width: 5em;

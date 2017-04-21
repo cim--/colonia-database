@@ -69,7 +69,7 @@ class System extends Model
             (($this->y - $other->y)*($this->y - $other->y)) +
             (($this->z - $other->z)*($this->z - $other->z))
         );
-        return number_format($distance, 2);
+        return $distance;
     }
 
     public function refreshEDSM() {

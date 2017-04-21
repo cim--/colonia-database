@@ -49,14 +49,15 @@ var CDBMap = function() {
 	}
 	
 	var phaseColors = [
-		'#ff7777',
-		'#ffaa77',
-		'#77ff77',
-		'#77ffff',
+		'#ff7777', 
+		'#ffdd77',
+		'#77ff77', // CEI 1
+		'#77ffdd',
+		'#77ffff', // CEI 3
+		'#ffaa77', // CCS 2
+		'#77ddff', // CEI 4
 		'#7777ff',
-		'#aa77ff',
-		'#ffff77',
-		'#aaff77',
+		'#aa77ff', // CEI 6
 	];
 
 	var factionColors = [

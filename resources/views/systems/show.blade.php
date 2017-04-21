@@ -171,7 +171,7 @@
 			@include($other->controllingFaction()->government->icon)
 			@endif
 		  </td>
-		  <td>{{$system->distanceTo($other)}}</td>
+		  <td>{{number_format($system->distanceTo($other), 2)}}</td>
 		</tr>
 		@endforeach
 	  </tbody>
