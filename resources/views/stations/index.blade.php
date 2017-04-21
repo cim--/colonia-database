@@ -55,7 +55,7 @@ Stations
 		@include($station->economy->icon)
 		{{$station->economy->name}}
 	  </td>
-	  <td>
+	  <td data-search="{{$station->faction->government->name}} {{$station->faction->name}}">
 		@include($station->faction->government->icon)
 		{{$station->faction->name}}
 	  </td>
