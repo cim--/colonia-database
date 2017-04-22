@@ -22,7 +22,7 @@ class SystemController extends Controller
      */
     public function index()
     {
-        $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government', 'facilities')->get();
+        $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government', 'stations.economy', 'facilities')->get();
         //
         
         return view('systems/index', [

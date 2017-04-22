@@ -22,8 +22,8 @@
 	  <div class='col-sm-6'>
 		@if ($report)
 		<p><span class='system-property'>Traffic Report</span>: {{$report->traffic}}</p>
-		<p><span class='system-property'>Crime Report</span>: {{$report->crime}}</p>
-		<p><span class='system-property'>Bounty Report</span>: {{$report->bounties}}</p>
+		<p><span class='system-property'>Crime Report</span>: {{number_format($report->crime)}}</p>
+		<p><span class='system-property'>Bounty Report</span>: {{number_format($report->bounties)}}</p>
 	  </div>
 	  <div class='col-sm-6'>
 		<p><a href='#reporthistory'>Reports history</a></p>
@@ -101,7 +101,9 @@
 	  <tbody>
 		@foreach ($system->stations as $station)
 		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
-		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a></td>
+		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
+			@include($station->economy->icon)
+		  </td>
 		  <td>{{$station->planet}}</td>
 		  <td>{{$station->stationclass->name}}</td>
 		</tr>
