@@ -73,12 +73,14 @@ var CDBMap = function() {
 	];
 
 	var scaleFactor = 12;
-
+	var mapXSize = 600; // half-size
+	var mapYSize = 500; // radiuses
+	
 	var getCircle = function(sdata) {
 		var radius = 1;
 		if (sdata.population > 0) {
 			if (config.radius == "P") {
-				var radius = 2+Math.ceil(Math.log10(sdata.population+1));
+				var radius = 2+Math.ceil(Math.sqrt(sdata.population/1000));
 			} else if (config.radius == "T") {
 				var radius = 1+Math.ceil(2*Math.log(sdata.traffic+1));
 			} else if (config.radius == "C") {
@@ -87,25 +89,30 @@ var CDBMap = function() {
 				var radius = 1+Math.ceil(Math.log10(sdata.bounties+1));
 			} 
 		}
-		if (config.projection == "XZ") {
-			return [
+		var projection = [0,0,0];
+		if (config.projection.substr(0,2) == "XZ") {
+			projection = [
 				radius,
-				600 + (scaleFactor * sdata.x) - radius,
-				500 - (scaleFactor * sdata.z) - radius
+				(scaleFactor * sdata.x),
+				-(scaleFactor * sdata.z)
 			];
-		} else if (config.projection == "XY") {
-			return [
+		} else if (config.projection.substr(0,2) == "XY") {
+			projection = [
 				radius,
-				600 + (scaleFactor * sdata.x) - radius,
-				500 - (scaleFactor * sdata.y) - radius
+				(scaleFactor * sdata.x),
+				-(scaleFactor * sdata.y)
 			];
-		} else if (config.projection == "ZY") {
-			return [
+		} else if (config.projection.substr(0,2) == "ZY") {
+			projection = [
 				radius,
-				600 + (scaleFactor * sdata.z) - radius,
-				500 - (scaleFactor * sdata.y) - radius
+				(scaleFactor * sdata.z),
+				-(scaleFactor * sdata.y)
 			];
 		}
+
+		projection[1] += mapXSize - radius;
+		projection[2] += mapYSize - radius;
+		return projection;
 	};
 
 	var getDistance = function(s1, s2) {
@@ -129,7 +136,11 @@ var CDBMap = function() {
 			} else if (sdata.factions.indexOf(faction) > -1) {
 				return "#AAAA00";
 			} else if (sdata.population > 0) {
-				return "#888888";
+				if (sdata.factions.length >= 7) {
+					return "#8888bb";
+				} else {
+					return "#88bb88";
+				}
 			} else {
 				return "#444444";
 			}
