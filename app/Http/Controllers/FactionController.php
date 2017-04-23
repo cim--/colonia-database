@@ -85,8 +85,14 @@ class FactionController extends Controller
     {
         $faction->load('government', 'stations', 'stations.system', 'stations.stationclass', 'stations.economy', 'states');
 
+        $stateos = State::get();
+        $states = [];
+        foreach ($stateos as $state) {
+            $states[$state->id] = $state;
+        }
+        
         $statedata = [];
-        $infs = Influence::with('state')->where('faction_id', $faction->id)->orderBy('date');
+        $infs = Influence::where('faction_id', $faction->id)->orderBy('date');
         $date = null;
         $current = "None";
         foreach ($infs->cursor() as $inf) {
@@ -106,15 +112,15 @@ class FactionController extends Controller
                 $date = $inf->date;
             }
             if (!is_array($current)) {
-                if ($inf->state->name != "None") {
+                if ($states[$inf->state_id]->name != "None") {
                     // should prioritise War and Election
-                    if ($inf->state->name == $current || $current == "None") {
-                        $current = $inf->state->name;
+                    if ($states[$inf->state_id]->name == $current || $current == "None") {
+                        $current = $states[$inf->state_id]->name;
                     } else {
                         // special case for expansion-wars leading to
                         // dual states, also investment
                         // going to assume for now no triple-states
-                        $current = [$inf->state->name, $current];
+                        $current = [$states[$inf->state_id]->name, $current];
                     }
                 }
             }
