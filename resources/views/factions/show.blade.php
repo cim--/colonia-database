@@ -90,6 +90,9 @@
 		@endforeach
 	  </tbody>
 	</table>
+
+	<h2>State History</h2>
+	@include('layout/chart')
   </div>
 </div>
 

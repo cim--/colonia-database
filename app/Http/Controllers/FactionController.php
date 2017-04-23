@@ -84,9 +84,77 @@ class FactionController extends Controller
     public function show(Faction $faction)
     {
         $faction->load('government', 'stations', 'stations.system', 'stations.stationclass', 'stations.economy', 'states');
+
+        $statedata = [];
+        $infs = Influence::with('state')->where('faction_id', $faction->id)->orderBy('date');
+        $date = null;
+        $current = "None";
+        foreach ($infs->cursor() as $inf) {
+            if ($inf->date != $date) {
+                if ($date != null) {
+                    if (!is_array($current)) {
+                        $current = [$current];
+                    }
+                    foreach ($current as $idx => $entry) {
+                        if (!isset($statedata[$entry])) {
+                            $statedata[$entry] = 0;
+                        }
+                        $statedata[$entry]+=1 / count($current);
+                    }
+                    $current = "None";
+                }
+                $date = $inf->date;
+            }
+            if (!is_array($current)) {
+                if ($inf->state->name != "None") {
+                    // should prioritise War and Election
+                    if ($inf->state->name == $current || $current == "None") {
+                        $current = $inf->state->name;
+                    } else {
+                        // special case for expansion-wars leading to
+                        // dual states, also investment
+                        // going to assume for now no triple-states
+                        $current = [$inf->state->name, $current];
+                    }
+                }
+            }
+        }
+        // process last day
+        if (!is_array($current)) {
+            $current = [$current];
+        }
+        foreach ($current as $idx => $entry) {
+            if (!isset($statedata[$entry])) {
+                $statedata[$entry] = 0;
+            }
+            $statedata[$entry]+=1 / count($current);
+        }
+        
+        $labels = [];
+        $values = [];
+        $colours = [];
+        foreach ($statedata as $state => $counter) {
+            $labels[] = $state;
+            $values[] = $counter;
+            $colours[] = \App\Util::stateColour($state);
+        }
+        
+        $chart = app()->chartjs
+            ->name("statetimes")
+            ->type("pie")
+            ->size(["height" => 500, "width"=>500])
+            ->labels($labels)
+            ->datasets([
+                [
+                    'backgroundColor' => $colours,
+                    'data' => $values
+                ]
+            ]);
+        
         return view('factions/show', [
             'faction' => $faction,
             'systems' => $faction->latestSystems(),
+            'chart' => $chart
         ]);
     }
 
