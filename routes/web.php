@@ -52,6 +52,10 @@ Route::post('/users', [
 
 Route::resource('stations', 'StationController');
 
+Route::resource('missions', 'MissionController', ['only' => [
+    'index', 'create', 'store' // for now
+]]);
+
 Route::get('/map', [
     'as' => 'map',
     'uses' => 'MapController@index'

@@ -61,4 +61,24 @@ class Util {
         }
         return "#000000";
     }
+
+    public static function magnitude($mag) {
+        switch ($mag) {
+        case "-3": return "---";
+        case "-2": return "--";
+        case "-1": return "-";
+        case "3": return "+++";
+        case "2": return "++";
+        case "1": return "+";
+        }
+        return "";
+    }
+    public static function sign($sign) {
+        if ($sign < 0) {
+            return "&#x2B6B;";
+        } else if ($sign > 0) {
+            return "&#x2B6A;";
+        }
+        return "";
+    }
 }
