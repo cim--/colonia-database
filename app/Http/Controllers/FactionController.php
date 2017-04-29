@@ -321,6 +321,12 @@ class FactionController extends Controller
         }
         
         $faction->states()->sync($sync);
+
+        \Log::info("Pending state update", [
+            'faction' => $faction->name,
+            'user' => $user->name
+        ]);
+        
         return redirect()->route('factions.show', $faction->id)->with('status',
         [
             'success' => 'Pending states updated'

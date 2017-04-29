@@ -420,6 +420,10 @@ class SystemController extends Controller
                 $obj->save();
             }
         }
+        \Log::info("Influence update", [
+            'system' => $system->displayName(),
+            'user' => $user->name
+        ]);
         return redirect()->route('systems.show', $system->id)->with('status',
         [
             'success' => 'Faction influences updated'
@@ -483,7 +487,12 @@ class SystemController extends Controller
         $report->bounties = (int)$bounties;
         $report->crime = (int)$crime;
         $report->save();
-        
+
+        \Log::info("Report update", [
+            'system' => $system->displayName(),
+            'user' => $user->name
+        ]);
+
         return redirect()->route('systems.show', $system->id)->with('status',
         [
             'success' => 'Reports updated'
