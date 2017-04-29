@@ -82,7 +82,7 @@ var CDBMap = function() {
 			if (config.radius == "P") {
 				var radius = 2+Math.ceil(Math.sqrt(sdata.population/1000));
 			} else if (config.radius == "T") {
-				var radius = 1+Math.ceil(2*Math.log(sdata.traffic+1));
+				var radius = 1+Math.ceil(Math.sqrt(sdata.traffic));
 			} else if (config.radius == "C") {
 				var radius = 1+Math.ceil(Math.log10(sdata.crime+1));
 			} else if (config.radius == "B") {
