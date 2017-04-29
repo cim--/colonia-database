@@ -177,10 +177,30 @@ class FactionController extends Controller
         $entries = [];
         $datasets = [];
 
+        $seen = [];
+        $lastdate = null;
+        
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
+            if ($lastdate != $influence->date) {
+                if ($lastdate != null) {
+                    foreach ($systems as $sid => $system) {
+                        if (!isset($seen[$sid])) {
+                            $datasets[$sid]['data'][] = [
+                                'x' => \App\Util::graphDisplayDate($lastdate),
+                                'y' => null
+                            ];
+                        }
+                    }
+                    
+                }
+                $lastdate = $influence->date;
+                $seen = [];
+            }
+            
             $system = $influence->system_id;
-
+            $seen[$system] = 1;
+            
             if (!isset($datasets[$influence->system_id])) {
                 $datasets[$influence->system_id] = [
                     'label' => $influence->system->displayName(),
@@ -200,6 +220,7 @@ class FactionController extends Controller
                 'y' => $influence->influence
             ];
         }
+
 
         sort($datasets); // compact
         krsort($dates);

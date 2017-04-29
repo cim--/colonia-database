@@ -210,11 +210,30 @@ class SystemController extends Controller
         $entries = [];
 
         $datasets = [];
+
+        $lastdate = null;
         
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
+            if ($lastdate != $influence->date) {
+                if ($lastdate != null) {
+                    foreach ($factions as $fid => $faction) {
+                        if (!isset($seen[$fid])) {
+                            $datasets[$fid]['data'][] = [
+                                'x' => \App\Util::graphDisplayDate($lastdate),
+                                'y' => null
+                            ];
+                        }
+                    }
+                    
+                }
+                $lastdate = $influence->date;
+                $seen = [];
+            }
             $faction = $influence->faction_id;
 
+            $seen[$faction] = 1;
+            
             if (!isset($datasets[$influence->faction_id])) {
                 $datasets[$influence->faction_id] = [
                     'label' => $influence->faction->name,
