@@ -76,12 +76,12 @@ class MissionController extends Controller
         $missiontype->type = $request->input('type');
         $missiontype->reputationMagnitude = $request->input('reputationMagnitude');
         $missiontype->sourceInfluenceMagnitude = $request->input('sourceInfluenceMagnitude');
-        $missiontype->sourceState_id = $request->input('sourceState');
+        $missiontype->sourceState_id = $request->input('sourceState_id');
         $missiontype->sourceStateMagnitude = $request->input('sourceStateMagnitude');
         if ($request->input('hasDestination', 0)) {
             $missiontype->hasDestination = 1;
             $missiontype->destinationInfluenceMagnitude = $request->input('destinationInfluenceMagnitude');
-            $missiontype->destinationState_id = $request->input('destinationState');
+            $missiontype->destinationState_id = $request->input('destinationState_id');
             $missiontype->destinationStateMagnitude = $request->input('destinationStateMagnitude');
         } else {
             $missiontype->hasDestination = 0;
@@ -110,9 +110,20 @@ class MissionController extends Controller
      * @param  \App\Models\Missiontype  $missiontype
      * @return \Illuminate\Http\Response
      */
-    public function edit(Missiontype $missiontype)
+    public function edit(Missiontype $mission)
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+        $states = \App\Util::selectMap(State::orderBy('name')->get());
+
+        return view('missions/edit', [
+            'states' => $states,
+            'magnitudes' => $this->magnitudes,
+            'positivemagnitudes' => $this->positivemagnitudes,
+            'missiontype' => $mission
+        ]);
     }
 
     /**
@@ -122,9 +133,9 @@ class MissionController extends Controller
      * @param  \App\Models\Missiontype  $missiontype
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Missiontype $missiontype)
+    public function update(Request $request, Missiontype $mission)
     {
-        //
+        return $this->updateModel($mission, $request);
     }
 
     /**

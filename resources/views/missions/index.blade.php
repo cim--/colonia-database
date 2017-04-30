@@ -24,7 +24,11 @@ Mission Types
   <tbody>
 	@foreach ($missions as $mission)
 	<tr>
+      @if ($userrank > 1)
+	  <td><a href="{{route('missions.edit', $mission->id)}}">{{$mission->type}}</a></td>
+	  @else
 	  <td>{{$mission->type}}</td>
+	  @endif
 	  <td data-sort="{{$mission->reputationMagnitude}}">
 		{{App\Util::magnitude($mission->reputationMagnitude)}}
 	  </td>

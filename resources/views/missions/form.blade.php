@@ -12,8 +12,8 @@
 {!! Form::select('sourceInfluenceMagnitude', $positivemagnitudes) !!}
 </div>
 <div class='form-field'>
-{!! Form::label('sourceState', "State Affected") !!}
-{!! Form::select('sourceState', $states) !!}
+{!! Form::label('sourceState_id', "State Affected") !!}
+{!! Form::select('sourceState_id', $states) !!}
 </div>
 <div class='form-field'>
 {!! Form::label('sourceStateMagnitude', "State Effect") !!}
@@ -30,8 +30,8 @@
 {!! Form::select('destinationInfluenceMagnitude', $magnitudes) !!}
 </div>
 <div class='form-field'>
-{!! Form::label('destinationState', "State Affected") !!}
-{!! Form::select('destinationState', $states) !!}
+{!! Form::label('destinationState_id', "State Affected") !!}
+{!! Form::select('destinationState_id', $states) !!}
 </div>
 <div class='form-field'>
 {!! Form::label('destinationStateMagnitude', "State Effect") !!}
