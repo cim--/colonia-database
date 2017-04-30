@@ -75,9 +75,9 @@ class Util {
     }
     public static function sign($sign) {
         if ($sign < 0) {
-            return "&#x2B6B;";
+            return "&#x2B07;";
         } else if ($sign > 0) {
-            return "&#x2B6A;";
+            return "&#x2B06;";
         }
         return "";
     }
