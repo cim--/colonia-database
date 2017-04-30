@@ -27,7 +27,7 @@
 </div>
 <div class='form-field'>
 {!! Form::label('destinationInfluenceMagnitude', "Influence Effect") !!}
-{!! Form::select('destinationInfluenceMagnitude', $positivemagnitudes) !!}
+{!! Form::select('destinationInfluenceMagnitude', $magnitudes) !!}
 </div>
 <div class='form-field'>
 {!! Form::label('destinationState', "State Affected") !!}
