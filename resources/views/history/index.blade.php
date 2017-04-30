@@ -4,7 +4,7 @@
 
 @section('content')
 
-<table class='table table-bordered datatable' data-order='[[0,"desc"]]'>
+<table class='table table-bordered datatable' data-page-length='50' data-order='[[0,"desc"]]'>
   <thead>
 	<tr><th>Date</th><th>Faction</th><th>Event</th><th>Location</th></tr>
   </thead>
