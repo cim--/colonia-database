@@ -4,6 +4,15 @@
 
 @section('content')
 
+<ul class='compact2'>
+  <li><strong>Dark blue cell</strong>: within 15 LY, mission target</li>
+  <li><strong>Light blue cell</strong>: within 30 LY, potential expansion</li>
+  <li><strong>White cell</strong>: further than 30 LY</li>
+  <li><strong>Bold red text</strong>: top-3 expansion target</li>
+  <li><strong>Bold green text</strong>: present in this system</li>
+  <li><strong>Bold black text</strong>: would be a top-3 target but already 'full'</li>
+</ul>
+	
 <table class='table table-bordered' id='distancegrid'>
   <thead>
 	<tr>
