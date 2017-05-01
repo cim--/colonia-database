@@ -34,6 +34,29 @@ class Faction extends Model
                     ->with('system', 'state', 'system.economy')
                     ->orderBy('influence', 'desc')->get();
     }
+
+    public function currentStates() {
+        $influences = $this->influences()->where('current', 1)
+                           ->with('state')->get();
+        $states = [];
+        $hold = null;
+        foreach ($influences as $influence) {
+            if ($influence->state->name != "None") {
+                if (!isset($states[$influence->state->id])) {
+                    $states[$influence->state->id] = $influence->state;
+                }
+            } else {
+                $hold = $influence->state;
+            }
+        }
+        if (count($states) > 0) {
+            return $states;
+        } else if ($hold) {
+            return [$hold]; // return "None" if it's the only one
+        } else {
+            return []; // fallback in case of bad data
+        }
+    }
     
     public function systems(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))

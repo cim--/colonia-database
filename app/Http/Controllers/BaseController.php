@@ -22,6 +22,9 @@ class BaseController extends Controller
             ->where('current', 1)
             ->get();
         $important = $influences->filter(function ($value, $key) {
+            if (!$value->system || !$value->system->inhabited()) {
+                return false; // safety for bad data
+            }
             $states = ['Boom', 'Investment', 'None'];
             // ignore uninteresting states
             if (in_array($value->state->name, $states)) {

@@ -15,6 +15,8 @@ Factions
 	<tr>
 	  <th>Name</th>
 	  <th>Government</th>
+      <th>Current States</th>
+	  <th>Pending States</th>
 	  <th>Player?</th>
 	</tr>
   </thead>
@@ -26,6 +28,8 @@ Factions
 		@include($faction->government->icon)
 		{{$faction->government->name}}
 	  </td>
+	  @include('factions.statecell', ['states' => $faction->currentStates()])
+	  @include('factions.statecell', ['states' => $faction->states])
       <td>
 		@if ($faction->player)
 		@include('layout/yes')

@@ -18,7 +18,7 @@ class FactionController extends Controller
      */
     public function index()
     {
-        $factions = Faction::with('government')->get();
+        $factions = Faction::with('government', 'states')->get();
         //
         return view('factions/index', [
             'factions' => $factions
