@@ -10,7 +10,7 @@ Mission Types
 <p><a class='edit' href='{{route('missions.create')}}'>New type</a></p>
 @endif
 
-<table class='table table-bordered datatable'>
+<table data-page-length='50' class='table table-bordered datatable'>
   <thead>
 	<tr>
 	  <th>Type</th>
