@@ -159,6 +159,15 @@ var CDBMap = function() {
 		}
 		return 1;
 	};
+
+	var LineWidth = function(link) {
+		if (link.cdb_distance <= 15) {
+			return 4;
+		} else if (link.cdb_distance <= 22.5) {
+			return 2;
+		}
+		return 1;
+	}
 	
 	var AddSystems = function() {
 		var sysobjs = [];
@@ -196,9 +205,15 @@ var CDBMap = function() {
 						cen2[2] + cen2[0]
 					];
 					if (s1data.population > 0 && s2data.population > 0) {
-						props.stroke = '#339933';
+						if (dist <= 15) {
+							props.stroke = '#44cc44';
+						} else if (dist <= 22.5) {
+							props.stroke = '#339933';
+						} else if (dist <= 30) {
+							props.stroke = '#116611';
+						}
 					} else {
-						props.stroke = '#002200';
+						props.stroke = '#223322';
 					}
 					if (dist <= 15) {
 						props.strokeWidth = 1;
@@ -207,6 +222,7 @@ var CDBMap = function() {
 					}
 
 					var link = new fabric.Line(coords, props);
+					link.cdb_distance = dist;
 					obj.systemlinks2[s1data.name][s2data.name] = link;
 					if (dist <= 15) {
 						obj.systemlinks1[s1data.name][s2data.name] = link;
@@ -359,7 +375,7 @@ var CDBMap = function() {
 						} else if (config.links.substr(0,2) == "S:") {
 							var sn = config.links.substr(2);
 							if (s1data.name == sn || s2data.name == sn) {
-								width = 1;
+								width = LineWidth(link);
 							}
 						}
 					}
