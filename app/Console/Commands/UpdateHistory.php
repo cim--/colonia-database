@@ -50,7 +50,8 @@ class UpdateHistory extends Command
             }
             $previous = $tick->copy()->subDay();
             
-            History::where('date', $tick->format("Y-m-d 00:00:00"))->delete();
+            History::where('date', $tick->format("Y-m-d 00:00:00"))
+                ->where('location_type', 'App\Models\System')->delete();
 
             $systems = System::where('population', '>', 0)->get();
             foreach ($systems as $system) {
