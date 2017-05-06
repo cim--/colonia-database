@@ -4,7 +4,7 @@
     
 @section('content')
 
-<p>You do not need to register to see any of the data stored in this system, only to participate in updating it. If you register, you will get access to update information on current influence levels, pending states, and traffic reports, once you have contacted Ian Doncaster on CCN to say you've signed up.</p>
+<p>You do not need to register to see any of the data stored in this system, only to participate in updating it. If you register, you will get access to update information on current influence levels, pending states, and traffic reports, once you have contacted Ian Doncaster on CCN to say you've signed up. You should also ask Jeeves to give you the <code>Census Officer</code> role to get access to the project channel.</p>
 
 <p>Updates to the information are designed to be easy to collect while going about your normal business in Colonia. If you dock in a system, check if it needs a traffic report update and take a minute to file it. If you're travelling in supercruise, updating the pending state reports for the system can be done while you fly. There is no minimum commitment required - every person who adds a single report saves everyone else effort.</p>
 

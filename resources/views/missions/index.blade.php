@@ -10,6 +10,8 @@ Mission Types
 <p><a class='edit' href='{{route('missions.create')}}'>New type</a></p>
 @endif
 
+<p>Missions which have an effect on destination factions which is generally considered negative are highlighted with @include('missions/danger'). Think carefully before accepting one.</p>
+
 <table data-page-length='50' class='table table-bordered datatable'>
   <thead>
 	<tr>
@@ -23,7 +25,13 @@ Mission Types
   </thead>
   <tbody>
 	@foreach ($missions as $mission)
-	<tr>
+	<tr
+    @if ($mission->hasDestination &&
+      (0 > $mission->destinationInfluenceMagnitude ||
+      0 > $mission->destinationState->sign * $mission->destinationStateMagnitude))
+	  class='mission-danger'
+	  @endif
+    >
       @if ($userrank > 1)
 	  <td><a href="{{route('missions.edit', $mission->id)}}">{{$mission->type}}</a></td>
 	  @else
@@ -43,11 +51,17 @@ Mission Types
 	  @if ($mission->hasDestination)
 	  <td data-sort="{{$mission->destinationInfluenceMagnitude}}">
 		{{App\Util::magnitude($mission->destinationInfluenceMagnitude)}}
+		@if (0 > $mission->destinationInfluenceMagnitude)
+		@include('missions/danger')
+		@endif
 	  </td>
 	  <td data-sort="{{$mission->destinationState->name}}">
 		@include($mission->destinationState->icon)
 		{{$mission->destinationState->name}}
 		{!! App\Util::sign($mission->destinationStateMagnitude) !!}
+		@if (0 > $mission->destinationState->sign * $mission->destinationStateMagnitude)
+		@include('missions/danger')
+		@endif
 	  </td>
 	  @else
 	  <td></td><td></td>

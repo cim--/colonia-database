@@ -1,0 +1,1 @@
+<span class='mission-danger-icon' title='Caution: negative effect'>&#x2762;</span>

@@ -30,6 +30,13 @@ class StateSeeder extends Seeder
             $obj = new App\Models\State;
             $obj->name = $state;
             $obj->icon = "icons/states/".strtolower($state);
+            if (in_array($state, ["Boom", "Expansion", "Investment"])) {
+                $state->sign = 1;
+            } else if (in_array($state, ["None", "War", "Election"])) {
+                $state->sign = 0;
+            } else {
+                $state->sign = -1;
+            }
             $obj->save();
         }
     }
