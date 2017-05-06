@@ -38,6 +38,8 @@ class FacilitySeeder extends Seeder
             "Rocky Rings",
             "Metal-Rich Rings",
             "Metallic Rings",
+            "Earthlike",
+            "Ammonia World"
         ];
         //
         foreach ($stationfacilities as $fac) {
