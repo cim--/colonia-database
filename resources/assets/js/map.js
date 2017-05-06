@@ -74,7 +74,7 @@ var CDBMap = function() {
 
 	var scaleFactor = 12;
 	var mapXSize = 600; // half-size
-	var mapYSize = 500; // radiuses
+	var mapYSize = 600; // radiuses
 	
 	var getCircle = function(sdata) {
 		var radius = 1;

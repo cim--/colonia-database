@@ -40,7 +40,7 @@
 </p>
 
 <div id='cdbmapcontainer'>
-  <canvas id='cdbmap' width='1200' height='1000'></canvas>
+  <canvas id='cdbmap' width='1200' height='1200'></canvas>
   <script type='text/javascript'>CDBMap.Init(
   [
   @foreach ($systems as $system)
