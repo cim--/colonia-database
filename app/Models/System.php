@@ -48,19 +48,7 @@ class System extends Model
     }
 
     public function coloniaCoordinates() {
-        // translate
-        $x = $this->x + 9530.5;
-        $cy = $this->y + 910.28125;
-        $z = $this->z - 19808.125;
-        // rotate
-        $theta = -1.0033;
-        $cx = ($x*cos($theta))+($z*sin($theta));
-        $cz = (-$x*sin($theta))+($z*cos($theta));
-        $coords = new \StdClass;
-        $coords->x = $cx;
-        $coords->y = $cy;
-        $coords->z = $cz;
-        return $coords;
+        return \App\Util::coloniaCoordinates($this);
     }
     
     public function distanceTo(System $other) {
@@ -115,8 +103,9 @@ class System extends Model
     }
 
     public function latestReport() {
-        $date = new Carbon($this->systemreports()->max('date'));
-        return $this->report($date);
+        return $this->systemreports()
+                    ->where('current', 1)
+                    ->first();
     }
 
     public function report(Carbon $date) {

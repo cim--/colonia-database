@@ -98,15 +98,23 @@
   <div class='col-sm-6'>
 	<h2>Key Figures</h2>
 	<ul>
-	  <li>{{$populated}} systems supporting {{number_format($population)}} people, with {{$unpopulated}} more currently planned.</li>
+      <li>Inhabited region is {{number_format($maxdist)}} LY in radius, with Colonia {{number_format($coldist)}} LY from the centre</li>
+	  <li>{{$populated}} systems supporting {{number_format($population)}}
+		@if ($unpopulated)
+		people, with {{$unpopulated}} more currently planned
+		@else
+		people
+		@endif</li>
 	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements)</li>
 	  <li>{{$factions->count()}} factions, of which {{$players}} came through the Colonia Expansion Initiative</li>
+	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
+	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
 	</ul>
   </div>
   <div class='col-sm-6'>
 	<h2>Find out more</h2>
 	<ul>
-	  <li><a href="{{route('stations.index')}}#cartographics">Where can I sell exploration data?</a></li>
+	  <li><a href="{{route('stations.index')}}#cartographics">Where can I sell exploration data</a> or <a href="{{route('stations.index')}}#shipyard">buy a new ship?</a></li>
 	  <li><a href="{{route('systems.index')}}#&quot;metallic ring&quot;">Where are the pristine metallic rings?</a></li>
       <li><a href="{{route('missions.index')}}">How do missions affect the situation?</a></li>
 	  <li><a href="{{route('factions.index')}}#Colonia">Which factions are named after Colonia?</a></li>

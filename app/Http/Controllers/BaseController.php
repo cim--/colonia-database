@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\System;
+use App\Models\Systemreport;
 use App\Models\Faction;
 use App\Models\Station;
 use App\Models\History;
@@ -66,6 +67,27 @@ class BaseController extends Controller
             $iconmap[$faction->government->name] = $faction->government->icon;
         }
         arsort($governments);
+
+        $avgcoordinates = \App\Util::coloniaCoordinates((object)[
+            'x' => System::where('population', '>', 0)->avg('x'),
+            'y' => System::where('population', '>', 0)->avg('y'),
+            'z' => System::where('population', '>', 0)->avg('z')
+        ]);
+        $maxdist = 0;
+        foreach ($systems as $system) {
+            if ($system->population > 0) {
+                $ccoords = $system->coloniaCoordinates();
+                $dist = \App\Util::distance($ccoords, $avgcoordinates);
+                if ($dist > $maxdist) {
+                    $maxdist = $dist;
+                }
+            }
+        }
+        $coldist = \App\Util::distance($avgcoordinates, (object)['x'=>0,'y'=>0,'z'=>0]);
+
+        $bounties = Systemreport::where('current', 1)->sum('bounties')/1000000;
+        $maxtraffic = Systemreport::where('current', 1)->max('traffic');
+        $mintraffic = Systemreport::where('current', 1)->min('traffic');
         
         return view('index', [
             'population' => $population,
@@ -81,7 +103,12 @@ class BaseController extends Controller
             'historys' => $history,
             'importants' => $important,
             'fakeglobals' => ['Retreat', 'Expansion'],
-            'iconmap' => $iconmap
+            'iconmap' => $iconmap,
+            'maxdist' => $maxdist,
+            'coldist' => $coldist,
+            'bounties' => $bounties,
+            'maxtraffic' => $maxtraffic,
+            'mintraffic' => $mintraffic,
         ]);
     }
 //

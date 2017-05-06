@@ -497,6 +497,10 @@ class SystemController extends Controller
         }
         
         $today = Carbon::now();
+
+        SystemReport::where('system_id', $system->id)
+            ->where('current', true)
+            ->update(['current' => false]);
         
         $report = Systemreport::firstOrNew([
             'date' => $today->format("Y-m-d 00:00:00"),
@@ -505,6 +509,7 @@ class SystemController extends Controller
         $report->traffic = (int)$traffic;
         $report->bounties = (int)$bounties;
         $report->crime = (int)$crime;
+        $report->current = 1;
         $report->save();
 
         \Log::info("Report update", [

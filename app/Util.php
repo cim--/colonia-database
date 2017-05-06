@@ -30,6 +30,7 @@ class Util {
         return $target;
     }
 
+    
     public static function age($date) {
         return (new Carbon($date))->diffInDays(Carbon::now());
     }
@@ -80,5 +81,29 @@ class Util {
             return "&#x2B06;";
         }
         return "";
+    }
+
+    public static function coloniaCoordinates($traditional) {
+        // translate
+        $x = $traditional->x + 9530.5;
+        $cy = $traditional->y + 910.28125;
+        $z = $traditional->z - 19808.125;
+        // rotate
+        $theta = -1.0033;
+        $cx = ($x*cos($theta))+($z*sin($theta));
+        $cz = (-$x*sin($theta))+($z*cos($theta));
+        $coords = new \StdClass;
+        $coords->x = $cx;
+        $coords->y = $cy;
+        $coords->z = $cz;
+        return $coords;
+    }
+
+    public static function distance($a, $b) {
+        return sqrt(
+            ($a->x - $b->x) * ($a->x - $b->x) +
+            ($a->y - $b->y) * ($a->y - $b->y) +
+            ($a->z - $b->z) * ($a->z - $b->z)
+        );
     }
 }
