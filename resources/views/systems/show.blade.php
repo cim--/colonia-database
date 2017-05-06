@@ -50,7 +50,7 @@
     </p>
 	@endif
 	<p>
-	  @foreach ($system->facilities as $facility)
+	  @foreach ($system->facilities->sortBy('name') as $facility)
 	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		@include ($facility->icon)
 		{{$facility->name}}@if (!$loop->last),@endif

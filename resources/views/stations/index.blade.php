@@ -45,7 +45,7 @@ Stations
 {{$facility->name}}
 @endforeach
 '>
-		@foreach ($station->facilities as $facility)
+		@foreach ($station->facilities->sortBy('name') as $facility)
 		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		  @include ($facility->icon)
 		  @if (!$facility->pivot->enabled)</span>@endif
@@ -57,7 +57,7 @@ Stations
 	  </td>
 	  <td data-search="{{$station->faction->government->name}} {{$station->faction->name}}">
 		@include($station->faction->government->icon)
-		{{$station->faction->name}}
+		<a href="{{route('factions.show', $station->faction->id)}}">{{$station->faction->name}}</a>
 	  </td>
 	  <td>
 		@if ($station->primary)

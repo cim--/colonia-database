@@ -35,7 +35,7 @@
   <tr>
 	<th>Facilities</th>
 	<td>
-	  @foreach ($station->facilities as $facility)
+	  @foreach ($station->facilities->sortBy('name') as $facility)
 	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 	  @include ($facility->icon)
 	  {{$facility->name}}
