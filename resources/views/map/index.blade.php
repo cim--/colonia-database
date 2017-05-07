@@ -11,6 +11,7 @@
 	<option>ZY</option>
   </select> ;
   <label for='mapctrllinks'>Links</label>: <select id='mapctrllinks'>
+	<option value='C:off'>Off</option>
 	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
 	<optgroup label='Expansions from'>
 	  @foreach ($systems as $system)
@@ -34,6 +35,7 @@
 	</optgroup>
   </select> ;
   <label for='mapctrlsize'>Size</label>: <select id='mapctrlsize'>
+	<option value='X'>Off</option>
 	<option selected='selected' value='P'>Population</option>
 	<option value='T'>Traffic</option>
 	<option value='C'>Crime</option>

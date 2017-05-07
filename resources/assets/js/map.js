@@ -78,7 +78,9 @@ var CDBMap = function() {
 	
 	var getCircle = function(sdata) {
 		var radius = 1;
-		if (sdata.population > 0) {
+		if (config.radius == "X") {
+			var radius = 3;
+		} else if (sdata.population > 0) {
 			if (config.radius == "P") {
 				var radius = 2+Math.ceil(Math.sqrt(sdata.population/1000));
 			} else if (config.radius == "T") {
@@ -284,7 +286,7 @@ var CDBMap = function() {
 			props.fill = '#cccccc';
 			props.fontSize = 10;
 			props.fontFamily = "Verdana";
-			var name = sdata.name.replace(/^Eol Prou [A-Z][A-Z]-[A-Z] /, "");
+			var name = sdata.name.replace(/^Eol Prou /, "");
 			var systemname = new fabric.Text(name, props);
 			obj.systemtexts[sdata.name] = systemname;
 			obj.canvas.add(systemname);
@@ -407,15 +409,17 @@ var CDBMap = function() {
 				if (obj.systemlinks2[s1data.name][s2data.name]) {
 					var link = obj.systemlinks2[s1data.name][s2data.name];
 					var width = 0;
-					if (IsFiltered(s1data, s2data)) {
-						if (config.links == 'C:mission') {
-							if (obj.systemlinks1[s1data.name][s2data.name]) {
-								width = 1;
-							}
-						} else if (config.links.substr(0,2) == "S:") {
-							var sn = config.links.substr(2);
-							if (s1data.name == sn || s2data.name == sn) {
-								width = LineWidth(link);
+					if (config.links != 'C:off') {
+						if (IsFiltered(s1data, s2data)) {
+							if (config.links == 'C:mission') {
+								if (obj.systemlinks1[s1data.name][s2data.name]) {
+									width = 1;
+								}
+							} else if (config.links.substr(0,2) == "S:") {
+								var sn = config.links.substr(2);
+								if (s1data.name == sn || s2data.name == sn) {
+									width = LineWidth(link);
+								}
 							}
 						}
 					}
