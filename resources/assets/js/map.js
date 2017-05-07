@@ -124,11 +124,43 @@ var CDBMap = function() {
 		return dist;
 	};
 
+	var DepthColour = function(dist) {
+		return "hsl("+(150+(2.5*dist))+", 80%, 50%)";
+		if (dist < -40) {
+			return "#ff0000";
+		} else if (dist < -20) {
+			return "#ff7700";
+		} else if (dist < -10) {
+			return "#ffff00";
+		} else if (dist < 0) {
+			return "#77ff00";
+		} else if (dist == 0) {
+			return "#00ff00";
+		} else if (dist < 10) {
+			return "#00ff77";
+		} else if (dist < 20) {
+			return "#00ffff";
+		} else if (dist < 40) {
+			return "#0077ff";
+		} else {
+			return "#0000ff";
+		}
+	};
+
 	var SystemColour = function(sdata) {
 		if (config.highlight == "C:phase") {
 			return phaseColors[sdata.phase];
 		} else if (config.highlight == "C:factions") {
 			return factionColors[sdata.factions.length];
+		} else if (config.highlight == "C:depth") {
+			if (config.projection.substr(0,2) == "XZ") {
+				return DepthColour(sdata.y);
+			} else if (config.projection.substr(0,2) == "XY") {
+				return DepthColour(-sdata.z);
+			} else if (config.projection.substr(0,2) == "ZY") {
+				return DepthColour(sdata.x);
+			}
+			
 		} else if (config.highlight.substr(0,2) == "F:") {
 			var faction = config.highlight.substr(2);
 			if (sdata.controlling == faction) {
@@ -276,6 +308,7 @@ var CDBMap = function() {
 
 	obj.setProjection = function(newp) {
 		reposition = true;
+		recolour = true;
 		config.projection = newp;
 		obj.Redraw();
 	}

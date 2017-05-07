@@ -21,6 +21,7 @@
   <label for='mapctrlcolour'>Colour</label>: <select id='mapctrlcolour'>
 	<option selected='selected' value='C:phase'>Settlement Phase</option>
 	<option selected='selected' value='C:factions'>Factions Present</option>
+	<option selected='selected' value='C:depth'>Depth</option>
 	<optgroup label='Factions'>
 	  @foreach ($factions as $faction)
 	  <option value='F:{{$faction->name}}'>{{$faction->name}}</option>
