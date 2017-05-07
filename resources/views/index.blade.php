@@ -121,9 +121,8 @@
 	<ul>
 	  <li><a href="{{route('stations.index')}}#cartographics">Where can I sell exploration data</a> or <a href="{{route('stations.index')}}#shipyard">buy a new ship?</a></li>
 	  <li><a href="{{route('systems.index')}}#&quot;metallic ring&quot;">Where are the pristine metallic rings?</a></li>
-      <li><a href="{{route('missions.index')}}">How do missions affect the situation?</a></li>
 	  <li><a href="{{route('factions.index')}}#Colonia">Which factions are named after Colonia?</a></li>
-	  <li><a href="{{route('systems.index')}}#compromised">Whose nav beacons have been compromised?</a></li>
+	  <li><a href="{{route('missions.index')}}#lockdown">Which missions affect Lockdown?</a></li>
 	  <li><a href="{{route('stations.index')}}#anarchy">Which stations are controlled by criminals?</a></li>
 	  <li><a href="{{route('map')}}#XZ~F:Jaques~S:Colonia~P~1">Where are the best drinks?</a></li>
 	</ul>

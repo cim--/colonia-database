@@ -61,5 +61,10 @@ Route::get('/map', [
     'uses' => 'MapController@index'
 ]);
 
+Route::get('/reports', [
+    'as' => 'reports',
+    'uses' => 'ReportController@index'
+]);
+
 
 
