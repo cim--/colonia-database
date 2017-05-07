@@ -26,6 +26,11 @@
 	  <option value='F:{{$faction->name}}'>{{$faction->name}}</option>
 	  @endforeach
 	</optgroup>
+	<optgroup label='Locations'>
+	  @foreach ($facilities as $facility)
+	  <option value='L:{{$facility->name}}'>{{$facility->name}}</option>
+	  @endforeach
+	</optgroup>
   </select> ;
   <label for='mapctrlsize'>Size</label>: <select id='mapctrlsize'>
 	<option selected='selected' value='P'>Population</option>
@@ -63,7 +68,7 @@
 	'bounties' : 0,
 	'crime' : 0,
 	@endif
-	
+	'facilities' : [{!! $system->facilities->map(function($x) { return '"'.$x->name.'"'; })->implode(",") !!}],
 
 	'phase' : {{$system->phase->sequence}}
   }

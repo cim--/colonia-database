@@ -20,7 +20,7 @@
 	<p><span class='system-property'>Population</span>: {{$system->population}}</p>
 	<div class='row'>
 	  <div class='col-sm-6'>
-		@if ($report)
+		@if ($report && $report->system_id == $system->id)
 		<p><span class='system-property'>Traffic Report</span>: {{$report->traffic}}</p>
 		<p><span class='system-property'>Crime Report</span>: {{number_format($report->crime)}}</p>
 		<p><span class='system-property'>Bounty Report</span>: {{number_format($report->bounties)}}</p>

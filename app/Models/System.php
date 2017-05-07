@@ -103,9 +103,18 @@ class System extends Model
     }
 
     public function latestReport() {
-        return $this->systemreports()
-                    ->where('current', 1)
-                    ->first();
+        $report = $this->systemreports()
+                       ->where('current', 1)
+                       ->first();
+        if ($report) {
+            return $report;
+        }
+        $fake = new Systemreport;
+        $fake->traffic = 0;
+        $fake->crime = 0;
+        $fake->bounties = 0;
+        return $fake;
+        
     }
 
     public function report(Carbon $date) {

@@ -144,6 +144,13 @@ var CDBMap = function() {
 			} else {
 				return "#444444";
 			}
+		} else if (config.highlight.substr(0,2) == "L:") {
+			var facility = config.highlight.substr(2);
+			if (sdata.facilities.indexOf(facility) > -1) {
+				return "#AAAA00";
+			} else {
+				return "#444444";
+			}
 		}
 		return "#777777"; // unrecognised highlight
 	};
