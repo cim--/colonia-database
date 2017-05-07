@@ -13,6 +13,11 @@
 	  {{$important->faction->name}}
 	</a>
 	in
+    @if ($important->state->name == "War" || $important->state->name == "Election")
+	@if ($important->system->controllingFaction()->id == $important->faction->id)
+	<strong>control</strong>
+	@endif
+	@endif
 	@include($important->state->icon)
 	{{$important->state->name}}
 	@if (!in_array($important->state->name, $fakeglobals))
