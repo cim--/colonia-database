@@ -11,6 +11,7 @@
   <li><strong>Bold red text</strong>: top-3 expansion target</li>
   <li><strong>Bold green text</strong>: present in this system</li>
   <li><strong>Bold black text</strong>: would be a top-3 target but already 'full'</li>
+  <li><strong>Bold magenta text</strong>: would be a top-3 target but not yet inhabited</li>
 </ul>
 	
 <table class='table table-bordered' id='distancegrid'>

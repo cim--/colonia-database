@@ -91,6 +91,7 @@ var CDBMap = function() {
 				var radius = 1+Math.ceil(Math.log10(sdata.bounties+1));
 			} 
 		}
+		radius = Math.ceil(radius);
 		var projection = [0,0,0];
 		if (config.projection.substr(0,2) == "XZ") {
 			projection = [
@@ -112,8 +113,8 @@ var CDBMap = function() {
 			];
 		}
 
-		projection[1] += mapXSize - radius;
-		projection[2] += mapYSize - radius;
+		projection[1] = Math.floor(projection[1] + mapXSize - radius);
+		projection[2] = Math.floor(projection[2] + mapYSize - radius);
 		return projection;
 	};
 
