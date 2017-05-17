@@ -50,7 +50,7 @@ class Util {
             "None" => "#000000",
             "Boom" => "#006060",
             "Bust" => "#000060",
-            "Civilunrest" => "#005000",
+            "Civil Unrest" => "#005000",
             "Lockdown" => "#405000",
             "War" => "#703000",
             "Election" => "#503030",

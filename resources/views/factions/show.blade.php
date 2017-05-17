@@ -47,7 +47,7 @@
 	  </thead>
 	  <tbody>
 		@foreach ($systems as $system)
-		@if ($system->system->inhabited())
+		@if ($system->system && $system->system->inhabited())
 		<tr class='
 			@if ($system->system->controllingFaction()->id == $faction->id)
 		  controlled-system
