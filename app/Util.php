@@ -36,6 +36,9 @@ class Util {
     }
     
     public static function displayDate($date) {
+        if (!$date) {
+            return "";
+        }
         return $date->format("j F ").(1286+$date->format("Y"));
     }
     public static function graphDisplayDate($date) {
