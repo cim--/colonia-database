@@ -75,6 +75,14 @@ var CDBMap = function() {
 	var scaleFactor = 12;
 	var mapXSize = 600; // half-size
 	var mapYSize = 600; // radiuses
+
+	var bountyRadius = function(bounty) {
+		if (bounty < 1E6) {
+			return 1 + Math.log10(bounty+1);
+		} else {
+			return 7 + 4*Math.log(bounty/1E6);
+		}
+	}
 	
 	var getCircle = function(sdata) {
 		var radius = 1;
@@ -86,9 +94,9 @@ var CDBMap = function() {
 			} else if (config.radius == "T") {
 				var radius = 1+Math.ceil(Math.sqrt(sdata.traffic));
 			} else if (config.radius == "C") {
-				var radius = 1+Math.ceil(Math.log10(sdata.crime+1));
+				var radius = bountyRadius(sdata.crime);
 			} else if (config.radius == "B") {
-				var radius = 1+Math.ceil(Math.log10(sdata.bounties+1));
+				var radius = bountyRadius(sdata.bounties);
 			} 
 		}
 		radius = Math.ceil(radius);
