@@ -76,6 +76,7 @@ class UpdateHistory extends Command
                         $history->faction_id = $faction->id;
                         $history->date = $tick;
                         $history->expansion = true;
+                        $history->description = 'expanded to';
                         $history->save();
                     }
                 }
@@ -91,6 +92,7 @@ class UpdateHistory extends Command
                         $history->faction_id = $faction->id;
                         $history->date = $tick;
                         $history->expansion = false;
+                        $history->description = 'retreated from';
                         $history->save();
                     }
                 }

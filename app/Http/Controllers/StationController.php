@@ -114,6 +114,7 @@ class StationController extends Controller
             $loss->faction_id = $oldfaction;
             $loss->date = $tick;
             $loss->expansion = false;
+            $loss->description = 'lost control of';
             $loss->save();
 
             $gain = new History;
@@ -122,6 +123,7 @@ class StationController extends Controller
             $gain->faction_id = $station->faction_id;
             $gain->date = $tick;
             $gain->expansion = true;
+            $gain->description = 'took control of';
             $gain->save();
         }
         

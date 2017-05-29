@@ -18,14 +18,10 @@
 		  {{$history->faction->name}}
 		</a>
 	  </td>
-	  @if ($history->location_type == 'App\Models\System')
 	  <td>
-		@if ($history->expansion)
-		expanded to
-		@else
-		retreated from
-		@endif
+		{{$history->description}}
 	  </td>
+	  @if ($history->location_type == 'App\Models\System')
 	  <td>
 		@include($history->location->economy->icon)
 		<a href='{{route('systems.show', $history->location->id)}}'>
@@ -33,13 +29,6 @@
 		</a>
 	  </td>
 	  @elseif ($history->location_type == 'App\Models\Station')
-	  <td>
-		@if ($history->expansion)
-		took control of
-		@else
-		lost control of
-		@endif
-	  </td>
 	  <td>
 		@include($history->location->economy->icon)
 		<a href='{{route('stations.show', $history->location->id)}}'>
