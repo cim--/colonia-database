@@ -18,7 +18,11 @@ Route::get('/', 'BaseController@index')->name('index');
 Route::get('/progress', 'BaseController@progress')->name('progress');
 
 Route::get('/distances', 'DistancesController@index')->name('distances');
+
+
 Route::get('/history', 'HistoryController@index')->name('history');
+Route::get('/history/create', 'HistoryController@create')->name('history.create');
+Route::post('/history', 'HistoryController@store')->name('history.store');
 
 Route::resource('systems', 'SystemController');
 Route::get('/systems/{system}/history', [
