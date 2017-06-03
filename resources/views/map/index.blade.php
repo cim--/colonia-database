@@ -4,6 +4,28 @@
 
 @section('content')
 
+<div id='mapkeys'>
+  <div id='mapkeysphase'>
+	<strong>Settlement phase</strong>: CEI systems green to purple
+	(older to newer); other systems red to yellow (older to newer)
+  </div>
+  <div id='mapkeyspresent'>
+	<strong>Factions present</strong>: grey empty; green to orange
+	increasingly populated; red overpopulated
+  </div>
+  <div id='mapkeysdepth'>
+	<strong>Depth</strong>: blue closer to viewer, green level with
+	Colonia, red further away
+  </div>
+  <div id='mapkeysfaction'>
+	<strong>Specific faction</strong>: red controls; yellow present;
+	green other populated; blue other populated (7 others); grey
+	uninhabited
+  </div>
+  <div id='mapkeyslocation'>
+	<strong>Location type</strong>: yellow yes, grey no
+  </div>
+</div>
 <p>
   <label for='mapctrlprojection'>Projection</label>: <select id='mapctrlprojection'>
 	<option selected='selected'>XZ</option>

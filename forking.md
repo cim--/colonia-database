@@ -19,3 +19,9 @@ necessary.
 If you try it and find other things - there will be some! - feel free
 to put a pull request on this file with your notes.
 
+## Useful links
+
+* Laravel: https://laravel.com/
+* Chart.js: http://www.chartjs.org/
+* Fabric: http://fabricjs.com/
+* Datatables: https://datatables.net/

@@ -37,7 +37,7 @@ var CDBMap = function() {
 
 	obj.SetSelectors = function() {
 		$('#mapctrlprojection').val(config.projection);
-		$('#mapctrlcolour').val(config.highlight);
+		$('#mapctrlcolour').val(config.highlight).change();
 		$('#mapctrllinks').val(config.links);
 		$('#mapctrlsize').val(config.radius);
 		$('#mapctrlfilter').val(config.filter);
@@ -464,7 +464,23 @@ $(document).ready(function() {
 	});
 
 	$('#mapctrlcolour').change(function() {
-		CDBMap.setHighlight($(this).val());
+		var val = $(this).val();
+		CDBMap.setHighlight(val);
+		
+		$('#mapkeys div').hide();
+		if (val == "C:phase") {
+			$('#mapkeysphase').show();
+		} else if (val == "C:factions") {
+			$('#mapkeyspresent').show();
+		} else if (val == "C:depth") {
+			$('#mapkeysdepth').show();
+		} else if (val.substr(0,1) == "F") {
+			$('#mapkeysfaction').show();
+		} else if (val.substr(0,1) == "L") {
+			$('#mapkeyslocation').show();
+		}
+		
+
 	});
 
 	$('#mapctrlsize').change(function() {
@@ -479,7 +495,6 @@ $(document).ready(function() {
 		CDBMap.setFilter($(this).val());
 	});
 
-	if (location.hash) {
-		CDBMap.SetSelectors();
-	}
+	CDBMap.SetSelectors();
+
 });
