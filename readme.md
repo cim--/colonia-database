@@ -14,7 +14,16 @@ region.
 
 Point your web document root at the /public/ folder.
 
-Set cron to run `php artisan cdb:history` at least daily.
+Add TICK_TIME=XX (where XX is the UTC hour) to the .env file
+
+### Update Scripts
+
+Set cron to run `php artisan cdb:history` at least daily (not at the same time as the tick). This will keep track of expansions and retreats automatically in the history
+
+To read data from EDDN, run `php artisan cdb:eddnreader`. This will
+bring in influence data automatically from EDDN. Pending states and
+traffic/crime levels cannot currently be obtained this way as they are
+not in the ED Journal.
 
 ## License
 
