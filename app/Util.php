@@ -30,6 +30,10 @@ class Util {
         return $target;
     }
 
+    public static function nearTick() {
+        // was the expected tick less than an hour ago?
+        return (date("H") == env("TICK_TIME",15));
+    }
     
     public static function age($date) {
         return (new Carbon($date))->diffInDays(Carbon::now());
