@@ -83,7 +83,7 @@ class EDDNReader extends Command
                 $system = System::where('name', $event['message']['StarSystem'])
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();
-                if ($system) {
+                if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
                     $this->line("Incoming event for ".$system->displayName());
                     $factions = $event['message']['Factions'];
                     $influences = [];
@@ -95,6 +95,10 @@ class EDDNReader extends Command
                             return;
                         }
                         $inf = round($faction['Influence'], 3)*100;
+                        if ($faction['FactionState'] == "CivilUnrest") {
+                            // to our name
+                            $faction['FactionState'] == "Civil Unrest";
+                        }
                         $state = State::where('name', $faction['FactionState'])->first();
                         if (!$state) {
                             \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
