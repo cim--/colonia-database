@@ -45,4 +45,6 @@
   </tbody>
 </table>
 
+<p>'Faction' refers to the faction controlling the location at the time of the event, and does not imply intent.</p>
+
 @endsection
