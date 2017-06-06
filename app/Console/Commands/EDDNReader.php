@@ -97,7 +97,7 @@ class EDDNReader extends Command
                         $inf = round($faction['Influence'], 3)*100;
                         if ($faction['FactionState'] == "CivilUnrest") {
                             // to our name
-                            $faction['FactionState'] == "Civil Unrest";
+                            $faction['FactionState'] = "Civil Unrest";
                         }
                         $state = State::where('name', $faction['FactionState'])->first();
                         if (!$state) {
@@ -126,19 +126,18 @@ class EDDNReader extends Command
             return; // already have data for this tick
         }
 
-        if (\App\Util::nearTick()) {
-            $latest = Influence::where('system_id', $system->id)
-                ->where('faction_id', $influences[0]['faction']->id)
-                ->where('current', 1)
-                ->first();
-            if(abs($latest->influence - $influences[0]['influence']) <= 0.2) {
-                // data is too close to existing data, may be stale
-                // usort() in process() above ensures we're looking at
-                // the largest one which is most likely to change anyway
-                $this->error("Data looks stale - skipping");
-                return; 
-            }
+        $latest = Influence::where('system_id', $system->id)
+            ->where('faction_id', $influences[0]['faction']->id)
+            ->where('current', 1)
+            ->first();
+        if(abs($latest->influence - $influences[0]['influence']) <= 0.2) {
+            // data is too close to existing data, may be stale
+            // usort() in process() above ensures we're looking at
+            // the largest one which is most likely to change anyway
+            $this->error("Data looks stale - skipping");
+            return; 
         }
+
         
         \DB::transaction(function() use ($system, $influences, $target) {
             Influence::where('system_id', $system->id)
