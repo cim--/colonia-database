@@ -99,6 +99,10 @@ class EDDNReader extends Command
                             // to our name
                             $faction['FactionState'] = "Civil Unrest";
                         }
+                        if ($faction['FactionState'] == "CivilWar") {
+                            // don't distinguish (yet)
+                            $faction['FactionState'] = "War";
+                        }
                         $state = State::where('name', $faction['FactionState'])->first();
                         if (!$state) {
                             \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
@@ -130,14 +134,16 @@ class EDDNReader extends Command
             ->where('faction_id', $influences[0]['faction']->id)
             ->where('current', 1)
             ->first();
-        if(abs($latest->influence - $influences[0]['influence']) <= 0.2) {
-            // data is too close to existing data, may be stale
-            // usort() in process() above ensures we're looking at
-            // the largest one which is most likely to change anyway
-            $this->error("Data looks stale - skipping");
-            return; 
+        if ($latest) {
+            // if not, then new system being read
+            if(abs($latest->influence - $influences[0]['influence']) <= 0.2) {
+                // data is too close to existing data, may be stale
+                // usort() in process() above ensures we're looking at
+                // the largest one which is most likely to change anyway
+                $this->error("Data looks stale - skipping");
+                return; 
+            }
         }
-
         
         \DB::transaction(function() use ($system, $influences, $target) {
             Influence::where('system_id', $system->id)
