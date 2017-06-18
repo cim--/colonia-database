@@ -123,7 +123,8 @@
 	  <li><a href="{{route('systems.index')}}#&quot;metallic ring&quot;">Where are the pristine metallic rings?</a></li>
 	  <li><a href="{{route('factions.index')}}#Colonia">Which factions are named after Colonia?</a></li>
 	  <li><a href="{{route('missions.index')}}#lockdown">Which missions affect Lockdown?</a></li>
-	  <li><a href="{{route('stations.index')}}#anarchy">Which stations are controlled by criminals?</a></li>
+      <li><a href="{{route('history')}}#founded">When were the systems founded?</a></li>
+	  <li><a href="{{route('reports')}}?type=traffic">Which are the busiest systems?</a></li>
 	  <li><a href="{{route('map')}}#XZ~F:Jaques~S:Colonia~P~1">Where are the best drinks?</a></li>
 	</ul>
   </div>

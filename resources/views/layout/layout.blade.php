@@ -30,7 +30,7 @@
       <footer>
 		@include('layout/navbar')
 		<p>
-		  To discuss this information, volunteer to help collect it, or suggest site improvements, use the #colonia-bgs channel on <a href="https://eliteccn.com/welcome/join-ccn/">the CCN Discord</a>, or contact Ian Doncaster
+		  To discuss this information, volunteer to help collect it, or suggest site improvements, join the <a href="https://discord.gg/fE49mGw">Colonia Census Discord</a>, or contact Ian Doncaster
 		</p>
 		<p>
 		  The database is open source software under the GNU GPL version 3 - <a href='https://github.com/cim--/colonia-database'>source available on Github</a> - <a href='/cdb.sql'>daily database backup</a>

@@ -94,7 +94,7 @@ class BaseController extends Controller
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
-            'players' => $factions->filter(function($v) { return $v->player; })->count(),
+            'players' => $factions->filter(function($v) { return $v->player; })->count() - 1, // -1 as one is player but not CEI
             'economies' => $economies,
             'governments' => $governments,
             'systems' => $systems,
