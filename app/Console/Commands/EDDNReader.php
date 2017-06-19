@@ -136,7 +136,7 @@ class EDDNReader extends Command
             ->first();
         if ($latest) {
             // if not, then new system being read
-            if(abs($latest->influence - $influences[0]['influence']) <= 0.2) {
+            if(abs($latest->influence - $influences[0]['influence']) < 0.1) {
                 // data is too close to existing data, may be stale
                 // usort() in process() above ensures we're looking at
                 // the largest one which is most likely to change anyway
