@@ -95,21 +95,18 @@ class EDDNReader extends Command
                             return;
                         }
                         $inf = round($faction['Influence'], 3)*100;
-                        if ($faction['FactionState'] == "CivilUnrest") {
-                            // to our name
-                            $faction['FactionState'] = "Civil Unrest";
-                        }
-                        if ($faction['FactionState'] == "CivilWar") {
-                            // don't distinguish (yet)
-                            $faction['FactionState'] = "War";
-                        }
+                        $faction['FactionState'] = $this->renameState($faction['FactionState']);
                         $state = State::where('name', $faction['FactionState'])->first();
                         if (!$state) {
                             \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
                             $this->error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
                             return;
                         }
-                        $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state];
+                        $pending = [];
+                        if (isset($faction['PendingStates'])) {
+                            $pending = $faction['PendingStates'];
+                        }
+                        $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
                     }
                     usort($influences, function($a, $b) {
                         return $b['influence'] - $a['influence'];
@@ -118,6 +115,17 @@ class EDDNReader extends Command
                 }
             }
         }
+    }
+
+    private function renameState($state) {
+        if ($state == "CivilUnrest") {
+            // to our name
+            return "Civil Unrest";
+        }
+        if ($state == "CivilWar") {
+            return "War";
+        }
+        return $state;
     }
 
     private function updateInfluences($system, $influences) {
@@ -165,6 +173,72 @@ class EDDNReader extends Command
                 'user' => "EDDN Feed"
             ]);
             $this->info("Updated influence for ".$system->displayName());
+
+            foreach ($influences as $influence) {
+                $this->updatePendingStates($influence['faction'], $influence['pending']);
+            }
         });
+    }
+
+    private function updatePendingStates($faction, $pending) {
+        $states = [];
+        $haswar = false;
+        $haselection = false;
+        foreach ($pending as $entry) {
+            $statename = $this->renameState($entry['State']);
+            $state = State::where('name', $statename)->first();
+            if (!$state) {
+                $this->error("Unrecognised pending state $statename");
+                return;
+            }
+            if ($statename == "War") {
+                $haswar = true;
+            }
+            if ($statename == "Election") {
+                $haselection = true;
+            }
+            $states[] = $state;
+        }
+        if (!$haswar) {
+            $war = $faction->states()->where('name', 'War')->first();
+            if ($war) {
+                // war is currently in the pending states but not here
+                // might still be pending elsewhere unless it's current elsewhere
+                $currentwar = $faction->influences()->where('current', 1)
+                                      ->where('state_id', $war->id)->first();
+                if (!$currentwar) {
+                    // war pending but not active, add back to pending states
+                    $states[] = $war;
+                }
+            }
+        }
+        if (!$haselection) {
+            $election = $faction->states()->where('name', 'Election')->first();
+            if ($election) {
+                // election is currently in the pending states but not here
+                // might still be pending elsewhere unless it's current elsewhere
+                $currentelection = $faction->influences()->where('current', 1)
+                                           ->where('state_id', $election->id)->first();
+                if (!$currentelection) {
+                    // election pending but not active, add back to pending states
+                    $states[] = $election;
+                }
+            }
+        }
+
+        if (count($states) == 0) {
+            // no pending states
+            $states[] = State::where('name', 'None')->first();
+        }
+
+        $tick = \App\Util::tick();
+        $sync = [];
+        foreach ($states as $state) {
+            $sync[$state->id] = ['date' => $tick->format('Y-m-d 00:00:00')];
+        }
+        
+        $faction->states()->sync($sync);
+        
+        $this->info("Updated pending states for ".$faction->name);
     }
 }
