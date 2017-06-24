@@ -57,6 +57,10 @@ Stations
 	  </td>
 	  <td data-search="{{$station->faction->government->name}} {{$station->faction->name}}">
 		@include($station->faction->government->icon)
+		@if ($station->faction->currentState($station->system))
+		@include ($station->faction->currentState($station->system)->icon)
+		@endif
+
 		<a href="{{route('factions.show', $station->faction->id)}}">{{$station->faction->name}}</a>
 	  </td>
 	  <td>

@@ -37,7 +37,12 @@ Systems
 		@include($system->controllingFaction()->government->icon)
 		{{$system->controllingFaction()->government->name}}
 	  </td>
-	  <td><a href="{{route('factions.show', $system->controllingFaction()->id)}}">{{$system->controllingFaction()->name}}</a></td>
+	  <td>
+		@if ($system->controllingFaction()->currentState($system))
+		@include ($system->controllingFaction()->currentState($system)->icon)
+		@endif
+		<a href="{{route('factions.show', $system->controllingFaction()->id)}}">{{$system->controllingFaction()->name}}</a>
+	  </td>
 	  @else
 	  <td>0</td>
 	  <td></td>

@@ -35,6 +35,17 @@ class Faction extends Model
                     ->orderBy('influence', 'desc')->get();
     }
 
+    public function currentState(System $system) {
+        $influence = $this->influences()->where('current', 1)
+                          ->where('system_id', $system->id)
+                          ->with('state')->first();
+        if ($influence === null) {
+            return null;
+        } else {
+            return $influence->state;
+        }
+    }
+    
     public function currentStates() {
         $influences = $this->influences()->where('current', 1)
                            ->with('state')->get();
