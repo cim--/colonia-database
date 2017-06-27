@@ -56,7 +56,8 @@ var CDBMap = function() {
 		'#77ffff', // CEI 3
 		'#ffdd77', // CCS 2
 		'#77ddff', // CEI 4
-		'#7777ff',
+		'#ffff77', // CCS 3
+		'#7777ff', // CEI 5
 		'#aa77ff', // CEI 6
 	];
 
