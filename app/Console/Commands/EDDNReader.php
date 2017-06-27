@@ -135,7 +135,15 @@ class EDDNReader extends Command
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->count();
         if ($exists > 0) {
-            return; // already have data for this tick
+            // already have data for this tick
+            // but it might have been manually entered so
+            // there might be pending states still to get
+            \DB::transaction(function() use ($influences) {
+                foreach ($influences as $influence) {
+                    $this->updatePendingStates($influence['faction'], $influence['pending']);
+                }
+            });
+            return;
         }
 
         $latest = Influence::where('system_id', $system->id)
