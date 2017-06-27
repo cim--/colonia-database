@@ -10,11 +10,10 @@
 	<div class='col-sm-1'><a href="{{route('stations.index')}}">Stations</a></div>
     <div class='col-sm-1'><a href="{{route('missions.index')}}">Missions</a></div>
     <div class='col-sm-1'></div>
-	@if (Auth::user())
 	<div class='col-sm-1'><a href="{{route('progress')}}">Update Progress</a></div>
+	@if (Auth::user())
 	<div class='col-sm-1'><a href="{{route('logout')}}">Logout</a></div>
 	@else
-    <div class='col-sm-1'></div>
 	<div class='col-sm-1'><a href="{{route('login')}}">Login</a></div>
 	@endif
   </div>

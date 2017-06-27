@@ -114,13 +114,14 @@ class BaseController extends Controller
 //
     public function progress() {
         $user = \Auth::user();
+        /*          // now allows anonymous read-only access
         if (!$user) {
             \App::abort(403);
         }
 
         if ($user->rank == 0) {
             return view('progressno');
-        }
+            } */
 
         $today = Carbon::now();
         $target = \App\Util::tick();
@@ -148,7 +149,7 @@ class BaseController extends Controller
         return view('progress', [
             'target' => $target,
             'today' => $today,
-            'userrank' => $user->rank, // TODO: Composer
+            'userrank' => $user ? $user->rank : 0, // TODO: Composer
             'influenceupdate' => $influenceupdate,
             'reportsupdate' => $reportsupdate,
             'pendingupdate' => $pendingupdate,
