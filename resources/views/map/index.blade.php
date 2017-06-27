@@ -75,7 +75,7 @@
   [
   @foreach ($systems as $system)
   {
-	'name' : "{{$system->displayName()}}",
+	'name' : "{!! $system->displayName() !!}",
 	'x' : {{$system->coloniaCoordinates()->x}},
 	'y' : {{$system->coloniaCoordinates()->y}},
 	'z' : {{$system->coloniaCoordinates()->z}},
