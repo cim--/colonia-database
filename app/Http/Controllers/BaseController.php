@@ -150,8 +150,8 @@ class BaseController extends Controller
             'target' => $target,
             'today' => $today,
             'userrank' => $user ? $user->rank : 0, // TODO: Composer
-            'influenceupdate' => $influenceupdate,
-            'reportsupdate' => $reportsupdate,
+            'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
+            'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
             'pendingupdate' => $pendingupdate,
         ]);
     }

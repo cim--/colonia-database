@@ -28,7 +28,7 @@ class HistoryController extends Controller
         }
         
         $factions = Faction::orderBy('name')->get();
-        $systems = System::orderBy('catalogue')->where('population', '>', 0)->get();
+        $systems = System::orderBy('catalogue')->where('population', '>', 0)->get()->sort('\App\Util::systemSort');
         $stations = Station::orderBy('name')->get();
 
         return view('history/create', [

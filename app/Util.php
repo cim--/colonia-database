@@ -113,4 +113,8 @@ class Util {
             ($a->z - $b->z) * ($a->z - $b->z)
         );
     }
+
+    public static function systemSort($a, $b) {
+        return strcmp($a->displayName(), $b->displayName());
+    }
 }
