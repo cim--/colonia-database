@@ -79,7 +79,10 @@ class EDDNReader extends Command
     {
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1") {
             if ($event['message']['event'] == "FSDJump") {
-
+                if ($event['message']['StarPos'][2] < 10000) {
+                    // don't process Ogma and Ratri in the Sol bubble
+                    return;
+                }
                 $system = System::where('name', $event['message']['StarSystem'])
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();

@@ -7,6 +7,7 @@ necessary.
 
 * References to Colonia throughout the views will need changing
 * The `coloniaCoordinates` function in `app/Util.php` will need updating to translate to your 'home' coordinates instead.
+* The requirement for Z-coordinates to be > 10000 before EDDNReader will process an event will need removing.
 * You may need to change the map `scaleFactor` in `resources/assets/js/map.js`
 * A lot of the front page will need re-making
 * Several things will need adding to the database seeders (e.g. there are economy, government, station class, system facility etc. entries which are not included because they're not at Colonia) - some of these will need new icons, CSS classes, and colour schemes
