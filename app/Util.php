@@ -34,6 +34,23 @@ class Util {
         // was the expected tick less than an hour ago?
         return (date("H") == env("TICK_TIME",15));
     }
+
+    public static function fairlyNearTick() {
+        // was the expected tick less than four hours ago?
+        $tick = env("TICK_TIME",15);
+        if ($tick <= 20) {
+            return (
+                date("H") >= $tick &&
+                date("H") < $tick + 4
+            );
+        } else {
+            return (
+                date("H") >= $tick ||
+                date("H") < $tick - 20
+            );
+        }
+    }
+
     
     public static function age($date) {
         return (new Carbon($date))->diffInDays(Carbon::now());

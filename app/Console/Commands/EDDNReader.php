@@ -159,8 +159,12 @@ class EDDNReader extends Command
                 // data is too close to existing data, may be stale
                 // usort() in process() above ensures we're looking at
                 // the largest one which is most likely to change anyway
-                $this->error("Data looks stale - skipping");
-                return; 
+                if (\App\Util::fairlyNearTick()) {
+                    $this->error("Data looks stale - skipping");
+                    return;
+                } else {
+                    $this->info("Data unchanged - processing after 4 hours");
+                }
             }
         }
         
