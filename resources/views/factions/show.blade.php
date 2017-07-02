@@ -41,7 +41,7 @@
   <div class='col-sm-6'>
 	<h2>Systems</h2>
 	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
-	<table class='table table-bordered datatable'>
+	<table class='table table-bordered datatable' data-page-length='25'>
 	  <thead>
 		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
 	  </thead>
