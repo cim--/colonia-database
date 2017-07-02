@@ -23,7 +23,7 @@ visible change.</p>
 @if($userrank > 0)
 <p>The following systems do not have influence updates on todays tick. Please ensure before starting that the tick is complete. Collect influence data from the system map only for accuracy - this does not require you to be in the system.</p>
 @endif
-<p>You can update this data without needing to log in by entering the system while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI). Systems where the influence has not changed since yesterday cannot be updated by this route.</p>
+<p>You can update this data without needing to log in by entering the system while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI). Systems where the influence has not changed since yesterday cannot be updated by this route until at least four hours have passed since the tick.</p>
 <ul class='compact'>
   @foreach ($influenceupdate as $system)
   <li>
