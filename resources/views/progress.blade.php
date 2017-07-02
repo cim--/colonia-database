@@ -30,7 +30,7 @@ visible change.</p>
 	@if($userrank > 0)
 	<a href="{{route('systems.edit',$system->id)}}">{{$system->displayName()}}</a>
 	@else
-	{{$system->displayName()}}
+	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
 	@include('progressage', ['date' => \App\Util::age($system->influences()->max('date'))])
   </li>
@@ -53,7 +53,7 @@ visible change.</p>
 	@if($userrank > 0)
 	<a href="{{route('factions.edit',$faction->id)}}">{{$faction->name}}</a>
 	@else
-	{{$faction->name}}
+	<a href="{{route('factions.show',$faction->id)}}">{{$faction->name}}</a>
 	@endif
 	@include('progressage', ['date' => \App\Util::age($faction->states->count() > 0 ? $faction->states[0]->pivot->date : null)])
   </li>
@@ -77,7 +77,7 @@ visible change.</p>
 	@if($userrank > 0)
 	<a href="{{route('systems.editreport',$system->id)}}">{{$system->displayName()}}</a>
 	@else
-	{{$system->displayName()}}
+	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
 	@include('progressage', ['date' => \App\Util::age($system->systemreports()->max('date'))])
   </li>
