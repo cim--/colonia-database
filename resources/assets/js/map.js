@@ -17,7 +17,9 @@ var CDBMap = function() {
 		highlight: 'C:phase',
 		links: 'C:mission',
 		radius: 'P',
-		filter: '0'
+		filter: '0',
+		fade: '0',
+		focus: '0'
 	};
 
 	var ReadConfig = function() {
@@ -27,11 +29,14 @@ var CDBMap = function() {
 		config.links = opts[2];
 		config.radius = opts[3];
 		config.filter = opts[4];
+		config.fade = opts[5];
+		config.focus = opts[6];
 	};
 
 	var WriteConfig = function() {
-		console.log(config);
-		location.hash = [config.projection, config.highlight, config.links, config.radius, config.filter].join("~");
+		location.hash = [config.projection, config.highlight, config.links,
+						 config.radius, config.filter, config.fade,
+						 config.focus].join("~");
 	};
 
 
@@ -41,6 +46,8 @@ var CDBMap = function() {
 		$('#mapctrllinks').val(config.links);
 		$('#mapctrlsize').val(config.radius);
 		$('#mapctrlfilter').val(config.filter);
+		$('#mapctrlfade').prop('checked', config.fade != '0');
+		$('#mapctrlfadeslider').val(config.focus);
 	};
 	
 	if (location.hash) {
@@ -136,9 +143,26 @@ var CDBMap = function() {
 		return dist;
 	};
 
+
+	var CalcAlpha = function (s1, s2) {
+		if (config.fade == 0) {
+			return 1;
+		}
+		var depth = 0;
+		if (config.projection.substr(0,2) == "XZ") {
+			depth = (s1.y + s2.y) / -2;
+		} else if (config.projection.substr(0,2) == "XY") {
+			depth = (s1.z + s2.z) / 2;
+		} else if (config.projection.substr(0,2) == "ZY") {
+			depth = (s1.x + s2.x) / -2;
+		}
+		var diff = Math.abs(depth - config.focus);
+		return Math.max(1 - (diff*0.04), 0.05);
+	};
+	
 	var DepthColour = function(dist) {
 		return "hsl("+(150+(2.5*dist))+", 80%, 50%)";
-		if (dist < -40) {
+/*		if (dist < -40) {
 			return "#ff0000";
 		} else if (dist < -20) {
 			return "#ff7700";
@@ -156,7 +180,7 @@ var CDBMap = function() {
 			return "#0077ff";
 		} else {
 			return "#0000ff";
-		}
+		} */
 	};
 
 	var SystemColour = function(sdata) {
@@ -235,6 +259,20 @@ var CDBMap = function() {
 		}
 	};
 
+	var LinkColour = function(s1data, s2data, dist) {
+		if (s1data.population > 0 && s2data.population > 0) {
+			if (dist <= 15) {
+				return'#44cc44';
+			} else if (dist <= 22.5) {
+				return'#339933';
+			} else if (dist <= 30) {
+				return'#116611';
+			}
+		} else {
+			return'#223322';
+		}
+	}
+
 	var AddLinks = function() {
 		var linkobjs = [];
 		for (var i=0;i<obj.systemdata.length;i++) {
@@ -255,17 +293,7 @@ var CDBMap = function() {
 						cen2[1] + cen2[0],
 						cen2[2] + cen2[0]
 					];
-					if (s1data.population > 0 && s2data.population > 0) {
-						if (dist <= 15) {
-							props.stroke = '#44cc44';
-						} else if (dist <= 22.5) {
-							props.stroke = '#339933';
-						} else if (dist <= 30) {
-							props.stroke = '#116611';
-						}
-					} else {
-						props.stroke = '#223322';
-					}
+					props.stroke = LinkColour(s1data, s2data, dist);
 					if (dist <= 15) {
 						props.strokeWidth = 1;
 					} else {
@@ -349,6 +377,18 @@ var CDBMap = function() {
 		obj.Redraw();
 	}
 
+	obj.setFade = function(newf) {
+		recolour = true;
+		config.fade = newf;
+		obj.Redraw();
+	}
+
+	obj.setFocus = function(newf) {
+		recolour = true;
+		config.focus = newf;
+		obj.Redraw();
+	}
+
 	
 	var RedrawReposition = function() {
 		for (var i=0;i<obj.systemdata.length;i++) {
@@ -398,18 +438,22 @@ var CDBMap = function() {
 		for (var i=0;i<obj.systemdata.length;i++) {
 			var s1data = obj.systemdata[i];
 			var spot = obj.systemobjects[s1data.name];
+			var alpha = CalcAlpha(s1data, s1data);
 			spot.set({
 				'stroke': SystemColour(s1data),
-				'strokeWidth': IsFiltered(s1data)
+				'strokeWidth': IsFiltered(s1data),
+				'opacity': alpha
 			});
 			var label = obj.systemtexts[s1data.name];
 			if (IsFiltered(s1data)) {
 				label.set({
-					'fontSize': 10
+					'fontSize': 10,
+					'opacity': alpha > 0.2 ? 1 : 0
 				});
 			} else {
 				label.set({
-					'fontSize': 0
+					'fontSize': 0,
+					'opacity': alpha > 0.2 ? 1 : 0
 				});
 			}
 
@@ -434,7 +478,8 @@ var CDBMap = function() {
 						}
 					}
 					link.set({
-						'strokeWidth': width
+						'strokeWidth': width,
+						'opacity': CalcAlpha(s1data, s2data)
 					});
 				}
 			}
@@ -496,6 +541,15 @@ $(document).ready(function() {
 		CDBMap.setFilter($(this).val());
 	});
 
+	$('#mapctrlfade').change(function() {
+		CDBMap.setFade($(this).prop('checked')?'1':'0');
+	});
+
+	$('#mapctrlfadeslider').change(function() {
+		CDBMap.setFocus($(this).val());
+	});
+
+	
 	CDBMap.SetSelectors();
 
 });

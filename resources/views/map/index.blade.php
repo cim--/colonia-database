@@ -26,6 +26,7 @@
 	<strong>Location type</strong>: yellow yes, grey no
   </div>
 </div>
+<div id='mapctrls'>
 <p>
   <label for='mapctrlprojection'>Projection</label>: <select id='mapctrlprojection'>
 	<option selected='selected'>XZ</option>
@@ -68,7 +69,13 @@
 	<option value='1'>Inhabited Only</option>
   </select>
 </p>
-
+<p>
+  <label for='mapctrlfade'>Fade?</label>:
+  <input id='mapctrlfade' type='checkbox' value='1'> ;
+  <label for='mapctrlfadeslider'>Focus Depth:</label>
+  <input type='range' id='mapctrlfadeslider' min='-50' max='50' value='0'>
+</p>
+</div>                                      
 <div id='cdbmapcontainer'>
   <canvas id='cdbmap' width='1200' height='1200'></canvas>
   <script type='text/javascript'>CDBMap.Init(

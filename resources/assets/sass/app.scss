@@ -149,3 +149,13 @@ h2 {
 	font-weight: bold;
 }
 
+#mapctrls {
+	p {
+		margin: 0.1em;
+	}
+	input[type=range] {
+		width: 10em;
+		display: inline;
+	}
+}
+
