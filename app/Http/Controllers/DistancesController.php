@@ -17,7 +17,8 @@ class DistancesController extends Controller
     public function index() {
         $systems = System::with('phase', 'stations', 'stations.faction')->get();
         $systems = $systems->sortBy(function ($s) {
-            return $s->phase->sequence.":".$s->displayName();
+            return str_pad($s->phase->sequence, 3, "0", STR_PAD_LEFT).
+                ":".$s->displayName();
         });
 
         $fakefaction = new Faction; // don't save this!
