@@ -16,7 +16,7 @@
 		people
 		@endif</li>
 	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements)</li>
-	  <li>{{$factions->count()}} factions, of which {{$players}} came through the Colonia Expansion Initiative</li>
+	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
 	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
 	</ul>
