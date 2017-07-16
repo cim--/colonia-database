@@ -7,7 +7,8 @@
 <div id='mapkeys'>
   <div id='mapkeysphase'>
 	<strong>Settlement phase</strong>: CEI systems green to purple
-	(older to newer); other systems red to yellow (older to newer)
+    (older to newer); NPC systems red to yellow (older to newer);
+	other player systems grey-green
   </div>
   <div id='mapkeyspresent'>
 	<strong>Factions present</strong>: grey empty; green to orange

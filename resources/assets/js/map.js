@@ -66,6 +66,7 @@ var CDBMap = function() {
 		'#ffff77', // CCS 3
 		'#7777ff', // CEI 5
 		'#aa77ff', // CEI 6
+		'#99cccc', // Misc 1
 	];
 
 	var factionColors = [
