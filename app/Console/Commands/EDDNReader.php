@@ -16,7 +16,7 @@ class EDDNReader extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:eddnreader';
+    protected $signature = 'cdb:eddnreader {--monitor}';
 
     /**
      * The console command description.
@@ -26,6 +26,8 @@ class EDDNReader extends Command
     protected $description = 'Read live data from EDDN';
 
     private $relay = 'tcp://eddn-relay.elite-markets.net:9500';
+
+    private $monitoronly = false;
     
     /**
      * Create a new command instance.
@@ -44,6 +46,9 @@ class EDDNReader extends Command
      */
     public function handle()
     {
+        if ($this->option('monitor')) {
+            $this->monitoronly = true;
+        }
         $context    = new \ZMQContext();
         $subscriber = $context->getSocket(\ZMQ::SOCKET_SUB);
         $subscriber->setSockOpt(\ZMQ::SOCKOPT_SUBSCRIBE, "");
@@ -87,7 +92,7 @@ class EDDNReader extends Command
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();
                 if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
-                    $this->line("Incoming event for ".$system->displayName());
+                    $this->line("[".date("YmdHis")."] Incoming event for ".$system->displayName());
                     $factions = $event['message']['Factions'];
                     $influences = [];
                     foreach ($factions as $faction) {
@@ -167,6 +172,12 @@ class EDDNReader extends Command
                 }
             }
         }
+
+        if ($this->monitoronly) {
+            $this->info("Monitor only: no updated influence for ".$system->displayName());
+            return;
+        }
+
         
         \DB::transaction(function() use ($system, $influences, $target) {
             Influence::where('system_id', $system->id)
@@ -251,6 +262,12 @@ class EDDNReader extends Command
         foreach ($states as $state) {
             $sync[$state->id] = ['date' => $tick->format('Y-m-d 00:00:00')];
         }
+
+        if ($this->monitoronly) {
+            $this->info("Monitor only: no updated pending states for ".$faction->name);
+            return;
+        }
+
         
         $faction->states()->sync($sync);
         
