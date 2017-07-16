@@ -90,6 +90,11 @@ class StationController extends Controller
         $station->faction_id = $request->input('faction_id');
         $station->primary = $request->input('primary', 0);
         $station->eddb = $request->input('eddb');
+        if ($request->input('gravity') !== "") {
+            $station->gravity = $request->input('gravity');
+        } else {
+            $station->gravity = null;
+        }
         $station->save();
 
         $states = $request->input('state');

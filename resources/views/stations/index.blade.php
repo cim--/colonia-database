@@ -17,6 +17,7 @@ Stations
 	  <th>Type</th>
 	  <th>Location</th>
 	  <th>Distance (Ls)</th>
+      <th>Gravity</th>
       <th>Docking</th>
       <th>Facilities</th>
 	  <th>Economy</th>
@@ -31,6 +32,13 @@ Stations
 	  <td>{{$station->stationclass->name}}</td>
 	  <td><a href='{{route("systems.show", $station->system->id)}}'>{{$station->system->displayName()}}</a> {{$station->planet}}</td>
 	  <td>{{$station->distance}}</td>
+	  <td>
+		@if ($station->gravity)
+		{{$station->gravity}}G
+		@else
+		Orbital
+		@endif
+	  </td>
 	  <td data-search='
 		@if ($station->stationclass->hasSmall) Small Pad @endif
 		@if ($station->stationclass->hasMedium) Medium Pad @endif

@@ -25,6 +25,16 @@
 	<td>{{$station->distance}}</td>
   </tr>
   <tr>
+	<th>Gravity</th>
+	<td>
+	  @if ($station->gravity)
+	  {{$station->gravity}}G
+	  @else
+	  Orbital
+	  @endif
+	</td>
+  </tr>
+  <tr>
 	<th>Docking Pads</th>
 	<td>
 	  @if ($station->stationclass->hasSmall) Small @endif

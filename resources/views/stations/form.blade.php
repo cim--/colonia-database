@@ -11,6 +11,10 @@
 {!! Form::text('planet') !!}
 </div>
 <div class='form-field'>
+{!! Form::label('gravity', "Gravity") !!}
+{!! Form::text('gravity') !!} (leave blank for orbitals)
+</div>
+<div class='form-field'>
 {!! Form::label('distance', "Distance") !!}
 {!! Form::text('distance') !!}
 </div>
