@@ -18,3 +18,8 @@
 {!! Form::label('government_id', "Government") !!}
 {!! Form::select('government_id', $governments) !!}
 </div>
+<div class='form-field'>
+  {!! Form::label('system_id', "Home System") !!}
+  {!! Form::select('system_id', $systems) !!}
+</div>
+

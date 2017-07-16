@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Faction;
 use App\Models\State;
+use App\Models\System;
 use App\Models\Influence;
 use App\Models\Government;
 use Illuminate\Http\Request;
@@ -39,9 +40,11 @@ class FactionController extends Controller
         }
 
         $governments = Government::orderBy('name')->get();
+        $systems = System::where('population', '>', 0)->orderBy('name')->get();
 
         return view('factions/create', [
             'governments' => \App\Util::selectMap($governments),
+            'systems' => \App\Util::selectMap($systems, false, 'displayName')
         ]);
     }
 
@@ -70,6 +73,7 @@ class FactionController extends Controller
         $faction->eddb = $request->input('eddb');
         $faction->government_id = $request->input('government_id');
         $faction->player = $request->input('player', 0);
+        $faction->system_id = $request->input('system_id');
         $faction->save();
 
         return redirect()->route('factions.show', $faction->id);
@@ -291,6 +295,7 @@ class FactionController extends Controller
         }
 
         $governments = Government::orderBy('name')->get();
+        $systems = System::where('population', '>', 0)->orderBy('name')->get();
         
         return view('factions/edit', [
             'target' => $target,
@@ -299,6 +304,7 @@ class FactionController extends Controller
             'faction' => $faction,
             'latest' => $latest,
             'governments' => \App\Util::selectMap($governments),
+            'systems' => \App\Util::selectMap($systems, false, 'displayName')
         ]);
     }
 

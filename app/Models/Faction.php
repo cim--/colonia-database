@@ -12,6 +12,10 @@ class Faction extends Model
         return $this->belongsTo('App\Models\Government');
     }
 
+    public function system() {
+        return $this->belongsTo('App\Models\System');
+    }
+    
     public function stations() {
         return $this->hasMany('App\Models\Station');
     }

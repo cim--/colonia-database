@@ -34,6 +34,13 @@
 	@if ($faction->eddb)
 	<p><a href='https://eddb.io/faction/{{$faction->eddb}}'>EDDB Record</a></p>
 	@endif
+    @if ($faction->system_id)
+	<p><span class='faction-property'>Home system</span>:
+	  <a href="{{route('systems.show', $faction->system->id)}}">
+		{{$faction->system->displayName()}}
+	  </a>
+	</p>
+	@endif
   </div>
 </div>
 
