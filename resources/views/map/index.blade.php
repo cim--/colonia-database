@@ -68,6 +68,7 @@
   <label for='mapctrlfilter'>Filter?</label>: <select id='mapctrlfilter'>
 	<option selected='selected' value='0'>All Systems</option>
 	<option value='1'>Inhabited Only</option>
+	<option value='2'>Shipyards Only</option>
   </select>
 </p>
 <p>
@@ -94,12 +95,18 @@
 	'traffic' : {{$system->latestReport()->traffic}},
 	'bounties' : {{$system->latestReport()->bounties}},
 	'crime' : {{$system->latestReport()->crime}},
+	@if ($system->mainStation())
+	'shipyard' : {{ $system->mainStation()->facilities()->where('name', 'Shipyard')->count() > 0 ? 1 : 0 }},
+	@else
+	'shipyard' : 0,
+	@endif
 	@else
 	'controlling' : null,
 	'factions' : [],
 	'traffic' : 0,
 	'bounties' : 0,
 	'crime' : 0,
+	'shipyard' : 0,
 	@endif
 	'facilities' : [{!! $system->facilities->map(function($x) { return '"'.$x->name.'"'; })->implode(",") !!}],
 

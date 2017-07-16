@@ -23,6 +23,7 @@ class System extends Model
         return $this->hasMany('App\Models\Station');
     }
 
+
     public function systemreports() {
         return $this->hasMany('App\Models\Systemreport');
     }
@@ -45,6 +46,10 @@ class System extends Model
         } else {
             return $this->catalogue;
         }
+    }
+
+    public function mainStation() {
+        return $this->stations()->where('primary', 1)->first();
     }
 
     public function coloniaCoordinates() {
