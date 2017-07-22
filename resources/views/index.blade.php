@@ -53,6 +53,17 @@
 	  @endforeach
 	</ul>
 
+	<h2>States</h2>
+	<ul class='compact2'>
+	  @foreach ($states as $state)
+	  <li>
+		{{$state['count']}}
+		@include ($state['state']->icon)
+		{{$state['state']->name}}
+	  </li>
+	  @endforeach
+	</ul>
+
 	<h2>Find out more</h2>
 	<ul>
 	  <li><a href="{{route('stations.index')}}#cartographics">Where can I sell exploration data</a> or <a href="{{route('stations.index')}}#shipyard">buy a new ship?</a></li>

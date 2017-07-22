@@ -40,10 +40,41 @@ class BaseController extends Controller
             return true;
         });
 
+      
+        
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
         $factions = Faction::with('government')->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
+        $statescalc = [];
+        $states = [];
+        $statecounter = 0;
+        $none = null;
+        foreach ($factions as $faction) {
+            $statescalc[$faction->id] = [];
+        }
+        foreach ($influences as $influence) {
+            if ($influence->state->name != "None") {
+                if (!isset($statescalc[$influence->faction_id][$influence->state_id])) {
+                    $statescalc[$influence->faction_id][$influence->state_id] = $influence->state;
+                }
+            } else {
+                $none = $influence->state;
+            }
+        }
+        foreach ($statescalc as $faction) {
+            if (count($faction) == 0) {
+                $faction = [$none];
+            }
+            foreach ($faction as $state) {
+                if (!isset($states[$state->name])) {
+                    $states[$state->name] = ['state' => $state, 'count' => 0];
+                }
+                $states[$state->name]['count']++;
+            }
+        }
+        ksort($states);
+        
         $population = System::sum('population');
 
         $iconmap = [];
@@ -65,6 +96,9 @@ class BaseController extends Controller
             }
             $governments[$faction->government->name]++;
             $iconmap[$faction->government->name] = $faction->government->icon;
+
+
+            
         }
         arsort($governments);
 
@@ -88,15 +122,16 @@ class BaseController extends Controller
         $bounties = Systemreport::where('current', 1)->sum('bounties')/1000000;
         $maxtraffic = Systemreport::where('current', 1)->max('traffic');
         $mintraffic = Systemreport::where('current', 1)->min('traffic');
-        
+
         return view('index', [
             'population' => $population,
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
-            'players' => $factions->filter(function($v) { return $v->player; })->count() - 1, // -1 as one is player but not CEI
+            'players' => $factions->filter(function($v) { return $v->player; })->count(),
             'economies' => $economies,
             'governments' => $governments,
+            'states' => $states,
             'systems' => $systems,
             'factions' => $factions,
             'stations' => $stations,
