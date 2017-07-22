@@ -140,24 +140,29 @@ class FactionController extends Controller
             $statedata[$entry]+=1 / count($current);
         }
         
-        $labels = [];
-        $values = [];
-        $colours = [];
+        $datasets = [];
         foreach ($statedata as $state => $counter) {
-            $labels[] = $state;
-            $values[] = $counter;
-            $colours[] = \App\Util::stateColour($state);
+            $datasets[] = [
+                'label' => $state,
+                'data' => [$counter],
+                'backgroundColor' => \App\Util::stateColour($state)
+            ];
         }
-        
+
         $chart = app()->chartjs
             ->name("statetimes")
-            ->type("pie")
-            ->size(["height" => 500, "width"=>500])
-            ->labels($labels)
-            ->datasets([
-                [
-                    'backgroundColor' => $colours,
-                    'data' => $values
+            ->type("horizontalBar")
+            ->size(["height" => 100, "width"=>500])
+            ->labels(['States'])
+            ->datasets($datasets)
+            ->options([
+                'scales' => [
+                    'yAxes' => [
+                        [ 'stacked' => true ]
+                    ],
+                    'xAxes' => [
+                        [ 'stacked' => true ]
+                    ],
                 ]
             ]);
         
