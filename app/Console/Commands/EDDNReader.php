@@ -93,6 +93,11 @@ class EDDNReader extends Command
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();
                 if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
+
+                    \Log::info("Incoming data", [
+                        'system' => $system->displayName()
+                    ]);
+                    
                     $this->line("[".date("YmdHis")."] Incoming event for ".$system->displayName());
                     $factions = $event['message']['Factions'];
                     $influences = [];
@@ -140,6 +145,7 @@ class EDDNReader extends Command
     private function updateInfluences($system, $influences) {
         $target = \App\Util::tick();
 
+       
         $exists = Influence::where('system_id', $system->id)
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->count();
