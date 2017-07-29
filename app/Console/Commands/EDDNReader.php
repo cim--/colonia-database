@@ -25,7 +25,7 @@ class EDDNReader extends Command
      */
     protected $description = 'Read live data from EDDN';
 
-    private $relay = 'tcp://eddn-relay.elite-markets.net:9500';
+    private $relay = 'tcp://eddn.edcd.io:9500';
 
     private $monitoronly = false;
     
@@ -82,12 +82,13 @@ class EDDNReader extends Command
 
     private function process($event)
     {
-        if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1") {
+        if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
             if ($event['message']['event'] == "FSDJump") {
                 if ($event['message']['StarPos'][2] < 10000) {
                     // don't process Ogma and Ratri in the Sol bubble
                     return;
                 }
+
                 $system = System::where('name', $event['message']['StarSystem'])
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();
@@ -150,6 +151,7 @@ class EDDNReader extends Command
                 foreach ($influences as $influence) {
                     $this->updatePendingStates($influence['faction'], $influence['pending']);
                 }
+                $this->info("Updated pending states");
             });
             return;
         }
@@ -203,6 +205,8 @@ class EDDNReader extends Command
             foreach ($influences as $influence) {
                 $this->updatePendingStates($influence['faction'], $influence['pending']);
             }
+            $this->info("Updated pending states");
+                            
         });
     }
 
@@ -264,13 +268,13 @@ class EDDNReader extends Command
         }
 
         if ($this->monitoronly) {
-            $this->info("Monitor only: no updated pending states for ".$faction->name);
+//            $this->info("Monitor only: no updated pending states for ".$faction->name);
             return;
         }
 
         
         $faction->states()->sync($sync);
         
-        $this->info("Updated pending states for ".$faction->name);
+//        $this->info("Updated pending states for ".$faction->name);
     }
 }
