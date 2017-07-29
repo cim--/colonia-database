@@ -239,6 +239,13 @@ var CDBMap = function() {
 			if (s2data && s2data.shipyard == 0) {
 				return 0;
 			}
+		} else if (config.filter == "3") {
+			if (s1data.largepad == 0) {
+				return 0;
+			}
+			if (s2data && s2data.largepad == 0) {
+				return 0;
+			}
 		}
 		return 1;
 	};
