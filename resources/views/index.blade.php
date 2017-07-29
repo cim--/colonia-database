@@ -108,22 +108,13 @@
 	<a href='{{route('factions.show', $history->faction->id)}}'>
 	  {{$history->faction->name}}
 	</a>
-	@if ($history->location_type == 'App\Models\System')
-	@if ($history->expansion)
-	expanded to
-	@else
-	retreated from
-	@endif
+	{{$history->description}}
+    @if ($history->location_type == 'App\Models\System')
 	@include($history->location->economy->icon)
 	<a href='{{route('systems.show', $history->location->id)}}'>
 	  {{$history->location->displayName()}}
 	</a>
 	@elseif ($history->location_type == 'App\Models\Station')
-	@if ($history->expansion)
-	took control of
-	@else
-	lost control of
-	@endif
 	@include($history->location->economy->icon)
 	<a href='{{route('stations.show', $history->location->id)}}'>
 	  {{$history->location->name}}
