@@ -70,6 +70,7 @@
 	<option value='1'>Inhabited Only</option>
 	<option value='2'>Shipyards Only</option>
     <option value='3'>Large Pads Only</option>
+    <option value='4'>Orbitals Only</option>
   </select>
 </p>
 <p>
@@ -99,9 +100,11 @@
 	@if ($system->mainStation())
 	'shipyard' : {{ $system->mainStation()->facilities()->where('name', 'Shipyard')->count() > 0 ? 1 : 0 }},
     'largepad' : {{ $system->mainStation()->stationclass->hasLarge ? 1 : 0 }},
+    'orbitals' : {{ $system->stations->where('gravity', null)->count() ? 1 : 0 }},
 	@else
 	'shipyard' : 0,
     'largepad' : 0,
+    'orbitals' : 0,
 	@endif
 	@else
 	'controlling' : null,
@@ -111,6 +114,7 @@
 	'crime' : 0,
 	'shipyard' : 0,
 	'largepad' : 0,
+    'orbitals' : 0,
 	@endif
 	'facilities' : [{!! $system->facilities->map(function($x) { return '"'.$x->name.'"'; })->implode(",") !!}],
 
