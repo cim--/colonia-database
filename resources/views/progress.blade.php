@@ -32,7 +32,11 @@ visible change.</p>
 	@else
 	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
+    @if ($target !== $today)
+	@include('progressage', ['date' => \App\Util::age($system->influences()->max('date'))-1])
+	@else
 	@include('progressage', ['date' => \App\Util::age($system->influences()->max('date'))])
+	@endif
   </li>
   @endforeach
 </ul>
@@ -55,7 +59,11 @@ visible change.</p>
 	@else
 	<a href="{{route('factions.show',$faction->id)}}">{{$faction->name}}</a>
 	@endif
+	@if ($target !== $today)
+	@include('progressage', ['date' => \App\Util::age($faction->states->count() > 0 ? $faction->states[0]->pivot->date : null)-1])
+	@else
 	@include('progressage', ['date' => \App\Util::age($faction->states->count() > 0 ? $faction->states[0]->pivot->date : null)])
+	@endif
   </li>
   @endforeach
 </ul>
