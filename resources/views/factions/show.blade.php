@@ -50,7 +50,7 @@
 	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
 	<table class='table table-bordered datatable' data-page-length='25'>
 	  <thead>
-		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
+		<tr><th>Name</th><th>Influence</th><th>State</th><th>Rank</th></tr>
 	  </thead>
 	  <tbody>
 		@foreach ($systems as $system)
@@ -69,6 +69,9 @@
 		  <td>
 			@include($system->state->icon)
 			{{$system->state->name}}
+		  </td>
+		  <td>
+			{{$faction->currentRankString($system->system)}}
 		  </td>
 		</tr>
 		@endif

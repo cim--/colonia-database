@@ -106,4 +106,16 @@ class Faction extends Model
         }
         return false;
     }
+
+    public function currentRankString(System $system) {
+        $influences = $system->latestFactions();
+        
+        foreach ($influences as $idx => $influence) {
+            if ($influence->faction_id == $this->id) {
+                return ($idx+1)." / ".count($influences);
+            }
+        }
+        return "?";
+    }
+
 }
