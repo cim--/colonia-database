@@ -88,7 +88,9 @@
 	in
     @if ($important->state->name == "War" || $important->state->name == "Election")
 	@if ($important->system->controllingFaction()->id == $important->faction->id)
-	<strong>control</strong>
+	<strong>system control</strong>
+	@elseif ($important->faction->controlsAsset($important->system))
+	<em>station control</em>
 	@endif
 	@endif
 	@include($important->state->icon)

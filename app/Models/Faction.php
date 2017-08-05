@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\System;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
@@ -95,5 +96,14 @@ class Faction extends Model
             }
         }
         return $abbrev;
+    }
+
+    public function controlsAsset(System $system) {
+        foreach ($system->stations as $station) {
+            if ($station->faction_id == $this->id) {
+                return true;
+            }
+        }
+        return false;
     }
 }
