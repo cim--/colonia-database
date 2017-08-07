@@ -9,7 +9,7 @@
 	<div class='col-sm-1'><a href="{{route('factions.index')}}">Factions</a></div>
 	<div class='col-sm-1'><a href="{{route('stations.index')}}">Stations</a></div>
     <div class='col-sm-1'><a href="{{route('missions.index')}}">Missions</a></div>
-    <div class='col-sm-1'></div>
+    <div class='col-sm-1'><a href="{{route('trade')}}">Trading</a></div>
 	<div class='col-sm-1'><a href="{{route('progress')}}">Update Progress</a></div>
 	@if (Auth::user())
 	<div class='col-sm-1'><a href="{{route('logout')}}">Logout</a></div>

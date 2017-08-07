@@ -70,5 +70,14 @@ Route::get('/reports', [
     'uses' => 'ReportController@index'
 ]);
 
+Route::get('/trade', [
+    'as' => 'trade',
+    'uses' => 'TradeController@index'
+]);
+
+Route::post('/trade', [
+    'as' => 'trade.search',
+    'uses' => 'TradeController@index'
+]);
 
 

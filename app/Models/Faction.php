@@ -118,4 +118,14 @@ class Faction extends Model
         return "?";
     }
 
+    public function currentInfluence(System $system) {
+        $influences = $system->latestFactions();
+        
+        foreach ($influences as $idx => $influence) {
+            if ($influence->faction_id == $this->id) {
+                return $influence;
+            }
+        }
+        return null;
+    }
 }
