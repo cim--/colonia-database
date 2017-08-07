@@ -317,7 +317,10 @@ class SystemController extends Controller
 
         $today = $system->factions($target);
         $yesterday = $system->factions($target->copy()->subDay());
-
+        if (count($yesterday) == 0) {
+            $yesterday = $system->latestFactions();
+        }
+        
         $factions = Faction::orderBy('name')->get();
         $states = State::orderBy('name')->get();
 
