@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\UpdateHistory::class,
         Commands\EDDNReader::class,
+        Commands\DiscordBot::class,
         //
     ];
 
