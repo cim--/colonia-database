@@ -9,6 +9,9 @@ use App\Models\Faction;
 use App\Models\Station;
 use App\Models\State;
 use App\Models\Influence;
+use App\Models\Facility;
+use App\Models\Economy;
+use App\Models\Government;
 
 class DiscordBot extends Command
 {
@@ -57,6 +60,7 @@ class DiscordBot extends Command
         $this->registerFactionCommand();
         $this->registerInfluenceCommand();
         $this->registerReportCommand();
+        $this->registerLocateCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -70,6 +74,13 @@ class DiscordBot extends Command
 
     }
 
+    private function safe($str) {
+        if (strlen($str) <= 1900) {
+            return $str;
+        }
+        return substr($str, 0, 1900)."...\n**<transmission interrupted>**";
+    }
+    
     private function registerStatusCommand() {
         $this->discord->registerCommand('status', function($message, $params) {
             return "Responding to commands.";
@@ -122,7 +133,7 @@ class DiscordBot extends Command
                 if ($system->eddb) {
                     $result .= "<https://eddb.io/system/".$system->eddb.">\n";
                 }
-                return $result;
+                return $this->safe($result);
             }
         }, [
             'description' => 'Return information about the named system.',
@@ -160,7 +171,7 @@ class DiscordBot extends Command
                 if ($station->eddb) {
                     $result .= "<https://eddb.io/station/".$station->eddb.">\n";
                 } 
-                return $result;
+                return $this->safe($result);
             }
         }, [
             'description' => 'Return information about the named station.',
@@ -199,7 +210,7 @@ class DiscordBot extends Command
                 if ($faction->eddb) {
                     $result .= "<https://eddb.io/faction/".$faction->eddb.">\n";
                 } 
-                return $result;
+                return $this->safe($result);
             }
         }, [
             'description' => 'Return information about the named faction.',
@@ -228,7 +239,7 @@ class DiscordBot extends Command
                     $influences = $system->factions($date);
                     if ($influences->count() == 0) {
                         $result .= "No data for this date";
-                        return $result;
+                        return $this->safe($result);
                     }
                 } else {
                     $influences = $system->latestFactions();
@@ -238,7 +249,7 @@ class DiscordBot extends Command
                 foreach ($influences as $influence) {
                     $result .= $influence->faction->name.": ".$influence->influence."%, ".$influence->state->name."\n";
                 }
-                return $result;
+                return $this->safe($result);
             }
         }, [
             'description' => 'Return influence levels in a system. If the date is omitted will give the latest levels.',
@@ -268,7 +279,7 @@ class DiscordBot extends Command
                     $report = $system->report($date);
                     if (!$report) {
                         $result .= "No data for this date";
-                        return $result;
+                        return $this->safe($result);
                     }
                 } else {
                     $report = $system->latestReport();
@@ -278,11 +289,167 @@ class DiscordBot extends Command
                 $result .= "**Traffic**: ".number_format($report->traffic)."\n";
                 $result .= "**Crimes**: ".number_format($report->crime)."\n";
                 $result .= "**Bounties**: ".number_format($report->bounties)."\n";
-                return $result;
+                return $this->safe($result);
             }
         }, [
             'description' => 'Return activity reports for a system. If the date is omitted will give the latest report.',
             'usage' => '[yyyy-mm-dd?] <system name>',
+        ]);
+    }
+
+    private function registerLocateCommand() {
+        $locate = $this->discord->registerCommand('locate', function($message, $params) {
+            return "Use the subcommands to find things - e.g. `locate feature Earth-like World`";
+        }, [
+            'description' => 'Find systems or stations with particular properties. For all subcommands omit the parameter to get a list of possibilities.'
+        ]);
+        
+        $this->registerLocateFeatureCommand($locate);
+        $this->registerLocateFacilityCommand($locate);
+        $this->registerLocateEconomyCommand($locate);
+        $this->registerLocateGovernmentCommand($locate);
+    }
+
+    private function registerLocateFeatureCommand($locate) {
+        $locate->registerSubCommand('feature', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            if ($fname == "") {
+                $features = Facility::systemFacilities();
+                $result = "**Known features**:\n";
+                foreach ($features as $feature) {
+                    $result .= $feature->name."\n";
+                }
+            } else {
+                $feature = Facility::where('type', 'System')->where('name', $fname)->first();
+                if (!$feature) {
+                    $result = "Feature `".$fname."` not known";
+                } else {
+                    $result = "Systems with **".$feature->name."**\n";
+                    
+                    $systems = $feature->systems->sortBy('name');
+                    foreach ($systems as $system) {
+                        $result .= $system->displayName()."\n";
+                    }
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Find systems with a particular feature.',
+            'usage' => '[feature?]'
+        ]);
+    }
+
+    private function registerLocateFacilityCommand($locate) {
+        $locate->registerSubCommand('facility', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            if ($fname == "") {
+                $features = Facility::stationFacilities();
+                $result = "**Known facilities**:\n";
+                foreach ($features as $feature) {
+                    $result .= $feature->name."\n";
+                }
+            } else {
+                $feature = Facility::where('type', 'Station')->where('name', $fname)->first();
+                if (!$feature) {
+                    $result = "Feature `".$fname."` not known";
+                } else {
+                    $result = "Stations with **".$feature->name."**\n";
+                    
+                    $stations = $feature->stations->sortBy('name');
+                    foreach ($stations as $station) {
+                        $result .= $station->name." (".$station->system->displayName().")\n";
+                    }
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Find stations with a particular facility.',
+            'usage' => '[facility?]'
+        ]);
+    }
+
+    private function registerLocateEconomyCommand($locate) {
+        $locate->registerSubCommand('economy', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            if ($fname == "") {
+                $economies = Economy::orderBy('name')->get();
+                $result = "**Known economies**:\n";
+                foreach ($economies as $economy) {
+                    $result .= $economy->name."\n";
+                }
+            } else {
+                $economy = Economy::where('name', $fname)->first();
+                if (!$economy) {
+                    $result = "Economy `".$economy."` not known";
+                } else {
+                    $result = "Stations with **".$economy->name."** economy\n";
+                    
+                    $stations = $economy->stations()->with('stationclass')->orderBy('name')->get();
+                    foreach ($stations as $station) {
+                        if ($station->stationclass->hasSmall) {
+                            $result .= $station->name." (".$station->system->displayName().")\n";
+                        }
+                    }
+                    $result .= "\nSettlements with **".$economy->name."** economy\n";
+                    
+                    foreach ($stations as $station) {
+                        if (!$station->stationclass->hasSmall) {
+                            $result .= $station->name." (".$station->system->displayName().")\n";
+                        }
+                    }
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Find stations with a particular economy.',
+            'usage' => '[economy?]'
+        ]);
+    }
+
+
+    private function registerLocateGovernmentCommand($locate) {
+        $locate->registerSubCommand('government', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            if ($fname == "") {
+                $governments = Government::orderBy('name')->get();
+                $result = "**Known governments**:\n";
+                foreach ($governments as $government) {
+                    $result .= $government->name."\n";
+                }
+            } else {
+                $government = Government::where('name', $fname)->first();
+                if (!$government) {
+                    $result = "Government `".$government."` not known";
+                } else {
+                    $result = "Stations with **".$government->name."** government\n";
+                    
+                    $stations = Station::with('faction')->orderBy('name')->get();
+                    foreach ($stations as $station) {
+                        if ($station->faction->government_id == $government->id) {
+                            if ($station->stationclass->hasSmall) {
+                                if ($station->primary) {
+                                    $result .= "*".$station->name."* (".$station->system->displayName().")\n";
+                                } else {
+                                    $result .= $station->name." (".$station->system->displayName().")\n";
+                                }
+                            }
+                        }
+                    }
+                    $result .= "\nSettlements with **".$government->name."** government\n";
+                    
+                    foreach ($stations as $station) {
+                        if ($station->faction->government_id == $government->id) {
+                            if (!$station->stationclass->hasSmall) {
+                                $result .= $station->name." (".$station->system->displayName().")\n";
+                            }
+                        }
+                    }
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Find stations with a particular government.',
+            'usage' => '[government?]'
         ]);
     }
 }
