@@ -47,7 +47,7 @@ class DiscordBot extends Command
     {
         $this->discord = new \Discord\DiscordCommandClient([
             'token' => env('DISCORD_TOKEN'),
-            'description' => "Colonia Census Information Retrieval",
+            'description' => "Colonia Census Information Retrieval.\nUse the 'help' command to see a list of commands. You can send commands in chat or by private message.",
             'prefix' => env('DISCORD_COMMAND_PREFIX', '!')
         ]);
 
@@ -55,8 +55,19 @@ class DiscordBot extends Command
         $this->registerSystemCommand();
         $this->registerStationCommand();
         $this->registerFactionCommand();
+        $this->registerInfluenceCommand();
+        $this->registerReportCommand();
 
+        $this->discord->on('ready', function() {
+            $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
+                'name' => route('index'),
+            ]);
+            
+            $this->discord->updatePresence($game);
+        });
+        
         $this->discord->run();
+
     }
 
     private function registerStatusCommand() {
@@ -114,7 +125,8 @@ class DiscordBot extends Command
                 return $result;
             }
         }, [
-            'description' => 'Return information about the named system.'
+            'description' => 'Return information about the named system.',
+            'usage' => '<system name>',
         ]);
     }
 
@@ -151,7 +163,8 @@ class DiscordBot extends Command
                 return $result;
             }
         }, [
-            'description' => 'Return information about the named station.'
+            'description' => 'Return information about the named station.',
+            'usage' => '<station name>',
         ]);
     }
 
@@ -188,6 +201,88 @@ class DiscordBot extends Command
                 } 
                 return $result;
             }
-        });
+        }, [
+            'description' => 'Return information about the named faction.',
+            'usage' => '<faction name>',
+        ]);
+    }
+
+    private function registerInfluenceCommand() {
+        $this->discord->registerCommand('influence', function($message, $params) {
+            if (preg_match('/^33[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $params[0])) {
+                $datestr = array_shift($params);
+                $date = new Carbon($datestr);
+                $date->subYears(1286);
+            } else {
+                $date = null;
+            }
+            $sname = trim(join(" ", $params));
+            $system = System::where('name', $sname)->orWhere('catalogue', $sname)->first();
+            if (!$system) {
+                return $sname." not known";
+            } else {
+                if ($date !== null) {
+                    $result = "**".$system->displayName()."** on **".\App\Util::displayDate($date)."**\n";
+                    $result .= "<".route('systems.showhistory', $system->id).">\n";
+
+                    $influences = $system->factions($date);
+                    if ($influences->count() == 0) {
+                        $result .= "No data for this date";
+                        return $result;
+                    }
+                } else {
+                    $influences = $system->latestFactions();
+                    $result = "**".$system->displayName()."** on **".\App\Util::displayDate($influences[0]->date)."**\n";
+                    $result .= "<".route('systems.showhistory', $system->id).">\n";
+                }
+                foreach ($influences as $influence) {
+                    $result .= $influence->faction->name.": ".$influence->influence."%, ".$influence->state->name."\n";
+                }
+                return $result;
+            }
+        }, [
+            'description' => 'Return influence levels in a system. If the date is omitted will give the latest levels.',
+            'usage' => '[yyyy-mm-dd?] <system name>',
+            'aliases' => ['politics']
+        ]);
+    }
+
+    private function registerReportCommand() {
+        $this->discord->registerCommand('report', function($message, $params) {
+            if (preg_match('/^33[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $params[0])) {
+                $datestr = array_shift($params);
+                $date = new Carbon($datestr);
+                $date->subYears(1286);
+            } else {
+                $date = null;
+            }
+            $sname = trim(join(" ", $params));
+            $system = System::where('name', $sname)->orWhere('catalogue', $sname)->first();
+            if (!$system) {
+                return $sname." not known";
+            } else {
+                if ($date !== null) {
+                    $result = "**".$system->displayName()."** on **".\App\Util::displayDate($date)."**\n";
+                    $result .= "<".route('systems.show', $system->id)."#reporthistory>\n";
+
+                    $report = $system->report($date);
+                    if (!$report) {
+                        $result .= "No data for this date";
+                        return $result;
+                    }
+                } else {
+                    $report = $system->latestReport();
+                    $result = "**".$system->displayName()."** on **".\App\Util::displayDate($report->date)."**\n";
+                    $result .= "<".route('systems.show', $system->id)."#reporthistory>\n";
+                }
+                $result .= "**Traffic**: ".number_format($report->traffic)."\n";
+                $result .= "**Crimes**: ".number_format($report->crime)."\n";
+                $result .= "**Bounties**: ".number_format($report->bounties)."\n";
+                return $result;
+            }
+        }, [
+            'description' => 'Return activity reports for a system. If the date is omitted will give the latest report.',
+            'usage' => '[yyyy-mm-dd?] <system name>',
+        ]);
     }
 }
