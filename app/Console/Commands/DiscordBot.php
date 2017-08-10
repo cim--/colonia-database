@@ -230,7 +230,38 @@ class DiscordBot extends Command
             $sname = trim(join(" ", $params));
             $system = System::where('name', $sname)->orWhere('catalogue', $sname)->first();
             if (!$system) {
-                return $sname." not known";
+                $faction = Faction::where('name', $sname)->first();
+                if (!$faction) {
+                    return $sname." not known";
+                } else {
+                   if ($date !== null) {
+                       $result = "**".$faction->name."** on **".\App\Util::displayDate($date)."**\n";
+                       $result .= "<".route('factions.showhistory', $faction->id).">\n";
+
+                       $influences = $faction->systems($date);
+                       if ($influences->count() == 0) {
+                           $result .= "No data for this date";
+                           return $this->safe($result);
+                       }
+                   } else {
+                       $influences = $faction->latestSystems();
+                       $result = "**".$faction->name."** on **".\App\Util::displayDate($influences[0]->date)."**\n";
+                       $result .= "<".route('factions.showhistory', $faction->id).">\n";
+                   }
+                   foreach ($influences as $influence) {
+                       if ($influence->system->controllingFaction()->id == $faction->id) {
+                           $result .= "**".$influence->system->displayName()."**";
+                       } else {
+                           $result .= $influence->system->displayName();
+                       }
+                       $result .= ": ".$influence->influence."%, ".$influence->state->name;
+                       if ($influence->system->id == $faction->system_id) {
+                           $result .= " (**home**)";
+                       }
+                       $result .= "\n";
+                   }
+                   return $this->safe($result); 
+                }
             } else {
                 if ($date !== null) {
                     $result = "**".$system->displayName()."** on **".\App\Util::displayDate($date)."**\n";
