@@ -61,7 +61,7 @@ class DiscordBot extends Command
         $this->registerReportCommand();
         $this->registerLocateCommand();
         $this->registerExpansionCommand();
-        $this->registerExpansionCommand();
+        $this->registerMissionsCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -570,4 +570,52 @@ class DiscordBot extends Command
         if($a < 0) { return -1; }
         return 0;
     }
+
+    private function registerMissionsCommand() {
+        $this->discord->registerCommand('missions', function($message, $params) {
+            $sname = trim(join(" ", $params));
+            $system = System::where('name', $sname)->orWhere('catalogue', $sname)->first();
+            if (!$system) {
+                return $sname." not known";
+            } else {
+                $result = "**Mission** destinations from **".$system->displayName()."**\n<".route('systems.show', $system->id).">\n";
+
+                $systems = System::all();
+                $destinations = [];
+                foreach ($systems as $target) {
+                    if ($target->id == $system->id) {
+                        continue;
+                    }
+                    if ($target->population == 0) {
+                        continue;
+                    }
+                    if ($target->distanceTo($system) > 15) {
+                        continue;
+                    }
+                    $destinations[] = $target;
+                }
+
+                if (count($destinations) > 0) {
+                    $sorter = function($a, $b) use ($system) {
+                        return $this->sign($a->distanceTo($system)-$b->distanceTo($system));
+                    };
+                    usort($destinations, $sorter);
+                    foreach ($destinations as $destination) {
+                        $dist = $destination->distanceTo($system);
+                        $result .= $destination->displayName()." (".number_format($dist,2)."LY)\n";
+                    }
+                } else {
+                    $result .= "No inhabited systems within 15 LY";
+                }
+
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Return likely mission destinations.',
+            'usage' => '<system name>',
+            'aliases' => ['mission']
+        ]);
+    }
+
+    
 }
