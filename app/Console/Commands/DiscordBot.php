@@ -54,13 +54,13 @@ class DiscordBot extends Command
             'prefix' => env('DISCORD_COMMAND_PREFIX', '!')
         ]);
 
-        $this->registerStatusCommand();
         $this->registerSystemCommand();
         $this->registerStationCommand();
         $this->registerFactionCommand();
         $this->registerInfluenceCommand();
         $this->registerReportCommand();
         $this->registerLocateCommand();
+        $this->registerExpansionCommand();
         $this->registerExpansionCommand();
 
         $this->discord->on('ready', function() {
@@ -82,14 +82,6 @@ class DiscordBot extends Command
         return substr($str, 0, 1900)."...\n**<transmission interrupted>**";
     }
     
-    private function registerStatusCommand() {
-        $this->discord->registerCommand('status', function($message, $params) {
-            return "Responding to commands.";
-        }, [
-            'description' => 'Give bot status'
-        ]);
-    }
-
     private function registerSystemCommand() {
         $this->discord->registerCommand('system', function($message, $params) {
             $sname = trim(join(" ", $params));
