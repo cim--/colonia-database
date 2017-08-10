@@ -61,6 +61,7 @@ class DiscordBot extends Command
         $this->registerInfluenceCommand();
         $this->registerReportCommand();
         $this->registerLocateCommand();
+        $this->registerExpansionCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -325,6 +326,7 @@ class DiscordBot extends Command
         }, [
             'description' => 'Return activity reports for a system. If the date is omitted will give the latest report.',
             'usage' => '[yyyy-mm-dd?] <system name>',
+            'aliases' => ['reports', 'traffic', 'crimes', 'bounties']
         ]);
     }
 
@@ -482,5 +484,98 @@ class DiscordBot extends Command
             'description' => 'Find stations with a particular government.',
             'usage' => '[government?]'
         ]);
+    }
+
+    private function registerExpansionCommand() {
+        $this->discord->registerCommand('expansion', function($message, $params) {
+
+            $str = trim(join(" ", $params));
+            if (strpos($str, ";")) {
+                list($faction, $system) = explode(";", $str);
+            } else {
+                list($faction, $system) = [$str, ''];
+            }
+            $fname = trim($faction);
+            $sname = trim($system);
+
+            $faction = Faction::where('name', $fname)->first();
+            if (!$faction) {
+                return "Faction ".$fname." not found";
+            }
+            if ($sname == "") {
+                $system = $faction->system;
+            } else {
+                $system = System::where('name', $sname)->orWhere('catalogue', $sname)->first();
+                if (!$system) {
+                    return "System ".$sname." not found";
+                }
+            }
+
+            $systems = System::all();
+            $peacefulcandidates = [];
+            $aggressivecandidates = [];
+            foreach ($systems as $target) {
+                if ($target->id == $system->id) {
+                    continue;
+                }
+                if ($target->population == 0) {
+                    continue;
+                }
+                if ($target->name == "Ratri" || $target->name == "Colonia") {
+                    continue; // locked systems
+                }
+                if ($faction->currentInfluence($target) !== null) {
+                    continue;
+                }
+                if ($target->distanceTo($system) > 30) {
+                    continue;
+                }
+                if ($target->latestFactions()->count() >= 7) {
+                    $aggressivecandidates[] = $target;
+                } else {
+                    $peacefulcandidates[] = $target;
+                }
+            }
+            $sorter = function($a, $b) use ($system) {
+                return $this->sign($a->distanceTo($system)-$b->distanceTo($system));
+            };
+            
+            usort($aggressivecandidates, $sorter);
+            usort($peacefulcandidates, $sorter);
+
+            $result = "**Expansion candidates** for **".$fname."** from **".$system->displayName()."**\n";
+            $nearfound = false;
+            for ($i=0;$i<=2;$i++) {
+                if (isset($peacefulcandidates[$i])) {
+                    $dist = $peacefulcandidates[$i]->distanceTo($system);
+                    if ($dist < 22) {
+                        $nearfound = true;
+                    }
+                    $result .= $peacefulcandidates[$i]->displayName()." (".number_format($dist,2)."LY)\n";
+                }
+            }
+            if (!$nearfound && count($aggressivecandidates) > 0) {
+                $result .= "\nAs all candidates are likely to require *Investment*, an aggressive expansion is also possible:\n";
+                for ($i=0;$i<=2;$i++) {
+                    if (isset($aggressivecandidates[$i])) {
+                        $dist = $aggressivecandidates[$i]->distanceTo($system);
+                        $result .= $aggressivecandidates[$i]->displayName()." (".number_format($dist,2)."LY)\n";
+                    }
+                }
+            }
+            
+            return $result;
+
+        }, [
+            'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified.',
+            'usage' => '<faction> [; system?]'
+        ]);
+        
+    }
+
+    private function sign($a) {
+        if($a > 0) { return 1; }
+        if($a < 0) { return -1; }
+        return 0;
     }
 }
