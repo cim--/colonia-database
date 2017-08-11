@@ -27,7 +27,7 @@
 	  </div>
 	  <div class='col-sm-6'>
 		<p><a href='#reporthistory'>Reports history</a></p>
-		<p>Last update: {{\App\Util::displayDate($report->date)}}
+		<p>Last update: <span title='{{$report->created_at->format("H:i")}}'>{{\App\Util::displayDate($report->date)}}</span>
 		  @else
 		<p><span class='system-property'>Traffic Report</span>: ?</p>
 		<p><span class='system-property'>Crime Report</span>: ?</p>
@@ -121,7 +121,7 @@
 		<tr>
 		  <td colspan='3'>
 			@if ($factions->count() > 0)
-			Last updated: {{ $factions[0]->displayDate() }}
+			Last updated: <span title='{{$factions[0]->created_at->format("H:i")}}'>{{ $factions[0]->displayDate() }}</span>
 			@else
 			Last updated: never
 			@endif
