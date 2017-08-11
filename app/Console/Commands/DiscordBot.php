@@ -62,6 +62,7 @@ class DiscordBot extends Command
         $this->registerLocateCommand();
         $this->registerExpansionCommand();
         $this->registerMissionsCommand();
+        $this->registerCartographyCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -617,5 +618,57 @@ class DiscordBot extends Command
         ]);
     }
 
-    
+    private function registerCartographyCommand() {
+        $this->discord->registerCommand('cartography', function($message, $params) {
+            if (count($params) < 3) {
+                return "All three parameters are required:\n<max-gravity> (use 0 for orbital stations only)\n<pad-size> (S, M, or L)\n<max-dist> (Ls from primary star)";
+            }
+            $grav = (float)$params[0];
+            $pad = $params[1];
+            $dist = (float)$params[2];
+
+            $options = Station::where(function($q) use ($grav) {
+                $q->where('gravity', null)
+                  ->orWhere('gravity', '<=', $grav);
+            })->whereHas('stationclass', function($q) use ($pad) {
+                $q->where('hasLarge', 1);
+                if ($pad != 'L') {
+                    $q->orWhere('hasMedium', 1);
+                    if ($pad != 'M') {
+                        $q->orWhere('hasSmall', 1);
+                    }
+                }
+            })->where('distance', '<=', $dist)
+              ->whereHas('enabledFacilities', function($q) {
+                  $q->where('name', 'Cartographics');
+              })->with('system', 'faction', 'stationclass')->orderBy('name')->get();
+
+            $result = "**Exploration sale options**\nMax gravity: ".($grav>0?number_format($grav,2):"orbital only")."\nPad size: $pad\nMax dist: ".number_format($dist)."Ls\n\n";
+            foreach ($options as $option) {
+                $result .= $option->name.", ".$option->system->displayName()." (".$option->faction->name." - ";
+                $states = $option->faction->currentStates();
+                $commas = false;
+                foreach ($states as $idx => $state) {
+                    if ($commas) {
+                        $result .= ", ";
+                    } else {
+                        $commas = true;
+                    }
+                    if (in_array($state->name, ["Expansion", "Investment", "War", "Lockdown"])) {
+                        $result .= "**".$state->name."**";
+                    } else {
+                        $result .= $state->name;
+                    }
+                }
+                $result .= ") [".($option->gravity?number_format($option->gravity,2)."G":"Orbital").", ".$option->stationclass->name.", ".number_format($option->distance)."Ls]\n";
+            }
+
+            return $this->safe($result);
+        }, [
+            'description' => 'Return possible exploration data sale points. e.g. cartography 0.5 L 1000',
+            'usage' => '<max-gravity> <pad-size> <max-dist>',
+            'aliases' => ['exploration']
+        ]);
+        
+    }
 }

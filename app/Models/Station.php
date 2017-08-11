@@ -26,6 +26,11 @@ class Station extends Model
         return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');
     }
 
+    public function enabledFacilities() {
+        return $this->belongsToMany('App\Models\Facility')->wherePivot('enabled', 1);
+    }
+
+    
     public function history() {
         return $this->morphMany('App\Models\History', 'location');
     }
