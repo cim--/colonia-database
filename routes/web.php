@@ -17,8 +17,10 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout2');
 Route::get('/', 'BaseController@index')->name('index');
 Route::get('/progress', 'BaseController@progress')->name('progress');
 
-Route::get('/distances', 'DistancesController@index')->name('distances');
+Route::get('/about', 'BaseController@about')->name('intro.about');
+Route::get('/new', 'BaseController@new')->name('intro.new');
 
+Route::get('/distances', 'DistancesController@index')->name('distances');
 
 Route::get('/history', 'HistoryController@index')->name('history');
 Route::get('/history/create', 'HistoryController@create')->name('history.create');

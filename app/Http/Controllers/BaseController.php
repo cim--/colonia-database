@@ -190,4 +190,16 @@ class BaseController extends Controller
             'pendingupdate' => $pendingupdate,
         ]);
     }
+
+    public function about() {
+        return view('intro/about');
+    }
+
+    public function new() {
+        return view('intro/new', [
+            'systemcount' => System::where('population', '>', 0)->count(),
+            'totalPopulation' => System::sum('population')
+        ]);
+    }
+
 }

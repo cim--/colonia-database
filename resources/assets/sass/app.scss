@@ -200,3 +200,41 @@ h2 {
 	padding-top: 0.5em;
 	border-top: thin grey solid;
 }
+
+samp {
+	color: #006000;
+	font-weight: bold;
+}
+
+div#newhere {
+	@include make-row();
+	div.newbox {
+		@include make-sm-column(6);
+		h2 {
+			border-bottom: 1px #005090 dotted;
+		}
+		> div {
+			margin: 0.5em 0;
+			padding: 0.5em;
+			border: thin #005090 solid;
+			.botbox {
+				width: 50%;
+				float: right;
+				margin: 0.5em;
+				background: #000;
+				color: #fff;
+				div {
+					text-align: center;
+					text-transform: uppercase;
+					font-size: 80%;
+				}
+				ul {
+					list-style-type: none;
+					font-family: monospace;
+					padding: 0.5em;
+					color: #009000;
+				}
+			}
+		}
+	}
+}
