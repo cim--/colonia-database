@@ -10,13 +10,25 @@ class ReportController extends Controller
 {
     
     public function index(Request $request) {
-        $reports = Systemreport::where('current', 1)->with('system')->get();
+        // preserves old URL, no longer directly linked
+        return view('reports/index');
+    }
 
-        $sort = $request->input('type', 'traffic');
-        if (!in_array($sort, ['traffic', 'crime', 'bounties'])) {
-            $sort = 'traffic'; // fallback
-        }
-        
+    public function traffic(Request $request) {
+        return $this->dailyReport($request, 'traffic');
+    }
+
+    public function crimes(Request $request) {
+        return $this->dailyReport($request, 'crime');
+    }
+
+    public function bounties(Request $request) {
+        return $this->dailyReport($request, 'bounties');
+    }
+    
+    private function dailyReport(Request $request, $sort) {
+        $reports = Systemreport::where('current', 1)->with('system')->get();
+       
         $dataset = [];
         $labels = [];
         $colours = [];
@@ -43,7 +55,7 @@ class ReportController extends Controller
                 ]
             ]);
 
-        return view('reports/index', [
+        return view('reports/report', [
             'report' => ucfirst($sort),
             'chart' => $chart
         ]);

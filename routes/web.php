@@ -69,6 +69,18 @@ Route::get('/reports', [
     'as' => 'reports',
     'uses' => 'ReportController@index'
 ]);
+Route::get('/reports/traffic', [
+    'as' => 'reports.traffic',
+    'uses' => 'ReportController@traffic'
+]);
+Route::get('/reports/crimes', [
+    'as' => 'reports.crimes',
+    'uses' => 'ReportController@crimes'
+]);
+Route::get('/reports/bounties', [
+    'as' => 'reports.bounties',
+    'uses' => 'ReportController@bounties'
+]);
 
 Route::get('/trade', [
     'as' => 'trade',

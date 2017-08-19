@@ -1,17 +1,14 @@
 @extends('layout/layout')
 
-@section('title', $report.' Reports')
+@section('title', 'Reports')
 
 @section('content')
 
-<ul class='compact'>
-  @foreach (['Traffic', 'Crime', 'Bounties'] as $type)
-  @if ($report != $type)
-  <li><a href='{{route('reports')}}?type={{strtolower($type)}}'>{{$type}}</a></li>
-  @endif
-  @endforeach
+<ul>
+   <li><a href="{{route('reports.traffic')}}">Traffic</a></li>
+   <li><a href="{{route('reports.crimes')}}">Crime</a></li>
+   <li><a href="{{route('reports.bounties')}}">Bounties</a></li> 
 </ul>
 
-{!! $chart->render() !!}    
 
 @endsection

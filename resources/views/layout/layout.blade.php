@@ -28,7 +28,6 @@
 		</div>
 	  </div>
       <footer>
-		@include('layout/navbar')
 		<p>
 		  To discuss this information, volunteer to help collect it, or suggest site improvements, join the <a href="https://discord.gg/fE49mGw">Colonia Census Discord</a>, or contact Ian Doncaster
 		</p>
