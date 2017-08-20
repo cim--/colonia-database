@@ -83,6 +83,10 @@ Route::get('/reports/bounties', [
     'as' => 'reports.bounties',
     'uses' => 'ReportController@bounties'
 ]);
+Route::get('/reports/reach', [
+    'as' => 'reports.reach',
+    'uses' => 'ReportController@reach'
+]);
 
 Route::get('/trade', [
     'as' => 'trade',

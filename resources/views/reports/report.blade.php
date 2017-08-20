@@ -4,6 +4,8 @@
 
 @section('content')
 
+<p>{!! $desc !!}</p>
+    
 {!! $chart->render() !!}    
 
 @endsection
