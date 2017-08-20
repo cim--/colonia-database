@@ -28,6 +28,7 @@
   <li><kbd>!locate facility</kbd> <samp>name</samp>: finds stations providing a particular facility (e.g. outfitting). Leave 'name' out to get a list of possibilities.</li>
   <li><kbd>!locate economy</kbd> <samp>name</samp>: finds stations with a particular economy. Leave 'name' out to get a list of possibilities.</li>
   <li><kbd>!locate government</kbd> <samp>name</samp>: finds stations run by a particular government type. Leave 'name' out to get a list of possibilities.</li>
+  <li><kbd>!locate state</kbd> <samp>name</samp>: finds stations with a particular active state. Leave 'name' out to get a list of possibilities.</li>
   <li><kbd>!expansion</kbd> <samp>faction</samp>: shows the faction's next expansion targets, expanding from its home system.</li>
   <li><kbd>!expansion</kbd> <samp>faction</samp> <code>;</code> <samp>system</samp>: shows the faction's next expansion targets, expanding from the specified system. The ';' is used to separate faction and system names.</li>
   <li><kbd>!missions</kbd> <samp>name</samp>: shows the systems within 15 LY that make most typical mission targets.</li>
