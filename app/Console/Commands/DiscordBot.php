@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\System;
+use App\Models\Systemreport;
 use App\Models\Faction;
 use App\Models\Station;
 use App\Models\State;
@@ -12,6 +13,7 @@ use App\Models\Influence;
 use App\Models\Facility;
 use App\Models\Economy;
 use App\Models\Government;
+use App\Models\History;
 
 class DiscordBot extends Command
 {
@@ -63,6 +65,8 @@ class DiscordBot extends Command
         $this->registerExpansionCommand();
         $this->registerMissionsCommand();
         $this->registerCartographyCommand();
+        $this->registerSummaryCommand();
+        $this->registerHistoryCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -713,4 +717,136 @@ class DiscordBot extends Command
         ]);
         
     }
+
+
+    private function registerSummaryCommand() {
+        $this->discord->registerCommand('summary', function($message, $params) {
+            if (count($params) == 0) {
+                $params = [""];
+            }
+            switch ($params[0]) {
+            case "population":
+                $result = "Total population is ".number_format(System::sum('population'));
+                break;
+            case "traffic":
+                $result = "Total traffic is ".number_format(Systemreport::where('current', 1)->sum('traffic'));
+                break;
+            case "crime":
+            case "crimes":
+                $result = "Total daily crimes are ".number_format(Systemreport::where('current', 1)->sum('crime'));
+                break;
+            case "bounty":
+            case "bounties":
+                $result = "Total daily bounties are ".number_format(Systemreport::where('current', 1)->sum('bounties'));
+                break;
+            case "system":
+            case "systems":
+                $potential = System::where('population', 0)->count();
+                $populated = System::where('population', '>', 0)->count();
+                $result = $populated." inhabited systems are tracked.";
+                if ($potential > 0) {
+                    $result .= " ".$potential." systems have been marked as future colonisation locations.";
+                }
+                break;
+            case "station":
+            case "stations":
+                $stations = Station::whereHas('stationclass', function($q) {
+                    $q->where('hasSmall', 1);
+                })->count();
+                $settlements = Station::whereHas('stationclass', function($q) {
+                    $q->where('hasSmall', 0);
+                })->count();
+                $result = $stations." stations and ".$settlements." settlements";
+                break;
+            case "economies":
+            case "economy":
+                $economies = Economy::withCount(['stations' => function($q) {
+                    $q->whereHas('stationclass', function($qi) {
+                        $qi->where('hasSmall', 1);
+                    });
+                }])->orderBy('name')->get();
+                $result = "Station economies\n";
+                foreach ($economies as $economy) {
+                    $result .= $economy->name.": ".$economy->stations_count."\n";
+                }
+                break;
+            case "governments":
+            case "government":
+                $governments = Government::withCount(['factions'])->orderBy('name')->get();
+                $result = "Faction governments\n";
+                foreach ($governments as $government) {
+                    $result .= $government->name.": ".$government->factions_count."\n";
+                }
+                break;
+            case "state":
+            case "states":
+                $states = State::where('name', '!=', 'None')->orderBy('name')->get();
+                $result = "Faction states\n";
+                foreach ($states as $state) {
+                    $result .= $state->name.": ".$state->currentFactions()->get()->count()."\n";
+                }
+                break;
+            case "reach":
+                $reaches = \DB::select('SELECT f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.name ORDER BY reach DESC LIMIT 10');
+                $result = "Top 10 reaches:\n";
+                foreach ($reaches as $reach) {
+                    $result .= $reach->name.": ".number_format($reach->reach)."\n";
+                }
+                break;
+            default:
+                $result = "Unrecognised summary request";
+            }
+            
+            return $this->safe($result);
+        }, [
+            'description' => 'Return summaries of information. Available summaries are: population, traffic, crimes, bounties, systems, stations, economy, government, state and reach',
+            'usage' => '<summary>'
+        ]);
+        
+    }
+
+    private function registerHistoryCommand() {
+        $this->discord->registerCommand('history', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            
+            $query = History::with('faction','location');
+
+            if ($fname == "") {
+                $date = \App\Util::tick();
+                $query->where('date', $date);
+                $hname = "current tick";
+            } else if (preg_match('/^33[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $fname)) {
+                $datestr = $fname;
+                $date = new Carbon($datestr);
+                $date->subYears(1286);
+                $query->where('date', $date);
+                $hname = "date ".$fname;
+            } else if ($system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->first()) {
+                $query->where('location_type', 'App\\Models\\System')
+                      ->where('location_id', $system->id);
+                $hname = "system ".$system->displayName();
+            } else if ($station = Station::where('name', 'like', $fname."%")->first()) {
+                $query->where('location_type', 'App\\Models\\Station')
+                      ->where('location_id', $station->id);
+                $hname = "station ".$station->name;
+            } else if ($faction = Faction::where('name', 'like', $fname."%")->first()) {
+                $query->whereHas('faction', function($q) use ($faction) {
+                    $q->where('id', $faction->id);
+                });
+                $hname = "faction ".$faction->name;
+            } else {
+                return "History query parameter not recognised as a date, faction, station or system";
+            }
+
+            $histories = $query->orderBy('date', 'desc')->get();
+            $result = "**History for ".$hname."**\n";
+            foreach ($histories as $history) {
+                $result .= \App\Util::displayDate($history->date).": ".$history->faction->name." ".$history->description." ".$history->location->displayName()."\n";
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Return history entries for the current tick, or the specified date, system, faction or station.',
+            'usage' => '[YYYY-MM-DD | station | system | faction]?'
+        ]);
+    }   
 }

@@ -33,6 +33,8 @@
   <li><kbd>!expansion</kbd> <samp>faction</samp> <code>;</code> <samp>system</samp>: shows the faction's next expansion targets, expanding from the specified system. The ';' is used to separate faction and system names.</li>
   <li><kbd>!missions</kbd> <samp>name</samp>: shows the systems within 15 LY that make most typical mission targets.</li>
   <li><kbd>!cartography</kbd> <samp>max-gravity</samp> <samp>pad-size</samp> <samp>max-dist</samp>: returns possible exploration data sale locations given a max gravity (use 0 for orbitals only), minimum landing pad size, and maximum distance from the primary star - e.g. <kbd>!cartography 0.3 L 1000</kbd></li>
+  <li><kbd>!summary</kbd> <samp>name</samp>: returns a regional summary. Available summaries are population, traffic, crimes, bounties, systems, stations, economy, government, state and reach.</li>
+  <li><kbd>!history</kbd> <samp>filter</samp>: returns the relevant history entries. The filter can be a date, system, station or faction. If no filter is set it returns the current tick.</li>
 </ul>
 
 <p>If you would like to add CensusBot to your server, you can use the

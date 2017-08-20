@@ -35,5 +35,9 @@ class Station extends Model
         return $this->morphMany('App\Models\History', 'location');
     }
 
+    // convenience for history
+    public function displayName() {
+        return $this->name;
+    }
 //
 }

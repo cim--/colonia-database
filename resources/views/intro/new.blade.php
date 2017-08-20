@@ -10,6 +10,8 @@
   <div class='newbox'>
 	<div>
 	  <h2>Location and Travel</h2>
+
+	  @include('intro.botbox', ['commands' => ["!help", "!summary systems"]])
 	  
 	  <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
 	  
@@ -20,7 +22,7 @@
 
 	<div>
 	  <h2>Trading</h2>
-	  @include('intro.botbox', ['commands' => ["!report system", "!locate economy name"]])
+	  @include('intro.botbox', ['commands' => ["!report system", "!locate economy name", "!summary economy"]])
 
 	  <p>High-Tech and Service economies are much more common. On the other hand, as there are numerous known earth-like worlds for a population of only {{number_format($totalPopulation)}}, there are no Terraforming economies. Colony economies are also very rare - in general, Tourism economies have taken their place.</p>
 
@@ -101,7 +103,7 @@
 
 	<div>
 	  <h2>Factions and Politics</h2>
-	  @include('intro.botbox', ['commands' => ["!faction faction", "!influence faction/system", "!summary reach", "!traffic system", "!expansion faction"]])
+	  @include('intro.botbox', ['commands' => ["!faction faction", "!influence faction/system", "!summary reach", "!traffic system", "!expansion faction", "!history faction/date/system/station"]])
 
 	  <p>The settlement of Colonia has led to an extremely unusual distribution of factions. Major differences from the Sol bubble include:</p>
 	  <ul>
