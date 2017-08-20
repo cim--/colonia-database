@@ -334,6 +334,7 @@ class DiscordBot extends Command
         $this->registerLocateFacilityCommand($locate);
         $this->registerLocateEconomyCommand($locate);
         $this->registerLocateGovernmentCommand($locate);
+        $this->registerLocateStateCommand($locate);
     }
 
     private function registerLocateFeatureCommand($locate) {
@@ -476,6 +477,47 @@ class DiscordBot extends Command
         }, [
             'description' => 'Find stations with a particular government.',
             'usage' => '[government?]'
+        ]);
+    }
+
+    
+    private function registerLocateStateCommand($locate) {
+        $locate->registerSubCommand('state', function ($message, $params) {
+            $fname = trim(join(" ", $params));
+            if ($fname == "") {
+                $states = State::orderBy('name')->get();
+                $result = "**Known states**:\n";
+                foreach ($states as $state) {
+                    $result .= $state->name."\n";
+                }
+            } else {
+                $state = State::where('name', 'like', $fname."%")->first();
+                if (!$state) {
+                    $result = "State `".$state."` not known";
+                } else {
+                    $result = "Stations with **".$state->name."** state\n";
+                    
+                    $stations = Station::with('faction','system')->whereHas('faction', function($q) use ($state) {
+                        $q->whereHas('influences', function ($qi) use ($state) {
+                            $qi->where('current', 1)
+                               ->where('state_id', $state->id);
+                        });
+                    })->orderBy('name')->get();
+                    foreach ($stations as $station) {
+                        if ($station->stationclass->hasSmall) {
+                            if ($station->primary) {
+                                $result .= "*".$station->name."* (".$station->system->displayName().")\n";
+                            } else {
+                                $result .= $station->name." (".$station->system->displayName().")\n";
+                            }
+                        }
+                    }
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Find stations with a particular state. (War finds both War and Civil War)',
+            'usage' => '[state?]'
         ]);
     }
 
