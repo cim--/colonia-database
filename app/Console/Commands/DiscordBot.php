@@ -235,7 +235,7 @@ class DiscordBot extends Command
                     $result .= $influence->system->displayName()." (".$influence->influence.", ".$influence->state->name.")";
                 }
                 $result .= "\n";
-
+                $result .= "**Assets controlled**: ".Station::where('faction_id', $faction->id)->count()."\n";
 
                 if ($faction->eddb) {
                     $result .= "<https://eddb.io/faction/".$faction->eddb.">\n";
