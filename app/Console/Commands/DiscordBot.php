@@ -614,37 +614,7 @@ class DiscordBot extends Command
                 }
             }
 
-            $systems = System::all();
-            $peacefulcandidates = [];
-            $aggressivecandidates = [];
-            foreach ($systems as $target) {
-                if ($target->id == $system->id) {
-                    continue;
-                }
-                if ($target->population == 0) {
-                    continue;
-                }
-                if ($target->name == "Ratri" || $target->name == "Colonia") {
-                    continue; // locked systems
-                }
-                if ($faction->currentInfluence($target) !== null) {
-                    continue;
-                }
-                if ($target->distanceTo($system) > 30) {
-                    continue;
-                }
-                if ($target->latestFactions()->count() >= 7) {
-                    $aggressivecandidates[] = $target;
-                } else {
-                    $peacefulcandidates[] = $target;
-                }
-            }
-            $sorter = function($a, $b) use ($system) {
-                return $this->sign($a->distanceTo($system)-$b->distanceTo($system));
-            };
-            
-            usort($aggressivecandidates, $sorter);
-            usort($peacefulcandidates, $sorter);
+            list ($peacefulcandidates, $aggressivecandidates) = $system->expansionsFor($faction);
 
             $result = "**Expansion candidates** for **".$faction->name."** from **".$system->displayName()."**\n";
             $nearfound = false;

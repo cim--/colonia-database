@@ -128,4 +128,54 @@ class System extends Model
                     ->first();
     }
 
+
+    public function expansionsFor(Faction $faction = null) {
+        
+        if ($this->population == 0) {
+            return [[],[]];
+        }
+        if ($faction === null) {
+            $faction = $this->controllingFaction();
+        }
+
+        $systems = System::all();
+        $peacefulcandidates = [];
+        $aggressivecandidates = [];
+        foreach ($systems as $target) {
+            if ($target->id == $this->id) {
+                continue;
+            }
+            if ($target->population == 0) {
+                continue;
+            }
+            if ($target->name == "Ratri" || $target->name == "Ratraii" || $target->name == "Colonia") {
+                continue; // locked systems
+            }
+            if ($faction->currentInfluence($target) !== null) {
+                continue;
+            }
+            if ($target->distanceTo($this) > 30) {
+                continue;
+            }
+            if ($target->latestFactions()->count() >= 7) {
+                $aggressivecandidates[] = $target;
+            } else {
+                $peacefulcandidates[] = $target;
+            }
+        }
+        $sorter = function($a, $b) {
+            return $this->sign($a->distanceTo($this)-$b->distanceTo($this));
+        };
+            
+        usort($aggressivecandidates, $sorter);
+        usort($peacefulcandidates, $sorter);
+        return [$peacefulcandidates, $aggressivecandidates];
+    }
+
+    private function sign($a) {
+        if($a > 0) { return 1; }
+        if($a < 0) { return -1; }
+        return 0;
+    }
+
 }
