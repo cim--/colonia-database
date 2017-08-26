@@ -103,7 +103,7 @@
 
 	<div>
 	  <h2>Factions and Politics</h2>
-	  @include('intro.botbox', ['commands' => ["!faction faction", "!influence faction/system", "!summary reach", "!traffic system", "!expansion faction", "!history faction/date/system/station"]])
+    @include('intro.botbox', ['commands' => ["!faction faction", "!influence faction/system", "!summary reach", "!traffic system", "!expansion faction", "!expansionsto system", "!history faction/date/system/station"]])
 
 	  <p>The settlement of Colonia has led to an extremely unusual distribution of factions. Major differences from the Sol bubble include:</p>
 	  <ul>
