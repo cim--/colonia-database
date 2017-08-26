@@ -102,6 +102,10 @@ class EDDNReader extends Command
                     $factions = $event['message']['Factions'];
                     $influences = [];
                     foreach ($factions as $faction) {
+                        if ($faction['Name'] == "Pilots Federation Local Branch") {
+                            // virtual faction, ignore
+                            continue;
+                        }
                         $fo = Faction::where('name', $faction['Name'])->first();
                         if (!$fo) {
                             \Log::error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
