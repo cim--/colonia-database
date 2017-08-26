@@ -279,6 +279,11 @@ class DiscordBot extends Command
                        $result .= "<".route('factions.showhistory', $faction->id).">\n";
                    }
                    foreach ($influences as $influence) {
+                       $result .= "`[";
+                       $bar = 1+floor($influence->influence/5);
+                       $result .= str_repeat("█", $bar);
+                       $result .= str_repeat(" ", 20-$bar);
+                       $result .= "]` ";
                        if ($influence->system->controllingFaction()->id == $faction->id) {
                            $result .= "**".$influence->system->displayName()."**";
                        } else {
@@ -308,7 +313,21 @@ class DiscordBot extends Command
                     $result .= "<".route('systems.showhistory', $system->id).">\n";
                 }
                 foreach ($influences as $influence) {
-                    $result .= $influence->faction->name.": ".$influence->influence."%, ".$influence->state->name."\n";
+                    $result .= "`[";
+                    $bar = 1+floor($influence->influence/5);
+                    $result .= str_repeat("█", $bar);
+                    $result .= str_repeat(" ", 20-$bar);
+                    $result .= "]` ";
+                    if ($system->controllingFaction()->id == $influence->faction->id) {
+                        $result .= "**".$influence->faction->name."**";
+                    } else {
+                        $result .= $influence->faction->name;
+                    }
+                    $result .= ": ".$influence->influence."%, ".$influence->state->name;
+                    if ($system->id == $influence->faction->system_id) {
+                        $result .= " (**home**)";
+                    }
+                    $result .= "\n";
                 }
                 return $this->safe($result);
             }
