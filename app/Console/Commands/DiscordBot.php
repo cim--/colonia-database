@@ -14,6 +14,7 @@ use App\Models\Facility;
 use App\Models\Economy;
 use App\Models\Government;
 use App\Models\History;
+use App\Models\Expansioncache;
 
 class DiscordBot extends Command
 {
@@ -65,6 +66,7 @@ class DiscordBot extends Command
         $this->registerReportCommand();
         $this->registerLocateCommand();
         $this->registerExpansionCommand();
+        $this->registerExpansionsToCommand();
         $this->registerMissionsCommand();
         $this->registerCartographyCommand();
         $this->registerSummaryCommand();
@@ -883,4 +885,39 @@ class DiscordBot extends Command
             'usage' => '[YYYY-MM-DD | station | system | faction]?'
         ]);
     }   
+
+    private function registerExpansionsToCommand() {
+        $this->discord->registerCommand('expansionsto', function($message, $params) {
+            $sname = trim(join(" ", $params));
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            if (!$system) {
+                return $sname." not known";
+            } else {
+                $result = "**Possible expansions to ".$system->displayName()."**\n";
+                if ($system->population == 0) {
+                    $result .= "Uninhabited system.\n";
+                } else {
+                    $opts = Expansioncache::where('target_id', $system->id)->orderBy('priority')->with('system')->get();
+                    if (count($opts) == 0) {
+                        $result .= "No candidates for near-term expansion to this system.";
+                    } else {
+                        foreach ($opts as $opt) {
+                            $result .= "Priority ".$opt->priority." ";
+                            if ($opt->hostile) {
+                                $result .= "*aggressive* ";
+                            }
+                            $result .= "target of ".$opt->system->controllingFaction()->name." from ".$opt->system->displayName()." (".number_format($opt->system->distanceTo($system), 2)." LY)\n";
+                        }
+                    }
+
+                }
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Return factions which might expand to the specified system soon.',
+            'usage' => '<system name>',
+            'aliases' => ['expandto', 'expansionto', 'expandsto']
+        ]);
+    }
+
 }
