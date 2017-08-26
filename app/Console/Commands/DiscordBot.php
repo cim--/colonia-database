@@ -537,16 +537,28 @@ class DiscordBot extends Command
             $fname = trim($faction);
             $sname = trim($system);
 
+            $system = null;
             $faction = Faction::where('name', 'like', $fname."%")->first();
             if (!$faction) {
-                return "Faction ".$fname." not found";
+                if ($sname == "") {
+                    $system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->first();
+                    if (!$system) {
+                        return "Faction ".$fname." not found";
+                    } else {
+                        $faction = $system->controllingFaction();
+                    }
+                } else {
+                    return "Faction ".$fname." not found";
+                }
             }
-            if ($sname == "") {
-                $system = $faction->system;
-            } else {
-                $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
-                if (!$system) {
-                    return "System ".$sname." not found";
+            if (!$system) {
+                if ($sname == "") {
+                    $system = $faction->system;
+                } else {
+                    $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+                    if (!$system) {
+                        return "System ".$sname." not found";
+                    }
                 }
             }
 
@@ -606,8 +618,8 @@ class DiscordBot extends Command
             return $result;
 
         }, [
-            'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified.',
-            'usage' => '<faction> [; system?]'
+            'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified, or for a system and its controlling faction',
+            'usage' => '(<faction> [; system?]) | <system>'
         ]);
         
     }
