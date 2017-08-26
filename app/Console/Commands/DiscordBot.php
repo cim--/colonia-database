@@ -50,12 +50,14 @@ class DiscordBot extends Command
      */
     public function handle()
     {
-        $this->discord = new \Discord\DiscordCommandClient([
+        $this->discord = new \App\DiscordClient([
             'token' => env('DISCORD_TOKEN'),
             'description' => "Colonia Census Information Retrieval.\nUse the 'help' command to see a list of commands. You can send commands in chat or by private message.",
-            'prefix' => env('DISCORD_COMMAND_PREFIX', '!')
+            'prefix' => env('DISCORD_COMMAND_PREFIX', '!'),
+            'defaultHelpCommand' => false
         ]);
 
+        $this->registerHelpCommand();
         $this->registerSystemCommand();
         $this->registerStationCommand();
         $this->registerFactionCommand();
@@ -85,6 +87,36 @@ class DiscordBot extends Command
             return $str;
         }
         return substr($str, 0, 1900)."...\n**<transmission interrupted>**";
+    }
+
+    private function registerHelpCommand() {
+        $this->discord->registerCommand('help', function($message, $params) {
+            $prefix = env('DISCORD_COMMAND_PREFIX', '!');
+            $commandopts = $this->discord->getCommandOptions();
+            $commands = $this->discord->getCommands();
+            if (!isset($params[0])) {
+                $result = "**CensusBot: Colonia Census Information Retrieval.**\nYou can send commands in chat or by private message.\nUse `".$prefix."help <command name>` for more information on a command.\n\n```\n";
+                foreach ($commandopts as $name => $cobj) {
+                    if (isset($cobj['usage'])) {
+                        $result .= $prefix.$name." ".$cobj['usage']."\n";
+                    } else {
+                        $result .= $prefix.$name."\n";
+                    }
+                }
+                $result .= "```";
+            } else {
+                if (isset($commands[$params[0]])) {
+                    $help = $commands[$params[0]]->getHelp($prefix);
+                    $result = "```\n".$help['text']."\n```";
+                } else {
+                    $result = "Command `".$params[0]."` not known.\n";
+                }
+            }
+            return $this->safe($result);
+        }, [
+            'description' => 'Display command help.',
+            'usage' => '[command?]',
+        ]);
     }
     
     private function registerSystemCommand() {
@@ -331,7 +363,8 @@ class DiscordBot extends Command
         $locate = $this->discord->registerCommand('locate', function($message, $params) {
             return "Use the subcommands to find things - e.g. `locate feature Earth-like World`";
         }, [
-            'description' => 'Find systems or stations with particular properties. For all subcommands omit the parameter to get a list of possibilities.'
+            'description' => 'Find systems or stations with particular properties. For all subcommands omit the parameter to get a list of possibilities.',
+            'usage' => '<feature | facility | economy | government | state> [name?]'
         ]);
         
         $this->registerLocateFeatureCommand($locate);
