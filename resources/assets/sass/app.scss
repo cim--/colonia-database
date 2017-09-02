@@ -60,6 +60,11 @@ nav {
 					@include make-sm-column(6);
 				}
 			}
+			> ul.compactnav {
+				> li {
+					@include make-sm-column(4);
+				}
+			}
 		}
 	}	
 }

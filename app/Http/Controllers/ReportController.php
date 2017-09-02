@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Systemreport;
 use App\Models\Influence;
+use App\Models\Faction;
 
 class ReportController extends Controller
 {
@@ -102,5 +103,17 @@ class ReportController extends Controller
             'desc' => $desc
         ]);
     }
-    
+
+
+    public function control() {
+        $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass')
+            ->with(['influences' => function($q) {
+                    $q->where('current', 1);
+                }])
+            ->orderBy('name')->get();
+
+        return view('reports/control', [
+            'factions' => $factions
+        ]);
+    }
 }
