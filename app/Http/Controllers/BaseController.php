@@ -21,6 +21,8 @@ class BaseController extends Controller
 
         $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
             ->where('current', 1)
+            ->orderBy('system_id')
+            ->orderBy('influence', 'desc')
             ->get();
         $important = $influences->filter(function ($value, $key) {
             if (!$value->system || !$value->system->inhabited()) {
@@ -40,7 +42,19 @@ class BaseController extends Controller
             return true;
         });
 
-      
+        $lowinfluences = [];
+        $sysid = 0;
+        foreach ($influences as $influence) {
+            if ($influence->system_id != $sysid) {
+                if ($influence->system->controllingFaction()->id != $influence->faction_id) {
+                    $lowinfluences[] = $influence->system;
+                } 
+                    
+                $sysid = $influence->system_id;
+            }
+            // don't need to consider the others
+        }
+        
         
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
         $factions = Faction::with('government')->orderBy('name')->get();
@@ -123,6 +137,8 @@ class BaseController extends Controller
         $maxtraffic = Systemreport::where('current', 1)->max('traffic');
         $mintraffic = Systemreport::where('current', 1)->min('traffic');
 
+
+        
         return view('index', [
             'population' => $population,
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
@@ -137,6 +153,7 @@ class BaseController extends Controller
             'stations' => $stations,
             'historys' => $history,
             'importants' => $important,
+            'lowinfluences' => $lowinfluences,
             'fakeglobals' => ['Retreat', 'Expansion'],
             'iconmap' => $iconmap,
             'maxdist' => $maxdist,

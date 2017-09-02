@@ -125,6 +125,19 @@
 	
   </li>
   @endforeach
+  @foreach ($lowinfluences as $lowinfluence)
+  <li>
+	@include($lowinfluence->controllingFaction()->government->icon)
+	<a href='{{route('factions.show', $lowinfluence->controllingFaction()->id)}}'>
+	  {{$lowinfluence->controllingFaction()->name}}
+	</a>
+	<em>low influence</em> in
+	@include($lowinfluence->economy->icon)
+	<a href='{{route('systems.show', $lowinfluence->id)}}'>
+	  {{$lowinfluence->displayName()}}
+	</a>
+  </li>
+  @endforeach
 </ul>
 </div>
 </div>    
