@@ -21,12 +21,16 @@
 	@foreach ($factions as $faction)
 	<tr>
 	  <td>
-		{{$faction->name}}
+		<a href="{{route('factions.show', $faction->id)}}">
+		  {{$faction->name}}
+		</a>
 		@include($faction->government->icon)
 	  </td>
 	  <td>
 		@if ($faction->system)
-		{{$faction->system->displayName()}}
+		<a href="{{route('systems.show', $faction->system_id)}}">
+		  {{$faction->system->displayName()}}
+		</a>
 		@include($faction->system->economy->icon)
 		@else
 ???
