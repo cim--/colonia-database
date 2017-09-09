@@ -3,6 +3,9 @@
 namespace App;
 
 use Carbon\Carbon;
+use App\Models\Faction;
+use App\Models\Influence;
+use App\Models\State;
 
 class Util {
 
@@ -133,5 +136,72 @@ class Util {
 
     public static function systemSort($a, $b) {
         return strcmp($a->displayName(), $b->displayName());
+    }
+
+
+    public static function stateBars(Faction $faction, $percent = false) {
+        $stateos = State::get();
+        $states = [];
+        foreach ($stateos as $state) {
+            $states[$state->id] = $state;
+        }
+        $total = 0;
+        
+        $statedata = [];
+        $infs = Influence::where('faction_id', $faction->id)->orderBy('date');
+        $date = null;
+        $current = "None";
+        foreach ($infs->cursor() as $inf) {
+            if ($inf->date != $date) {
+                if ($date != null) {
+                    if (!is_array($current)) {
+                        $current = [$current];
+                    }
+                    foreach ($current as $idx => $entry) {
+                        if (!isset($statedata[$entry])) {
+                            $statedata[$entry] = 0;
+                        }
+                        $statedata[$entry]+=1 / count($current);
+                        $total += 1 / count($current);
+                    }
+                    $current = "None";
+                }
+                $date = $inf->date;
+            }
+            if (!is_array($current)) {
+                if ($states[$inf->state_id]->name != "None") {
+                    // should prioritise War and Election
+                    if ($states[$inf->state_id]->name == $current || $current == "None") {
+                        $current = $states[$inf->state_id]->name;
+                    } else {
+                        // special case for expansion-wars leading to
+                        // dual states, also investment
+                        // going to assume for now no triple-states
+                        $current = [$states[$inf->state_id]->name, $current];
+                    }
+                }
+            }
+        }
+        // process last day
+        if (!is_array($current)) {
+            $current = [$current];
+        }
+        foreach ($current as $idx => $entry) {
+            if (!isset($statedata[$entry])) {
+                $statedata[$entry] = 0;
+            }
+            $statedata[$entry]+=1 / count($current);
+            $total += 1 / count($current);
+        }
+        
+        $datasets = [];
+        foreach ($statedata as $state => $counter) {
+            $datasets[$state] = [
+                'label' => $state,
+                'data' => [$percent ? round($counter*100/$total, 2) : $counter],
+                'backgroundColor' => \App\Util::stateColour($state)
+            ];
+        }
+        return $datasets;
     }
 }

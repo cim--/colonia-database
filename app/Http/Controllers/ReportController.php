@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Systemreport;
 use App\Models\Influence;
 use App\Models\Faction;
+use App\Models\State;
 
 class ReportController extends Controller
 {
@@ -116,4 +117,72 @@ class ReportController extends Controller
             'factions' => $factions
         ]);
     }
+
+    public function states() {
+
+        $factions = Faction::orderBy('name')->get();
+        $tdatas = [];
+        $labels = [];
+        foreach ($factions as $faction) {
+            $tdatas[] = \App\Util::stateBars($faction, true);
+            $labels[] = $faction->name;
+        }
+
+        $datasets = [];
+        $states = State::orderBy('name')->get();
+        foreach ($states as $state) {
+            $datasets[$state->name] = [
+                'label' => $state->name,
+                'backgroundColor' => \App\Util::stateColour($state->name),
+                'data' => []
+            ];
+            
+            foreach ($tdatas as $tdata) {
+                if (isset($tdata[$state->name])) {
+                    $datasets[$state->name]['data'][] = $tdata[$state->name]['data'][0];
+                } else {
+                    $datasets[$state->name]['data'][] = 0;
+                }
+            }
+        }
+
+        sort($datasets);
+        
+        $chart = app()->chartjs
+            ->name("statetimes")
+            ->type("horizontalBar")
+            ->size(["height" => 100+(10*$factions->count()), "width"=>500])
+            ->labels($labels)
+            ->datasets($datasets)
+            ->options([
+                'scales' => [
+                    'yAxes' => [
+                        [ 'stacked' => true ]
+                    ],
+                    'xAxes' => [
+                        [
+                            'stacked' => true,
+                            'ticks' => [
+                                'min' => 0,
+                                'max' => 100
+                            ],
+                            'scaleLabel' => [
+                                'display' => true,
+                                'labelString' => 'Percent Time'
+                            ]
+                        ],
+                    ],
+                ],
+            ]);
+
+
+        
+        $desc = "The percentages of time each faction spends in particular states are shown here.";
+        return view('reports/report', [
+            'report' => "States",
+            'chart' => $chart,
+            'desc' => $desc
+        ]);
+    }
+    
 }

@@ -89,66 +89,8 @@ class FactionController extends Controller
     {
         $faction->load('government', 'stations', 'stations.system', 'stations.stationclass', 'stations.economy', 'states');
 
-        $stateos = State::get();
-        $states = [];
-        foreach ($stateos as $state) {
-            $states[$state->id] = $state;
-        }
-        
-        $statedata = [];
-        $infs = Influence::where('faction_id', $faction->id)->orderBy('date');
-        $date = null;
-        $current = "None";
-        foreach ($infs->cursor() as $inf) {
-            if ($inf->date != $date) {
-                if ($date != null) {
-                    if (!is_array($current)) {
-                        $current = [$current];
-                    }
-                    foreach ($current as $idx => $entry) {
-                        if (!isset($statedata[$entry])) {
-                            $statedata[$entry] = 0;
-                        }
-                        $statedata[$entry]+=1 / count($current);
-                    }
-                    $current = "None";
-                }
-                $date = $inf->date;
-            }
-            if (!is_array($current)) {
-                if ($states[$inf->state_id]->name != "None") {
-                    // should prioritise War and Election
-                    if ($states[$inf->state_id]->name == $current || $current == "None") {
-                        $current = $states[$inf->state_id]->name;
-                    } else {
-                        // special case for expansion-wars leading to
-                        // dual states, also investment
-                        // going to assume for now no triple-states
-                        $current = [$states[$inf->state_id]->name, $current];
-                    }
-                }
-            }
-        }
-        // process last day
-        if (!is_array($current)) {
-            $current = [$current];
-        }
-        foreach ($current as $idx => $entry) {
-            if (!isset($statedata[$entry])) {
-                $statedata[$entry] = 0;
-            }
-            $statedata[$entry]+=1 / count($current);
-        }
-        
-        $datasets = [];
-        foreach ($statedata as $state => $counter) {
-            $datasets[] = [
-                'label' => $state,
-                'data' => [$counter],
-                'backgroundColor' => \App\Util::stateColour($state)
-            ];
-        }
-
+        $datasets = \App\Util::stateBars($faction);
+        sort($datasets); // compact
         $chart = app()->chartjs
             ->name("statetimes")
             ->type("horizontalBar")

@@ -29,6 +29,7 @@
 		<li><a href="{{route('reports.bounties')}}">Bounties</a></li>
         <li><a href="{{route('reports.control')}}">Control</a></li>
      	<li><a href="{{route('reports.reach')}}">Reach</a></li>
+		<li><a href="{{route('reports.states')}}">States</a></li>
 	  </ul>
 	</li>
 	<li><div>Activities</div>

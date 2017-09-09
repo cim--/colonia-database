@@ -93,6 +93,10 @@ Route::get('/reports/reach', [
     'as' => 'reports.reach',
     'uses' => 'ReportController@reach'
 ]);
+Route::get('/reports/states', [
+    'as' => 'reports.states',
+    'uses' => 'ReportController@states'
+]);
 
 Route::get('/trade', [
     'as' => 'trade',
