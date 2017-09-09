@@ -12,6 +12,7 @@
 		<li><a href="{{route('map')}}">Map</a></li>
 		<li><a href="{{route('distances')}}">Distances</a></li>
 		<li><a href="{{route('history')}}">History</a></li>
+     	<li><a href="{{route('history.trends')}}">Activity</a></li>
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>

@@ -26,6 +26,8 @@ Route::get('/history', 'HistoryController@index')->name('history');
 Route::get('/history/create', 'HistoryController@create')->name('history.create');
 Route::post('/history', 'HistoryController@store')->name('history.store');
 
+Route::get('/history/trends', 'HistoryController@trends')->name('history.trends');
+
 Route::resource('systems', 'SystemController');
 Route::get('/systems/{system}/history', [
     'as' => 'systems.showhistory',
