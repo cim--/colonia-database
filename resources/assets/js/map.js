@@ -259,7 +259,9 @@ var CDBMap = function() {
 	};
 
 	var LineWidth = function(link) {
-		if (link.cdb_distance <= 15) {
+		if (link.cdb_distance <= 10) {
+			return 6;
+		} else if (link.cdb_distance <= 15) {
 			return 4;
 		} else if (link.cdb_distance <= 22.5) {
 			return 2;
@@ -490,6 +492,10 @@ var CDBMap = function() {
 						if (IsFiltered(s1data, s2data)) {
 							if (config.links == 'C:mission') {
 								if (obj.systemlinks1[s1data.name][s2data.name]) {
+									width = 1;
+								}
+							} else if (config.links == 'C:courier') {
+								if (obj.systemlinks1[s1data.name][s2data.name] && LineWidth(link) >= 6) {
 									width = 1;
 								}
 							} else if (config.links.substr(0,2) == "S:") {
