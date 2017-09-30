@@ -1,14 +1,14 @@
 #distancegrid {
-	.phase0 {
+	.phase0 { /* CCS 0 */
 		background: #ffdddd;
 	}
-	.phase1 {
+	.phase1 { /* CCS 1 */
 		background: #ffe3dd;
 	}
 	.phase2 { /* CEI 1 */
 		background: #ddffdd;
 	}
-	.phase3 {
+	.phase3 { /* CEI 2 */
 		background: #ddffee;
 	}
 	.phase4 { /* CEI 3 */
@@ -21,7 +21,7 @@
 		background: #ddeeff;
 	}
 	.phase7 { /* CCS 3 */
-		background: #ffffdd;
+		background: #fff5dd;
 	}
 	.phase8 { /* CEI 5 */
 		background: #ddddff;
@@ -31,6 +31,9 @@
 	}
 	.phase10 { /* Misc 1 */
 		background: #ddeeee;
+	}
+	.phase11 { /* CCS 4 */
+		background: #ffffdd;
 	}
 	.controller {
 		min-width: 5em;
