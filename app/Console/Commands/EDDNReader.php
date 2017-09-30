@@ -8,6 +8,7 @@ use App\Models\System;
 use App\Models\Faction;
 use App\Models\State;
 use App\Models\Influence;
+use App\Models\Facility;
 
 class EDDNReader extends Command
 {
@@ -130,6 +131,8 @@ class EDDNReader extends Command
                         return $b['influence'] - $a['influence'];
                     });
                     $this->updateInfluences($system, $influences);
+
+                    $this->updateSecurity($system, $event['message']);
                 }
             }
         }
@@ -287,4 +290,55 @@ class EDDNReader extends Command
         
 //        $this->info("Updated pending states for ".$faction->name);
     }
+
+    private function updateSecurity($system, $message) {
+        if (isset($message['Population'])) {
+            $population = $message['Population'];
+            if ($population > 0) {
+                $system->population = $population;
+                $system->save();
+            } else {
+                $this->error("Population 0 reported by Journal");
+            }
+        }
+
+        if (isset($message['SystemSecurity'])) {
+            switch ($message['SystemSecurity']) {
+            case '$SYSTEM_SECURITY_high;':
+                $system->security = "High";
+                $this->removeBroker($system);
+                break;
+            case '$SYSTEM_SECURITY_medium;':
+                $system->security = "Medium";
+                $this->removeBroker($system);
+                break;
+            case '$SYSTEM_SECURITY_low;':
+                $system->security = "Low";
+                $this->addBroker($system);
+                break;
+            default:
+                $this->error("Unrecognised security level ".$message['SystemSecurity']);
+            }
+            $system->save();
+        }
+    }
+
+    private function removeBroker($system) {
+        $broker = Facility::where('name', 'Broker')->first();
+
+        foreach ($system->stations as $station) {
+            $station->facilities()->detach($broker->id);
+        }
+    }
+
+    private function addBroker($system) {
+        $broker = Facility::where('name', 'Broker')->first();
+
+        foreach ($system->stations as $station) {
+            /* detach than reattach in case it's already there */
+            $station->facilities()->detach($broker->id);
+            $station->facilities()->attach($broker->id);
+        }
+    }
+
 }
