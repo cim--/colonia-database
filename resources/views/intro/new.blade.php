@@ -15,7 +15,7 @@
 	  
 	  <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
 	  
-	  <p>A set of 6 resupply outposts break the journey from Sol into easier and shorter stages, and the neutron highways are well mapped.</p>
+	  <p>A set of 6 surface resupply outposts and a newer set of 3 orbital stations break the journey from Sol into easier and shorter stages, and the neutron highways are well mapped.</p>
 	  
 	  <p>The populated region now consists of {{$systemcount}} systems and is approximately 100 LY in radius.</p>
 	</div>
@@ -39,7 +39,7 @@
 
 	  @include('intro.botbox', ['commands' => ["!cartographics grav pad dist"]])
 	  
-	  <p>In the early days of Colonia cartographics services were rare. Nowadays, a wide range of stations provide these services - for historical reasons, the <a href="{{route('stations.show', 2)}}">Colonia Hub</a> surface base in Colonia and the <a href="{{route('stations.show', 7)}}">Colonia Dream</a> Coriolis in Ratri do not.</p>
+	  <p>In the early days of Colonia cartographics services were rare. Nowadays, a wide range of stations provide these services - for historical reasons, the <a href="{{route('stations.show', 2)}}">Colonia Hub</a> surface base in Colonia and the <a href="{{route('stations.show', 7)}}">Colonia Dream</a> Coriolis in Ratraii do not.</p>
 
 	  <p>The Colonia region is near to numerous larger and planetary nebula in the Festival Grounds area, and is just above a large neutron field. As the most centrally-located known human colony, and the best equipped one outside Sol, it makes an excellent base for expeditions to most of the galaxy.</p>
 
@@ -83,6 +83,9 @@
 	  </ul>
 
 	  <p>There are no engineers. Engineered and/or A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
+
+	  <p>Colonia Hub is currently the only station providing AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence.</p>
+	  
 	</div>
 
 	<div>
@@ -92,12 +95,11 @@
 	  <p>Most mission types are available somewhere in Colonia, but the variety and quantity of missions differs a lot from system to system. The following major differences apply:</p>
 
 	  <ul>
-		<li>"Tour" VIP passenger missions are not available, as all local tourist beacons are in a single system</li>
-		<li>Medium-range courier and cargo transfer missions are not available, and it is unclear why.</li>
+		<li>"Tour" VIP passenger missions are not available, as all local tourist beacons are currently in a single system</li>
 		<li>"Famous explorer" passenger missions are very common, but due to the distribution of distant tourist beacons, mostly go to systems within 500 LY of Sol. Missions to Sag A*, Beagle Point or other deep space destinations do exist but may require visiting several passenger boards to find.</li>
 	  </ul>
 
-	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 15 LY of other systems - systems with more of these links usually (though not always) have much better mission availability. Due to the current lack of medium-range missions, non-passenger missions are rarely available at systems without any close neighbours.</p>
+	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 10 LY (courier) or 15 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
 
 	</div>
 
@@ -116,7 +118,7 @@
 		<li>The area does not fall within any Powerplay bubbles and it is in practice impossible for any power in the Sol bubble to accumulate enough CC to expand here.</li>
 	  </ul>
 
-	  <p>Two of the systems - Colonia and Ratri - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
+	  <p>Two of the systems - Colonia and Ratraii - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
 	</div>
 	<div>
 	  <h2>Other points of interest</h2>
