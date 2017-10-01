@@ -18,6 +18,7 @@
 	  {{$system->economy->name}}
 	</p>
 	<p><span class='system-property'>Population</span>: {{$system->population}}</p>
+	<p><span class='system-property'>Security</span>: {{$system->security}}</p>
 	<div class='row'>
 	  <div class='col-sm-6'>
 		@if ($report && $report->system_id == $system->id)
