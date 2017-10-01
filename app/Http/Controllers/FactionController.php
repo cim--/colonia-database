@@ -137,10 +137,14 @@ class FactionController extends Controller
                 if ($lastdate != null) {
                     foreach ($systems as $sid => $system) {
                         if (!isset($seen[$sid])) {
-                            $datasets[$sid]['data'][] = [
-                                'x' => \App\Util::graphDisplayDate($lastdate),
-                                'y' => null
-                            ];
+                            if (Influence::where('system_id', $sid)->where('date', $lastdate)->count() > 0) {
+                                $datasets[$sid]['data'][] = [
+                                    'x' => \App\Util::graphDisplayDate($lastdate),
+                                    'y' => null
+                                ];
+                            } else {
+                                $entries[$lastdate->format("Y-m-d")][$sid] = [];
+                            }
                         }
                     }
                     
