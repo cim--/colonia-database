@@ -107,6 +107,19 @@ class System extends Model
                     ->get();
     }
 
+    public function factionsGapproof(Carbon $date) {
+        $tick = $date->copy();
+        for ($i=1;$i<=7;$i++) {
+            $factions = $this->factions($tick);
+            if (count($factions) > 0) {
+                return $factions;
+            }
+            $tick->subDay();
+        }
+        return $factions; // give up after a week
+    }
+
+    
     public function latestReport() {
         $report = $this->systemreports()
                        ->where('current', 1)

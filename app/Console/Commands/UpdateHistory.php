@@ -66,7 +66,7 @@ class UpdateHistory extends Command
         $systems = System::where('population', '>', 0)->get();
         foreach ($systems as $system) {
             $getfactions = $system->factions($tick);
-            $getlastfactions = $system->factions($previous);
+            $getlastfactions = $system->factionsGapproof($previous);
             if (count($getfactions) == 0 || count($getlastfactions) == 0) {
                 continue; // no data
             }
