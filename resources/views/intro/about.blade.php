@@ -6,11 +6,11 @@
 
 <p>The Colonia Census aims to provide current, accurate and comprehensive information about the inhabited systems and population of the Colonia Region, for the use of all residents and visitors.</p>
 
-<p>If you are new to the region, or thinking of visiting, then the <a href="{{route('intro.new')">new to Colonia</a> page will answer some common questions.</p>
+<p>If you are new to the region, or thinking of visiting, then the <a href="{{route('intro.new')}}">new to Colonia</a> page will answer some common questions.</p>
 
 <p>Discussion of the census data, its collection, or suggestions for additional features can take place on the <a href="">Discord Server</a>. This server also contains a bot (CensusBot) who can answer various questions about the region - extensive queries can be carried out by private message or in the <code>#bot</code> channel.</p>
 
-<p>If you notice the appearance of new systems, stations or factions, or find a system feature (e.g. a RES or an installation) not on the list, please mention it in the <code>#general</code> channel.</p>
+<p>If you notice the appearance of new systems, stations or factions, or find a system feature (e.g. a RES or an installation) not on the list, please mention it in the <code>#colonia-census</code> channel.</p>
 
 <h2>Bot commands</h2>
 <p>Census bot commands are all prefixed by a '!' - so, for example, to use the 'system' command, start your message with <kbd>!system</kbd>. Where a faction, system, or station name is required, typing the first letters is enough - e.g. <kbd>!faction Priv</kbd> instead of <kbd>!faction Privateer's Alliance Expeditionary Force</kbd></p>
