@@ -124,7 +124,7 @@ class DiscordBot extends Command
     private function registerSystemCommand() {
         $this->discord->registerCommand('system', function($message, $params) {
             $sname = trim(join(" ", $params));
-            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
                 return $sname." not known";
             } else {
@@ -176,7 +176,7 @@ class DiscordBot extends Command
     private function registerStationCommand() {
         $this->discord->registerCommand('station', function($message, $params) {
             $sname = trim(join(" ", $params));
-            $station = Station::where('name', 'like', $sname."%")->first();
+            $station = Station::where('name', 'like', $sname."%")->orderBy('name')->first();
             if (!$station) {
                 return $sname." not known";
             } else {
@@ -215,7 +215,7 @@ class DiscordBot extends Command
     private function registerFactionCommand() {
         $this->discord->registerCommand('faction', function($message, $params) {
             $fname = trim(join(" ", $params));
-            $faction = Faction::where('name', 'like', $fname."%")->first();
+            $faction = Faction::where('name', 'like', $fname."%")->orderBy('name')->first();
             if (!$faction) {
                 return $fname." not known";
             } else {
@@ -260,9 +260,9 @@ class DiscordBot extends Command
                 $date = null;
             }
             $sname = trim(join(" ", $params));
-            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                $faction = Faction::where('name', 'like', $sname."%")->first();
+                $faction = Faction::where('name', 'like', $sname."%")->orderBy('name')->first();
                 if (!$faction) {
                     return $sname." not known";
                 } else {
@@ -350,7 +350,7 @@ class DiscordBot extends Command
                 $date = null;
             }
             $sname = trim(join(" ", $params));
-            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
                 return $sname." not known";
             } else {
@@ -405,7 +405,7 @@ class DiscordBot extends Command
                     $result .= $feature->name."\n";
                 }
             } else {
-                $feature = Facility::where('type', 'System')->where('name', 'like', $fname."%")->first();
+                $feature = Facility::where('type', 'System')->where('name', 'like', $fname."%")->orderBy('name')->first();
                 if (!$feature) {
                     $result = "Feature `".$fname."` not known";
                 } else {
@@ -434,7 +434,7 @@ class DiscordBot extends Command
                     $result .= $feature->name."\n";
                 }
             } else {
-                $feature = Facility::where('type', 'Station')->where('name', 'like', $fname."%")->first();
+                $feature = Facility::where('type', 'Station')->where('name', 'like', $fname."%")->orderBy('name')->first();
                 if (!$feature) {
                     $result = "Feature `".$fname."` not known";
                 } else {
@@ -463,7 +463,7 @@ class DiscordBot extends Command
                     $result .= $economy->name."\n";
                 }
             } else {
-                $economy = Economy::where('name', 'like', $fname."%")->first();
+                $economy = Economy::where('name', 'like', $fname."%")->orderBy('name')->first();
                 if (!$economy) {
                     $result = "Economy `".$economy."` not known";
                 } else {
@@ -502,7 +502,7 @@ class DiscordBot extends Command
                     $result .= $government->name."\n";
                 }
             } else {
-                $government = Government::where('name', 'like', $fname."%")->first();
+                $government = Government::where('name', 'like', $fname."%")->orderBy('name')->first();
                 if (!$government) {
                     $result = "Government `".$government."` not known";
                 } else {
@@ -549,7 +549,7 @@ class DiscordBot extends Command
                     $result .= $state->name."\n";
                 }
             } else {
-                $state = State::where('name', 'like', $fname."%")->first();
+                $state = State::where('name', 'like', $fname."%")->orderBy('name')->first();
                 if (!$state) {
                     $result = "State `".$state."` not known";
                 } else {
@@ -592,10 +592,10 @@ class DiscordBot extends Command
             $sname = trim($system);
 
             $system = null;
-            $faction = Faction::where('name', 'like', $fname."%")->first();
+            $faction = Faction::where('name', 'like', $fname."%")->orderBy('name')->first();
             if (!$faction) {
                 if ($sname == "") {
-                    $system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->first();
+                    $system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->orderBy('name')->first();
                     if (!$system) {
                         return "Faction ".$fname." not found";
                     } else {
@@ -609,7 +609,7 @@ class DiscordBot extends Command
                 if ($sname == "") {
                     $system = $faction->system;
                 } else {
-                    $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+                    $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
                     if (!$system) {
                         return "System ".$sname." not found";
                     }
@@ -657,7 +657,7 @@ class DiscordBot extends Command
     private function registerMissionsCommand() {
         $this->discord->registerCommand('missions', function($message, $params) {
             $sname = trim(join(" ", $params));
-            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
                 return $sname." not known";
             } else {
@@ -857,15 +857,15 @@ class DiscordBot extends Command
                 $date->subYears(1286);
                 $query->where('date', $date);
                 $hname = "date ".$fname;
-            } else if ($system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->first()) {
+            } else if ($system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->orderBy('name')->first()) {
                 $query->where('location_type', 'App\\Models\\System')
                       ->where('location_id', $system->id);
                 $hname = "system ".$system->displayName();
-            } else if ($station = Station::where('name', 'like', $fname."%")->first()) {
+            } else if ($station = Station::where('name', 'like', $fname."%")->orderBy('name')->first()) {
                 $query->where('location_type', 'App\\Models\\Station')
                       ->where('location_id', $station->id);
                 $hname = "station ".$station->name;
-            } else if ($faction = Faction::where('name', 'like', $fname."%")->first()) {
+            } else if ($faction = Faction::where('name', 'like', $fname."%")->orderBy('name')->first()) {
                 $query->whereHas('faction', function($q) use ($faction) {
                     $q->where('id', $faction->id);
                 });
@@ -889,7 +889,7 @@ class DiscordBot extends Command
     private function registerExpansionsToCommand() {
         $this->discord->registerCommand('expansionsto', function($message, $params) {
             $sname = trim(join(" ", $params));
-            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->first();
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
                 return $sname." not known";
             } else {
