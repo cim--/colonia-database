@@ -89,7 +89,16 @@ class EDDNReader extends Command
                     // don't process Ogma and Ratri in the Sol bubble
                     return;
                 }
-
+                if (!isset($event['message']['timestamp'])) {
+                    return;
+                }
+                $generated = new Carbon($event['message']['timestamp']);
+                if ($generated->addHour()->isPast()) {
+                    $this->line("Ignoring old message ".$event['message']['timestamp']);
+                    // ignore data more than 1 hour old
+                    return;
+                }
+                
                 $system = System::where('name', $event['message']['StarSystem'])
                     ->orWhere('catalogue', $event['message']['StarSystem'])
                     ->first();
