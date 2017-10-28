@@ -197,6 +197,8 @@ class BaseController extends Controller
                 $pendingupdate[] = $faction;
             }
         }
+
+        $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
         
         return view('progress', [
             'target' => $target,
@@ -205,6 +207,7 @@ class BaseController extends Controller
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
             'pendingupdate' => $pendingupdate,
+            'reader' => $reader
         ]);
     }
 

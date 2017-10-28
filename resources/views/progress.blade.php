@@ -8,14 +8,19 @@
 
 @if (\App\Util::nearTick())
 
-<p class='alert alert-danger'><strong>Warning:</strong> The tick is
+<p class='alert alert-warning'><strong>Warning:</strong> The tick is
 expected to have occurred very recently. Use caution when updating
 influence and state information especially if there appears to be no
 visible change.</p>
 
 @endif
         
-
+@if ($reader)
+<p class='alert alert-info'>EDDN Reader is running</p>
+@else
+<p class='alert alert-danger'>EDDN Reader is offline. Please report this on Discord.</p>
+@endif
+    
 <p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update.</p>
   
 <h2>Systems needing influence update</h2>
