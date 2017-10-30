@@ -125,11 +125,13 @@
 
 	  <p>Colonia contains some unique or rare points of interest.</p>
 
-	  <p><a href="{{route('stations.show', 62)}}">Foster terminal</a> is a dockable megaship embedded in an ice ring. There are also three asteroid bases - <a href="{{route('stations.show', 56)}}">TolaGarf's Junkyard</a>, <a href="{{route('stations.show', 64)}}">Moore's Charm</a> and <a href="{{route('stations.show', 74)}}">Robardin Rock</a> - and <a href="{{route('stations.show', 68)}}">Bisley Landing</a> is a rare 'palm tree' Orbis.</p>
+	  <p><a href="{{route('stations.show', 62)}}">Foster terminal</a> is a dockable megaship embedded in an ice ring. There are also three asteroid bases - <a href="{{route('stations.show', 56)}}">TolaGarf's Junkyard</a>, <a href="{{route('stations.show', 64)}}">Moore's Charm</a> and <a href="{{route('stations.show', 74)}}">Robardin Rock</a>.</p>
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
 	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life has been discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>. There is also a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a</p>
+
+      <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
 	</div>
   </div>
 </div>
