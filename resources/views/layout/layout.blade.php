@@ -15,7 +15,7 @@
       </header>
       <div id='main'>
 
-		@if (session('status'))
+		@if (session('status') && is_array(session('status')))
 		@foreach (session('status') as $status => $message)
 		<div class='alert alert-{{$status}}'>
 		  {{$message}}
