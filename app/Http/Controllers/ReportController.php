@@ -46,6 +46,14 @@ class ReportController extends Controller
             ->type("horizontalBar")
             ->size(["height" => 20*($reports->count()+1), "width"=>1000])
             ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'top',
+                        ]
+                    ],
+                ],
                 "legend" => [
                     "display" => false,
                 ]
@@ -84,6 +92,14 @@ class ReportController extends Controller
             ->type("horizontalBar")
             ->size(["height" => 20*(count($reaches)+1), "width"=>1000])
             ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'top',
+                        ]
+                    ],
+                ],
                 "legend" => [
                     "display" => false,
                 ]
@@ -162,6 +178,7 @@ class ReportController extends Controller
                     'xAxes' => [
                         [
                             'stacked' => true,
+                            'position' => 'top',
                             'ticks' => [
                                 'min' => 0,
                                 'max' => 100
