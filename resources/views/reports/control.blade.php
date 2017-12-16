@@ -15,6 +15,7 @@
 	  <th>Orbitals</th>
 	  <th>Planet Bases</th>
 	  <th>Settlements</th>
+      <th title="Control of stations exporting trades goods">Production Control</th>
 	</tr>
   </thead>
   <tbody>
@@ -51,6 +52,15 @@
 		{{$faction->stations->where('gravity', '>', 0)
 		->filter(function($s) {
 		return !$s->stationclass->hasSmall;
+		})
+		->count()}}
+	  </td>
+	  <td>
+		{{$faction->stations->filter(function($s) {
+		return $s->stationclass->hasSmall;
+		})
+		->filter(function($s) {
+		return in_array($s->economy->name, ["Extraction", "Refinery", "Industrial", "High-Tech", "Agricultural", "Military"]);
 		})
 		->count()}}
 	  </td>
