@@ -5,7 +5,7 @@
 @section('content')
 
 
-{!! Form::open(['route' => 'trade.search']) !!}
+{!! Form::open(['route' => 'trade.search', 'method' => 'GET']) !!}
 
 <p>Select a reference station and a desired economy/state combination to trade with. (Selecting no states or economies is the same as selecting all of them)</p>
 <div id='tradesearch'>
@@ -18,7 +18,7 @@
   <div class='row'>
 	@foreach ($economies as $economy)
 	<div class='col-sm-3'>
-	  {!! Form::checkbox('economy['.$economy->id.']', $economy->id, isset($eparam[$economy->id]), ['id' => 'economy'.$economy->id])  !!}
+	  {!! Form::checkbox('e['.$economy->id.']', $economy->id, isset($eparam[$economy->id]), ['id' => 'economy'.$economy->id])  !!}
 	  @include($economy->icon)
 	  {!! Form::label('economy'.$economy->id, $economy->name) !!}
 	</div>
@@ -30,7 +30,7 @@
   <div class='row'>
 	@foreach ($states as $state)
 	<div class='col-sm-3'>
-	  {!! Form::checkbox('state['.$state->id.']', $state->id, isset($sparam[$state->id]), ['id' => 'state'.$state->id])  !!}
+	  {!! Form::checkbox('s['.$state->id.']', $state->id, isset($sparam[$state->id]), ['id' => 'state'.$state->id])  !!}
 	  @include($state->icon)
 	  {!! Form::label('state'.$state->id, $state->name) !!}
 	</div>

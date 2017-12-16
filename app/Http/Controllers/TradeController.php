@@ -28,8 +28,8 @@ class TradeController extends Controller
         $sparam = [];
         if ($request->input('reference')) {
             $search = [];
-            $eparam = $request->input('economy', []);
-            $sparam = $request->input('state', []);
+            $eparam = $request->input('e', []);
+            $sparam = $request->input('s', []);
             $reference = $request->input('reference');
             
             foreach ($stations as $station) {
