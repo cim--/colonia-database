@@ -501,25 +501,8 @@ class SystemController extends Controller
         
         $today = Carbon::now();
 
-        SystemReport::where('system_id', $system->id)
-            ->where('current', true)
-            ->update(['current' => false]);
+        Systemreport::file($system, $traffic, $bounties, $crime, $user->name);
         
-        $report = Systemreport::firstOrNew([
-            'date' => $today->format("Y-m-d 00:00:00"),
-            'system_id' => $system->id
-        ]);
-        $report->traffic = (int)$traffic;
-        $report->bounties = (int)$bounties;
-        $report->crime = (int)$crime;
-        $report->current = 1;
-        $report->save();
-
-        \Log::info("Report update", [
-            'system' => $system->displayName(),
-            'user' => $user->name
-        ]);
-
         return redirect()->route('systems.show', $system->id)->with('status',
         [
             'success' => 'Reports updated'

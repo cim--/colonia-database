@@ -71,6 +71,7 @@ class DiscordBot extends Command
         $this->registerCartographyCommand();
         $this->registerSummaryCommand();
         $this->registerHistoryCommand();
+        $this->registerAddReportCommand();
 
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -920,4 +921,37 @@ class DiscordBot extends Command
         ]);
     }
 
+    private function registerAddreportCommand() {
+        $this->discord->registerCommand('addreport', function($message, $params) {
+            $str = trim(join(" ", $params));
+            if (count(explode(";", $str)) != 4) {
+                return "All four parameters separated by ; are required";
+            }
+            list ($sname, $traffic, $crimes, $bounties) = explode(";", $str);
+            $traffic = trim($traffic);
+            $crimes = trim($crimes);
+            $bounties = trim($bounties);
+//            return "[$sname] [$traffic] [$crimes] [$bounties]";
+            if (!is_numeric($traffic) || !is_numeric($crimes) || !is_numeric($bounties)) {
+                return "Traffic, crimes and bounties must all be numeric";
+            }
+            if ($traffic < 0 || $crimes < 0 || $bounties < 0) {
+                return "Traffic, crimes and bounties must all be positive";
+            }
+            $system = System::where('name', $sname)->orWhere('catalogue', $sname)->orderBy('name')->first();
+            if (!$system) {
+                return $sname." not known (must be exact)";
+            }
+
+            Systemreport::file($system, $traffic, $bounties, $crimes, "via Discord");
+
+
+            return "Reports added for ".$system->displayName().". Thank you.";
+        }, [
+            'description' => "Add traffic, crimes and bounties reports for today to a system.\nYou can get these reports from the local Galnet when docked at a station. Bounties should be the credit total, not the number of bounties collected.\ne.g. addreport Barnard's Star ; 182 ; 402752 ; 76399",
+            'usage' => '<system name> ; <traffic> ; <crimes> ; <bounties>'
+        ]);
+    }
+
+            
 }
