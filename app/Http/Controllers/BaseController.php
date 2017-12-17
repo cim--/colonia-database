@@ -10,6 +10,7 @@ use App\Models\Faction;
 use App\Models\Station;
 use App\Models\History;
 use App\Models\Influence;
+use App\Models\Alert;
 
 class BaseController extends Controller
 {
@@ -199,6 +200,8 @@ class BaseController extends Controller
         }
 
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
+
+        $alerts = Alert::where('processed', false)->orderBy('created_at')->get();
         
         return view('progress', [
             'target' => $target,
@@ -207,10 +210,28 @@ class BaseController extends Controller
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
             'pendingupdate' => $pendingupdate,
-            'reader' => $reader
+            'reader' => $reader,
+            'alerts' => $alerts
         ]);
     }
 
+    public function acknowledgeAlert(Alert $alert) {
+        $user = \Auth::user();
+        if (!$user) {
+            \App::abort(403);
+        }
+        if ($user->rank < 2) {
+            \App::abort(403);
+        } 
+        
+        $alert->processed = true;
+        $alert->save();
+        return redirect()->route('progress')->with('status',
+        [
+            'success' => 'Alert acknowledged'
+        ]);
+    }
+    
     public function about() {
         return view('intro/about');
     }

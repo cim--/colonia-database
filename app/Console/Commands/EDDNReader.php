@@ -5,10 +5,12 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\System;
+use App\Models\Station;
 use App\Models\Faction;
 use App\Models\State;
 use App\Models\Influence;
 use App\Models\Facility;
+use App\Models\Alert;
 
 class EDDNReader extends Command
 {
@@ -84,66 +86,70 @@ class EDDNReader extends Command
     private function process($event)
     {
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
+            if (!isset($event['message']['timestamp'])) {
+                return;
+            }
+            $generated = new Carbon($event['message']['timestamp']);
+            if ($generated->addHour()->isPast()) {
+                // ignore data more than 1 hour old
+                return;
+            }
             if ($event['message']['event'] == "FSDJump") {
                 if ($event['message']['StarPos'][2] < 10000) {
                     // don't process Ogma and Ratri in the Sol bubble
                     return;
                 }
-                if (!isset($event['message']['timestamp'])) {
-                    return;
-                }
-                $generated = new Carbon($event['message']['timestamp']);
-                if ($generated->addHour()->isPast()) {
-                    $this->line("Ignoring old message ".$event['message']['timestamp']);
-                    // ignore data more than 1 hour old
-                    return;
-                }
-                
-                $system = System::where('name', $event['message']['StarSystem'])
-                    ->orWhere('catalogue', $event['message']['StarSystem'])
-                    ->first();
-                if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
-
-                    \Log::info("Incoming data", [
-                        'system' => $system->displayName()
-                    ]);
-                    
-                    $this->line("[".date("YmdHis")."] Incoming event for ".$system->displayName());
-                    $factions = $event['message']['Factions'];
-                    $influences = [];
-                    foreach ($factions as $faction) {
-                        if ($faction['Name'] == "Pilots Federation Local Branch") {
-                            // virtual faction, ignore
-                            continue;
-                        }
-                        $fo = Faction::where('name', $faction['Name'])->first();
-                        if (!$fo) {
-                            \Log::error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
-                            $this->error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
-                            return;
-                        }
-                        $inf = round($faction['Influence'], 3)*100;
-                        $faction['FactionState'] = $this->renameState($faction['FactionState']);
-                        $state = State::where('name', $faction['FactionState'])->first();
-                        if (!$state) {
-                            \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
-                            $this->error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
-                            return;
-                        }
-                        $pending = [];
-                        if (isset($faction['PendingStates'])) {
-                            $pending = $faction['PendingStates'];
-                        }
-                        $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
-                    }
-                    usort($influences, function($a, $b) {
-                        return $b['influence'] - $a['influence'];
-                    });
-                    $this->updateInfluences($system, $influences);
-
-                    $this->updateSecurity($system, $event['message']);
-                }
+                $this->processFSDJump($event);
+            } else if ($event['message']['event'] == "Docked") {
+                $this->processStationDocking($event);
             }
+        }
+    }
+
+    private function processFSDJump($event) {
+        $system = System::where('name', $event['message']['StarSystem'])
+            ->orWhere('catalogue', $event['message']['StarSystem'])
+            ->first();
+        if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
+
+            \Log::info("Incoming data", [
+                'system' => $system->displayName()
+            ]);
+                    
+            $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
+            $factions = $event['message']['Factions'];
+            $influences = [];
+            foreach ($factions as $faction) {
+                if ($faction['Name'] == "Pilots Federation Local Branch") {
+                    // virtual faction, ignore
+                    continue;
+                }
+                $fo = Faction::where('name', $faction['Name'])->first();
+                if (!$fo) {
+                    \Log::error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
+                    $this->error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
+                    return;
+                }
+                $inf = round($faction['Influence'], 3)*100;
+                $faction['FactionState'] = $this->renameState($faction['FactionState']);
+                $state = State::where('name', $faction['FactionState'])->first();
+                if (!$state) {
+                    \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
+                    $this->error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
+                    return;
+                }
+                $pending = [];
+                if (isset($faction['PendingStates'])) {
+                    $pending = $faction['PendingStates'];
+                }
+                $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
+            }
+            usort($influences, function($a, $b) {
+                return $b['influence'] - $a['influence'];
+            });
+            $this->updateInfluences($system, $influences);
+
+            $this->updateSecurity($system, $event['message']);
         }
     }
 
@@ -153,6 +159,7 @@ class EDDNReader extends Command
             return "Civil Unrest";
         }
         if ($state == "CivilWar") {
+            // no real need to distinguish
             return "War";
         }
         return $state;
@@ -304,8 +311,11 @@ class EDDNReader extends Command
         if (isset($message['Population'])) {
             $population = $message['Population'];
             if ($population > 0) {
-                $system->population = $population;
-                $system->save();
+                if ($population != $system->population) {
+                    Alert::alert($system->displayName()." population change reported from ".$system->population." to ".$population);
+                    $system->population = $population;
+                    $system->save();
+                } 
             } else {
                 $this->error("Population 0 reported by Journal");
             }
@@ -350,4 +360,25 @@ class EDDNReader extends Command
         }
     }
 
+    private function processStationDocking($event) {
+        $system = System::where('name', $event['message']['StarSystem'])
+            ->orWhere('catalogue', $event['message']['StarSystem'])
+            ->first();
+        if (!$system) {
+            return;
+        }
+        
+        $station = Station::where('name', $event['message']['StationName'])
+            ->where('system_id', $system->id)->first();
+        if (!$station) {
+            Alert::alert("Unknown station ".$event['message']['StationName']." in ".$system->displayName());
+            return;
+        }
+        $this->line("[".date("YmdHis")."] Docking event for ".$system->displayName().": ".$station->name);
+
+        if (strtolower($station->faction->name) != strtolower($event['message']['StationFaction'])) {
+            Alert::alert("Ownership changed ".$station->name." was '".$station->faction->name."' is now '".$event['message']['StationFaction']."'");
+            // for now, don't automatically update
+        }
+    }
 }

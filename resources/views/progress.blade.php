@@ -100,5 +100,21 @@ visible change.</p>
 <p><strong>All systems updated!</strong></p>
 @endif
 
+@if($userrank >= 2)
+<h2>Alerts</h2>
+@if ($alerts->count() == 0)
+<p><strong>No pending alerts!</strong></p>
+@else
+<ul>
+  @foreach ($alerts as $alert)
+  <li>{{$alert->alert}}
+	{!! Form::open(['route' => ['acknowledge', $alert->id], 'method'=>'Delete']) !!}
+	{!! Form::submit("X") !!}
+	{!! Form::close() !!}
+  </li>
+  @endforeach
+</ul>
+@endif
+@endif
 
 @endsection

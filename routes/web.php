@@ -16,6 +16,7 @@ Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout2');
 Route::get('/', 'BaseController@index')->name('index');
 Route::get('/progress', 'BaseController@progress')->name('progress');
+Route::delete('/alert/{alert}', 'BaseController@acknowledgeAlert')->name('acknowledge');
 
 Route::get('/about', 'BaseController@about')->name('intro.about');
 Route::get('/new', 'BaseController@newToColonia')->name('intro.new');
