@@ -126,16 +126,20 @@ class EDDNReader extends Command
                 }
                 $fo = Faction::where('name', $faction['Name'])->first();
                 if (!$fo) {
-                    \Log::error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
-                    $this->error("Unrecognised faction ".$faction['Name']." in ".$system->displayName());
+                    $error = "Unrecognised faction ".$faction['Name']." in ".$system->displayName();
+                    Alert::alert($error);
+                    \Log::error($error);
+                    $this->error($error);
                     return;
                 }
                 $inf = round($faction['Influence'], 3)*100;
                 $faction['FactionState'] = $this->renameState($faction['FactionState']);
                 $state = State::where('name', $faction['FactionState'])->first();
                 if (!$state) {
-                    \Log::error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
-                    $this->error("Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName());
+                    $error = "Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName();
+                    Alert::alert($error);
+                    \Log::error($error);
+                    $this->error($error);
                     return;
                 }
                 $pending = [];
@@ -150,6 +154,20 @@ class EDDNReader extends Command
             $this->updateInfluences($system, $influences);
 
             $this->updateSecurity($system, $event['message']);
+        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
+            $traditional = new \stdClass;
+            $traditional->x = $event['message']['StarPos'][0];
+            $traditional->y = $event['message']['StarPos'][1];
+            $traditional->z = $event['message']['StarPos'][2];
+            
+            $coords = \App\Util::coloniaCoordinates($traditional);
+            $colonia = new \stdClass;
+            $colonia->x = 0;
+            $colonia->y = 0;
+            $colonia->z = 0;
+            if (\App\Util::distance($coords, $colonia) < 1000) {
+                Alert::alert("New inhabited system ".$event['message']['StarSystem']);
+            }
         }
     }
 
@@ -247,6 +265,7 @@ class EDDNReader extends Command
             $statename = $this->renameState($entry['State']);
             $state = State::where('name', $statename)->first();
             if (!$state) {
+                Alert::alert("Unrecognised pending state $statename");
                 $this->error("Unrecognised pending state $statename");
                 return;
             }
