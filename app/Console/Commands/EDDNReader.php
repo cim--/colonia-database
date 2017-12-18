@@ -332,8 +332,9 @@ class EDDNReader extends Command
             if ($population > 0) {
                 if ($population != $system->population) {
                     Alert::alert($system->displayName()." population change reported from ".$system->population." to ".$population);
-                    $system->population = $population;
-                    $system->save();
+// seeing some odd events here
+//                    $system->population = $population;
+//                    $system->save();
                 } 
             } else {
                 $this->error("Population 0 reported by Journal");
