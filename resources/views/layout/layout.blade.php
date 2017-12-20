@@ -34,6 +34,12 @@
 		<p>
 		  The database is open source software under the GNU GPL version 3 - <a href='https://github.com/cim--/colonia-database'>source available on Github</a> - <a href='/cdb.sql'>daily database backup</a>
 		</p>
+		<p>
+		  The site is created using data from Elite: Dangerous, with the permission of Frontier Developments plc, for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments.
+		</p>
+		<p>
+		  The site uses cookies for essential purposes only. No personal data is stored in the cookies unless you use the Login system. The majority of site features do not require a login, and no personal data will be shared with any third party.
+		</p>
       </footer>
 	</body>
 </html>
