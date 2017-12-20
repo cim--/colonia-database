@@ -82,7 +82,7 @@ visible change.</p>
 @if (count($reportsupdate) > 0)
 <p>The following systems do not have report updates today. You will need to dock at a station in the system to view traffic, crime and bounty reports in the local Galnet. This does not need daily updates for everywhere!</p>
 @if($userrank == 0)
-<p>This data can only be updated by logging in and entering it manually.</p>
+<p>This data can only be updated by logging in and entering it manually, or by using the <code>!addreport</code> command.</p>
 @endif
 <ul class='compact'>
   @foreach ($reportsupdate as $system)
