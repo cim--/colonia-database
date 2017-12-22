@@ -11,6 +11,8 @@ use App\Models\State;
 use App\Models\Influence;
 use App\Models\Facility;
 use App\Models\Alert;
+use App\Models\Commodity;
+use App\Models\Reserve;
 
 class EDDNReader extends Command
 {
@@ -85,24 +87,26 @@ class EDDNReader extends Command
 
     private function process($event)
     {
+        if (!isset($event['message']['timestamp'])) {
+            return;
+        }
+        $generated = new Carbon($event['message']['timestamp']);
+        if ($generated->addHour()->isPast()) {
+            // ignore data more than 1 hour old
+            return;
+        }
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
-            if (!isset($event['message']['timestamp'])) {
-                return;
-            }
-            $generated = new Carbon($event['message']['timestamp']);
-            if ($generated->addHour()->isPast()) {
-                // ignore data more than 1 hour old
-                return;
-            }
             if ($event['message']['event'] == "FSDJump") {
                 if ($event['message']['StarPos'][2] < 10000) {
-                    // don't process Ogma and Ratri in the Sol bubble
+                    // in case of duplicate names
                     return;
                 }
                 $this->processFSDJump($event);
             } else if ($event['message']['event'] == "Docked") {
                 $this->processStationDocking($event);
             }
+        } else if ($event['$schemaRef'] == "https://eddn.edcd.io/schemas/commodity/3") {
+            $this->processCommodityReserveEvent($event);
         }
     }
 
@@ -401,4 +405,42 @@ class EDDNReader extends Command
             // for now, don't automatically update
         }
     }
+
+    private function processCommodityReserveEvent($event) {
+        $system = System::where('name', $event['message']['systemName'])
+            ->orWhere('catalogue', $event['message']['systemName'])
+            ->first();
+        if (!$system) {
+            return;
+        }
+        
+        $station = Station::where('name', $event['message']['stationName'])
+            ->where('system_id', $system->id)->first();
+        if (!$station) {
+            // no alert - the Docking event should already have done it
+            return;
+        }
+        $state = $station->faction->currentState($station->system)->id;
+
+        Reserve::where('station_id', $station->id)->update(['current' => false]);
+
+        foreach ($event['message']['commodities'] as $cdata) {
+            $commodity = Commodity::firstOrCreate(['name' => $cdata['name']]);
+
+            $reserve = new Reserve;
+            $reserve->current = true;
+            $reserve->date = new Carbon($event['message']['timestamp']);
+            $reserve->commodity_id = $commodity->id;
+            $reserve->station_id = $station->id;
+            $reserve->state_id = $state->id;
+
+            if ($event['message']['stock'] > 0) {
+                $reserve->reserves = $event['message']['stock'];
+            } else {
+                $reserve->reserves = -$event['message']['demand'];
+            }
+            $reserve->save();
+        }
+    }
+    
 }
