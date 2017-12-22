@@ -81,7 +81,7 @@ class TradeController extends Controller
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
             $crow = [];
-            $crow['name'] = $commodity->name;
+            $crow['name'] = preg_replace("/([a-z])([A-Z])/",'$1 $2',$commodity->name);
 
             $stock = 0;
             $demand = 0;
