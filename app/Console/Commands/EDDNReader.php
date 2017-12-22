@@ -420,7 +420,9 @@ class EDDNReader extends Command
             // no alert - the Docking event should already have done it
             return;
         }
-        $state = $station->faction->currentState($station->system)->id;
+        $this->line("[".date("YmdHis")."] Commodity event for ".$system->displayName().": ".$station->name);
+
+        $state = $station->faction->currentState($station->system);
 
         Reserve::where('station_id', $station->id)->update(['current' => false]);
 
@@ -434,10 +436,10 @@ class EDDNReader extends Command
             $reserve->station_id = $station->id;
             $reserve->state_id = $state->id;
 
-            if ($event['message']['stock'] > 0) {
-                $reserve->reserves = $event['message']['stock'];
+            if ($cdata['stock'] > 0) {
+                $reserve->reserves = $cdata['stock'];
             } else {
-                $reserve->reserves = -$event['message']['demand'];
+                $reserve->reserves = -$cdata['demand'];
             }
             $reserve->save();
         }

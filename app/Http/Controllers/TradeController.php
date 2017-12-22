@@ -8,6 +8,8 @@ use App\Models\System;
 use App\Models\State;
 use App\Models\Economy;
 use App\Models\Station;
+use App\Models\Commodity;
+use App\Models\Reserve;
 
 class TradeController extends Controller
 {
@@ -67,5 +69,54 @@ class TradeController extends Controller
         ]);
     }
 
-    
+    public function reserves() {
+        $commodities = Commodity::with(['reserves' => function($q) {
+                $q->where('current', true);
+            }, 'reserves.station', 'reserves.station.economy'])
+            ->orderBy('name')->get();
+
+        $cdata = [];
+        $total = 0;
+        $stations = [];
+        $oldest = Carbon::now();
+        foreach ($commodities as $commodity) {
+            $crow = [];
+            $crow['name'] = $commodity->name;
+
+            $stock = 0;
+            $demand = 0;
+            $imported = [];
+            $exported = [];
+            foreach ($commodity->reserves as $reserve) {
+                $stations[$reserve->station_id] = true;
+                $total += $reserve->reserves;
+                if ($reserve->reserves > 0) {
+                    $stock += $reserve->reserves;
+                    $exported[$reserve->station->economy->id] = $reserve->station->economy;
+                } else {
+                    $demand -= $reserve->reserves;
+                    $imported[$reserve->station->economy->id] = $reserve->station->economy;
+                }
+                if ($reserve->date->lt($oldest)) {
+                    $oldest = $reserve->date;
+                }
+            }
+            $crow['stock'] = $stock;
+            $crow['demand'] = $demand;
+            $crow['exported'] = $exported;
+            $crow['imported'] = $imported;
+
+            $cdata[] = $crow;
+        }
+
+        $totalstations = Station::count();
+        
+        return view('trade/reserves', [
+            'commodities' => $cdata,
+            'total' => $total,
+            'stations' => count($stations),
+            'totalstations' => $totalstations,
+            'oldest' => $oldest
+        ]);
+    }
 }

@@ -48,7 +48,7 @@
 @if ($search !== null)
 
 <div id='traderesults'>
-  <table class='table table-bordered datatable'>
+  <table class='table table-bordered datatable' data-page-length='25'>
 	<thead>
 	  <tr><th>Distance (LY)</th><th>System</th><th>Station</th><th>Type</th><th>Economy</th><th>Faction</th></tr>
 	</thead>

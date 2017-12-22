@@ -32,10 +32,11 @@
 		<li><a href="{{route('reports.states')}}">States</a></li>
 	  </ul>
 	</li>
-	<li><div>Activities</div>
+	<li><div>Economy</div>
 	  <ul>
-		<li><a href="{{route('missions.index')}}">Missions</a></li>
 		<li><a href="{{route('trade')}}">Trading</a></li>
+		<li><a href="{{route('reserves')}}">Reserves</a></li>
+		<li><a href="{{route('missions.index')}}">Missions</a></li>
 	  </ul>
 	</li>
 	<li><div>Contributors</div>
