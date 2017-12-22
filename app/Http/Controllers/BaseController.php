@@ -188,6 +188,14 @@ class BaseController extends Controller
                 $q->where('date', $today->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
 
+        $marketsupdate = Station::whereDoesntHave('reserves', function($q) use ($today) {
+            $q->where('date', $today->format("Y-m-d 00:00:00"));
+        })->whereHas('stationclass', function($q) {
+            $q->where('hasSmall', true)
+              ->orWhere('hasMedium', true)
+              ->orWhere('hasLarge', true);
+        })->orderBy('name')->get();
+
         $pendingupdate = [];
         $factions = Faction::with('states')->orderBy('name')->get();
         foreach ($factions as $faction) {
@@ -210,6 +218,7 @@ class BaseController extends Controller
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
             'pendingupdate' => $pendingupdate,
+            'marketsupdate' => $marketsupdate,
             'reader' => $reader,
             'alerts' => $alerts
         ]);

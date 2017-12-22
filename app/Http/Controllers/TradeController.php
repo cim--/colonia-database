@@ -109,7 +109,11 @@ class TradeController extends Controller
             $cdata[] = $crow;
         }
 
-        $totalstations = Station::count();
+        $totalstations = Station::whereHas('stationclass', function($q) {
+            $q->where('hasSmall', true)
+              ->orWhere('hasMedium', true)
+              ->orWhere('hasLarge', true);
+        })->count();
         
         return view('trade/reserves', [
             'commodities' => $cdata,
