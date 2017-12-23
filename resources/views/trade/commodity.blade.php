@@ -1,13 +1,21 @@
 @extends('layout/layout')
 
+@if ($station !== null)
+@section('title', 'Regional Reserves - '.$commodity->displayName().' - '.$station->name)
+@else 
 @section('title', 'Regional Reserves - '.$commodity->displayName())
+@endif
 
 @section('content')
 
-<p>Total estimated reserves: {{$reserves->filter(function($v) { return $v->stock > 0; })->sum('reserves') }}</p>
-<p>Total estimated demand: {{-$reserves->filter(function($v) { return $v->stock < 0; })->sum('reserves') }}</p>
+<p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}</p>
+<p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}</p>
 
-<table class='table table-bordered datatable' data-page-length='25'>
+<table class='table table-bordered datatable' data-page-length='25'
+	   @if($station !== null)
+	   data-order='[[5, "asc"]]'
+	   @endif
+	   >
   <thead>
 	<tr>
 	  <th>System</th>
@@ -15,6 +23,9 @@
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Price</th>
+	  @if ($station !== null)
+	  <th>Distance to {{$station->name}} (LY)</th>
+	  @endif
 	</tr>
   </thead>
   <tbody>
@@ -26,7 +37,7 @@
 		</a>
 	  </td>
 	  <td>
-		<a href="{{route('stations.show', $reserve->station->id)}}">
+		<a href="{{route('reserves.commodity.reference', [$reserve->commodity_id, $reserve->station->id])}}">
 		  {{$reserve->station->name}}
 		</a>
 		@include($reserve->station->economy->icon)
@@ -48,6 +59,11 @@
 	  <td>
 		{{$reserve->price}}
 	  </td>
+	  @if ($station !== null)
+	  <td>
+		{{number_format($station->system->distanceTo($reserve->station->system), 2)}}
+	  </td>
+	  @endif
 	</tr>
 	@endforeach
   </tbody>

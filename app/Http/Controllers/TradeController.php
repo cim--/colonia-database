@@ -145,6 +145,18 @@ class TradeController extends Controller
         return view('trade/commodity', [
             'commodity' => $commodity,
             'reserves' => $reserves,
+            'station' => null
+        ]);
+        
+    }
+
+    public function commodityWithReference(Commodity $commodity, Station $station) {
+        $reserves = $commodity->reserves()->where('current', true)->with('station', 'station.system', 'station.economy')->get();
+
+        return view('trade/commodity', [
+            'commodity' => $commodity,
+            'reserves' => $reserves,
+            'station' => $station
         ]);
         
     }

@@ -109,6 +109,12 @@ Route::post('/trade', [
     'uses' => 'TradeController@index'
 ]);
 
+
+Route::get('/reserves/{commodity}/{station}', [
+    'as' => 'reserves.commodity.reference',
+    'uses' => 'TradeController@commodityWithReference'
+]);
+
 Route::get('/reserves/{commodity}', [
     'as' => 'reserves.commodity',
     'uses' => 'TradeController@commodity'
