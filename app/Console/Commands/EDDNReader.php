@@ -438,8 +438,10 @@ class EDDNReader extends Command
 
             if ($cdata['stock'] > 0) {
                 $reserve->reserves = $cdata['stock'];
+                $reserve->price = $cdata['buyPrice'];
             } else {
                 $reserve->reserves = -$cdata['demand'];
+                $reserve->price = $cdata['sellPrice'];
             }
             $reserve->save();
         }

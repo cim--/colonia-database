@@ -85,6 +85,8 @@ class TradeController extends Controller
 
             $stock = 0;
             $demand = 0;
+            $bestbuy = null;
+            $bestsell = null;
             $imported = [];
             $exported = [];
             foreach ($commodity->reserves as $reserve) {
@@ -93,9 +95,19 @@ class TradeController extends Controller
                 if ($reserve->reserves > 0) {
                     $stock += $reserve->reserves;
                     $exported[$reserve->station->economy->id] = $reserve->station->economy;
+                    if ($bestbuy === null || $bestbuy > $reserve->price) {
+                        if ($reserve->price !== null) {
+                            $bestbuy = $reserve->price;
+                        }
+                    }
                 } else {
                     $demand -= $reserve->reserves;
                     $imported[$reserve->station->economy->id] = $reserve->station->economy;
+                    if ($bestsell === null || $bestsell < $reserve->price) {
+                        if ($reserve->price !== null) {
+                            $bestsell = $reserve->price;
+                        }
+                    }
                 }
                 if ($reserve->date->lt($oldest)) {
                     $oldest = $reserve->date;
@@ -105,7 +117,9 @@ class TradeController extends Controller
             $crow['demand'] = $demand;
             $crow['exported'] = $exported;
             $crow['imported'] = $imported;
-
+            $crow['buy'] = $bestbuy;
+            $crow['sell'] = $bestsell;
+            
             $cdata[] = $crow;
         }
 

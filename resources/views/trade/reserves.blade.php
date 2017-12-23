@@ -32,6 +32,8 @@
 	  <th>Surplus</th>
 	  <th>Exported</th>
 	  <th>Imported</th>
+	  <th>Buy</th>
+	  <th>Sell</th>
 	</tr>
   </thead>
   <tbody>
@@ -65,6 +67,8 @@
 		@include($import->icon)
 		@endforeach
 	  </td>
+      <td>{{$commodity['buy']}}</td>
+	  <td>{{$commodity['sell']}}</td>
 	</tr>
 	@endforeach
   </tbody>
