@@ -88,6 +88,8 @@ class TradeController extends Controller
             $demand = 0;
             $bestbuy = null;
             $bestsell = null;
+            $bestbuyplace = null;
+            $bestsellplace = null;
             $imported = [];
             $exported = [];
             foreach ($commodity->reserves as $reserve) {
@@ -99,6 +101,7 @@ class TradeController extends Controller
                     if ($bestbuy === null || $bestbuy > $reserve->price) {
                         if ($reserve->price !== null) {
                             $bestbuy = $reserve->price;
+                            $bestbuyplace = $reserve->station->name;
                         }
                     }
                 } else {
@@ -107,6 +110,7 @@ class TradeController extends Controller
                     if ($bestsell === null || $bestsell < $reserve->price) {
                         if ($reserve->price !== null) {
                             $bestsell = $reserve->price;
+                            $bestsellplace = $reserve->station->name;
                         }
                     }
                 }
@@ -120,6 +124,8 @@ class TradeController extends Controller
             $crow['imported'] = $imported;
             $crow['buy'] = $bestbuy;
             $crow['sell'] = $bestsell;
+            $crow['buyplace'] = $bestbuyplace;
+            $crow['sellplace'] = $bestsellplace;
             
             $cdata[] = $crow;
         }

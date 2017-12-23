@@ -71,8 +71,8 @@
 		@include($import->icon)
 		@endforeach
 	  </td>
-      <td>{{$commodity['buy']}}</td>
-	  <td>{{$commodity['sell']}}</td>
+      <td title='{{$commodity['buyplace']}}'>{{$commodity['buy']}}</td>
+	  <td title='{{$commodity['sellplace']}}'>{{$commodity['sell']}}</td>
 	</tr>
 	@endforeach
   </tbody>
