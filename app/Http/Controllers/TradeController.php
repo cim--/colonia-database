@@ -81,7 +81,8 @@ class TradeController extends Controller
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
             $crow = [];
-            $crow['name'] = preg_replace("/([a-z])([A-Z])/",'$1 $2',$commodity->name);
+            $crow['id'] = $commodity->id;
+            $crow['name'] = $commodity->displayName();
 
             $stock = 0;
             $demand = 0;
@@ -136,5 +137,15 @@ class TradeController extends Controller
             'totalstations' => $totalstations,
             'oldest' => $oldest
         ]);
+    }
+
+    public function commodity(Commodity $commodity) {
+        $reserves = $commodity->reserves()->where('current', true)->with('station', 'station.system', 'station.economy')->get();
+
+        return view('trade/commodity', [
+            'commodity' => $commodity,
+            'reserves' => $reserves,
+        ]);
+        
     }
 }

@@ -39,7 +39,11 @@
   <tbody>
 	@foreach ($commodities as $commodity)
 	<tr>
-	  <td>{{$commodity['name']}}</td>
+	  <td>
+		<a href="{{route('reserves.commodity', $commodity['id'])}}">
+		  {{$commodity['name']}}
+		</a>
+	  </td>
 	  <td>{{$commodity['stock']}}</td>
 	  <td>{{$commodity['demand']}}</td>
 	  @if ($commodity['demand'] > $commodity['stock'])
