@@ -26,6 +26,7 @@
 	  @if ($station !== null)
 	  <th>Distance to {{$station->name}} (LY)</th>
 	  @endif
+	  <th>Updated at</th>
 	</tr>
   </thead>
   <tbody>
@@ -64,6 +65,9 @@
 		{{number_format($station->system->distanceTo($reserve->station->system), 2)}}
 	  </td>
 	  @endif
+	  <td>
+		{{$reserve->created_at->diffForHumans()}}
+	  </td>
 	</tr>
 	@endforeach
   </tbody>
