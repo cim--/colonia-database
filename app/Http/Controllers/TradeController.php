@@ -70,13 +70,16 @@ class TradeController extends Controller
     }
 
     public function reserves() {
-        $commodities = Commodity::with(['reserves' => function($q) {
+        $commodities = Commodity::whereHas('reserves', function($q) {
+                $q->where('current', true);
+            })->with(['reserves' => function($q) {
                 $q->where('current', true);
             }, 'reserves.station', 'reserves.station.economy'])
-            ->orderBy('name')->get();
+               ->orderBy('name')->get();
 
         $cdata = [];
         $total = 0;
+        $tradetotal = 0;
         $stations = [];
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
@@ -126,6 +129,9 @@ class TradeController extends Controller
             $crow['sell'] = $bestsell;
             $crow['buyplace'] = $bestbuyplace;
             $crow['sellplace'] = $bestsellplace;
+            if ($bestbuyplace != null) {
+                $tradetotal += $stock - $demand;
+            }
             
             $cdata[] = $crow;
         }
@@ -139,6 +145,7 @@ class TradeController extends Controller
         return view('trade/reserves', [
             'commodities' => $cdata,
             'total' => $total,
+            'tradetotal' => $tradetotal,
             'stations' => count($stations),
             'totalstations' => $totalstations,
             'oldest' => $oldest

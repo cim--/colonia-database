@@ -13,7 +13,15 @@
   <span class='deficit'>{{number_format($total)}}</span>
   @endif
   </strong>
-  tonnes.
+  tonnes. (
+  <strong>
+  @if ($tradetotal >= 0)
+  <span class='surplus'>{{number_format($tradetotal)}}</span>
+  @else
+  <span class='deficit'>{{number_format($tradetotal)}}</span>
+  @endif
+  </strong>
+  tonnes excluding mined/salvaged/etc. goods)
 </p>
 
 @if ($totalstations > $stations)
