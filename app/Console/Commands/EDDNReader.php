@@ -423,7 +423,16 @@ class EDDNReader extends Command
         $this->line("[".date("YmdHis")."] Commodity event for ".$system->displayName().": ".$station->name);
 
         $state = $station->faction->currentState($station->system);
-
+        if ($state->name == "None") {
+            $states = $station->faction->currentStates();
+            foreach ($states as $otherstate) {
+                if ($otherstate->name == "War" || $otherstate->name == "Election") {
+                    // treat conflict elsewhere as active here
+                    $state = $otherstate;
+                }
+            }
+        }
+        
         Reserve::where('station_id', $station->id)->update(['current' => false]);
 
         foreach ($event['message']['commodities'] as $cdata) {
