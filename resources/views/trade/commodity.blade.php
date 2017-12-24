@@ -43,6 +43,15 @@
 		</a>
 		@include($reserve->station->economy->icon)
 	  </td>
+	  @if ($reserve->station->currentState()->name == "Lockdown")
+	  <td>Lockdown</td>
+	  <td>
+		<span class='lockdown'>{{$reserve->reserves}}</span>
+	  </td>
+	  <td>
+		<span class='lockdown'>{{$reserve->price}}</span>
+	  </td>
+	  @else
 	  <td>
 		@if ($reserve->reserves > 0)
 		Exports
@@ -60,6 +69,7 @@
 	  <td>
 		{{$reserve->price}}
 	  </td>
+	  @endif
 	  @if ($station !== null)
 	  <td>
 		{{number_format($station->system->distanceTo($reserve->station->system), 2)}}

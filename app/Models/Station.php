@@ -44,4 +44,9 @@ class Station extends Model
         return $this->name;
     }
 //
+
+    public function currentState()
+    {
+        return $this->faction->currentState($this->system);
+    }
 }

@@ -103,11 +103,15 @@ visible change.</p>
 <h2>Stations needing market updates</h2>
 @if (count($marketsupdate) > 0)
 <p>The following stations do not have market updates today. You will need to dock at the station using a Companion API tool to upload market data. This does not need daily updates for everywhere!</p>
+<p>Stations currently in Lockdown cannot be updated.</p>
 <ul class='compact'>
   @foreach ($marketsupdate as $station)
   <li>
 	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
 	@include('progressage', ['date' => \App\Util::age($station->reserves()->where('current', true)->max('date'))])
+	@if ($station->currentState()->name == "Lockdown")
+	@include($station->currentState()->icon)
+	@endif
   </li>
   @endforeach
 </ul>
