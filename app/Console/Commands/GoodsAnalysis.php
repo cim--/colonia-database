@@ -85,7 +85,7 @@ class GoodsAnalysis extends Command
         foreach ($stockdata as $sid => $rdata) {
             $stockavg = $this->mean($rdata);
             $priceavg = $this->mean($pricedata[$sid]);
-            $this->line($states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr.");
+            $this->line($states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
         }
         
     }
