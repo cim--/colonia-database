@@ -35,6 +35,8 @@ class GoodsAnalysis extends Command
         parent::__construct();
     }
 
+    protected $commodityinfo = [];
+    
     /**
      * Execute the console command.
      *
@@ -42,6 +44,15 @@ class GoodsAnalysis extends Command
      */
     public function handle()
     {
+        try {
+            $this->runAnalysis();
+        } catch (\Throwable $e) {
+            print($e->getTraceAsString());
+            throw($e);
+        }
+    }
+
+    private function runAnalysis() {
         $stations = Station::whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
@@ -49,15 +60,22 @@ class GoodsAnalysis extends Command
         })->with('economy')->get();
 
         $commodities = Commodity::all();
-        
-        foreach ($stations as $station) {
-            foreach ($commodities as $commodity) {
-                $this->analyse($station, $commodity);
+
+        foreach ($commodities as $commodity) {
+            $this->commodityinfo[$commodity->id] = [
+                'commodity' => $commodity,
+                'statechanges' => []
+            ];
+            foreach ($stations as $station) {
+                $this->analyseReserves($station, $commodity);
+            }
+            if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
+                $this->analyseStates($commodity);
             }
         }
     }
 
-    public function analyse (Station $station, Commodity $commodity) {
+    public function analyseReserves(Station $station, Commodity $commodity) {
         $reserves = Reserve::where('price', '!=', null)->where('station_id', $station->id)->where('commodity_id', $commodity->id)->with('state')->get();
         
         /* TODO: any history event affecting either the station or the
@@ -81,13 +99,20 @@ class GoodsAnalysis extends Command
             // no state changes over comparison period
             return;
         }
-        $this->info($station->name." - ".$station->economy->name." - ".$commodity->displayName());
+////        $this->info($station->name." - ".$station->economy->name." - ".$commodity->displayName());
+        $entries = [];
+        ksort($stockdata); // always process in same order
         foreach ($stockdata as $sid => $rdata) {
             $stockavg = $this->mean($rdata);
             $priceavg = $this->mean($pricedata[$sid]);
-            $this->line($states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
+////            $this->line($states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
+            $entries[] = [
+                'state' => $states[$sid],
+                'stock' => $stockavg,
+                'price' => $priceavg
+            ];
         }
-        
+        $this->commodityinfo[$commodity->id]['statechanges'][] = $entries;
     }
 
     private function mean($arr) {
@@ -95,6 +120,97 @@ class GoodsAnalysis extends Command
         foreach ($arr as $el) {
             $acc += $el;
         }
-        return round($acc / count($arr));
+        return $acc / count($arr);
+    }
+
+
+    private function analyseStates(Commodity $commodity) {
+        $states = State::all();
+        $statedata = [];
+        foreach ($states as $state) {
+            $statedata[$state->id] = [
+                'state' => $state,
+                'pricefactor' => [],
+                'demandfactor' => [],
+                'supplyfactor' => []
+            ];
+        }
+
+        $supplyset = false;
+        $demandset = false;
+
+        usort($this->commodityinfo[$commodity->id]['statechanges'], function($a, $b) {
+            return count($b)-count($a);
+        });
+        
+        foreach ($this->commodityinfo[$commodity->id]['statechanges'] as $idx => $stationinfo) {
+
+            $first = $stationinfo[0];
+
+            if (($first['stock'] > 0 && !$supplyset) ||
+            ($first['stock'] < 0 && !$demandset)) {
+                // use the first known state to set a baseline
+                if ($first['stock'] > 0) {
+                    $statedata[$first['state']->id]['supplypricefactor'] = [1];
+                    $statedata[$first['state']->id]['supplyfactor'] = [1];
+                    $supplyset = true;
+                } else {
+                    $statedata[$first['state']->id]['demandpricefactor'] = [1];
+                    $statedata[$first['state']->id]['demandfactor'] = [1];
+                    $demandset = true;
+                }
+                // then build from that baseline
+                for ($i=1;$i<count($stationinfo);$i++) {
+                    $second = $stationinfo[$i];
+                    if ($first['stock'] > 0) {
+                        $statedata[$second['state']->id]['supplyfactor'][] = $second['stock'] / $first['stock'];
+                        $statedata[$second['state']->id]['supplypricefactor'][] = $second['price'] / $first['price'];
+                    } else {
+                        $statedata[$second['state']->id]['demandfactor'][] = $second['stock'] / $first['stock'];
+                        $statedata[$second['state']->id]['demandpricefactor'][] = $second['price'] / $first['price'];
+                    }
+                }
+            } else {
+                // attach items to the baseline if possible
+                for ($i=0;$i<count($stationinfo);$i++) {
+                    $first = $stationinfo[$i];
+
+                    // find one which is already on the baseline
+                    if (($first['stock'] > 0 && count($statedata[$first['state']->id]['supplyfactor']) > 0) ||
+                    ($first['stock'] < 0 && count($statedata[$first['state']->id]['demandfactor']) > 0)) {
+                        for ($j=0;$j<count($stationinfo);$j++) {
+                            if ($j != $i) {
+                                $second = $stationinfo[$j];
+                                if ($first['stock'] > 0) {
+                                    $statedata[$second['state']->id]['supplyfactor'][] = $this->mean($statedata[$first['state']->id]['supplyfactor']) * $second['stock'] / $first['stock'];
+                                    $statedata[$second['state']->id]['supplypricefactor'][] = $this->mean($statedata[$first['state']->id]['supplypricefactor']) * $second['price'] / $first['price'];
+                                } else {
+                                    $statedata[$second['state']->id]['demandfactor'][] = $this->mean($statedata[$first['state']->id]['demandfactor']) * $second['stock'] / $first['stock'];
+                                    $statedata[$second['state']->id]['demandpricefactor'][] = $this->mean($statedata[$first['state']->id]['demandpricefactor']) * $second['price'] / $first['price'];
+                                }
+                        
+                            }
+                        }
+                        break; // only need to do one
+                        // if none match to the existing baseline we
+                        // can't use it, but we put the biggest arrays
+                        // first so shouldn't lose too much
+                    }
+                }
+
+            }
+        }
+
+        $this->info("Commodity: ".$commodity->displayName());
+        foreach ($statedata as $stateinfo) {
+            $this->info("  State: ".$stateinfo['state']->name);
+            if (count($stateinfo['supplyfactor']) > 0) {
+                $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
+            }
+            if (count($stateinfo['demandfactor']) > 0) {
+                $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
+            }
+        }
+
     }
 }
