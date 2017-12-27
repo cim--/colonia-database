@@ -252,20 +252,20 @@ class GoodsAnalysis extends Command
             }
         }
 
-        $this->info("Commodity: ".$commodity->displayName());
+////        $this->info("Commodity: ".$commodity->displayName());
         foreach ($statedata as $stateinfo) {
             if (count($stateinfo['supplyfactor']) > 0 || count($stateinfo['demandfactor']) > 0) {
-                $this->info("  State: ".$stateinfo['state']->name);
+////                $this->info("  State: ".$stateinfo['state']->name);
                 $effect = new Effect;
                 $effect->commodity_id = $commodity->id;
                 $effect->state_id = $stateinfo['state']->id;
                 if (count($stateinfo['supplyfactor']) > 0) {
-                    $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
+////                    $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
                     $effect->supplysize = $this->mean($stateinfo['supplyfactor']);
                     $effect->supplyprice = $this->mean($stateinfo['supplypricefactor']);
                 }
                 if (count($stateinfo['demandfactor']) > 0) {
-                    $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
+////                    $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
                     $effect->demandsize = $this->mean($stateinfo['demandfactor']);
                     $effect->demandprice = $this->mean($stateinfo['demandpricefactor']);
                 }
