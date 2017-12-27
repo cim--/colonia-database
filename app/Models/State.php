@@ -13,6 +13,11 @@ class State extends Model
     public function reserves() {
         return $this->hasMany('App\Models\Reserve');
     }
+
+    public function effects()
+    {
+        return $this->hasMany('App\Models\Effect');
+    }
     
     // pending states
     public function factions() {

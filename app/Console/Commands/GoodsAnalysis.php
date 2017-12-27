@@ -9,6 +9,7 @@ use App\Models\State;
 use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\History;
+use App\Models\Effect;
 
 class GoodsAnalysis extends Command
 {
@@ -46,7 +47,9 @@ class GoodsAnalysis extends Command
     public function handle()
     {
         try {
-            $this->runAnalysis();
+            \DB::transaction(function() {
+                $this->runAnalysis();
+            });
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
             throw($e);
@@ -54,6 +57,8 @@ class GoodsAnalysis extends Command
     }
 
     private function runAnalysis() {
+        Effect::where('id', '>', 0)->delete();
+        
         $stations = Station::whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
@@ -242,12 +247,20 @@ class GoodsAnalysis extends Command
         foreach ($statedata as $stateinfo) {
             if (count($stateinfo['supplyfactor']) > 0 || count($stateinfo['demandfactor']) > 0) {
                 $this->info("  State: ".$stateinfo['state']->name);
+                $effect = new Effect;
+                $effect->commodity_id = $commodity->id;
+                $effect->state_id = $stateinfo['state']->id;
                 if (count($stateinfo['supplyfactor']) > 0) {
                     $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
+                    $effect->supplysize = $this->mean($stateinfo['supplyfactor']);
+                    $effect->supplyprice = $this->mean($stateinfo['supplypricefactor']);
                 }
                 if (count($stateinfo['demandfactor']) > 0) {
                     $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
+                    $effect->demandsize = $this->mean($stateinfo['demandfactor']);
+                    $effect->demandprice = $this->mean($stateinfo['demandpricefactor']);
                 }
+                $effect->save();
             }
         }
 
