@@ -125,3 +125,17 @@ Route::get('/reserves', [
     'uses' => 'TradeController@reserves'
 ]);
 
+Route::get('/effects', [
+    'as' => 'effects',
+    'uses' => 'TradeController@effects'
+]);
+
+Route::get('/effects/c/{commodity}', [
+    'as' => 'effects.commodity',
+    'uses' => 'TradeController@effectsCommodity'
+]);
+
+Route::get('/effects/s/{state}', [
+    'as' => 'effects.state',
+    'uses' => 'TradeController@effectsState'
+]);

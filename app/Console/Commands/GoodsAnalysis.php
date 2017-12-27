@@ -127,7 +127,8 @@ class GoodsAnalysis extends Command
                     $q->where('date', '>', $lastsystemhistory);
                 }
                 $q->where('station_id', $station->id);
-            })->get();
+            })->where('name', '!=', 'None')->get();
+            /* Putting zeroes in for None can have odd effects, so don't */
             foreach ($stateslist as $state) {
                 if (!isset($stockdata[$state->id])) {
                     $stockdata[$state->id] = [0];

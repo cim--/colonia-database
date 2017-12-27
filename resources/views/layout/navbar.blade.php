@@ -36,6 +36,7 @@
 	  <ul>
 		<li><a href="{{route('trade')}}">Trading</a></li>
 		<li><a href="{{route('reserves')}}">Reserves</a></li>
+     	<li><a href="{{route('effects')}}">State Effects</a></li>
 		<li><a href="{{route('missions.index')}}">Missions</a></li>
 	  </ul>
 	</li>

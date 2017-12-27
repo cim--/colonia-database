@@ -10,6 +10,7 @@ use App\Models\Economy;
 use App\Models\Station;
 use App\Models\Commodity;
 use App\Models\Reserve;
+use App\Models\Effect;
 
 class TradeController extends Controller
 {
@@ -173,4 +174,43 @@ class TradeController extends Controller
         ]);
         
     }
+
+    public function effects() {
+        $states = State::orderBy('name')->get();
+        
+        $commodities = Commodity::whereHas('reserves', function($q) {
+                $q->where('current', true);
+        })->orderBy('name')->get();
+
+        return view('trade/effects', [
+            'commodities' => $commodities,
+            'states' => $states
+        ]);
+    }
+
+    public function effectsCommodity(Commodity $commodity) {
+        $states = State::orderBy('name')->get();
+        
+        $effects = Effect::where('commodity_id', $commodity->id)->get();
+
+        return view('trade/effectscommodity', [
+            'commodity' => $commodity,
+            'states' => $states,
+            'effects' => $effects
+        ]);
+    }
+
+    public function effectsState(State $state) {
+        $commodities = Commodity::orderBy('name')->get();
+        
+        $effects = Effect::where('state_id', $state->id)->get();
+
+        return view('trade/effectsstate', [
+            'state' => $state,
+            'commodities' => $commodities,
+            'effects' => $effects
+        ]);
+    }
+
+    
 }
