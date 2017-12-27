@@ -8,6 +8,7 @@ use App\Models\Station;
 use App\Models\State;
 use App\Models\Commodity;
 use App\Models\Reserve;
+use App\Models\History;
 
 class GoodsAnalysis extends Command
 {
@@ -76,7 +77,24 @@ class GoodsAnalysis extends Command
     }
 
     public function analyseReserves(Station $station, Commodity $commodity) {
-        $reserves = Reserve::where('price', '!=', null)->where('station_id', $station->id)->where('commodity_id', $commodity->id)->with('state')->get();
+        $laststationhistory = History::where('location_type', 'App\Models\Station')
+            ->where('location_id', $station->id)->max('date');
+        $lastsystemhistory = History::where('location_type', 'App\Models\System')
+            ->where('location_id', $station->system->id)
+            ->where('description', '!=', 'expanded to')
+            ->where('description', '!=', 'retreated from')->max('date');
+        
+        $reservesquery = Reserve::where('price', '!=', null)
+            ->where('station_id', $station->id)
+            ->where('commodity_id', $commodity->id)
+            ->where('reserves', '!=', 0)->with('state');
+        if ($laststationhistory != null) {
+            $reservesquery->where('date', '>', $laststationhistory);
+        }
+        if ($lastsystemhistory != null) {
+            $reservesquery->where('date', '>', $lastsystemhistory);
+        }
+        $reserves = $reservesquery->get();
         
         /* TODO: any history event affecting either the station or the
          * system it is in is likely to invalidate the comparison, so
@@ -94,6 +112,25 @@ class GoodsAnalysis extends Command
             $stockdata[$reserve->state_id][] = $reserve->reserves;
             $pricedata[$reserve->state_id][] = $reserve->price;
         }
+        if (count($stockdata) > 0) {
+            // look for states with no demand or supply
+            $stateslist = State::whereHas('reserves', function($q) use ($laststationhistory, $lastsystemhistory, $station) {
+                if ($laststationhistory != null) {
+                    $q->where('date', '>', $laststationhistory);
+                }
+                if ($lastsystemhistory != null) {
+                    $q->where('date', '>', $lastsystemhistory);
+                }
+                $q->where('station_id', $station->id);
+            })->get();
+            foreach ($stateslist as $state) {
+                if (!isset($stockdata[$state->id])) {
+                    $stockdata[$state->id] = [0];
+                    $pricedata[$state->id] = [0];
+                    $states[$state->id] = $state;
+                }
+            }
+        }
 
         if (count($stockdata) < 2) {
             // no state changes over comparison period
@@ -105,7 +142,7 @@ class GoodsAnalysis extends Command
         foreach ($stockdata as $sid => $rdata) {
             $stockavg = $this->mean($rdata);
             $priceavg = $this->mean($pricedata[$sid]);
-////            $this->line($states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
+////            $this->line($sid." ".$states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
             $entries[] = [
                 'state' => $states[$sid],
                 'stock' => $stockavg,
@@ -203,12 +240,14 @@ class GoodsAnalysis extends Command
 
         $this->info("Commodity: ".$commodity->displayName());
         foreach ($statedata as $stateinfo) {
-            $this->info("  State: ".$stateinfo['state']->name);
-            if (count($stateinfo['supplyfactor']) > 0) {
-                $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
-            }
-            if (count($stateinfo['demandfactor']) > 0) {
-                $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
+            if (count($stateinfo['supplyfactor']) > 0 || count($stateinfo['demandfactor']) > 0) {
+                $this->info("  State: ".$stateinfo['state']->name);
+                if (count($stateinfo['supplyfactor']) > 0) {
+                    $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
+                }
+                if (count($stateinfo['demandfactor']) > 0) {
+                    $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
+                }
             }
         }
 

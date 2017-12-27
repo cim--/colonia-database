@@ -10,6 +10,10 @@ class State extends Model
         return $this->hasMany('App\Models\Influence');
     }
 
+    public function reserves() {
+        return $this->hasMany('App\Models\Reserve');
+    }
+    
     // pending states
     public function factions() {
         return $this->belongsToMany('App\Models\Faction')->withPivot('date');
