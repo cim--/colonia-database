@@ -201,7 +201,9 @@ class TradeController extends Controller
     }
 
     public function effectsState(State $state) {
-        $commodities = Commodity::orderBy('name')->get();
+        $commodities = Commodity::whereHas('reserves', function($q) {
+                $q->where('current', true);
+        })->orderBy('name')->get();
         
         $effects = Effect::where('state_id', $state->id)->get();
 

@@ -160,10 +160,18 @@ class GoodsAnalysis extends Command
 
     private function mean($arr) {
         $acc = 0;
+        $zeroes = 0;
         foreach ($arr as $el) {
             $acc += $el;
+            if ($el == 0) {
+                $zeroes++;
+            }
         }
-        return $acc / count($arr);
+        if ($zeroes == count($arr)) {
+            // don't include zeroes in average unless the entire array is zeroed
+            return 0;
+        }
+        return $acc / (count($arr) - $zeroes);
     }
 
 
