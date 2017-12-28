@@ -28,7 +28,7 @@
 
 	  <p>None of the systems have a high population so supply and demand levels for goods are generally low - however, many of the outlying systems also have low traffic levels, so surpluses and deficits can build up.</p>
 
-	  <p>Decent profits can be made on relatively short journeys for those who know where to look - use the <a href="{{route('trade')}}">trade helper</a> to quickly check for suitable economy+state combinations, and the <a href="{{route('reports.traffic')}}">traffic report</a> to prioritise less serviced markets. The additional profits enabled in the Sol bubble through the policies of particular Powers are of course not available.</p>
+    <p>Decent profits can be made on relatively short journeys for those who know where to look - use the <a href="{{route('trade')}}">trade helper</a> and <a href="{{route('reserves')}}">commodity reserves</a> pages to help find routes, and the <a href="{{route('reports.traffic')}}">traffic report</a> to prioritise less serviced markets. The additional profits enabled in the Sol bubble through the policies of particular Powers are of course not available.</p>
 
 	  <p>There is only one rare good - Jaques Quinentian Stills - and the radius of the Colonia region is too small for sales to be profitable anywhere locally.</p>
 
@@ -129,7 +129,7 @@
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
-	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life has been discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>. There is also a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a</p>
+	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life has been discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>. There is a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a. There is a persistent distress call from a wrecked bulk cargo ship near Moore's Charm in Luchtaine.</p>
 
       <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
 	</div>
