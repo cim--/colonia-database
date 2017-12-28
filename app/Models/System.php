@@ -36,6 +36,11 @@ class System extends Model
         return $this->morphMany('App\Models\History', 'location');
     }
 //
+    public function scopePopulated($q) {
+        return $q->where('population', '>', 0);
+    }
+
+    
     public function inhabited() {
         return $this->population > 0;
     }

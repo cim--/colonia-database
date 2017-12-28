@@ -45,6 +45,15 @@ class Station extends Model
     }
 //
 
+    public function scopeDockable($q) {
+        return $q->whereHas('stationclass', function($s) {
+            $s->where('hasSmall', 1)
+              ->orWhere('hasMedium', 1)
+              ->orWhere('hasLarge', 1);
+        });
+    }
+
+
     public function currentState()
     {
         return $this->faction->currentState($this->system);

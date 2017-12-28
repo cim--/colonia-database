@@ -23,7 +23,7 @@ visible change.</p>
     
 <p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update.</p>
   
-<h2>Systems needing influence update</h2>
+<h2>Systems needing influence update ({{number_format($influencecomplete)}}%)</h2>
 @if (count($influenceupdate) > 0)
 @if($userrank > 0)
 <p>The following systems do not have influence updates on todays tick. Please ensure before starting that the tick is complete. Collect influence data from the system map only for accuracy - this does not require you to be in the system.</p>
@@ -49,7 +49,7 @@ visible change.</p>
 <p><strong>All systems updated!</strong></p>
 @endif
 
-<h2>Factions needing pending state updates</h2>
+<h2>Factions needing pending state updates ({{number_format($pendingcomplete)}}%)</h2>
 @if (count($pendingupdate) > 0)
 @if($userrank > 0)
 <p>The following factions do not have pending state updates today. You will need to enter the system to view the pending states in the right panel.</p>
@@ -78,7 +78,7 @@ visible change.</p>
 
 
 
-<h2>Systems needing report updates</h2>
+<h2>Systems needing report updates ({{number_format($reportscomplete)}}%)</h2>
 @if (count($reportsupdate) > 0)
 <p>The following systems do not have report updates today. You will need to dock at a station in the system to view traffic, crime and bounty reports in the local Galnet. This does not need daily updates for everywhere!</p>
 @if($userrank == 0)
@@ -100,7 +100,7 @@ visible change.</p>
 <p><strong>All systems updated!</strong></p>
 @endif
 
-<h2>Stations needing market updates</h2>
+<h2>Stations needing market updates ({{number_format($marketscomplete)}}%)</h2>
 @if (count($marketsupdate) > 0)
 <p>The following stations do not have market updates today. You will need to dock at the station using a Companion API tool to upload market data. This does not need daily updates for everywhere!</p>
 <p>Stations currently in Lockdown cannot be updated.</p>
