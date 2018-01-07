@@ -484,7 +484,7 @@ class EDDNReader extends Command
                 $modules[] = $module->id;
                 if ($module->stations_count == 0) {
                     // not seen before
-                    // Alert::alert("Module ".$module->displayName()." now available at ".$station->name);
+                    Alert::alert("Module ".$module->displayName()." now available at ".$station->name);
                 }
             }
         }
