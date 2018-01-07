@@ -77,14 +77,16 @@
 
 	  <ul>
 		<li>Mining-related equipment, all sizes, A-grade</li>
-		<li>Other core and optional internals, most sizes, B- or C-grade maximum depending on size</li>
+		<li>Fuel scoops and AFMUs, A-grade</li>
+		<li>Other core and optional internals, most sizes, A-, B- or C-grade maximum depending on size</li>
 		<li>All weapons, all sizes</li>
 		<li>All independent ship hulls</li>
 	  </ul>
+	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
+	  
+	  <p>There are no engineers. Engineered and most A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
 
-	  <p>There are no engineers. Engineered and/or A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
-
-	  <p>Colonia Hub is currently the only station providing AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence.</p>
+	  <p>Colonia Hub is currently the only station providing AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. Not all AX equipment is available, as it is Industrial.</p>
 	  
 	</div>
 
