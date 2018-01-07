@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             $this->call(SystemSeeder::class);
             $this->call(FactionSeeder::class);
             $this->call(StationSeeder::class);
-
+            $this->call(OutfittingSeeder::class);
             // random for testing
             // $this->call(InfluenceTestSeeder::class);
             
