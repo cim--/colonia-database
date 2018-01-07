@@ -13,6 +13,7 @@ use App\Models\Facility;
 use App\Models\Alert;
 use App\Models\Commodity;
 use App\Models\Reserve;
+use App\Models\Module;
 
 class EDDNReader extends Command
 {
@@ -107,6 +108,8 @@ class EDDNReader extends Command
             }
         } else if ($event['$schemaRef'] == "https://eddn.edcd.io/schemas/commodity/3") {
             $this->processCommodityReserveEvent($event);
+        } else if ($event['$schemaRef'] == "https://eddn.edcd.io/schemas/outfitting/2") {
+            $this->processOutfittingEvent($event);
         }
     }
 
@@ -454,6 +457,41 @@ class EDDNReader extends Command
             }
             $reserve->save();
         }
+    }
+
+    private function processOutfittingEvent($event) {
+        $system = System::where('name', $event['message']['systemName'])
+            ->orWhere('catalogue', $event['message']['systemName'])
+            ->first();
+        if (!$system) {
+            return;
+        }
+        
+        $station = Station::where('name', $event['message']['stationName'])
+            ->where('system_id', $system->id)->first();
+        if (!$station) {
+            // no alert - the Docking event should already have done it
+            return;
+        }
+        $this->line("[".date("YmdHis")."] Outfitting event for ".$system->displayName().": ".$station->name);
+
+        $modules = [];
+        foreach ($event['message']['modules'] as $modulecode) {
+            $module = Module::where('eddn', $modulecode)->withCount('stations')->first();
+            if (!$module) {
+                // ignore for now
+            } else {
+                $modules[] = $module->id;
+                if ($module->station_count == 0) {
+                    // not seen before
+                    Alert::alert("Module ".$module->displayName()." now available at ".$station->name);
+                }
+            }
+        }
+        /* Use syncWithoutDetaching to avoid people without
+         * horizons/Cobra IV/etc. making the availability disappear
+         * when it's just that they personally can't see it */
+        $station->modules()->syncWithoutDetaching($modules);
     }
     
 }
