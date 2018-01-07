@@ -20,7 +20,7 @@ class OutfittingSeeder extends Seeder
             if ($idx == 0) { continue; } // skip header
             trim($line);
             list ($discard, $eddn, $category, $description, $mount, $guidance, $ship, $size, $rating, $entitlement) = explode(",", $line);
-            if ($entitlement == "powerplay") { continue; } // ignore
+            if (substr($entitlement,0,9) == "powerplay") { continue; } // ignore
             
             switch ($category) {
             case "standard":

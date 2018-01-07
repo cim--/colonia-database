@@ -139,3 +139,8 @@ Route::get('/effects/s/{state}', [
     'as' => 'effects.state',
     'uses' => 'TradeController@effectsState'
 ]);
+
+Route::get('/outfitting', [
+    'as' => 'outfitting',
+    'uses' => 'OutfittingController@index'
+]);
