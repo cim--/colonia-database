@@ -2,11 +2,21 @@
   <thead>
 	<tr>
 	  <th>Ship</th>
-	  <th>Lightweight</th>
-	  <th>Reinforced</th>
-	  <th>Military</th>
-	  <th>Mirrored</th>
-	  <th>Reactive</th>
+	  <th>
+		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Lightweight Alloy')->first()->id)}}'>Lightweight</a>
+	  </th>
+	  <th>
+		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Reinforced Alloy')->first()->id)}}'>Reinforced</a>
+	  </th>
+	  <th>
+		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Military Grade Composite')->first()->id)}}'>Military</a>
+	  </th>
+	  <th>
+		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Mirrored Surface Composite')->first()->id)}}'>Mirrored</a>
+	  </th>
+	  <th>
+		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Reactive Surface Composite')->first()->id)}}'>Reactive</a>
+	  </th>
 	</tr>
   </thead>
   <tbody>

@@ -15,7 +15,9 @@
   <tbody>
 	@foreach ($utilities as $utility)
 	<tr>
-	  <td>{{$utility->description}}</td>
+      <td>
+		<a href='{{route('outfitting.moduletype', $utility->id)}}'>{{$utility->description}}</a>
+	  </td>
 	  @include('outfitting.utilitycell', ['class' => 'A', 'utility' => $utility])
 	  @include('outfitting.utilitycell', ['class' => 'B', 'utility' => $utility])
 	  @include('outfitting.utilitycell', ['class' => 'C', 'utility' => $utility])

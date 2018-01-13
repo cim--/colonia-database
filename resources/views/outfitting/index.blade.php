@@ -22,7 +22,8 @@
 
 <ul class='compact'>
   @foreach ($optnsmodules as $mtype)
-  <li>{{$mtype->description}}:
+  <li>
+	<a href='{{route('outfitting.moduletype', $mtype->id)}}'>{{$mtype->description}}</a>:
 	@if ($mtype->modules->first()->stations_count > 0)
 	@include('layout.yes')
 	@else
@@ -44,7 +45,8 @@
 
 <ul class='compact'>
   @foreach ($utilitiesns as $mtype)
-  <li>{{$mtype->description}}:
+  <li>
+	<a href='{{route('outfitting.moduletype', $mtype->id)}}'>{{$mtype->description}}</a>:
 	@if ($mtype->modules->first()->stations_count > 0)
 	@include('layout.yes')
 	@else

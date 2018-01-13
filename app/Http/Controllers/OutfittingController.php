@@ -63,4 +63,39 @@ class OutfittingController extends Controller
             'utilitiesns' => $utilitiesns,
         ]);
     }
+
+
+    public function moduletype(Moduletype $moduletype)
+    {
+        $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
+            $q->orderBy('name');
+        }])->with('moduletype')->orderBy('size')->orderBy('type')->get();
+
+        if ($modules->count() == 1) {
+            return view('outfitting/module', [
+                'moduletype' => $moduletype,
+                'module' => $modules->first(),
+                'singular' => true
+            ]);
+        }  else {
+            return view('outfitting/moduletype', [
+                'moduletype' => $moduletype,
+                'modules' => $modules
+            ]);
+        }
+    }
+
+    public function module(Moduletype $moduletype, Module $module)
+    {
+        $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
+            $q->orderBy('name');
+        }])->with('moduletype')->orderBy('size')->orderBy('type')->get();
+
+        return view('outfitting/module', [
+            'moduletype' => $moduletype,
+            'module' => $module,
+            'singular' => false
+        ]);
+    }
+
 }

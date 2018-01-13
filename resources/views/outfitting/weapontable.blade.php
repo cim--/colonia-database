@@ -18,7 +18,9 @@
   <tbody>
 	@foreach ($weapons as $weapon)
 	<tr>
-	  <td>{{$weapon->description}}</td>
+	  <td>
+		<a href='{{route('outfitting.moduletype', $weapon->id)}}'>{{$weapon->description}}</a>
+	  </td>
 	  @foreach (['Fixed', 'Gimballed', 'Turreted'] as $mount)
 	  @include('outfitting.weaponcell', ['size' => 1, 'mount' => $mount, 'weapon' => $weapon])
 	  @include('outfitting.weaponcell', ['size' => 2, 'mount' => $mount, 'weapon' => $weapon])
