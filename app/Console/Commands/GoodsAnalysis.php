@@ -63,6 +63,10 @@ class GoodsAnalysis extends Command
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
+        })->whereHas('economy', function($q) {
+            // ignore stations with hybrid or damaged economies
+            // as they'll confuse the analysis
+            $q->where('analyse', true);
         })->with('economy')->get();
 
         $commodities = Commodity::all();
@@ -101,7 +105,7 @@ class GoodsAnalysis extends Command
         }
         $reserves = $reservesquery->get();
         
-        /* TODO: any history event affecting either the station or the
+        /* Any history event affecting either the station or the
          * system it is in is likely to invalidate the comparison, so
          * should only track back to the most recent one. */
 
