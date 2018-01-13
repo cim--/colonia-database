@@ -1,0 +1,1 @@
+<span title='Industrial-Extraction' class='icon-economy-industrial'>&#x2699;<sub><span class='icon-economy-extraction'>&#x2692;</span></sub></span>
