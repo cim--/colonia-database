@@ -14,9 +14,19 @@
 	@if ($station->currentState()->name == "Lockdown")
 	@include($station->currentState()->icon)
 	@endif
+	@if ($module->largeship && !$station->stationclass->hasLarge)
+	<span class='outfitting-danger-icon'>&#x2762;</span>
+	@endif
   </li>
   @endforeach
 </ul>
+
+@if ($module->largeship && $module->stations->filter(function($s) {
+return !$s->stationclass->hasLarge;
+})->count() > 0)
+<p><span class='outfitting-danger-icon'>&#x2762;</span> indicates that this station does not have a large landing pad, but no small or medium ship can fit this module.</p>
+@endif
+
 @else
 <p>This module is not available in the Colonia region</p>
 @endif
