@@ -10,6 +10,8 @@ use App\Models\System;
 use App\Models\Facility;
 use App\Models\History;
 use App\Models\Commodity;
+use App\Models\Moduletype;
+use App\Models\Module;
 use Illuminate\Http\Request;
 
 class StationController extends Controller
@@ -237,6 +239,67 @@ class StationController extends Controller
             'reserves' => $reserves,
             'supply' => $supply,
             'demand' => $demand,
+        ]);
+    }
+
+    public function outfitting(Station $station)
+    {
+        $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($station) {
+                $q->isAvailableAtStation($station);
+        }])->orderBy('description')->get();
+
+        $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($station) { 
+                $q->isAvailableAtStation($station);
+        }])->orderBy('description')->get();
+
+        $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($station) {
+            $q->withCount('stations');
+            $q->isAvailableAtStation($station);
+        }])->orderBy('description')->get();
+        
+        $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($station) {
+                $q->isAvailableAtStation($station);
+        }])->orderBy('description')->get();
+        $ships = Module::whereHas('moduletype', function($q) {
+            $q->where('type', 'armour');
+        })->get();
+        $shiptypes = [];
+        foreach ($ships as $ship) {
+            $shiptypes[$ship->type] = $ship->type;
+        }
+        ksort($shiptypes);
+
+        $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($station) {
+                $q->isAvailableAtStation($station);
+                $q->withCount('stations');
+            }])->orderBy('description')->get();
+
+        $utilities = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
+            $q->whereIn('type', ['A','B','C','D','E']);
+        })->with(['modules' => function($q) use ($station) {
+                $q->withCount('stations');
+                $q->isAvailableAtStation($station);
+            }])->orderBy('description')->get();
+        
+        $utilitiesns = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
+            $q->whereNotIn('type', ['A','B','C','D','E']);
+        })->with(['modules' => function($q) use ($station) {
+                // all non-large so isAvailable not needed
+                $q->withCount('stations');
+                $q->isAvailableAtStation($station);
+            }])->orderBy('description')->get();
+
+        
+        return view('stations/outfitting', [
+            'station' => $station,
+            'coremodules' => $coremodules,
+            'optmodules' => $optionalmodules,
+            'optnsmodules' => $optionalnsmodules,
+            'armours' => $armours,
+            'shiptypes' => $shiptypes,
+            'weapons' => $weapons,
+            'utilities' => $utilities,
+            'utilitiesns' => $utilitiesns,
         ]);
     }
 }

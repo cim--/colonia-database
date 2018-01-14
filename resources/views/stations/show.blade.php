@@ -52,6 +52,10 @@
 		<a href="{{route('stations.showtrade', $station->id)}}">
 		  {{$facility->name}}
 		</a>
+		@elseif ($facility->name == "Outfitting")
+		<a href="{{route('stations.showoutfitting', $station->id)}}">
+		  {{$facility->name}}
+		</a>
 		@else
 		{{$facility->name}}
 		@endif

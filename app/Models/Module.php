@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Station;
 
 class Module extends Model
 {
@@ -31,6 +32,18 @@ class Module extends Model
                 });
             });
         });
+    }
+
+    public function scopeIsAvailableAtStation($q, Station $station) {
+        if ($station->stationclass->hasLarge) {
+            return $q->whereHas('stations', function ($sq) use ($station) {
+                $sq->where('stations.id', $station->id);
+            });
+        } else {
+            return $q->whereHas('stations', function ($sq) use ($station) {
+                $sq->where('stations.id', $station->id);
+            })->where('largeship', 0);
+        }
     }
     
     public function displayName()
