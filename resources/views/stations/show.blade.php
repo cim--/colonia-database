@@ -47,8 +47,14 @@
 	<td>
 	  @foreach ($station->facilities->sortBy('name') as $facility)
 	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
-	  @include ($facility->icon)
-	  {{$facility->name}}
+		@include ($facility->icon)
+		@if ($facility->name == "Commodities")
+		<a href="{{route('stations.showtrade', $station->id)}}">
+		  {{$facility->name}}
+		</a>
+		@else
+		{{$facility->name}}
+		@endif
 	  @if (!$facility->pivot->enabled)</span>@endif
 	  <br>
 	  @endforeach

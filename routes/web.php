@@ -59,6 +59,14 @@ Route::post('/users', [
     'uses' => 'UserController@update'
 ]);
 
+Route::get('/stations/{station}/trade', [
+    'as' => 'stations.showtrade',
+    'uses' => 'StationController@trade'
+]);
+Route::get('/stations/{station}/outfitting', [
+    'as' => 'stations.showoutfitting',
+    'uses' => 'StationController@outfitting'
+]);
 Route::resource('stations', 'StationController');
 
 Route::resource('missions', 'MissionController', ['except' => [

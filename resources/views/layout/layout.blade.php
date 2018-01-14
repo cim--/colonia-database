@@ -5,7 +5,11 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<title>@yield ('title')</title>
+		<title>
+		  @section('headtitle')
+		  @yield ('title')
+		  @show
+		</title>
 		<link rel="stylesheet" href="/css/cdb.css" type="text/css">
 		<script type='text/javascript' src='/js/cdb.js'></script>
     </head>

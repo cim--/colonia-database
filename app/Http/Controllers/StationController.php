@@ -9,6 +9,7 @@ use App\Models\Economy;
 use App\Models\System;
 use App\Models\Facility;
 use App\Models\History;
+use App\Models\Commodity;
 use Illuminate\Http\Request;
 
 class StationController extends Controller
@@ -208,5 +209,34 @@ class StationController extends Controller
     public function destroy(Station $station)
     {
         //
+    }
+
+
+    public function trade(Station $station)
+    {
+        $reserves = Commodity::whereHas('reserves', function($q) use ($station) {
+            $q->where('station_id', $station->id)->where('current', true);
+        })->with(['reserves' => function($q) use ($station) {
+            $q->where('station_id', $station->id)
+              ->where('current', true);
+            }])->orderBy('name')->get();
+
+        $supply = 0;
+        $demand = 0;
+        foreach ($reserves as $reserve) {
+            $stock = $reserve->reserves->first()->reserves;
+            if ($stock > 0) {
+                $supply += $stock;
+            } else {
+                $demand -= $stock;
+            }
+        }
+        
+        return view('stations/trade', [
+            'station' => $station,
+            'reserves' => $reserves,
+            'supply' => $supply,
+            'demand' => $demand,
+        ]);
     }
 }
