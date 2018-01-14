@@ -24,6 +24,37 @@
   @endforeach
 </ul>
 
+{{--
+<table class='table table-bordered'>
+  <thead>
+	<tr>
+	  <th>Economy</th>
+	  @foreach ($states as $state)
+	  <th>
+		@include($state->icon)
+	  </th>
+	  @endforeach
+	</tr>
+  </thead>
+  <tbody>
+	@foreach ($economies as $economy)
+	<tr>
+	  <td>
+		{{$economy->name}}
+		@include($economy->icon)
+	  </td>
+	  @foreach ($states as $state)
+	  <td>
+		@include('trade.effectratio', ['ratio' => $economy->tradePriceRatio($state)])
+	  </td>
+	  @endforeach
+	</tr>
+	@endforeach
+  </tbody>
+</table>
+--}}
+
+
 <h2>Effects on Commodities</h2>
 <ul class='compact'>
   @foreach ($commodities as $commodity)

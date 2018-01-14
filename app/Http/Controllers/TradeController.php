@@ -182,9 +182,12 @@ class TradeController extends Controller
                 $q->where('current', true);
         })->orderBy('name')->get();
 
+        $economies = Economy::where('name', '!=', 'Lockdown')->orderBy('name')->get();
+        
         return view('trade/effects', [
             'commodities' => $commodities,
-            'states' => $states
+            'states' => $states,
+            'economies' => $economies
         ]);
     }
 
