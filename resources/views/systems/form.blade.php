@@ -27,6 +27,10 @@
 {!! Form::text('population') !!}
 </div>
 <div class='form-field'>
+{!! Form::label('explorationvalue', "Exploration Value") !!}
+{!! Form::text('explorationvalue') !!}
+</div>
+<div class='form-field'>
 {!! Form::label('phase_id', "Phase") !!}
 {!! Form::select('phase_id', $phases) !!}
 </div>

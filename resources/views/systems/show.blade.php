@@ -17,7 +17,14 @@
 	  @include($system->economy->icon)
 	  {{$system->economy->name}}
 	</p>
-	<p><span class='system-property'>Population</span>: {{$system->population}}</p>
+	<div class='row'>
+	  <div class='col-sm-6'>
+        <p><span class='system-property'>Population</span>: {{$system->population}}</p>
+	  </div>
+	  <div class='col-sm-6'>
+        <p><span class='system-property'>Exploration Value</span>: {{$system->explorationvalue ? number_format($system->explorationvalue) : "not known"}}</p>
+	  </div>
+	</div>
 	<p><span class='system-property'>Security</span>: {{$system->security}}</p>
 	<div class='row'>
 	  <div class='col-sm-6'>
@@ -49,6 +56,7 @@
 	  <a class='edit' href='{{route('systems.edit', $system->id)}}'>Update</a>
 	  @endif
     </p>
+    <p><span class='system-property'>Exploration Value</span>: {{$system->explorationvalue ? number_format($system->explorationvalue) : "not known"}}</p>
 	@endif
 	<p>
 	  @foreach ($system->facilities->sortBy('name') as $facility)

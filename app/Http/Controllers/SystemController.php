@@ -463,6 +463,7 @@ class SystemController extends Controller
         $system->edsm = $request->input('edsm');
         $system->eddb = $request->input('eddb');
         $system->population = $request->input('population');
+        $system->explorationvalue = $request->input('explorationvalue');
         $system->phase_id = $request->input('phase_id');
         $system->economy_id = $request->input('economy_id');
         $system->save();

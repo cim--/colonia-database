@@ -19,6 +19,7 @@
 	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
 	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
+	  <li>The exploration value of the inhabited and planned systems is estimated at {{number_format($exploration)}} credits.</li>
 	</ul>
 
 	<h2>Economies</h2>

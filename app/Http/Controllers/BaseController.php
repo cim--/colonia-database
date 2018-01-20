@@ -91,6 +91,7 @@ class BaseController extends Controller
         ksort($states);
         
         $population = System::sum('population');
+        $exploration = System::sum('explorationvalue');
 
         $iconmap = [];
         $economies = [];
@@ -142,6 +143,7 @@ class BaseController extends Controller
         
         return view('index', [
             'population' => $population,
+            'exploration' => $exploration,
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
