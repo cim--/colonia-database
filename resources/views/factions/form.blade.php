@@ -19,6 +19,10 @@
 {!! Form::select('government_id', $governments) !!}
 </div>
 <div class='form-field'>
+  {!! Form::label('ethos_id', "Ethos") !!}
+  {!! Form::select('ethos_id', $ethoses) !!}
+</div>
+<div class='form-field'>
   {!! Form::label('system_id', "Home System") !!}
   {!! Form::select('system_id', $systems) !!}
 </div>

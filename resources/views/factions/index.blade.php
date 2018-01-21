@@ -27,6 +27,9 @@ Factions
       <td>
 		@include($faction->government->icon)
 		{{$faction->government->name}}
+		@if ($faction->ethos && $faction->ethos->name != "Unknown")
+		({{$faction->ethos->name}})
+		@endif
 	  </td>
 	  @include('factions.statecell', ['states' => $faction->currentStates()])
 	  @include('factions.statecell', ['states' => $faction->states])

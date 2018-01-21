@@ -14,6 +14,9 @@
 	<p><span class='faction-property'>Government</span>: 
 	  @include($faction->government->icon)
 	  {{$faction->government->name}}
+	  @if ($faction->ethos)
+	  ({{$faction->ethos->name}} ethos)
+	  @endif
 	</p>
 	<p><span class='faction-property'>Pending States</span>:
 	  @if (count($faction->states) > 0)

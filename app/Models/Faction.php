@@ -13,6 +13,10 @@ class Faction extends Model
         return $this->belongsTo('App\Models\Government');
     }
 
+    public function ethos() {
+        return $this->belongsTo('App\Models\Ethos');
+    }
+    
     public function system() {
         return $this->belongsTo('App\Models\System');
     }
