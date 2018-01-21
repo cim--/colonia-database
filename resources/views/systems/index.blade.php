@@ -19,6 +19,7 @@ Systems
 	  <th>Economy</th>
 	  <th>Government</th>
 	  <th>Controlling Faction</th>
+      <th>Exploration Value</th>
       <th>Locations</th>
 	</tr>
   </thead>
@@ -49,6 +50,7 @@ Systems
 	  <td></td>
 	  <td></td>
 	  @endif
+	  <td>{{number_format($system->explorationvalue)}}</td>
 	  <td data-search='
 		@foreach ($system->facilities as $facility)
 {{$facility->name}}
