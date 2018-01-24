@@ -14,7 +14,7 @@
 
 @include('layout/chart')
     
-<table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-pageLength='25'>
+<table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
   <thead>
 	<tr>
 	  <th>Date</th>
