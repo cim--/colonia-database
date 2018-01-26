@@ -7,6 +7,10 @@
 @if ($module->stations->count() > 0)
 <p>This module is available at the following stations. Note that stations in Lockdown will temporarily not have outfitting available.</p>
 
+@if ($module->restricted)
+<p>This module has pre-requisites (e.g. Horizons, Tech Broker, ranks) and will only be available to pilots who meet the pre-requisites.</p>
+@endif
+
 <ul class='compact'>
   @foreach ($module->stations as $station)
   <li>
@@ -29,6 +33,11 @@ return !$s->stationclass->hasLarge;
 
 @else
 <p>This module is not available in the Colonia region</p>
+
+@if ($module->restricted)
+<p>This module has pre-requisites (e.g. Horizons, Tech Broker, ranks) and will only be available to pilots who meet the pre-requisites.</p>
+@endif
+
 @endif
 
 @if (!$singular)
