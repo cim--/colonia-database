@@ -36,7 +36,7 @@
 		  To discuss this information, volunteer to help collect it, or suggest site improvements, join the <a href="https://discord.gg/fE49mGw">Colonia Census Discord</a>, <a href="https://forums.frontier.co.uk/showthread.php/398547-The-Colonia-Census-history-and-geography-resource-for-the-Colonia-region">post in the forum thread</a>, or contact Ian Doncaster
 		</p>
 		<p>
-		  The database is open source software under the GNU GPL version 3 - <a href='https://github.com/cim--/colonia-database'>source available on Github</a> - <a href='/cdb.sql'>daily database backup</a>
+		  The database is open source software under the GNU GPL version 3 - <a href='https://github.com/cim--/colonia-database'>source available on Github</a> - <a href='/cdb.sql.gz'>daily database backup</a>
 		</p>
 		<p>
 		  The site is created using data from Elite: Dangerous, with the permission of Frontier Developments plc, for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments.
