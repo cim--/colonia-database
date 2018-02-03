@@ -121,6 +121,9 @@
 	</table>
 	<h2>Factions</h2>
 	@if (!$system->virtualonly)
+	@if ($system->bgslock)
+	<p>Political activity in this system is restricted.</p>
+	@endif
 	<p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
 
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
