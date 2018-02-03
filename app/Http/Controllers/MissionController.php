@@ -10,19 +10,25 @@ class MissionController extends Controller
 {
 
     private $magnitudes = [
+        -5 => "-----",
+        -4 => "----",
         -3 => "---",
         -2 => "--",
         -1 => "-",
         0 => "none",
         1 => "+",
         2 => "++",
-        3 => "+++"
+        3 => "+++",
+        4 => "++++",
+        5 => "+++++"
     ];
     private $positivemagnitudes = [
         0 => "none",
         1 => "+",
         2 => "++",
-        3 => "+++"
+        3 => "+++",
+        4 => "++++",
+        5 => "+++++"
     ];
     
     /**

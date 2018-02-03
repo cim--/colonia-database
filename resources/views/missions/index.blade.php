@@ -12,6 +12,8 @@ Mission Types
 
 <p>Missions which have an effect on destination factions which is generally considered negative are highlighted with @include('missions/danger'). Think carefully before accepting one.</p>
 
+<p>The table shows the default rewards - higher influence or reputation options may sometimes be available. Some mission effects on destination factions have changed recently - <span class='mission-verify-icon' title='Caution: verification needed'>&#x2754;</span> indicates those which have not been verified yet.</p>
+
 <table data-page-length='50' class='table table-bordered datatable'>
   <thead>
 	<tr>
@@ -31,12 +33,17 @@ Mission Types
       0 > $mission->destinationState->sign * $mission->destinationStateMagnitude))
 	  class='mission-danger'
 	  @endif
-    >
-      @if ($userrank > 1)
-	  <td><a href="{{route('missions.edit', $mission->id)}}">{{$mission->type}}</a></td>
-	  @else
-	  <td>{{$mission->type}}</td>
-	  @endif
+      >
+	  <td>
+		@if ($userrank > 1)
+		<a href="{{route('missions.edit', $mission->id)}}">{{$mission->type}}</a>
+		@else
+		{{$mission->type}}
+		@endif
+		@if ($mission->updated_at->lt(new \Carbon\Carbon("1 February 2018")))
+		<span class='mission-verify-icon' title='Caution: verification needed'>&#x2754;</span>
+		@endif
+	  </td>
 	  <td data-sort="{{$mission->reputationMagnitude}}">
 		{{App\Util::magnitude($mission->reputationMagnitude)}}
 	  </td>
