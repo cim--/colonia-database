@@ -460,6 +460,7 @@ class SystemController extends Controller
         $system->x = $request->input('x');
         $system->y = $request->input('y');
         $system->z = $request->input('z');
+        $system->virtualonly = $request->input('virtualonly', 0);
         $system->edsm = $request->input('edsm');
         $system->eddb = $request->input('eddb');
         $system->population = $request->input('population');
