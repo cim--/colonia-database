@@ -181,6 +181,7 @@ class BaseController extends Controller
         $today = Carbon::now();
         $target = \App\Util::tick();
         $influenceupdate = System::where('population', '>', 0)
+            ->where('virtualonly', 0)
             ->whereDoesntHave('influences', function($q) use ($target) {
                 $q->where('date', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
@@ -199,7 +200,9 @@ class BaseController extends Controller
         })->orderBy('name')->get();
 
         $pendingupdate = [];
-        $factions = Faction::with('states')->orderBy('name')->get();
+        $factions = Faction::with('states')
+            ->where('virtual', 0)
+            ->orderBy('name')->get();
         foreach ($factions as $faction) {
             if ($faction->states->count() > 0 &&
             $target->isSameDay(new Carbon($faction->states[0]->pivot->date))) {
