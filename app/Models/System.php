@@ -166,7 +166,7 @@ class System extends Model
             if ($target->population == 0) {
                 continue;
             }
-            if ($target->name == "Ratri" || $target->name == "Ratraii" || $target->name == "Colonia") {
+            if ($target->bgslock) {
                 continue; // locked systems
             }
             if ($faction->currentInfluence($target) !== null) {

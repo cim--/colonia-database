@@ -42,6 +42,10 @@
 {!! Form::label('virtualonly', "Virtual Factions Only") !!}
 {!! Form::checkbox('virtualonly', 1) !!}
 </div>
+<div class='form-field'>
+{!! Form::label('bgslock', "BGS Lock") !!}
+{!! Form::checkbox('bgslock', 1) !!}
+</div>
 
 @foreach ($systemFacilities as $facility)
 <div class='form-field'>
