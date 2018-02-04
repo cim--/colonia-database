@@ -37,7 +37,7 @@
   <label for='mapctrllinks'>Links</label>: <select id='mapctrllinks'>
 	<option value='C:off'>Off</option>
 	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
-    <option selected='selected' value='C:courier'>Courier Missions (10 LY)</option>
+<!--    <option selected='selected' value='C:courier'>Courier Missions (10 LY)</option> -->
 	<optgroup label='Expansions from'>
 	  @foreach ($systems as $system)
 	  <option value='S:{{$system->displayName()}}'>{{$system->displayName()}}</option>
