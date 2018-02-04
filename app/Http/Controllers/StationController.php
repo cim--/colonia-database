@@ -133,6 +133,9 @@ class StationController extends Controller
             $gain->expansion = true;
             $gain->description = 'took control of';
             $gain->save();
+
+            /* Governance change will affect outfitting - reset */
+            $station->modules()->detach();
         }
         
         return redirect()->route('stations.show', $station->id);
