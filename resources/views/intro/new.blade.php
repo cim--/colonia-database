@@ -153,7 +153,7 @@
 
       <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
 
-	  <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a>, a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
+                     <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
 	</div>
   </div>
 </div>
