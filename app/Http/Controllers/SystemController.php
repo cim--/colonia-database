@@ -522,4 +522,13 @@ class SystemController extends Controller
     {
         //
     }
+
+    public function eddb($eddb) {
+        $system = System::where('eddb', $eddb)->first();
+        if (!$system) {
+            \App::abort(404);
+        } else {
+            return redirect()->route('systems.show', $system->id);
+        }
+    }
 }

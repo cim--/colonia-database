@@ -305,4 +305,14 @@ class StationController extends Controller
             'utilitiesns' => $utilitiesns,
         ]);
     }
+
+    public function eddb($eddb) {
+        $station = Station::where('eddb', $eddb)->first();
+        if (!$station) {
+            \App::abort(404);
+        } else {
+            return redirect()->route('stations.show', $station->id);
+        }
+    }
+
 }

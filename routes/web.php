@@ -29,6 +29,7 @@ Route::post('/history', 'HistoryController@store')->name('history.store');
 
 Route::get('/history/trends', 'HistoryController@trends')->name('history.trends');
 
+Route::get('/systems/eddb/{eddb}', 'SystemController@eddb');
 Route::resource('systems', 'SystemController');
 Route::get('/systems/{system}/history', [
     'as' => 'systems.showhistory',
@@ -59,6 +60,7 @@ Route::post('/users', [
     'uses' => 'UserController@update'
 ]);
 
+Route::get('/stations/eddb/{eddb}', 'StationController@eddb');
 Route::get('/stations/{station}/trade', [
     'as' => 'stations.showtrade',
     'uses' => 'StationController@trade'
