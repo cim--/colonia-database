@@ -139,8 +139,7 @@ class Util {
     }
 
 
-    public static function stateBars(Faction $faction, $percent = false) {
-        $stateos = State::get();
+    public static function stateBars(Faction $faction, $stateos, $percent = false) {
         $states = [];
         foreach ($stateos as $state) {
             $states[$state->id] = $state;

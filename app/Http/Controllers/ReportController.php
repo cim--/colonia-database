@@ -139,13 +139,13 @@ class ReportController extends Controller
         $factions = Faction::orderBy('name')->get();
         $tdatas = [];
         $labels = [];
+        $states = State::orderBy('name')->get();
         foreach ($factions as $faction) {
-            $tdatas[] = \App\Util::stateBars($faction, true);
+            $tdatas[] = \App\Util::stateBars($faction, $states, true);
             $labels[] = $faction->name;
         }
 
         $datasets = [];
-        $states = State::orderBy('name')->get();
         foreach ($states as $state) {
             $datasets[$state->name] = [
                 'label' => $state->name,
