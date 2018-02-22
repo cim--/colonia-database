@@ -106,6 +106,13 @@ class System extends Model
                     ->get();
     }
 
+    // optimised for distances page
+    public function latestFactionsWithoutEagerLoad() {
+        return $this->influences()->where('current', 1)
+                    ->orderBy('influence', 'desc')
+                    ->get();
+    }
+
     public function factions(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
                     ->with('faction', 'state')->orderBy('influence', 'desc')

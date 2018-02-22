@@ -44,6 +44,12 @@ class Faction extends Model
                     ->orderBy('influence', 'desc')->get();
     }
 
+    // optimise for distances page
+    public function systemCount() {
+        return $this->influences()->where('current', 1)->count();
+    }
+
+    
     public function currentState(System $system) {
         $influence = $this->influences()->where('current', 1)
                           ->where('system_id', $system->id)

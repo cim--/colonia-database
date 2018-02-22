@@ -33,6 +33,8 @@ class DistancesController extends Controller
         }
 
         $presents = []; // cache
+
+        $this->loadFactionCache();
         
         $grid = [];
         foreach ($systems as $idx => $system) {
@@ -107,12 +109,19 @@ class DistancesController extends Controller
         ]);
     }
 
-
+    private $factioncache;
+    private function loadFactionCache() {
+        $factions = Faction::all();
+        foreach ($factions as $faction) {
+            $this->factioncache[$faction->id] = $faction;
+        }
+    }
+    
     private function currentFactions(System $system) {
-        $influences = $system->latestFactions();
+        $influences = $system->latestFactionsWithoutEagerLoad();
         $factions = [];
         foreach ($influences as $influence) {
-            $factions[$influence->faction->id] = $influence->faction;
+            $factions[$influence->faction_id] = $this->factioncache[$influence->faction_id];
         }
         return $factions;
     }
