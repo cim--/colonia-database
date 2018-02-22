@@ -54,6 +54,19 @@ class Faction extends Model
             return $influence->state;
         }
     }
+
+    // optimise for progress page so no need to look up state itself
+    // as we're only interested in "lockdown or not"
+    public function currentStateID(System $system) {
+        $influence = $this->influences()->where('current', 1)
+                          ->where('system_id', $system->id)
+                          ->first();
+        if ($influence === null) {
+            return null;
+        } else {
+            return $influence->state_id;
+        }
+    }
     
     public function currentStates() {
         $influences = $this->influences()->where('current', 1)

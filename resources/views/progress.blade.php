@@ -109,7 +109,7 @@ visible change.</p>
   <li>
 	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
 	@include('progressage', ['date' => \App\Util::age($station->reserves()->where('current', true)->max('date'))])
-	@if ($station->currentState()->name == "Lockdown")
+	@if ($station->currentStateID() == $lockdown->id)
 	@include($station->currentState()->icon)
 	@endif
   </li>

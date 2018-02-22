@@ -11,6 +11,7 @@ use App\Models\Station;
 use App\Models\History;
 use App\Models\Influence;
 use App\Models\Alert;
+use App\Models\State;
 
 class BaseController extends Controller
 {
@@ -197,7 +198,7 @@ class BaseController extends Controller
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
-        })->orderBy('name')->get();
+        })->with('faction', 'system')->orderBy('name')->get();
 
         $pendingupdate = [];
         $factions = Faction::with('states')
@@ -215,6 +216,7 @@ class BaseController extends Controller
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
 
         $alerts = Alert::where('processed', false)->orderBy('created_at')->get();
+        $lockdown = State::where('name', 'Lockdown')->first();
         
         return view('progress', [
             'target' => $target,
@@ -229,7 +231,8 @@ class BaseController extends Controller
             'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::count())),
             'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
             'reader' => $reader,
-            'alerts' => $alerts
+            'alerts' => $alerts,
+            'lockdown' => $lockdown
         ]);
     }
 
