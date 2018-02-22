@@ -28,6 +28,10 @@ class System extends Model
         return $this->hasMany('App\Models\Systemreport');
     }
 
+    public function eddnevents() {
+        return $this->hasMany('App\Models\Eddnevent');
+    }
+    
     public function facilities() {
         return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');
     }

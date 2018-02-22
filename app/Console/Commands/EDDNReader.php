@@ -14,6 +14,7 @@ use App\Models\Alert;
 use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\Module;
+use App\Models\Eddnevent;
 
 class EDDNReader extends Command
 {
@@ -121,6 +122,10 @@ class EDDNReader extends Command
             \Log::info("Incoming data", [
                 'system' => $system->displayName()
             ]);
+            $eddnevent = new Eddnevent;
+            $eddnevent->system_id = $system->id;
+            $eddnevent->eventtime = Carbon::now();
+            $eddnevent->save();
                     
             $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
             if ($system->virtualonly) {
