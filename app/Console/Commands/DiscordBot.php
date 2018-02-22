@@ -645,7 +645,8 @@ class DiscordBot extends Command
 
         }, [
             'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified, or for a system and its controlling faction',
-            'usage' => '(<faction> [; system?]) | <system>'
+            'usage' => '(<faction> [; system?]) | <system>',
+            'aliases' => ['expansions']
         ]);
         
     }
