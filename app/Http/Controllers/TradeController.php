@@ -11,6 +11,7 @@ use App\Models\Station;
 use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\Effect;
+use App\Models\Tradebalance;
 
 class TradeController extends Controller
 {
@@ -182,12 +183,22 @@ class TradeController extends Controller
                 $q->where('current', true);
         })->orderBy('name')->get();
 
-        $economies = Economy::where('name', '!=', 'Lockdown')->orderBy('name')->get();
+        $economies = Economy::where('analyse', true)->orderBy('name')->get();
+
+        $balances = Tradebalance::get();
+        $bdata = [];
+        foreach ($economies as $economy) {
+            $bdata[$economy->id] = [];
+        }
+        foreach ($balances as $balance) {
+            $bdata[$balance->economy_id][$balance->state_id] = $balance;
+        }
         
         return view('trade/effects', [
             'commodities' => $commodities,
             'states' => $states,
-            'economies' => $economies
+            'economies' => $economies,
+            'balances' => $bdata
         ]);
     }
 

@@ -18,6 +18,11 @@ class Economy extends Model
         return $this->hasMany('App\Models\Station');
     }
 
+    public function tradebalances() {
+        return $this->hasMany('App\Models\Tradebalance');
+    }
+
+    
     public function tradeRatio(State $state) {
         $supply = Reserve::where('state_id', $state->id)->where('reserves', '>', 0)->whereHas('station', function ($q) {
             $q->where('economy_id', $this->id);

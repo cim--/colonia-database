@@ -19,6 +19,10 @@ class State extends Model
         return $this->hasMany('App\Models\Effect');
     }
     
+    public function tradebalances() {
+        return $this->hasMany('App\Models\Tradebalance');
+    }
+
     // pending states
     public function factions() {
         return $this->belongsToMany('App\Models\Faction')->withPivot('date');
