@@ -112,7 +112,54 @@ class ReportController extends Controller
                 ]
             ]);
 
-        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>. The (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.";
+        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>. The (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included. An <a href='".route('reports.reach.log')."'>alternative logarithmic measure</a> is also available.";
+        
+        return view('reports/report', [
+            'report' => "Reach",
+            'chart' => $chart,
+            'desc' => $desc
+        ]);
+    }
+
+    public function reachLog() {
+            
+        $reaches = \DB::select('SELECT f.name, ROUND(SUM(i.influence/100 * LOG10(s.population)),2) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.name ORDER BY reach DESC');
+        
+        $dataset = [];
+        $labels = [];
+        $colours = [];
+        foreach ($reaches as $reach) {
+            $labels[] = $reach->name;
+            $dataset[] = $reach->reach;
+            $colours[] = '#'.substr(md5($reach->name), 0, 6);
+        }
+        
+        $chart = app()->chartjs
+            ->name("reportchart")
+            ->type("horizontalBar")
+            ->size(["height" => 20*(count($reaches)+1), "width"=>1000])
+            ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'top',
+                        ]
+                    ],
+                ],
+                "legend" => [
+                    "display" => false,
+                ]
+            ])
+            ->labels($labels)
+            ->datasets([
+                [
+                    'backgroundColor' => $colours,
+                    'data' => $dataset
+                ]
+            ]);
+
+        $desc = "Logarithmic Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for many system properties being proportional to the logarithm of the population, multiplying influence in each system by <code>log<sub>10</sub>(population)</code>. As with the normal Reach measure, the (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.";
         
         return view('reports/report', [
             'report' => "Reach",
