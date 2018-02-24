@@ -198,6 +198,8 @@ class BaseController extends Controller
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
+        })->whereHas('facilities', function($q) {
+            $q->where('name', 'Commodities');
         })->with('faction', 'system')->orderBy('name')->get();
 
         $pendingupdate = [];
