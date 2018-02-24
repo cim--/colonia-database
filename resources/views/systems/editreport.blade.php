@@ -39,13 +39,13 @@
 		{{ \App\Util::displayDate($target) }}
 	  </td>
 	  <td>
-		{!! Form::text("traffic", '') !!}
+      {!! Form::text("traffic", '', ['required' => 'required']) !!}
 	  </td>
 	  <td>
-		{!! Form::text("crime", '') !!}
+		{!! Form::text("crime", '', ['required' => 'required']) !!}
 	  </td>
 	  <td>
-		{!! Form::text("bounties", '') !!}
+		{!! Form::text("bounties", '', ['required' => 'required']) !!}
 	  </td>
 	</tr>
   </tbody>
