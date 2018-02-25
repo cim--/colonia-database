@@ -40,6 +40,7 @@
 	  <li>
 		&#x27a0; @include('components/economy', ['economy' => 'Tourism'])
 		<br>&#x27a0; @include('components/economy', ['economy' => 'Colony'])
+		<br>&#x27a0; @include('components/economy', ['economy' => 'Prison'])
 	  </li>
 	</ul>
 	  
