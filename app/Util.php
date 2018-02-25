@@ -90,6 +90,21 @@ class Util {
         return "#000000";
     }
 
+    public static function ethosColour($state) {
+        $colours = [
+            "Social" => "#309030",
+            "Corporate" => "#306090",
+            "Authoritarian" => "#603090",
+            "Criminal" => "#903030",
+            "Unknown" => "#505050"
+        ];
+        if (isset($colours[$state])) {
+            return $colours[$state];
+        }
+        return "#000000";
+    }
+    
+    
     public static function magnitude($mag) {
         switch ($mag) {
         case "-3": return "---";

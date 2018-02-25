@@ -59,7 +59,7 @@ class BaseController extends Controller
         
         
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
-        $factions = Faction::with('government')->orderBy('name')->get();
+        $factions = Faction::with('government', 'ethos')->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
         $statescalc = [];
@@ -107,13 +107,19 @@ class BaseController extends Controller
         }
 
         $governments = [];
+        $ethoses = [];
         foreach ($factions as $faction) {
             if (!isset($governments[$faction->government->name])) {
                 $governments[$faction->government->name] = 0;
             }
             $governments[$faction->government->name]++;
-            $iconmap[$faction->government->name] = $faction->government->icon;
 
+            if (!isset($ethoses[$faction->ethos->name])) {
+                $ethoses[$faction->ethos->name] = 0;
+            }
+            $ethoses[$faction->ethos->name]++;
+
+            $iconmap[$faction->government->name] = $faction->government->icon;
 
             
         }
@@ -140,7 +146,39 @@ class BaseController extends Controller
         $maxtraffic = Systemreport::where('current', 1)->max('traffic');
         $mintraffic = Systemreport::where('current', 1)->min('traffic');
 
+        $ethoslabels = ["Ethos"];
+        $ethosdatasets = [];
+        foreach ($ethoses as $type => $count) {
+            $ethosdatasets[] = [
+                'data' => [$count],
+                'label' => $type,
+                'backgroundColor' => \App\Util::ethosColour($type)
+            ];
+        }
 
+        $ethoschart = app()->chartjs
+            ->name("ethoses")
+            ->type("horizontalBar")
+            ->size(["height" => 100, "width"=>500])
+            ->labels($ethoslabels)
+            ->datasets($ethosdatasets)
+            ->options([
+                'scales' => [
+                    'yAxes' => [
+                        [ 'stacked' => true ]
+                    ],
+                    'xAxes' => [
+                        [
+                            'stacked' => true,
+                            'ticks' => [
+                                'min' => 0,
+                                'max' => $factions->count()
+                            ],
+
+                        ],
+                    ],
+                ],
+            ]);
         
         return view('index', [
             'population' => $population,
@@ -151,6 +189,7 @@ class BaseController extends Controller
             'players' => $factions->filter(function($v) { return $v->player; })->count(),
             'economies' => $economies,
             'governments' => $governments,
+            'ethoschart' => $ethoschart,
             'states' => $states,
             'systems' => $systems,
             'factions' => $factions,

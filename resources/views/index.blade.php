@@ -55,6 +55,9 @@
 	  @endforeach
 	</ul>
 
+	{!! $ethoschart->render() !!}
+
+	
 	<h2>States</h2>
 	<ul class='compact2'>
 	  @foreach ($states as $state)
