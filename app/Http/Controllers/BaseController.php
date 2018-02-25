@@ -17,6 +17,8 @@ class BaseController extends Controller
 {
     public function index() {
 
+        $wordmap = [];
+        
         $history = History::with('location', 'location.economy', 'faction', 'faction.government')
             ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
             ->orderBy('date', 'desc')->get();
@@ -104,6 +106,8 @@ class BaseController extends Controller
                 $economies[$station->economy->name]++;
                 $iconmap[$station->economy->name] = $station->economy->icon;
             }
+            
+            $this->wordmap($wordmap, $station->name);
         }
 
         $governments = [];
@@ -121,7 +125,7 @@ class BaseController extends Controller
 
             $iconmap[$faction->government->name] = $faction->government->icon;
 
-            
+            $this->wordmap($wordmap, $faction->name);
         }
         arsort($governments);
 
@@ -138,7 +142,9 @@ class BaseController extends Controller
                 if ($dist > $maxdist) {
                     $maxdist = $dist;
                 }
+                $this->wordmap($wordmap, $system->displayName());
             }
+
         }
         $coldist = \App\Util::distance($avgcoordinates, (object)['x'=>0,'y'=>0,'z'=>0]);
 
@@ -179,6 +185,12 @@ class BaseController extends Controller
                     ],
                 ],
             ]);
+
+        foreach ($wordmap as $key => $count) {
+            if ($wordmap[$key] == 1) {
+                //unset($wordmap[$key]);
+            }
+        }
         
         return view('index', [
             'population' => $population,
@@ -204,9 +216,27 @@ class BaseController extends Controller
             'bounties' => $bounties,
             'maxtraffic' => $maxtraffic,
             'mintraffic' => $mintraffic,
+            'wordmap' => $wordmap
         ]);
     }
 //
+
+    private function wordmap(&$map, $string) {
+        $blacklist = ["the", "and"];
+
+        $string = str_replace("Ra' Takakhan", html_entity_decode("Ra&nbsp;'Takakhan"), $string);
+        $words = explode(" ", $string);
+        foreach ($words as $word) {
+            $word = strtolower(trim($word));
+            if (strlen($word) > 2 && !in_array($word, $blacklist)) {
+                if (!isset($map[$word])) {
+                    $map[$word] = 0;
+                }
+                $map[$word]++;
+            }
+        }
+    }
+    
     public function progress() {
         $user = \Auth::user();
         /*          // now allows anonymous read-only access

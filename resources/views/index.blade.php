@@ -79,6 +79,16 @@
 	  <li><a href="{{route('reports')}}?type=traffic">Which are the busiest systems?</a></li>
 	  <li><a href="{{route('map')}}#XZ~F:Jaques~S:Colonia~P~1">Where are the best drinks?</a></li>
 	</ul>
+
+	<script type='text/javascript'>
+	  var wordmapdata = [
+	  @foreach ($wordmap as $word => $count)
+	  { text: "{!! $word !!}", size: {{$count}}, colour: "#{{\App\Util::wordColour($word, $count)}}" },
+	  @endforeach
+	  ]
+	</script>
+	<div id='wordcloud'></div>
+	
   </div>
 
 <div class='col-sm-6'>

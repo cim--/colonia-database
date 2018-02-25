@@ -103,7 +103,22 @@ class Util {
         }
         return "#000000";
     }
-    
+
+    public static function wordColour($word, $count) {
+        if ($count == 1) {
+            return str_replace(
+                [0,2,4,6,8,"a"],
+                ["a","b","c","d","e","f"],
+                substr(md5($word), 0, 6)
+            );
+        } else {
+            return str_replace(
+                ["a","b","c","d","e","f"],
+                [0,2,4,6,8,"a"],
+                substr(md5($word), 0, 6)
+            );
+        }
+    }
     
     public static function magnitude($mag) {
         switch ($mag) {
