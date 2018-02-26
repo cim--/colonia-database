@@ -25,9 +25,13 @@ class BaseController extends Controller
 
         $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
             ->where('current', 1)
-            ->orderBy('system_id')
-            ->orderBy('influence', 'desc')
-            ->get();
+            ->get()->sort(function($a, $b) {
+                $cmp = strcmp($a->system->displayName(), $b->system->displayName());
+                if ($cmp != 0) {
+                    return $cmp;
+                }
+                return $b->influence - $a->influence;
+            });
         $important = $influences->filter(function ($value, $key) {
             if (!$value->system || !$value->system->inhabited()) {
                 return false; // safety for bad data
