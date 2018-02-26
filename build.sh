@@ -3,4 +3,4 @@
 npm install
 composer install
 php artisan migrate
-./node_modules/.bin/gulp
+./node_modules/.bin/gulp --production
