@@ -638,13 +638,15 @@ class DiscordBot extends Command
                         $result .= $aggressivecandidates[$i]->displayName()." (".number_format($dist,2)."LY)\n";
                     }
                 }
+                $result .= "Aggressive expansion destinations may be unpredictable due to the need for a suitable target faction";
             }
             
             return $result;
 
         }, [
             'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified, or for a system and its controlling faction',
-            'usage' => '(<faction> [; system?]) | <system>'
+            'usage' => '(<faction> [; system?]) | <system>',
+            'aliases' => ['expansions']
         ]);
         
     }

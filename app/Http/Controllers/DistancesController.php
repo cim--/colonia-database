@@ -33,6 +33,8 @@ class DistancesController extends Controller
         }
 
         $presents = []; // cache
+
+        $this->loadFactionCache();
         
         $grid = [];
         foreach ($systems as $idx => $system) {
@@ -61,8 +63,8 @@ class DistancesController extends Controller
                     $details = [
                         'distance' => $system->distanceTo($system2),
                         'present' => isset($presents[$system2->id][$faction->id]),
-                        'full' => count($presents[$system2->id]) >= 7 || $system2->name == "Colonia" || $system2->catalogue == "Eol Prou LW-L c8-76",
-                        'available' => ($system2->phase->sequence <= $maxphase) || ($system->phase->sequence >= $system2->phase->sequence),
+                        'full' => count($presents[$system2->id]) >= 7 || $system2->bgslock,
+                        'available' => (($system2->phase->sequence <= $maxphase) || ($system->phase->sequence >= $system2->phase->sequence)) && $system2->population > 0,
                         'candidate' => false,
                         'target' => false
                     ];
@@ -107,12 +109,19 @@ class DistancesController extends Controller
         ]);
     }
 
-
+    private $factioncache;
+    private function loadFactionCache() {
+        $factions = Faction::all();
+        foreach ($factions as $faction) {
+            $this->factioncache[$faction->id] = $faction;
+        }
+    }
+    
     private function currentFactions(System $system) {
-        $influences = $system->latestFactions();
+        $influences = $system->latestFactionsWithoutEagerLoad();
         $factions = [];
         foreach ($influences as $influence) {
-            $factions[$influence->faction->id] = $influence->faction;
+            $factions[$influence->faction_id] = $this->factioncache[$influence->faction_id];
         }
         return $factions;
     }

@@ -18,6 +18,7 @@
 	  ({{$faction->ethos->name}} ethos)
 	  @endif
 	</p>
+	@if (!$faction->virtual)
 	<p><span class='faction-property'>Pending States</span>:
 	  @if (count($faction->states) > 0)
 	  @foreach ($faction->states as $state)
@@ -34,6 +35,11 @@
 	  <a class='edit' href='{{route('factions.edit', $faction->id)}}'>Update</a>
 	  @endif
 	</p>
+	@else
+	@if ($userrank > 1)
+	<a class='edit' href='{{route('factions.edit', $faction->id)}}'>Update</a>
+	@endif
+	@endif
 	@if ($faction->eddb)
 	<p><a href='https://eddb.io/faction/{{$faction->eddb}}'>EDDB Record</a></p>
 	@endif
@@ -50,6 +56,7 @@
 <div class='row'>
   <div class='col-sm-6'>
 	<h2>Systems</h2>
+	@if (!$faction->virtual)
 	<p><a href='{{route("factions.showhistory", $faction->id)}}'>Influence history</a></p>
 	<table class='table table-bordered datatable' data-page-length='25'>
 	  <thead>
@@ -81,6 +88,35 @@
 		@endforeach
 	  </tbody>
 	</table>
+	@else
+	<table class='table table-bordered datatable' data-page-length='25'>
+	  <thead>
+		<tr><th>Name</th><th>Control?</th></tr>
+	  </thead>
+	  <tbody>
+		@foreach ($faction->stations as $station)
+		<tr class='
+			@if ($station->system->controllingFaction()->id == $faction->id)
+		  controlled-system
+		  @else
+		  uncontrolled-system
+		  @endif
+			'>
+		  <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>
+			@include($station->system->economy->icon)
+		  </td>
+		  <td>
+			@if ($station->system->controllingFaction()->id == $faction->id)
+			Yes
+			@else
+			No
+			@endif
+		  </td>
+		</tr>
+		@endforeach
+	  </tbody>
+	</table>
+	@endif
   </div>
   <div class='col-sm-6'>
 	<h2>Stations</h2>
@@ -103,9 +139,10 @@
 		@endforeach
 	  </tbody>
 	</table>
-
+	@if (!$faction->virtual)
 	<h2>State History</h2>
 	@include('layout/chart')
+	@endif
   </div>
 </div>
 

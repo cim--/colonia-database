@@ -133,6 +133,9 @@ class StationController extends Controller
             $gain->expansion = true;
             $gain->description = 'took control of';
             $gain->save();
+
+            /* Governance change will affect outfitting - reset */
+            $station->modules()->detach();
         }
         
         return redirect()->route('stations.show', $station->id);
@@ -302,4 +305,14 @@ class StationController extends Controller
             'utilitiesns' => $utilitiesns,
         ]);
     }
+
+    public function eddb($eddb) {
+        $station = Station::where('eddb', $eddb)->first();
+        if (!$station) {
+            \App::abort(404);
+        } else {
+            return redirect()->route('stations.show', $station->id);
+        }
+    }
+
 }

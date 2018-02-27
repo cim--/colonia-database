@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\System;
 use App\Models\History;
 use App\Models\Expansioncache;
+use App\Models\Eddnevent;
 
 class UpdateHistory extends Command
 {
@@ -44,6 +45,7 @@ class UpdateHistory extends Command
         \DB::transaction(function() {
             $this->updateHistory();
             $this->updateExpansionCache();
+            $this->estimateTraffic();
         });
         //
     }
@@ -160,6 +162,16 @@ class UpdateHistory extends Command
         }
     }
 
+    private function estimateTraffic() {
+        /* These are only used for counting onto travel reports (and
+         * in future generating estimated travel reports). In theory
+         * we should only need the last 24 hours, but keep slightly
+         * longer just in case. */
+        Eddnevent::where('eventtime', '<', date("Y-m-d H:i:s", strtotime("-7 days")))->delete();
+
+        /* TODO: once estimate data is a bit better available, start
+         * using it to generate estimated traffic reports */
+    }
     
     private function map($infs) {
         $factions = [];

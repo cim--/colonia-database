@@ -28,6 +28,10 @@ class System extends Model
         return $this->hasMany('App\Models\Systemreport');
     }
 
+    public function eddnevents() {
+        return $this->hasMany('App\Models\Eddnevent');
+    }
+    
     public function facilities() {
         return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');
     }
@@ -106,6 +110,13 @@ class System extends Model
                     ->get();
     }
 
+    // optimised for distances page
+    public function latestFactionsWithoutEagerLoad() {
+        return $this->influences()->where('current', 1)
+                    ->orderBy('influence', 'desc')
+                    ->get();
+    }
+
     public function factions(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
                     ->with('faction', 'state')->orderBy('influence', 'desc')
@@ -166,7 +177,7 @@ class System extends Model
             if ($target->population == 0) {
                 continue;
             }
-            if ($target->name == "Ratri" || $target->name == "Ratraii" || $target->name == "Colonia") {
+            if ($target->bgslock) {
                 continue; // locked systems
             }
             if ($faction->currentInfluence($target) !== null) {

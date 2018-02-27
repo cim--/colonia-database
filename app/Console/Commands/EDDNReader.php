@@ -14,6 +14,7 @@ use App\Models\Alert;
 use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\Module;
+use App\Models\Eddnevent;
 
 class EDDNReader extends Command
 {
@@ -118,48 +119,57 @@ class EDDNReader extends Command
             ->orWhere('catalogue', $event['message']['StarSystem'])
             ->first();
         if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
-
             \Log::info("Incoming data", [
                 'system' => $system->displayName()
             ]);
+            $eddnevent = new Eddnevent;
+            $eddnevent->system_id = $system->id;
+            $eddnevent->eventtime = Carbon::now();
+            $eddnevent->save();
                     
             $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
-            $factions = $event['message']['Factions'];
-            $influences = [];
-            foreach ($factions as $faction) {
-                if ($faction['Name'] == "Pilots Federation Local Branch") {
-                    // virtual faction, ignore
-                    continue;
+            if ($system->virtualonly) {
+                $factions = $event['message']['Factions'];
+                $influences = [];
+                foreach ($factions as $faction) {
+                    if ($faction['Name'] == "Pilots Federation Local Branch") {
+                        // virtual faction, ignore
+                        continue;
+                    }
+                    $fo = Faction::where('name', $faction['Name'])->first();
+                    if (!$fo) {
+                        $error = "Unrecognised faction ".$faction['Name']." in ".$system->displayName();
+                        Alert::alert($error);
+                        \Log::error($error);
+                        $this->error($error);
+                        return;
+                    }
+                    if ($fo->virtual) {
+                        // virtual faction, ignore
+                        continue;
+                    }
+                    $inf = round($faction['Influence'], 3)*100;
+                    $faction['FactionState'] = $this->renameState($faction['FactionState']);
+                    $state = State::where('name', $faction['FactionState'])->first();
+                    if (!$state) {
+                        $error = "Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName();
+                        Alert::alert($error);
+                        \Log::error($error);
+                        $this->error($error);
+                        return;
+                    }
+                    $pending = [];
+                    if (isset($faction['PendingStates'])) {
+                        $pending = $faction['PendingStates'];
+                    }
+                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
                 }
-                $fo = Faction::where('name', $faction['Name'])->first();
-                if (!$fo) {
-                    $error = "Unrecognised faction ".$faction['Name']." in ".$system->displayName();
-                    Alert::alert($error);
-                    \Log::error($error);
-                    $this->error($error);
-                    return;
-                }
-                $inf = round($faction['Influence'], 3)*100;
-                $faction['FactionState'] = $this->renameState($faction['FactionState']);
-                $state = State::where('name', $faction['FactionState'])->first();
-                if (!$state) {
-                    $error = "Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName();
-                    Alert::alert($error);
-                    \Log::error($error);
-                    $this->error($error);
-                    return;
-                }
-                $pending = [];
-                if (isset($faction['PendingStates'])) {
-                    $pending = $faction['PendingStates'];
-                }
-                $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
+                usort($influences, function($a, $b) {
+                    return $b['influence'] - $a['influence'];
+                });
+                $this->updateInfluences($system, $influences);
             }
-            usort($influences, function($a, $b) {
-                return $b['influence'] - $a['influence'];
-            });
-            $this->updateInfluences($system, $influences);
-
+            
             $this->updateSecurity($system, $event['message']);
         } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
             $traditional = new \stdClass;

@@ -66,6 +66,21 @@
 	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. There is a permanent one in Colonia, and temporary ones are often set up in systems affected by War.</p>
 	</div>
 
+	<div>
+	  <h2>Missions</h2>
+	  @include('intro.botbox', ['commands' => ["!mission system"]])
+
+	  <p>Most mission types are available somewhere in Colonia, but the variety and quantity of missions differs a lot from system to system. The following major differences apply:</p>
+
+	  <ul>
+		<li>"Tour" VIP passenger missions are not available, as all local tourist beacons are currently in a single system</li>
+		<li>"Famous explorer" passenger missions are very common, but due to the distribution of distant tourist beacons, mostly go to systems within 500 LY of Sol. Missions to Sag A*, Beagle Point or other deep space destinations do exist but may require visiting several passenger boards to find.</li>
+	  </ul>
+
+	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 15 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
+
+	</div>
+	
   </div>
   <div class='newbox'>
 	
@@ -84,27 +99,28 @@
 	  </ul>
 	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
 	  
-	  <p>There are no engineers. Engineered and most A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
+	  <p>Most A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
 
 	  <p>Colonia Hub is currently the only station providing AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. Not all AX equipment is available, as it is Industrial.</p>
 	  
 	</div>
 
-	<div>
-	  <h2>Missions</h2>
-	  @include('intro.botbox', ['commands' => ["!mission system"]])
+    <div>
+	  <h2>Engineering</h2>
 
-	  <p>Most mission types are available somewhere in Colonia, but the variety and quantity of missions differs a lot from system to system. The following major differences apply:</p>
+	  <p>Colonia has no engineers, but if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules.</p>
 
+	  <p>While the system populations at under 1 million would normally be insufficient to support Material Brokers, there are three present:</p>
 	  <ul>
-		<li>"Tour" VIP passenger missions are not available, as all local tourist beacons are currently in a single system</li>
-		<li>"Famous explorer" passenger missions are very common, but due to the distribution of distant tourist beacons, mostly go to systems within 500 LY of Sol. Missions to Sag A*, Beagle Point or other deep space destinations do exist but may require visiting several passenger boards to find.</li>
+		<li>Data: Colonia Dream, Ratraii</li>
+		<li>Raw: TolaGarf's Junkyard, Kojeara</li>
+		<li>Manufactured: Foster Terminal, Coeus</li>
 	  </ul>
+	  <p>A Tech Broker service is available at Bolden's Enterprise, Tir.</p>
 
-	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 10 LY (courier) or 15 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
-
-	</div>
-
+	  <p>In addition to normal sources of engineering materials, the Unauthorised Installations in Kojeara have satellites which can be scanned for some data, and miscellaneous manufactured materials can be found in the debris around the wrecked bulk carrier in Luchtaine.</p>
+    </div>
+    
 	<div>
 	  <h2>Factions and Politics</h2>
     @include('intro.botbox', ['commands' => ["!faction faction", "!influence faction/system", "!summary reach", "!traffic system", "!expansion faction", "!expansionsto system", "!history faction/date/system/station"]])
@@ -121,19 +137,23 @@
 	  </ul>
 
 	  <p>Two of the systems - Colonia and Ratraii - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
+
+	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127, which has jurisdiction as far as Sacaqawea Landing in a Solwards direction.</p>
 	</div>
 	<div>
 	  <h2>Other points of interest</h2>
 
 	  <p>Colonia contains some unique or rare points of interest.</p>
 
-	  <p><a href="{{route('stations.show', 62)}}">Foster terminal</a> is a dockable megaship embedded in an ice ring. There are also three asteroid bases - <a href="{{route('stations.show', 56)}}">TolaGarf's Junkyard</a>, <a href="{{route('stations.show', 64)}}">Moore's Charm</a> and <a href="{{route('stations.show', 74)}}">Robardin Rock</a>.</p>
+	  <p><a href="{{route('stations.show', 62)}}">Foster Terminal</a> is a dockable megaship embedded in an ice ring. There are also three asteroid bases - <a href="{{route('stations.show', 56)}}">TolaGarf's Junkyard</a>, <a href="{{route('stations.show', 64)}}">Moore's Charm</a> and <a href="{{route('stations.show', 74)}}">Robardin Rock</a>. A second megaship, the <a href="{{route('stations.show', 62)}}">Dove Enigma</a>, orbits near Colonia following the <a href="https://forums.frontier.co.uk/showthread.php/398466-Enigma-Expedition-to-Colonia-for-Charity-and-for-with-CMDR-DoveEnigma13">Enigma Expedition</a>.</p>
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
-	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life has been discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>. There is a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a. There is a persistent distress call from a wrecked bulk cargo ship near Moore's Charm in Luchtaine.</p>
+	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life was discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>, though has since disappeared. There is a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a. There is a persistent distress call from a wrecked bulk cargo ship near Moore's Charm in Luchtaine.</p>
 
       <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
+
+                     <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
 	</div>
   </div>
 </div>

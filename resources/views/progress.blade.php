@@ -55,7 +55,7 @@ visible change.</p>
 <p>The following factions do not have pending state updates today. You will need to enter the system to view the pending states in the right panel.</p>
 @endif
 <p>You can update this data without needing to log in by entering a system where the faction is present while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI).</p>
-<p>For a comprehensive survey, it is best to start by doing the Core outposts - as these have many factions only present there - then go to hub systems such as Dubbuennel where many CEI factions are present. It is not necessary to update every faction every day as pending states usually change slowly.</p>
+<p>Most pending states will be picked up routinely by passing traffic, though a few fringe factions present in a single system may not get daily updates this way.</p>
 <ul class='compact'>
   @foreach ($pendingupdate as $faction)
   <li>
@@ -109,7 +109,7 @@ visible change.</p>
   <li>
 	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
 	@include('progressage', ['date' => \App\Util::age($station->reserves()->where('current', true)->max('date'))])
-	@if ($station->currentState()->name == "Lockdown")
+	@if ($station->currentStateID() == $lockdown->id)
 	@include($station->currentState()->icon)
 	@endif
   </li>

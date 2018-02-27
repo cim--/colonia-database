@@ -11,7 +11,7 @@ $(function() {
 		}
         var table = $(this).DataTable(params);
 		table.on('search.dt', function() {
-			location.hash = table.search();
+			location.hash = encodeURI(table.search());
 		});
     });
     

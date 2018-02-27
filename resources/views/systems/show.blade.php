@@ -19,7 +19,7 @@
 	</p>
 	<div class='row'>
 	  <div class='col-sm-6'>
-        <p><span class='system-property'>Population</span>: {{$system->population}}</p>
+          <p><span class='system-property'>Population</span>: {{number_format($system->population)}}</p>
 	  </div>
 	  <div class='col-sm-6'>
         <p><span class='system-property'>Exploration Value</span>: {{$system->explorationvalue ? number_format($system->explorationvalue) : "not known"}}</p>
@@ -120,6 +120,10 @@
 	  </tbody>
 	</table>
 	<h2>Factions</h2>
+	@if (!$system->virtualonly)
+	@if ($system->bgslock)
+	<p>Political activity in this system is restricted.</p>
+	@endif
 	<p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
 
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
@@ -161,6 +165,15 @@
 		@endforeach
 	  </tbody>
 	</table>
+	@else
+	<p>
+	  System administrated by <a href="{{route('factions.show', $controlling->id)}}">{{$controlling->name}}</a>
+	  @include($controlling->government->icon)
+	</p>
+	@if ($userrank > 1)
+	<a class='edit' href='{{route('systems.edit', $system->id)}}'>Update</a>
+	@endif
+	@endif
   </div>
 @endif
 

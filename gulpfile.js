@@ -23,7 +23,9 @@ elixir(mix => {
 		'../../../node_modules/datatables.net/js/jquery.dataTables.js',
 		'../../../node_modules/datatables.net-bs/js/dataTables.bootstrap.js',
 		'../../../node_modules/chart.js/dist/Chart.js',
-		'../../../node_modules/fabric/dist/fabric.js', 
+		'../../../node_modules/fabric/dist/fabric.js',
+		'../../../node_modules/d3/build/d3.js',
+		'../../../node_modules/d3-cloud/build/d3.layout.cloud.js', 
 		'*.js'
 	], 'public/js/cdb.js')
 		.sass('resources/assets/sass/app.scss', 'public/css/cdb.css')

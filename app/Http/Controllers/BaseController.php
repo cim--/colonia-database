@@ -11,20 +11,27 @@ use App\Models\Station;
 use App\Models\History;
 use App\Models\Influence;
 use App\Models\Alert;
+use App\Models\State;
 
 class BaseController extends Controller
 {
     public function index() {
 
+        $wordmap = [];
+        
         $history = History::with('location', 'location.economy', 'faction', 'faction.government')
             ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
             ->orderBy('date', 'desc')->get();
 
         $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
             ->where('current', 1)
-            ->orderBy('system_id')
-            ->orderBy('influence', 'desc')
-            ->get();
+            ->get()->sort(function($a, $b) {
+                $cmp = strcmp($a->system->displayName(), $b->system->displayName());
+                if ($cmp != 0) {
+                    return $cmp;
+                }
+                return $b->influence - $a->influence;
+            });
         $important = $influences->filter(function ($value, $key) {
             if (!$value->system || !$value->system->inhabited()) {
                 return false; // safety for bad data
@@ -58,7 +65,7 @@ class BaseController extends Controller
         
         
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
-        $factions = Faction::with('government')->orderBy('name')->get();
+        $factions = Faction::with('government', 'ethos')->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
         $statescalc = [];
@@ -103,18 +110,26 @@ class BaseController extends Controller
                 $economies[$station->economy->name]++;
                 $iconmap[$station->economy->name] = $station->economy->icon;
             }
+            
+            $this->wordmap($wordmap, $station->name);
         }
 
         $governments = [];
+        $ethoses = [];
         foreach ($factions as $faction) {
             if (!isset($governments[$faction->government->name])) {
                 $governments[$faction->government->name] = 0;
             }
             $governments[$faction->government->name]++;
+
+            if (!isset($ethoses[$faction->ethos->name])) {
+                $ethoses[$faction->ethos->name] = 0;
+            }
+            $ethoses[$faction->ethos->name]++;
+
             $iconmap[$faction->government->name] = $faction->government->icon;
 
-
-            
+            $this->wordmap($wordmap, $faction->name);
         }
         arsort($governments);
 
@@ -131,7 +146,9 @@ class BaseController extends Controller
                 if ($dist > $maxdist) {
                     $maxdist = $dist;
                 }
+                $this->wordmap($wordmap, $system->displayName());
             }
+
         }
         $coldist = \App\Util::distance($avgcoordinates, (object)['x'=>0,'y'=>0,'z'=>0]);
 
@@ -139,7 +156,45 @@ class BaseController extends Controller
         $maxtraffic = Systemreport::where('current', 1)->max('traffic');
         $mintraffic = Systemreport::where('current', 1)->min('traffic');
 
+        $ethoslabels = ["Ethos"];
+        $ethosdatasets = [];
+        foreach ($ethoses as $type => $count) {
+            $ethosdatasets[] = [
+                'data' => [$count],
+                'label' => $type,
+                'backgroundColor' => \App\Util::ethosColour($type)
+            ];
+        }
 
+        $ethoschart = app()->chartjs
+            ->name("ethoses")
+            ->type("horizontalBar")
+            ->size(["height" => 100, "width"=>500])
+            ->labels($ethoslabels)
+            ->datasets($ethosdatasets)
+            ->options([
+                'scales' => [
+                    'yAxes' => [
+                        [ 'stacked' => true ]
+                    ],
+                    'xAxes' => [
+                        [
+                            'stacked' => true,
+                            'ticks' => [
+                                'min' => 0,
+                                'max' => $factions->count()
+                            ],
+
+                        ],
+                    ],
+                ],
+            ]);
+
+        foreach ($wordmap as $key => $count) {
+            if ($wordmap[$key] == 1) {
+                //unset($wordmap[$key]);
+            }
+        }
         
         return view('index', [
             'population' => $population,
@@ -150,6 +205,7 @@ class BaseController extends Controller
             'players' => $factions->filter(function($v) { return $v->player; })->count(),
             'economies' => $economies,
             'governments' => $governments,
+            'ethoschart' => $ethoschart,
             'states' => $states,
             'systems' => $systems,
             'factions' => $factions,
@@ -164,9 +220,27 @@ class BaseController extends Controller
             'bounties' => $bounties,
             'maxtraffic' => $maxtraffic,
             'mintraffic' => $mintraffic,
+            'wordmap' => $wordmap
         ]);
     }
 //
+
+    private function wordmap(&$map, $string) {
+        $blacklist = ["the", "and"];
+
+        $string = str_replace("Ra' Takakhan", html_entity_decode("Ra&nbsp;'Takakhan"), $string);
+        $words = explode(" ", $string);
+        foreach ($words as $word) {
+            $word = strtolower(trim($word));
+            if (strlen($word) > 2 && !in_array($word, $blacklist)) {
+                if (!isset($map[$word])) {
+                    $map[$word] = 0;
+                }
+                $map[$word]++;
+            }
+        }
+    }
+    
     public function progress() {
         $user = \Auth::user();
         /*          // now allows anonymous read-only access
@@ -181,6 +255,7 @@ class BaseController extends Controller
         $today = Carbon::now();
         $target = \App\Util::tick();
         $influenceupdate = System::where('population', '>', 0)
+            ->where('virtualonly', 0)
             ->whereDoesntHave('influences', function($q) use ($target) {
                 $q->where('date', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
@@ -196,10 +271,14 @@ class BaseController extends Controller
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
-        })->orderBy('name')->get();
+        })->whereHas('facilities', function($q) {
+            $q->where('name', 'Commodities');
+        })->with('faction', 'system')->orderBy('name')->get();
 
         $pendingupdate = [];
-        $factions = Faction::with('states')->orderBy('name')->get();
+        $factions = Faction::with('states')
+            ->where('virtual', 0)
+            ->orderBy('name')->get();
         foreach ($factions as $faction) {
             if ($faction->states->count() > 0 &&
             $target->isSameDay(new Carbon($faction->states[0]->pivot->date))) {
@@ -212,6 +291,7 @@ class BaseController extends Controller
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
 
         $alerts = Alert::where('processed', false)->orderBy('created_at')->get();
+        $lockdown = State::where('name', 'Lockdown')->first();
         
         return view('progress', [
             'target' => $target,
@@ -226,7 +306,8 @@ class BaseController extends Controller
             'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::count())),
             'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
             'reader' => $reader,
-            'alerts' => $alerts
+            'alerts' => $alerts,
+            'lockdown' => $lockdown
         ]);
     }
 

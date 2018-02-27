@@ -90,6 +90,36 @@ class Util {
         return "#000000";
     }
 
+    public static function ethosColour($state) {
+        $colours = [
+            "Social" => "#309030",
+            "Corporate" => "#306090",
+            "Authoritarian" => "#603090",
+            "Criminal" => "#903030",
+            "Unknown" => "#505050"
+        ];
+        if (isset($colours[$state])) {
+            return $colours[$state];
+        }
+        return "#000000";
+    }
+
+    public static function wordColour($word, $count) {
+        if ($count == 1) {
+            return str_replace(
+                [0,2,4,6,8,"a"],
+                ["a","b","c","d","e","f"],
+                substr(md5($word), 0, 6)
+            );
+        } else {
+            return str_replace(
+                ["a","b","c","d","e","f"],
+                [0,2,4,6,8,"a"],
+                substr(md5($word), 0, 6)
+            );
+        }
+    }
+    
     public static function magnitude($mag) {
         switch ($mag) {
         case "-3": return "---";
@@ -139,8 +169,7 @@ class Util {
     }
 
 
-    public static function stateBars(Faction $faction, $percent = false) {
-        $stateos = State::get();
+    public static function stateBars(Faction $faction, $stateos, $percent = false) {
         $states = [];
         foreach ($stateos as $state) {
             $states[$state->id] = $state;

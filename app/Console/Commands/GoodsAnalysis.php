@@ -10,6 +10,8 @@ use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\History;
 use App\Models\Effect;
+use App\Models\Tradebalance;
+use App\Models\Economy;
 
 class GoodsAnalysis extends Command
 {
@@ -48,7 +50,8 @@ class GoodsAnalysis extends Command
     {
         try {
             \DB::transaction(function() {
-                $this->runAnalysis();
+                $this->runGoodsAnalysis();
+                $this->runBalanceAnalysis();
             });
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
@@ -56,7 +59,7 @@ class GoodsAnalysis extends Command
         }
     }
 
-    private function runAnalysis() {
+    private function runGoodsAnalysis() {
         Effect::where('id', '>', 0)->delete();
         
         $stations = Station::whereHas('stationclass', function($q) {
@@ -277,5 +280,30 @@ class GoodsAnalysis extends Command
             }
         }
 
+    }
+
+
+    private function runBalanceAnalysis() {
+        $economies = Economy::where('analyse', true)->get();
+        $states = State::where('name', '!=', 'Lockdown')->get();
+
+        foreach ($economies as $economy) {
+            foreach ($states as $state) {
+                $balance = Tradebalance::firstOrNew([
+                    'economy_id' => $economy->id,
+                    'state_id' => $state->id,
+                ]);
+                $tr = $economy->tradeRatio($state);
+                $tpr = $economy->tradePriceRatio($state);
+                if ($tr !== null) {
+                    $balance->volumebalance = 100*$tr;
+                    $balance->creditbalance = 100*$tpr;
+                } else {
+                    $balance->volumebalance = null;
+                    $balance->creditbalance = null;
+                }
+                $balance->save();
+            }
+        }
     }
 }

@@ -76,6 +76,7 @@ class FactionController extends Controller
         $faction->eddb = $request->input('eddb');
         $faction->government_id = $request->input('government_id');
         $faction->player = $request->input('player', 0);
+        $faction->virtual = $request->input('virtual', 0);
         $faction->system_id = $request->input('system_id');
         $faction->ethos_id = $request->input('ethos_id');
         $faction->save();

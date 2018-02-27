@@ -1,0 +1,1 @@
+<span title='Prison' class='icon-economy-prison'>&#x25A6;</span>

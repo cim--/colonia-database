@@ -60,6 +60,20 @@ class Station extends Model
 
     public function currentState()
     {
-        return $this->faction->currentState($this->system);
+        if ($this->faction->virtual) {
+            return State::where('name', 'None')->first();
+        } else {
+            return $this->faction->currentState($this->system);
+        }
     }
+
+    public function currentStateID()
+    {
+        if ($this->faction->virtual) {
+            return State::where('name', 'None')->first()->id;
+        } else {
+            return $this->faction->currentStateID($this->system);
+        }
+    }
+
 }

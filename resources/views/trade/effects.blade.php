@@ -24,35 +24,41 @@
   @endforeach
 </ul>
 
-{{--
+<p>This table shows the ratios between supply and demand for all commodities. 100% is equal supply and demand, with greater being more supply. Ratios are shown for tonnage and for credit value of goods.</p>
 <table class='table table-bordered'>
   <thead>
 	<tr>
-	  <th>Economy</th>
+	  <th scope='col'>Economy</th>
 	  @foreach ($states as $state)
-	  <th>
+	  @if ($state->name != "Lockdown")
+	  <th scope='col'>
 		@include($state->icon)
+		{{$state->name}}
 	  </th>
+	  @endif
 	  @endforeach
 	</tr>
   </thead>
   <tbody>
 	@foreach ($economies as $economy)
 	<tr>
-	  <td>
+	  <th scope='row'>
 		{{$economy->name}}
 		@include($economy->icon)
-	  </td>
+	  </th>
 	  @foreach ($states as $state)
+	  @if ($state->name != "Lockdown")
 	  <td>
-		@include('trade.effectratio', ['ratio' => $economy->tradePriceRatio($state)])
+		@if (isset($balances[$economy->id][$state->id]))
+		@include('trade.effectratio', ['ratio' => $balances[$economy->id][$state->id]])
+		@endif
 	  </td>
+	  @endif
 	  @endforeach
 	</tr>
 	@endforeach
   </tbody>
 </table>
---}}
 
 
 <h2>Effects on Commodities</h2>

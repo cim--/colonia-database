@@ -19,6 +19,8 @@
     "buble": "^0.15.2",
     "chart.js": "^2.5.0",
     "css-loader": "^0.27.3",
+    "d3": "^4.13.0",
+    "d3-cloud": "^1.2.5",
     "datatables.net": "^1.10.13",
     "datatables.net-bs": "^1.10.13",
     "fabric": "^1.7.9",

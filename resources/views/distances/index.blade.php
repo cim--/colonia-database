@@ -50,7 +50,7 @@
 	  </td>
 	  <td class='controller-size phase{{$system->phase->sequence}}'>
 		@if ($system->inhabited())
-		{{$system->controllingFaction()->latestSystems()->count()}}
+		{{$system->controllingFaction()->systemCount()}}
 		@endif
 	  </td>
 	  <th class='phase{{$system->phase->sequence}}'>
