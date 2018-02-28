@@ -128,7 +128,7 @@ class EDDNReader extends Command
             $eddnevent->save();
                     
             $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
-            if ($system->virtualonly) {
+            if (!$system->virtualonly) {
                 $factions = $event['message']['Factions'];
                 $influences = [];
                 foreach ($factions as $faction) {
@@ -169,8 +169,8 @@ class EDDNReader extends Command
                 });
                 $this->updateInfluences($system, $influences);
             }
-            
             $this->updateSecurity($system, $event['message']);
+
         } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
             $traditional = new \stdClass;
             $traditional->x = $event['message']['StarPos'][0];
