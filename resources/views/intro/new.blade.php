@@ -88,20 +88,20 @@
 	  <h2>Outfitting and Shipyards</h2>
 	  @include('intro.botbox', ['commands' => ["!locate facility high-quality"]])
 
-	  <p>Colonia has relatively limited options in this area, though they are improving over time. The following are currently available, generally in those stations containing <a href='{{route('stations.index')}}#high-qual'>High-Quality Outfitting</a>. Prices are generally 20% higher than in the Sol bubble.</p>
+	  <p>Colonia has slightly limited options in this area, though they are improving over time. The following are currently available, generally in those stations containing <a href='{{route('stations.index')}}#high-qual'>High-Quality Outfitting</a>. Prices are often 20% higher than in the Sol bubble.</p>
 
 	  <ul>
 		<li>Mining-related equipment, all sizes, A-grade</li>
 		<li>Fuel scoops and AFMUs, A-grade</li>
-		<li>Other core and optional internals, most sizes, A-, B- or C-grade maximum depending on size</li>
+		<li>Other core and optional internals, most sizes, A-, B- or C-grade maximum depending on size (A-rated size 3 or below, B- or C- at size 4 or above)</li>
 		<li>All weapons, all sizes</li>
 		<li>All independent ship hulls</li>
 	  </ul>
 	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
 	  
-	  <p>Most A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
+	  <p>Most large A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
 
-	  <p>Colonia Hub is currently the only station providing AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. Not all AX equipment is available, as it is Industrial.</p>
+	  <p>Colonia Hub is currently the only station providing most AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. The Shutdown Field Neutraliser is common enough to appear at several Military and High-Tech surface ports.</p>
 	  
 	</div>
 
@@ -138,7 +138,7 @@
 
 	  <p>Two of the systems - Colonia and Ratraii - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
 
-	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127, which has jurisdiction as far as Sacaqawea Landing in a Solwards direction.</p>
+	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127. The exact extent of its jurisdiction is currently unknown.</p>
 	</div>
 	<div>
 	  <h2>Other points of interest</h2>
