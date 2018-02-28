@@ -26,6 +26,7 @@
   </div>
 
   <div class='col-sm-6'>
+    <div class='alert alert-danger'><strong>WARNING</strong>: system map information is currently only available without the decimal component. Please only use this entry method as a last resort!</div>
 	<h2>Today {{$target->format("j F")}}</h2>
 	{!! Form::open(['route' => ['systems.update', $system->id], 'method'=>'PUT']) !!}
     <table class='table table-bordered'>
