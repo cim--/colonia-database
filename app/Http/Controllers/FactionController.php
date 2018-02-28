@@ -94,7 +94,9 @@ class FactionController extends Controller
     {
         $faction->load('government', 'stations', 'stations.system', 'stations.stationclass', 'stations.economy', 'states');
 
-        $datasets = \App\Util::stateBars($faction);
+        $states = State::orderBy('name')->get();
+        
+        $datasets = \App\Util::stateBars($faction, $states);
         sort($datasets); // compact
         $chart = app()->chartjs
             ->name("statetimes")
