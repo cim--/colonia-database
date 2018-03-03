@@ -26,6 +26,7 @@
 	  </div>
 	</div>
 	<p><span class='system-property'>Security</span>: {{$system->security}}</p>
+	@if (!$system->virtualonly)
 	<div class='row'>
 	  <div class='col-sm-6'>
 		@if ($report && $report->system_id == $system->id)
@@ -50,6 +51,7 @@
 		</p>
 	  </div>
 	</div>
+	@endif
 	@else
 	<p>Uninhabited system
 	  @if ($userrank > 0)
@@ -203,7 +205,7 @@
 	  
   </div>
 </div>
-@if ($system->inhabited())
+@if ($system->inhabited() && !$system->virtualonly)
 <h2>Report history</h2>
 @include('layout/chart')
 @endif

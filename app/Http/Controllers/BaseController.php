@@ -261,6 +261,7 @@ class BaseController extends Controller
             })->orderBy('catalogue')->get();
 
         $reportsupdate = System::where('population', '>', 0)
+            ->where('virtualonly', 0)
             ->whereDoesntHave('systemreports', function($q) use ($today) {
                 $q->where('date', $today->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
