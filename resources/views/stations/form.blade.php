@@ -35,6 +35,10 @@
 {!! Form::checkbox('primary', 1) !!}
 </div>
 <div class='form-field'>
+{!! Form::label('strategic', "Is strategic?") !!}
+{!! Form::checkbox('strategic', 1) !!}
+</div>
+<div class='form-field'>
 {!! Form::label('eddb', "EDDB") !!}
 {!! Form::text('eddb') !!}
 </div>

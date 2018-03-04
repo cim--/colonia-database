@@ -28,7 +28,16 @@ Stations
   <tbody>
 	@foreach ($stations as $station)
 	<tr>
-	  <td><a href='{{route("stations.show", $station->id)}}'>{{$station->name}}</a></td>
+	  @if ($station->strategic)
+	  <td data-search="{{$station->name}} Strategic">
+		<a href='{{route("stations.show", $station->id)}}'>{{$station->name}}</a>
+		@include('icons/misc/strategic')
+	  </td>
+	  @else
+	  <td data-search="{{$station->name}}">
+		<a href='{{route("stations.show", $station->id)}}'>{{$station->name}}</a>
+	  </td>
+	  @endif
 	  <td>{{$station->stationclass->name}}</td>
 	  <td><a href='{{route("systems.show", $station->system->id)}}'>{{$station->system->displayName()}}</a> {{$station->planet}}</td>
 	  <td>{{$station->distance}}</td>

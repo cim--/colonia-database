@@ -16,6 +16,7 @@
 	  <th>Planet Bases</th>
 	  <th>Settlements</th>
       <th title="Control of stations exporting trades goods">Production Control</th>
+      <th title="Control of strategic assets">Strategic Assets</th>
 	</tr>
   </thead>
   <tbody>
@@ -61,6 +62,12 @@
 		})
 		->filter(function($s) {
 		return in_array($s->economy->name, ["Extraction", "Refinery", "Industrial", "High-Tech", "Agricultural", "Military"]);
+		})
+		->count()}}
+	  </td>
+	  <td>
+		{{$faction->stations->filter(function($s) {
+		return $s->strategic;
 		})
 		->count()}}
 	  </td>

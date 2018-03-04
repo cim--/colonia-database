@@ -1,7 +1,14 @@
 @extends('layout/layout')
 
+@section('headtitle')
+{{$station->name}}
+@endsection
+
 @section('title')
 {{$station->name}}
+@if ($station->strategic)
+@include('icons/misc/strategic')
+@endif
 @endsection
 
 @section('content')
@@ -10,6 +17,9 @@
 <a class='edit' href='{{route('stations.edit', $station->id)}}'>Update</a>
 @endif
 
+@if ($station->strategic)
+<p>Due to its unique resources, this station is designated a strategic asset for the Colonia region.</p>
+@endif
 
 <table class='table table-bordered'>
   <tr>
