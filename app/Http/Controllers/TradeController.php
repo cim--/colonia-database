@@ -142,6 +142,8 @@ class TradeController extends Controller
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
+        })->whereHas('facilities', function($q) {
+            $q->where('name', 'Commodities');
         })->count();
         
         return view('trade/reserves', [

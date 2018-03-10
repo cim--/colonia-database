@@ -125,8 +125,11 @@ class SystemController extends Controller
             foreach ($properties as $prop) {
                 $datasets[$prop]['data'][] = [
                     'x' => \App\Util::graphDisplayDate($report->date),
-                    'y' => $report->$prop
+                    'y' => $report->$prop,
+                    'estimated' => $report->estimated
                 ];
+                $datasets[$prop]['pointStyle'][] = $report->estimated ? 'crossRot' : 'circle';
+                $datasets[$prop]['pointRadius'][] = $report->estimated ? 5:3;
             }
         }
         sort($datasets); // compact
@@ -504,7 +507,7 @@ class SystemController extends Controller
         
         $today = Carbon::now();
 
-        Systemreport::file($system, $traffic, $bounties, $crime, $user->name);
+        Systemreport::file($system, $traffic, $bounties, $crime, $user->name, false);
         
         return redirect()->route('systems.show', $system->id)->with('status',
         [

@@ -20,8 +20,7 @@ class Systemreport extends Model
         return $this->belongsTo('App\Models\System');
     }
 
-    public static function file($system, $traffic, $bounties, $crime, $username) {
-        $today = Carbon::now();
+    public static function file($system, $traffic, $bounties, $crime, $username, $estimated=false) {
         $limit1 = Carbon::now();
         $limit2 = Carbon::now();
         $limit1->subDay();
@@ -30,19 +29,16 @@ class Systemreport extends Model
         $limit2->minute = 0;
         $limit2->second = 0;
 
-        Systemreport::where('system_id', $system->id)
-            ->where('current', true)
-            ->update(['current' => false]);
+        if (!$estimated) {
+            $today = Carbon::now();
 
-        /* The in-game traffic report is updated hourly, so match the
-         * eddnevent querying to hour-aligned windows. This will
-         * probably give slightly skewed results over timezone
-         * changes, but it's not worth worrying about. */
-        $eddncount = Eddnevent::where('system_id', $system->id)
-            ->where('eventtime', '>=', $limit1)
-            ->where('eventtime', '<', $limit2)
-            ->count();
-        
+            Systemreport::where('system_id', $system->id)
+                ->where('current', true)
+                ->update(['current' => false]);
+        } else {
+            $today = new Carbon('yesterday');
+        }
+       
         $report = Systemreport::firstOrNew([
             'date' => $today->format("Y-m-d 00:00:00"),
             'system_id' => $system->id
@@ -50,8 +46,25 @@ class Systemreport extends Model
         $report->traffic = (int)$traffic;
         $report->bounties = (int)$bounties;
         $report->crime = (int)$crime;
-        $report->eddncount = $eddncount;
-        $report->current = 1;
+
+        if ($estimated) {
+            $report->estimated = true;
+            $report->current = 0;
+        } else {
+            /* The in-game traffic report is updated hourly, so match the
+             * eddnevent querying to hour-aligned windows. This will
+             * probably give slightly skewed results over timezone
+             * changes, but it's not worth worrying about. */
+            $eddncount = Eddnevent::where('system_id', $system->id)
+                ->where('eventtime', '>=', $limit1)
+                ->where('eventtime', '<', $limit2)
+                ->count();
+
+            $report->estimated = false;
+            $report->eddncount = $eddncount;
+            $report->current = 1;
+        }
+        
         $report->save();
 
         \Log::info("Report update", [

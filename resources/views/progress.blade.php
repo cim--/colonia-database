@@ -92,7 +92,7 @@ visible change.</p>
 	@else
 	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
-	@include('progressage', ['date' => \App\Util::age($system->systemreports()->max('date'))])
+    @include('progressage', ['date' => \App\Util::age($system->systemreports()->where('estimated', false)->max('date'))])
   </li>
   @endforeach
 </ul>

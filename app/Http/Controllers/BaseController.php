@@ -263,7 +263,8 @@ class BaseController extends Controller
         $reportsupdate = System::where('population', '>', 0)
             ->where('virtualonly', 0)
             ->whereDoesntHave('systemreports', function($q) use ($today) {
-                $q->where('date', $today->format("Y-m-d 00:00:00"));
+                $q->where('date', $today->format("Y-m-d 00:00:00"))
+                  ->where('estimated', false);
             })->orderBy('catalogue')->get();
 
         $marketsupdate = Station::whereDoesntHave('reserves', function($q) use ($today) {

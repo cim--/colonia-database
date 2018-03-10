@@ -945,7 +945,7 @@ class DiscordBot extends Command
                 return $sname." not known (must be exact)";
             }
 
-            Systemreport::file($system, $traffic, $bounties, $crimes, "via Discord");
+            Systemreport::file($system, $traffic, $bounties, $crimes, "via Discord", false);
 
 
             return "Reports added for ".$system->displayName().". Thank you.";

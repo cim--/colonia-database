@@ -139,6 +139,7 @@ class System extends Model
     public function latestReport() {
         $report = $this->systemreports()
                        ->where('current', 1)
+                       ->where('estimated', false)
                        ->first();
         if ($report) {
             return $report;
