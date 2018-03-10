@@ -63,7 +63,7 @@ class TrafficEstimates extends Command
     }
 
     private function estimateTrafficLevel(System $system) {
-        $this->info($system->name);
+//        $this->info($system->name);
 
         $recent = Systemreport::whereNotNull('eddncount')->where('system_id', $system->id)->where('estimated', false)->orderBy('date', 'desc')->take(10)->get();
         $ratios = [];
@@ -78,11 +78,11 @@ class TrafficEstimates extends Command
         }
         $ratios = collect($ratios);
 
-        $this->line("Average: ".$ratios->median());
+//        $this->line("Average: ".$ratios->median());
 
         $eddncount = Eddnevent::where('system_id', $system->id)->whereDate('eventtime', $this->yesterday)->count();
 
-        $this->line("EDDN Count: ".$eddncount);
+//        $this->line("EDDN Count: ".$eddncount);
         if ($eddncount == 0) {
             // can't guess from here
             return;
@@ -94,7 +94,7 @@ class TrafficEstimates extends Command
         if ($lastreport) {
             $cratio = $estimate / $lastreport->traffic;
             
-            $this->line("Estimate: ".$estimate);
+//            $this->line("Estimate: ".$estimate);
             $newreport = Systemreport::file(
                 $system,
                 floor($estimate),
