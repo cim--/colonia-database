@@ -17,6 +17,7 @@
 	  <th>Settlements</th>
       <th title="Control of stations exporting trades goods">Production Control</th>
       <th title="Control of strategic assets">Strategic Assets</th>
+      <th title="Percentage of present systems controlled">Consolidation</th>
 	</tr>
   </thead>
   <tbody>
@@ -71,6 +72,13 @@
 		})
 		->count()}}
 	  </td>
+	  @if ($faction->influences->count())
+	  <td>
+		{{ number_format(100 * $faction->stations->where('primary', 1)->count() / $faction->influences->count()) }}%
+	  </td>
+	  @else
+	  <td>-</td>
+	  @endif
 	  </tr>
 	@endforeach
   </tbody>
