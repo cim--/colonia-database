@@ -76,7 +76,7 @@ class ReportController extends Controller
 
     public function reach() {
 
-        $reaches = \DB::select('SELECT f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.name ORDER BY reach DESC');
+        $reaches = \DB::select('SELECT f.id, f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.id, f.name ORDER BY reach DESC');
         
         $dataset = [];
         $labels = [];
@@ -84,7 +84,7 @@ class ReportController extends Controller
         foreach ($reaches as $reach) {
             $labels[] = $reach->name;
             $dataset[] = $reach->reach;
-            $colours[] = '#'.substr(md5($reach->name), 0, 6);
+            $colours[] = '#'.Faction::find($reach->id)->colour();
         }
         
         $chart = app()->chartjs
@@ -123,7 +123,7 @@ class ReportController extends Controller
 
     public function reachLog() {
             
-        $reaches = \DB::select('SELECT f.name, ROUND(SUM(i.influence/100 * LOG10(s.population)),2) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.name ORDER BY reach DESC');
+        $reaches = \DB::select('SELECT f.id, f.name, ROUND(SUM(i.influence/100 * LOG10(s.population)),2) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.id, f.name ORDER BY reach DESC');
         
         $dataset = [];
         $labels = [];
@@ -131,7 +131,7 @@ class ReportController extends Controller
         foreach ($reaches as $reach) {
             $labels[] = $reach->name;
             $dataset[] = $reach->reach;
-            $colours[] = '#'.substr(md5($reach->name), 0, 6);
+            $colours[] = '#'.Faction::find($reach->id)->colour();
         }
         
         $chart = app()->chartjs

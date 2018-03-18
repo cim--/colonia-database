@@ -14,6 +14,9 @@
 	<strong>Factions present</strong>: grey empty; green to orange
 	increasingly populated; red overpopulated
   </div>
+  <div id='mapkeyscontrol'>
+	<strong>Faction control</strong>: dark grey empty; colours represent factions controlling 2 or more systems; white other factions controlling a single system
+  </div>
   <div id='mapkeysdepth'>
 	<strong>Depth</strong>: blue closer to viewer, green level with
 	Colonia, red further away
@@ -47,6 +50,7 @@
   <label for='mapctrlcolour'>Colour</label>: <select id='mapctrlcolour'>
 	<option selected='selected' value='C:phase'>Settlement Phase</option>
 	<option selected='selected' value='C:factions'>Factions Present</option>
+    <option selected='selected' value='C:control'>Faction Control</option>
 	<option selected='selected' value='C:depth'>Depth</option>
 	<optgroup label='Factions'>
 	  @foreach ($factions as $faction)
@@ -94,6 +98,11 @@
 	'population' : {{$system->population}},
 	@if ($system->inhabited())
 	'controlling' : "{{$system->controllingFaction()->name}}",
+    @if ($system->controllingFaction()->stations->where('primary', 1)->count() > 1)
+    'controlcolour' : '#{{$system->controllingFaction()->colour()}}',
+    @else
+    'controlcolour' : '#ffffff',
+    @endif
 	'factions' : [{!! $system->latestFactions()->map(function($x) { return '"'.$x->faction->name.'"'; })->implode(",") !!}],
 	'traffic' : {{$system->latestReport()->traffic}},
 	'bounties' : {{$system->latestReport()->bounties}},
@@ -109,6 +118,7 @@
 	@endif
 	@else
 	'controlling' : null,
+    'controlcolour' : '#444444',
 	'factions' : [],
 	'traffic' : 0,
 	'bounties' : 0,

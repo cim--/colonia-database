@@ -97,7 +97,7 @@ var CDBMap = function() {
 	var getCircle = function(sdata) {
 		var radius = 1;
 		if (config.radius == "X") {
-			var radius = 3;
+			var radius = 6;
 		} else if (sdata.population > 0) {
 			if (config.radius == "P") {
 				var radius = 2+Math.ceil(Math.sqrt(sdata.population/4000));
@@ -190,6 +190,8 @@ var CDBMap = function() {
 			return phaseColors[sdata.phase];
 		} else if (config.highlight == "C:factions") {
 			return factionColors[sdata.factions.length];
+		} else if (config.highlight == "C:control") {
+			return sdata.controlcolour;
 		} else if (config.highlight == "C:depth") {
 			if (config.projection.substr(0,2) == "XZ") {
 				return DepthColour(sdata.y);
@@ -547,6 +549,8 @@ $(document).ready(function() {
 			$('#mapkeysphase').show();
 		} else if (val == "C:factions") {
 			$('#mapkeyspresent').show();
+		} else if (val == "C:control") {
+			$('#mapkeyscontrol').show();
 		} else if (val == "C:depth") {
 			$('#mapkeysdepth').show();
 		} else if (val.substr(0,1) == "F") {
