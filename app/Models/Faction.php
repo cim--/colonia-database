@@ -151,4 +151,14 @@ class Faction extends Model
         }
         return null;
     }
+
+    /* Used for calculating previous-retreat avoidance in expansions */
+    public function previouslyIn(System $system) {
+        $in = Influence::where('system_id', $system->id)
+            ->where('faction_id', $this->id)
+            ->where('current', false)
+            ->whereDate('date', '>=', new Carbon('2017-10-01'))
+            ->count();
+        return ($in > 0);
+    }
 }

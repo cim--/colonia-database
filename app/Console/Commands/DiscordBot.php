@@ -621,24 +621,39 @@ class DiscordBot extends Command
 
             $result = "**Expansion candidates** for **".$faction->name."** from **".$system->displayName()."**\n";
             $nearfound = false;
-            for ($i=0;$i<=2;$i++) {
+            $retreatnote = false;
+            for ($i=0;$i<=3;$i++) {
                 if (isset($peacefulcandidates[$i])) {
                     $dist = $peacefulcandidates[$i]->distanceTo($system);
                     if ($dist < 22) {
                         $nearfound = true;
                     }
-                    $result .= $peacefulcandidates[$i]->displayName()." (".number_format($dist,2)."LY)\n";
+                    $result .= $peacefulcandidates[$i]->displayName()." (".number_format($dist,2)."LY";
+                    if ($faction->previouslyIn($peacefulcandidates[$i])) {
+                        $result .= " ⏪";
+                        $retreatnote = true;
+                    }
+                    $result .= ")\n";
                 }
             }
             if (!$nearfound && count($aggressivecandidates) > 0) {
                 $result .= "\nAs all candidates are likely to require *Investment*, an aggressive expansion is also possible:\n";
-                for ($i=0;$i<=2;$i++) {
+                for ($i=0;$i<=3;$i++) {
                     if (isset($aggressivecandidates[$i])) {
                         $dist = $aggressivecandidates[$i]->distanceTo($system);
-                        $result .= $aggressivecandidates[$i]->displayName()." (".number_format($dist,2)."LY)\n";
+                        $result .= $aggressivecandidates[$i]->displayName()." (".number_format($dist,2)."LY";
+                        if ($faction->previouslyIn($aggressivecandidates[$i])) {
+                            $result .= " ⏪";
+                            $retreatnote = true;
+                        }
+                        $result .= ")\n";
                     }
                 }
-                $result .= "Aggressive expansion destinations may be unpredictable due to the need for a suitable target faction";
+                $result .= "Aggressive expansion destinations may be unpredictable due to the need for a suitable target faction.\n";
+            }
+
+            if ($retreatnote) {
+                $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
             }
             
             return $result;
@@ -897,6 +912,7 @@ class DiscordBot extends Command
                 return $sname." not known";
             } else {
                 $result = "**Possible expansions to ".$system->displayName()."**\n";
+                $retreatnote = false;
                 if ($system->population == 0) {
                     $result .= "Uninhabited system.\n";
                 } else {
@@ -909,10 +925,19 @@ class DiscordBot extends Command
                             if ($opt->hostile) {
                                 $result .= "*aggressive* ";
                             }
-                            $result .= "target of ".$opt->system->controllingFaction()->name." from ".$opt->system->displayName()." (".number_format($opt->system->distanceTo($system), 2)." LY)\n";
+                            $result .= "target of ".$opt->system->controllingFaction()->name." from ".$opt->system->displayName()." (".number_format($opt->system->distanceTo($system), 2)." LY";
+                            if ($opt->previousretreat) {
+                                $result .= " ⏪";
+                                $retreatnote = true;
+                            }
+                            $result .= ")\n";
                         }
                     }
 
+                }
+
+                if ($retreatnote) {
+                    $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
                 }
                 return $this->safe($result);
             }

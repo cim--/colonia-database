@@ -118,10 +118,11 @@ class UpdateHistory extends Command
         $invdist = 22.5;
         
         foreach (System::where('population', '>', 0)->get() as $system) {
-            list($pts, $ats) = $system->expansionsFor(null); // null = controlling
+            $faction = $system->controllingFaction();
+            list($pts, $ats) = $system->expansionsFor($faction);
             $found = 0;
             $atsp = 0;
-            for ($i=0;$i<=2;$i++) {
+            for ($i=0;$i<=3;$i++) {
                 /**
                  * If there's a peaceful expansion, and
                  * - it's less than the investment distance
@@ -143,6 +144,7 @@ class UpdateHistory extends Command
                     $ec->target_id = $pts[$i]->id;
                     $ec->priority = $found;
                     $ec->hostile = false;
+                    $ec->previousretreat = $faction->previouslyIn($pts[$i]);
                     $ec->save();
                 } else if (isset($ats[$atsp])) {
                     $found++;
@@ -151,11 +153,12 @@ class UpdateHistory extends Command
                     $ec->target_id = $ats[$atsp]->id;
                     $ec->priority = $found;
                     $ec->hostile = true;
+                    $ec->previousretreat = $faction->previouslyIn($ats[$atsp]);
                     $ec->save();
                     $atsp++;
                     $i--;
                 }
-                if ($found >= 3) {
+                if ($found >= 4) {
                     break;
                 }
             }

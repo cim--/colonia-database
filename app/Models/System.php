@@ -184,7 +184,7 @@ class System extends Model
             if ($faction->currentInfluence($target) !== null) {
                 continue;
             }
-            if ($target->distanceTo($this) > 30) {
+            if ($target->distanceTo($this) > 35) {
                 continue;
             }
             if ($target->latestFactions()->count() >= 7) {
