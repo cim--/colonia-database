@@ -257,7 +257,7 @@ var CDBMap = function() {
 				return 0;
 			}
 		}
-		return 1;
+		return 1.5;
 	};
 
 	var LineWidth = function(link) {
@@ -279,7 +279,7 @@ var CDBMap = function() {
 			var circle = getCircle(sdata);
 			props.radius = circle[0]; props.left = circle[1]; props.top = circle[2];
 			props.stroke = SystemColour(sdata);
-			props.strokeWidth = 1;
+			props.strokeWidth = 1.5;
 			var system = new fabric.Circle(props);
 			obj.systemobjects[sdata.name] = system;
 			obj.canvas.add(system);
