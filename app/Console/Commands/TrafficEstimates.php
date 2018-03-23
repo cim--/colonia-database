@@ -92,8 +92,13 @@ class TrafficEstimates extends Command
 
         $lastreport = Systemreport::where('system_id', $system->id)->where('current', 1)->first();
         if ($lastreport) {
-            $cratio = $estimate / $lastreport->traffic;
-            
+            if ($lastreport->traffic > 0) {
+                $cratio = $estimate / $lastreport->traffic;
+            } else {
+                // the chances are the last is a 0-0-0 anyway
+                // but this will give something not unreasonable if it's a 0-x-y
+                $cratio = 1;
+            }
 //            $this->line("Estimate: ".$estimate);
             $newreport = Systemreport::file(
                 $system,
