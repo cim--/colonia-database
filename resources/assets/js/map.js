@@ -185,6 +185,18 @@ var CDBMap = function() {
 		} */
 	};
 
+	var SystemFillColour = function(sdata) {
+		console.log(config.highlight, sdata.nativecontrol);
+
+		if (config.highlight == "C:control" && sdata.nativecontrol) {
+			if (sdata.controlcolour == "#ffffff") {
+				return "#aaaaaa";
+			}
+			return sdata.controlcolour;
+		}
+		return "#000000";
+	}
+	
 	var SystemColour = function(sdata) {
 		if (config.highlight == "C:phase") {
 			return phaseColors[sdata.phase];
@@ -261,9 +273,9 @@ var CDBMap = function() {
 	};
 
 	var LineWidth = function(link) {
-		if (link.cdb_distance <= 10) {
+		/* if (link.cdb_distance <= 10) {
 			return 6;
-		} else if (link.cdb_distance <= 15) {
+		} else */ if (link.cdb_distance <= 15) {
 			return 4;
 		} else if (link.cdb_distance <= 22.5) {
 			return 2;
@@ -287,6 +299,9 @@ var CDBMap = function() {
 	};
 
 	var LinkColour = function(s1data, s2data, dist) {
+		if (config.links == "C:control") {
+			return s1data.controlcolour;
+		}
 		if (s1data.population > 0 && s2data.population > 0) {
 			if (dist <= 15) {
 				return'#44cc44';
@@ -469,6 +484,7 @@ var CDBMap = function() {
 			spot.set({
 				'stroke': SystemColour(s1data),
 				'strokeWidth': IsFiltered(s1data),
+				'fill' : SystemFillColour(s1data),
 				'opacity': alpha
 			});
 			var label = obj.systemtexts[s1data.name];
@@ -496,9 +512,15 @@ var CDBMap = function() {
 								if (obj.systemlinks1[s1data.name][s2data.name]) {
 									width = 1;
 								}
-							} else if (config.links == 'C:courier') {
+/*							} else if (config.links == 'C:courier') {
 								if (obj.systemlinks1[s1data.name][s2data.name] && LineWidth(link) >= 6) {
 									width = 1;
+								} */
+							} else if (config.links == 'C:control') {
+								if (s1data.controlcolour != '#ffffff' && s1data.controlcolour != '#444444') {
+									if (s1data.controlcolour == s2data.controlcolour) {
+										width = 1;
+									}
 								}
 							} else if (config.links.substr(0,2) == "S:") {
 								var sn = config.links.substr(2);
@@ -509,6 +531,7 @@ var CDBMap = function() {
 						}
 					}
 					link.set({
+						'stroke' : LinkColour(s1data, s2data, link.cdb_distance),
 						'strokeWidth': width,
 						'opacity': CalcAlpha(s1data, s2data)
 					});

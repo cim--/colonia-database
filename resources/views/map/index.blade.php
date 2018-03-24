@@ -15,7 +15,7 @@
 	increasingly populated; red overpopulated
   </div>
   <div id='mapkeyscontrol'>
-	<strong>Faction control</strong>: dark grey empty; colours represent factions controlling 2 or more systems; white other factions controlling a single system
+	<strong>Faction control</strong>: dark grey empty; colours represent factions controlling 2 or more systems; white other factions controlling a single system. Filled circles indicate systems controlled by a native faction
   </div>
   <div id='mapkeysdepth'>
 	<strong>Depth</strong>: blue closer to viewer, green level with
@@ -40,7 +40,8 @@
   <label for='mapctrllinks'>Links</label>: <select id='mapctrllinks'>
 	<option value='C:off'>Off</option>
 	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
-<!--    <option selected='selected' value='C:courier'>Courier Missions (10 LY)</option> -->
+	<!--    <option selected='selected' value='C:courier'>Courier Missions (10 LY)</option> -->
+	<option value='C:control'>Controlling faction</option>
 	<optgroup label='Expansions from'>
 	  @foreach ($systems as $system)
 	  <option value='S:{{$system->displayName()}}'>{{$system->displayName()}}</option>
@@ -103,6 +104,7 @@
     @else
     'controlcolour' : '#ffffff',
     @endif
+	'nativecontrol' : {{ $system->controllingFaction()->system_id == $system->id ? 1 : 0 }},
 	'factions' : [{!! $system->latestFactions()->map(function($x) { return '"'.$x->faction->name.'"'; })->implode(",") !!}],
 	'traffic' : {{$system->latestReport()->traffic}},
 	'bounties' : {{$system->latestReport()->bounties}},
@@ -119,6 +121,7 @@
 	@else
 	'controlling' : null,
     'controlcolour' : '#444444',
+	'nativecontrol' : 0,
 	'factions' : [],
 	'traffic' : 0,
 	'bounties' : 0,
