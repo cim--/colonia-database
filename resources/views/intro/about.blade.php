@@ -31,7 +31,7 @@
   <li><kbd>!locate state</kbd> <samp>name</samp>: finds stations with a particular active state. Leave 'name' out to get a list of possibilities.</li>
   <li><kbd>!expansion</kbd> <samp>faction</samp>: shows the faction's next expansion targets, expanding from its home system.</li>
   <li><kbd>!expansion</kbd> <samp>faction</samp> <code>;</code> <samp>system</samp>: shows the faction's next expansion targets, expanding from the specified system. The ';' is used to separate faction and system names.</li>
-  <li><kbd>!expansion</kbd> <samp>system</samp>: shows the controlling faction's next expansion targets from this system.</li>
+  <li><kbd>!expansion</kbd> <samp>system</samp>: shows the controlling faction's next expansion targets from this system. The 'faction' form takes precedence, so <code>!expansion Colonia</code> will return expansion data for a faction beginning with "Colonia", rather than for the Colonia system. The long form <code>!expansion Jaques ; Colonia</code> must be used instead.</li>
   <li><kbd>!expansionsto</kbd> <samp>system</samp>: shows the factions likely to expand into this system in the near future.</li>
   <li><kbd>!missions</kbd> <samp>name</samp>: shows the systems within 15 LY that make most typical mission targets.</li>
   <li><kbd>!cartography</kbd> <samp>max-gravity</samp> <samp>pad-size</samp> <samp>max-dist</samp>: returns possible exploration data sale locations given a max gravity (use 0 for orbitals only), minimum landing pad size, and maximum distance from the primary star - e.g. <kbd>!cartography 0.3 L 1000</kbd></li>
