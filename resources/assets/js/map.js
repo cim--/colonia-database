@@ -186,8 +186,6 @@ var CDBMap = function() {
 	};
 
 	var SystemFillColour = function(sdata) {
-		console.log(config.highlight, sdata.nativecontrol);
-
 		if (config.highlight == "C:control" && sdata.nativecontrol) {
 			if (sdata.controlcolour == "#ffffff") {
 				return "#aaaaaa";
