@@ -63,7 +63,7 @@
 	  
 	  <p>The usual range of combat hotspots are available - nav beacons, resource extraction sites and combat zones. There are also two unauthorised installations in the <a href='{{route('systems.show', 47)}}'>Kojeara</a> system providing some more interesting scenery for bounty hunting.</p>
 
-	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. There is a permanent one in Colonia, and temporary ones are often set up in systems affected by War.</p>
+	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. There is a permanent one in Colonia (except during Lockdown), and temporary ones are often set up in systems affected by War.</p>
 	</div>
 
 	<div>
@@ -79,6 +79,12 @@
 
 	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 15 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
 
+	  <p>In addition to these short range links:</p>
+	  <ul>
+		<li>All systems may generate mid-range missions to Colonia, Ratraii, Ogmar or Tenjin.</li>
+		<li>Tourism economies may sometimes generate long-range data courier and one-way passenger missions to systems in the Sol bubble.</li>
+	  </ul>
+	  
 	</div>
 	
   </div>
@@ -110,15 +116,16 @@
 
 	  <p>Colonia has no engineers, but if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules.</p>
 
-	  <p>While the system populations at under 1 million would normally be insufficient to support Material Brokers, there are three present:</p>
+	  <p>While the system populations at under 1 million would normally be insufficient to support Material and Tech Brokers, there is one of each present:</p>
 	  <ul>
 		<li>Data: Colonia Dream, Ratraii</li>
 		<li>Raw: TolaGarf's Junkyard, Kojeara</li>
 		<li>Manufactured: Foster Terminal, Coeus</li>
+		<li>Human Tech: Bolden's Enterprise, Tir</li>
+		<li>Guardian Tech: Jaques Station, Colonia</li>
 	  </ul>
-	  <p>A Tech Broker service is available at Bolden's Enterprise, Tir.</p>
 
-	  <p>In addition to normal sources of engineering materials, the Unauthorised Installations in Kojeara have satellites which can be scanned for some data, and miscellaneous manufactured materials can be found in the debris around the wrecked bulk carrier in Luchtaine.</p>
+	  <p>In addition to normal sources of engineering materials, the Unauthorised Installations in Kojeara have satellites which can be scanned for some data, and miscellaneous manufactured materials (as well as some cargoes required by the Tech Brokers) can be found in the debris around the wrecked bulk carrier in Luchtaine.</p>
     </div>
     
 	<div>
@@ -138,7 +145,7 @@
 
 	  <p>Two of the systems - Colonia and Ratraii - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
 
-	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127. The exact extent of its jurisdiction is currently unknown.</p>
+	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127. This also covers the Kashyapa highway system, with Polo Harbour marking the start of the Gandharvi jurisdiction.</p>
 	</div>
 	<div>
 	  <h2>Other points of interest</h2>
@@ -153,7 +160,7 @@
 
       <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
 
-                     <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
+      <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
 	</div>
   </div>
 </div>
