@@ -305,7 +305,7 @@ var CDBMap = function() {
 				return'#44cc44';
 			} else if (dist <= 22.5) {
 				return'#339933';
-			} else if (dist <= 30) {
+			} else if (dist <= 35) {
 				return'#116611';
 			}
 		} else {
@@ -322,7 +322,7 @@ var CDBMap = function() {
 			for (var j=i+1;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
 				var dist = getDistance(s1data, s2data);
-				if (dist <= 30) {
+				if (dist <= 35) {
 					var props = {};
 					var coords = [];
 					var cen1 = getCircle(s1data);
