@@ -20,6 +20,7 @@
 	<tr>
 	  <th>System</th>
 	  <th>Station</th>
+      <th>Docking</th>
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Price</th>
@@ -42,6 +43,15 @@
 		  {{$reserve->station->name}}
 		</a>
 		@include($reserve->station->economy->icon)
+	  </td>
+	  <td data-search='
+		@if ($reserve->station->stationclass->hasSmall) Small Pad @endif
+		@if ($reserve->station->stationclass->hasMedium) Medium Pad @endif
+		@if ($reserve->station->stationclass->hasLarge) Large Pad @endif
+		  '>
+		@if ($reserve->station->stationclass->hasSmall) S @endif
+		@if ($reserve->station->stationclass->hasMedium) M @endif
+		@if ($reserve->station->stationclass->hasLarge) L @endif
 	  </td>
 	  @if ($reserve->station->currentState()->name == "Lockdown")
 	  <td>Lockdown</td>
