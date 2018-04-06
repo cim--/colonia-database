@@ -92,8 +92,13 @@ class SystemController extends Controller
         $system->load('phase', 'economy', 'stations', 'stations.stationclass', 'facilities');
         $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
 
-
-        $reports = Systemreport::where('system_id', $system->id)->orderBy('date')->get();
+        $user = \Auth::user();
+        /* Hide individual system estimates - too unreliable */
+        if (!$user || $user->rank < 2) {
+            $reports = Systemreport::where('system_id', $system->id)->where('estimated', false)->orderBy('date')->get();
+        } else {
+            $reports = Systemreport::where('system_id', $system->id)->orderBy('date')->get();
+        }
         $datasets = [
             'traffic' => [
                 'label' => "Traffic",
