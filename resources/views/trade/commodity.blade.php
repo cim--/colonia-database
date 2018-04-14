@@ -11,6 +11,8 @@
 <p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}</p>
 <p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}</p>
 
+<p>Use the &#x21c4; icons to sort the table by distance to this station.</p>
+
 <table class='table table-bordered datatable' data-page-length='25'
 	   @if($station !== null)
 	   data-order='[[5, "asc"]]'
@@ -39,10 +41,11 @@
 		</a>
 	  </td>
 	  <td>
-		<a href="{{route('reserves.commodity.reference', [$reserve->commodity_id, $reserve->station->id])}}">
+		<a href="{{route('stations.showtrade', $reserve->station->id)}}">
 		  {{$reserve->station->name}}
 		</a>
 		@include($reserve->station->economy->icon)
+		<a href="{{route('reserves.commodity.reference', [$reserve->commodity_id, $reserve->station->id])}}" title='Relative to {{$reserve->station->name}}'>&#x21c4;</a>
 	  </td>
 	  <td data-search='
 		@if ($reserve->station->stationclass->hasSmall) Small Pad @endif
