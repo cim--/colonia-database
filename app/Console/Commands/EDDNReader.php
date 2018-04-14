@@ -383,7 +383,10 @@ class EDDNReader extends Command
         $broker = Facility::where('name', 'Broker')->first();
 
         foreach ($system->stations as $station) {
-            $station->facilities()->detach($broker->id);
+            if ($station->faction->government->name != "Anarchy") {
+                // anarchy have IF even in higher security
+                $station->facilities()->detach($broker->id);
+            }
         }
     }
 
