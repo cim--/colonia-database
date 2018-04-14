@@ -38,6 +38,7 @@
 		<a href='{{route('stations.show', $history->location->id)}}'>
 		  {{$history->location->name}}
 		</a>
+		(<a href='{{route('systems.show', $history->location->system->id)}}'>{{$history->location->system->displayName()}}</a>)
 	  </td>
 	  @endif 
 	</tr>
