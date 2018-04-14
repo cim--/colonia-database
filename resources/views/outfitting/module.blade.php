@@ -14,7 +14,7 @@
 <ul class='compact'>
   @foreach ($module->stations as $station)
   <li>
-	<a href='{{route('stations.show', $station->id)}}'>{{$station->displayName()}}</a>
+	<a href='{{route('stations.showoutfitting', $station->id)}}'>{{$station->displayName()}}</a>
 	@if ($station->currentState()->name == "Lockdown")
 	@include($station->currentState()->icon)
 	@endif
