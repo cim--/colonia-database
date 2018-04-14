@@ -20,6 +20,9 @@ class Commodity extends Model
     
     public function displayName()
     {
+        if ($this->description) {
+            return $this->description;
+        }
         return preg_replace("/([a-z])([A-Z])/",'$1 $2',$this->name);
     }
 }

@@ -21,7 +21,7 @@
   <span class='deficit'>{{number_format($tradetotal)}}</span>
   @endif
   </strong>
-  tonnes excluding mined/salvaged/etc. goods)
+  tonnes excluding mined/salvaged/etc. goods).<br>Total demand: {{number_format($demandtotal)}} tonnes<br>Total reserves: {{number_format($stocktotal)}} tonnes
 </p>
 
 @if ($totalstations > $stations)
@@ -30,9 +30,10 @@
 
 <p>Oldest data: {{App\Util::displayDate($oldest)}}</p>
 
-<table id='reservestable' class='table table-bordered datatable' data-page-length='25'>
+<table id='reservestable' class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"],[1, "asc"]]'>
   <thead>
 	<tr>
+      <th>Category</th>
 	  <th>Commodity</th>
 	  <th>Reserves</th>
 	  <th>Demand</th>
@@ -48,12 +49,15 @@
 	@foreach ($commodities as $commodity)
 	<tr>
 	  <td>
+		{{$commodity['category']}}
+	  </td>
+	  <td>
 		<a href="{{route('reserves.commodity', $commodity['id'])}}">
 		  {{$commodity['name']}}
 		</a>
 	  </td>
-	  <td>{{$commodity['stock']}}</td>
-	  <td>{{$commodity['demand']}}</td>
+	  <td>{{number_format($commodity['stock'])}}</td>
+	  <td>{{number_format($commodity['demand'])}}</td>
 	  @if ($commodity['demand'] > $commodity['stock'])
 	  <td>Deficit</td>
 	  <td><span class='deficit'>{{$commodity['stock'] - $commodity['demand']}}</span></td>
@@ -79,8 +83,8 @@
 		@include($import->icon)
 		@endforeach
 	  </td>
-      <td title='{{$commodity['buyplace']}}'>{{$commodity['buy']}}</td>
-	  <td title='{{$commodity['sellplace']}}'>{{$commodity['sell']}}</td>
+      <td title='{{$commodity['buyplace']}}'>{{number_format($commodity['buy'])}}</td>
+	  <td title='{{$commodity['sellplace']}}'>{{number_format($commodity['sell'])}}</td>
 	</tr>
 	@endforeach
   </tbody>

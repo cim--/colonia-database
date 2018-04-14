@@ -82,12 +82,15 @@ class TradeController extends Controller
         $cdata = [];
         $total = 0;
         $tradetotal = 0;
+        $stocktotal = 0;
+        $demandtotal = 0;
         $stations = [];
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
             $crow = [];
             $crow['id'] = $commodity->id;
             $crow['name'] = $commodity->displayName();
+            $crow['category'] = $commodity->category;
 
             $stock = 0;
             $demand = 0;
@@ -134,6 +137,8 @@ class TradeController extends Controller
             if ($bestbuyplace != null) {
                 $tradetotal += $stock - $demand;
             }
+            $stocktotal += $stock;
+            $demandtotal += $demand;
             
             $cdata[] = $crow;
         }
@@ -150,6 +155,8 @@ class TradeController extends Controller
             'commodities' => $cdata,
             'total' => $total,
             'tradetotal' => $tradetotal,
+            'stocktotal' => $stocktotal,
+            'demandtotal' => $demandtotal,
             'stations' => count($stations),
             'totalstations' => $totalstations,
             'oldest' => $oldest
