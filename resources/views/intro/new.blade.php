@@ -158,7 +158,7 @@
 
 	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life was discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>, though has since disappeared. There is a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a. There is a persistent distress call from a wrecked bulk cargo ship near Moore's Charm in Luchtaine.</p>
 
-      <p>A rare glowing green gas giant can be found in Eol Prou MW-L c8-32.</p>
+      <p>A rare glowing green gas giant can be found in Eol Prou KW-L c8-32.</p>
 
       <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
 	</div>
