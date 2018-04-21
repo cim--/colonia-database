@@ -12,7 +12,7 @@
 @endif
 
 <ul class='compact'>
-  @foreach ($module->stations as $station)
+  @foreach ($module->stations->sortBy('name') as $station)
   <li>
 	<a href='{{route('stations.showoutfitting', $station->id)}}'>{{$station->displayName()}}</a>
 	@if ($station->currentState()->name == "Lockdown")
