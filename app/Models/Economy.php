@@ -10,6 +10,10 @@ use App\Models\Station;
 
 class Economy extends Model
 {
+
+    /* Date of last significant change to pricing structures */
+    private $lastglobal = "2018-03-01";
+    
     public function systems() {
         return $this->hasMany('App\Models\System');
     }
@@ -26,10 +30,10 @@ class Economy extends Model
     public function tradeRatio(State $state) {
         $supply = Reserve::where('state_id', $state->id)->where('reserves', '>', 0)->whereHas('station', function ($q) {
             $q->where('economy_id', $this->id);
-        })->sum('reserves');
+        })->where('date', '>', $this->lastglobal)->sum('reserves');
         $demand = Reserve::where('state_id', $state->id)->where('reserves', '<', 0)->whereHas('station', function ($q) {
             $q->where('economy_id', $this->id);
-        })->sum('reserves');
+        })->where('date', '>', $this->lastglobal)->sum('reserves');
         if ($demand != 0) {
             return -$supply/$demand;
         }
@@ -39,10 +43,10 @@ class Economy extends Model
     public function tradePriceRatio(State $state) {
         $supply = Reserve::where('state_id', $state->id)->where('reserves', '>', 0)->whereHas('station', function ($q) {
             $q->where('economy_id', $this->id);
-        })->sum(\DB::raw('reserves * price'));
+        })->where('date', '>', $this->lastglobal)->sum(\DB::raw('reserves * price'));
         $demand = Reserve::where('state_id', $state->id)->where('reserves', '<', 0)->whereHas('station', function ($q) {
             $q->where('economy_id', $this->id);
-        })->sum(\DB::raw('reserves * price'));
+        })->where('date', '>', $this->lastglobal)->sum(\DB::raw('reserves * price'));
         if ($demand != 0) {
             return -$supply/$demand;
         }

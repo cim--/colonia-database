@@ -106,6 +106,8 @@ class GoodsAnalysis extends Command
         if ($lastsystemhistory != null) {
             $reservesquery->where('date', '>', $lastsystemhistory);
         }
+        // significant changes to some goods in 3.0, so don't look before
+        $reservesquery->where('date', '>', '2018-03-01');
         $reserves = $reservesquery->get();
         
         /* Any history event affecting either the station or the
