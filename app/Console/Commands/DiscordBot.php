@@ -616,6 +616,10 @@ class DiscordBot extends Command
                     }
                 }
             }
+            if ($faction->virtual) {
+                return $faction->name." is virtual and cannot expand.";
+            }
+            
 
             list ($peacefulcandidates, $aggressivecandidates) = $system->expansionsFor($faction);
 

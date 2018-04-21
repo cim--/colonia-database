@@ -45,7 +45,7 @@ class UpdateHistory extends Command
         \DB::transaction(function() {
             $this->updateHistory();
             $this->updateExpansionCache();
-            $this->estimateTraffic();
+            $this->clearEventData();
         });
         //
     }
@@ -119,6 +119,9 @@ class UpdateHistory extends Command
         
         foreach (System::where('population', '>', 0)->get() as $system) {
             $faction = $system->controllingFaction();
+            if ($faction->virtual) {
+                continue;
+            }
             list($pts, $ats) = $system->expansionsFor($faction);
             $found = 0;
             $atsp = 0;
@@ -165,15 +168,12 @@ class UpdateHistory extends Command
         }
     }
 
-    private function estimateTraffic() {
+    private function clearEventData() {
         /* These are only used for counting onto travel reports (and
          * in future generating estimated travel reports). In theory
          * we should only need the last 24 hours, but keep slightly
          * longer just in case. */
         Eddnevent::where('eventtime', '<', date("Y-m-d H:i:s", strtotime("-7 days")))->delete();
-
-        /* TODO: once estimate data is a bit better available, start
-         * using it to generate estimated traffic reports */
     }
     
     private function map($infs) {
