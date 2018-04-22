@@ -5,6 +5,8 @@
 @section('content')
 
 <p>The Colonia region has several significant differences to the Sol region, which it is useful for those thinking of visiting or settling to be aware of. Example CensusBot commands are shown.</p>
+
+<p><a href='{{route('intro.regions')}}'>Quantitative comparisons</a> of Colonia to the other settled regions are also available.</p>
     
 <div id='newhere'>
   <div class='newbox'>
