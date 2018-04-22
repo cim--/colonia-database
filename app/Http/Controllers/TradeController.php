@@ -76,7 +76,7 @@ class TradeController extends Controller
                 $q->where('current', true);
             })->with(['reserves' => function($q) {
                 $q->where('current', true);
-            }, 'reserves.station', 'reserves.station.economy'])
+                }, 'reserves.station', 'reserves.station.economy', 'effects'])
                ->orderBy('name')->get();
 
         $cdata = [];
@@ -84,6 +84,8 @@ class TradeController extends Controller
         $tradetotal = 0;
         $stocktotal = 0;
         $demandtotal = 0;
+        $nominalstocktotal = 0;
+        $nominaldemandtotal = 0;
         $stations = [];
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
@@ -94,6 +96,8 @@ class TradeController extends Controller
 
             $stock = 0;
             $demand = 0;
+            $nominalstock = 0;
+            $nominaldemand = 0;
             $bestbuy = null;
             $bestsell = null;
             $bestbuyplace = null;
@@ -101,10 +105,17 @@ class TradeController extends Controller
             $imported = [];
             $exported = [];
             foreach ($commodity->reserves as $reserve) {
-                $stations[$reserve->station_id] = true;
+                if (!isset($stations[$reserve->station_id])) {
+                    $stations[$reserve->station_id] = $reserve->station->currentStateID();
+                }
+                $effect = $commodity->effectForStateID($stations[$reserve->station_id]);
+                $supplyfactor = ($effect&&$effect->supplysize) ? (1/$effect->supplysize) : 1;
+                $demandfactor = ($effect&&$effect->demandsize) ? (1/$effect->demandsize) : 1;
+                
                 $total += $reserve->reserves;
                 if ($reserve->reserves > 0) {
                     $stock += $reserve->reserves;
+                    $nominalstock += $reserve->reserves * $supplyfactor;
                     $exported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($bestbuy === null || $bestbuy > $reserve->price) {
                         if ($reserve->price !== null) {
@@ -114,6 +125,7 @@ class TradeController extends Controller
                     }
                 } else {
                     $demand -= $reserve->reserves;
+                    $nominaldemand -= $reserve->reserves * $demandfactor;
                     $imported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($bestsell === null || $bestsell < $reserve->price) {
                         if ($reserve->price !== null) {
@@ -139,6 +151,8 @@ class TradeController extends Controller
             }
             $stocktotal += $stock;
             $demandtotal += $demand;
+            $nominalstocktotal += $nominalstock;
+            $nominaldemandtotal += $nominaldemand;
             
             $cdata[] = $crow;
         }
@@ -157,6 +171,8 @@ class TradeController extends Controller
             'tradetotal' => $tradetotal,
             'stocktotal' => $stocktotal,
             'demandtotal' => $demandtotal,
+            'nominalstocktotal' => $nominalstocktotal,
+            'nominaldemandtotal' => $nominaldemandtotal,
             'stations' => count($stations),
             'totalstations' => $totalstations,
             'oldest' => $oldest

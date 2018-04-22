@@ -25,4 +25,9 @@ class Commodity extends Model
         }
         return preg_replace("/([a-z])([A-Z])/",'$1 $2',$this->name);
     }
+
+    public function effectForStateID($stateid)
+    {
+        return $this->effects->where('state_id', $stateid)->first();
+    }
 }

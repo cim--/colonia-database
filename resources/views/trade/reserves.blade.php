@@ -21,7 +21,9 @@
   <span class='deficit'>{{number_format($tradetotal)}}</span>
   @endif
   </strong>
-  tonnes excluding mined/salvaged/etc. goods).<br>Total demand: {{number_format($demandtotal)}} tonnes<br>Total reserves: {{number_format($stocktotal)}} tonnes
+  tonnes excluding mined/salvaged/etc. goods).<br>
+  Total demand: {{number_format($demandtotal)}} tonnes (baseline {{number_format($nominaldemandtotal)}} tonnes)<br>
+  Total reserves: {{number_format($stocktotal)}} tonnes (baseline {{number_format($nominalstocktotal)}} tonnes)
 </p>
 
 @if ($totalstations > $stations)
