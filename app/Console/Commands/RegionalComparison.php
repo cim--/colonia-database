@@ -60,7 +60,7 @@ class RegionalComparison extends Command
     {
         try {
             \DB::transaction(function() {
-                // $this->retrieveFiles();
+                $this->retrieveFiles();
                 $this->initialiseData();
                 $this->processSystems();
                 $this->processStations();
