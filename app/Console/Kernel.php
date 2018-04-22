@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\DiscordBot::class,
         Commands\GoodsAnalysis::class,
         Commands\TrafficEstimates::class,
+        Commands\RegionalComparison::class,
         //
     ];
 

@@ -20,6 +20,7 @@ Route::delete('/alert/{alert}', 'BaseController@acknowledgeAlert')->name('acknow
 
 Route::get('/about', 'BaseController@about')->name('intro.about');
 Route::get('/new', 'BaseController@newToColonia')->name('intro.new');
+Route::get('/regions', 'BaseController@regions')->name('intro.regions');
 
 Route::get('/distances', 'DistancesController@index')->name('distances');
 

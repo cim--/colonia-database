@@ -26,6 +26,12 @@ class Economy extends Model
         return $this->hasMany('App\Models\Tradebalance');
     }
 
+    public function regions()
+    {
+        return $this->belongsToMany('App\Models\Region')->withPivot('frequency');
+    }
+
+
     
     public function tradeRatio(State $state) {
         $supply = Reserve::where('state_id', $state->id)->where('reserves', '>', 0)->whereHas('station', function ($q) {

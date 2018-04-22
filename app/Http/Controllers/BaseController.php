@@ -12,6 +12,10 @@ use App\Models\History;
 use App\Models\Influence;
 use App\Models\Alert;
 use App\Models\State;
+use App\Models\Region;
+use App\Models\Reserve;
+use App\Models\Economy;
+use App\Models\Government;
 
 class BaseController extends Controller
 {
@@ -357,4 +361,20 @@ class BaseController extends Controller
         ]);
     }
 
+
+    public function regions() {
+        return view('intro/regions', [
+            'systemcount' => System::where('population', '>', 0)->count(),
+            'stationcount' => Station::count(),
+            'factioncount' => Faction::count(),
+            'totalPopulation' => System::sum('population'),
+            'commodityReserves' => Reserve::where('current', 1)->where('reserves', '>', 0)->sum('reserves'),
+            'commodityDemand' => -Reserve::where('current', 1)->where('reserves', '<', 0)->sum('reserves'),
+            'economies' => Economy::where('analyse', 1)->orderBy('name')->get(),
+            'governments' => Government::orderBy('name')->get(),
+            'regions' => Region::orderBy(\DB::raw('name = "Deep Space"'))->orderBy('population', 'desc')->with('economies', 'governments')->get()
+        ]);
+
+    }
+    
 }

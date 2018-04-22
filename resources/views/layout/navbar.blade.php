@@ -5,6 +5,7 @@
 		<li><a href="{{route('index')}}">Home</a></li>
 		<li><a href="{{route('intro.about')}}">The Census</a></li>
 		<li><a href="{{route('intro.new')}}">Colonia</a></li>
+		<li><a href="{{route('intro.regions')}}">Regions</a></li>
 	  </ul>
 	</li>
 	<li><div>Overview</div>

@@ -288,3 +288,22 @@ div#newhere {
 		}
 	}
 }
+
+#regionalcomparison {
+	.native {
+		border-left: 3px #999 double;
+		border-right: 3px #999 double;
+		background: #eff;
+	}
+	.nativel {
+		border-left: 3px #999 double;
+		background: #eff;
+	}
+	.nativer {
+		border-right: 3px #999 double;
+		background: #eff;
+	}
+	.other, .otherr {
+		border-right: 2px #999 solid;
+	}
+}
