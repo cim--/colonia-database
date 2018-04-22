@@ -59,15 +59,33 @@
 
 	
 	<h2>States</h2>
-	<ul class='compact2'>
-	  @foreach ($states as $state)
-	  <li>
-		{{$state['count']}}
-		@include ($state['state']->icon)
-		{{$state['state']->name}}
-	  </li>
-	  @endforeach
-	</ul>
+
+	<div id='statesummary'>
+	  <div class='statebreakdown'>
+		<h3>Factions</h3>
+		<ul class='compact2'>
+		  @foreach ($states as $state)
+		  <li>
+			{{$state['count']}}
+			@include ($state['state']->icon)
+			{{$state['state']->name}}
+		  </li>
+		  @endforeach
+		</ul>
+	  </div>
+	  <div class='statebreakdown'>
+		<h3>Systems</h3>
+		<ul class='compact2'>
+		  @foreach ($states as $state)
+		  <li>
+			{{$state['syscount']}}
+			@include ($state['state']->icon)
+			{{$state['state']->name}}
+		  </li>
+		  @endforeach
+		</ul>
+	  </div>
+	</div>
 
 	<h2>Find out more</h2>
 	<ul>
@@ -78,6 +96,9 @@
       <li><a href="{{route('history')}}#founded">When were the systems founded?</a></li>
 	  <li><a href="{{route('reports')}}?type=traffic">Which are the busiest systems?</a></li>
 	  <li><a href="{{route('map')}}#XZ~F:Jaques~S:Colonia~P~1">Where are the best drinks?</a></li>
+	  <li><a href="{{route('outfitting')}}">What equipment is available</a> and <a href="{{route('stations.index')}}#high-quality">where should I look for it?</a></li>
+	  <li><a href="{{route('reserves')}}">Which commodities are available for trade?</a></li>
+	  <li><a href="{{route('map')}}#XZ~C:control~C:control~X~1~0~0">Where have groups expanded</a> and <a href="{{route('reports.control')}}">which are the largest?</a></li>
 	</ul>
 
 	<script type='text/javascript'>

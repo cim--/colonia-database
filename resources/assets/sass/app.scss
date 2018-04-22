@@ -272,3 +272,19 @@ div#newhere {
 	height: 700px;
 	width: 700px;
 }
+
+#statesummary {
+	@include make-row();
+	div.statebreakdown {
+		@include make-sm-column(6);
+		h3 {
+			font-size: 110%;
+			text-align: center;
+			margin: 0;
+			font-weight: bold;
+		}
+		li {
+			list-style-type: none;
+		}
+	}
+}

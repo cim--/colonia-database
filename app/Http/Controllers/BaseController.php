@@ -90,11 +90,27 @@ class BaseController extends Controller
             }
             foreach ($faction as $state) {
                 if (!isset($states[$state->name])) {
-                    $states[$state->name] = ['state' => $state, 'count' => 0];
+                    $states[$state->name] = ['state' => $state, 'count' => 0, 'syscount' => 0];
                 }
                 $states[$state->name]['count']++;
             }
         }
+        foreach ($factions as $faction) {
+            if ($faction->virtual) {
+                continue;
+            }
+            $controls = $faction->stations->where('primary', true);
+            foreach ($controls as $station) {
+                $state = $faction->currentState($station->system);
+                if ($state != null) {
+                    if (!isset($states[$state->name])) {
+                        $states[$state->name] = ['state' => $state, 'count' => 0, 'syscount' => 0];
+                    }
+                    $states[$state->name]['syscount']++;
+                }
+            }
+        }
+        
         ksort($states);
         
         $population = System::sum('population');
