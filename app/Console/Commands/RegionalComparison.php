@@ -17,7 +17,7 @@ class RegionalComparison extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:regionalcomparison';
+    protected $signature = 'cdb:regionalcomparison {--cached}';
 
     /**
      * The console command description.
@@ -37,11 +37,11 @@ class RegionalComparison extends Command
     }
 
     protected $data = [
-        "Sol" => [
-            "sphere" => [0,0,0,300] // Sol
-        ],
         "Pleiades" => [
             "sphere" => [-81,-149,-343,100] // Maia
+        ],
+        "Sol" => [
+            "sphere" => [0,0,0,500] // Sol
         ],
         "California Nebula" => [
             "sphere" => [-303,-236,-860,200] // HIP 18077
@@ -60,7 +60,9 @@ class RegionalComparison extends Command
     {
         try {
             \DB::transaction(function() {
-                $this->retrieveFiles();
+                if (!$this->option('cached')) {
+                    $this->retrieveFiles();
+                }
                 $this->initialiseData();
                 $this->processSystems();
                 $this->processStations();
