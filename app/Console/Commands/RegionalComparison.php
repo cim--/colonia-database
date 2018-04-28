@@ -92,6 +92,7 @@ class RegionalComparison extends Command
             $region['stock'] = 0;
             $region['demand'] = 0;
             $region['economies'] = $this->initialiseEconomy();
+            $region['stationeconomies'] = $this->initialiseEconomy();
             $region['governments'] = $this->initialiseGovernment();
             $this->data[$key] = $region;
         }
@@ -144,6 +145,15 @@ class RegionalComparison extends Command
             foreach ($this->data as $key => $region) {
                 if (isset($region['systems'][$statinfo->system_id])) {
                     $this->data[$key]['stations'][$statinfo->id] = true;
+
+                    if ($statinfo->economies) {
+                        $secos = count($statinfo->economies);
+                        foreach ($statinfo->economies as $seco) {
+                            if ($seco != "None") {
+                                $this->data[$key]['stationeconomies'][$this->ecoName($seco)] += 1/$secos;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -202,7 +212,7 @@ class RegionalComparison extends Command
                 $economy = Economy::where('name', $ename)->first();
                 if ($economy) {
                     $report->economies()->detach($economy->id);
-                    $report->economies()->attach($economy->id, ['frequency' => $frequency]);
+                    $report->economies()->attach($economy->id, ['frequency' => $frequency, 'stationfrequency' => $region['stationeconomies'][$ename]]);
                 }
             }
             foreach ($region['governments'] as $gname => $frequency) {

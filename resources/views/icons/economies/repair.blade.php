@@ -1,0 +1,1 @@
+<span title='Repair' class='icon-economy-repair'>&#x26a0;</span>

@@ -1,0 +1,1 @@
+<span title='Damaged' class='icon-economy-damaged'>&#x2668;</span>

@@ -370,7 +370,7 @@ class BaseController extends Controller
             'totalPopulation' => System::sum('population'),
             'commodityReserves' => Reserve::where('current', 1)->where('reserves', '>', 0)->sum('reserves'),
             'commodityDemand' => -Reserve::where('current', 1)->where('reserves', '<', 0)->sum('reserves'),
-            'economies' => Economy::where('analyse', 1)->orderBy('name')->get(),
+            'economies' => Economy::where('compare', '1')->orderBy('name')->get(),
             'governments' => Government::orderBy('name')->get(),
             'regions' => Region::orderBy(\DB::raw('name = "Deep Space"'))->orderBy('population', 'desc')->with('economies', 'governments')->get()
         ]);
