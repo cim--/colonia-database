@@ -171,6 +171,7 @@ class ReportController extends Controller
 
     public function control() {
         $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass')
+            ->notHidden()
             ->with(['influences' => function($q) {
                     $q->where('current', 1);
                 }])
@@ -183,7 +184,7 @@ class ReportController extends Controller
 
     public function states() {
 
-        $factions = Faction::orderBy('name')->get();
+        $factions = Faction::orderBy('name')->notHidden()->get();
         $tdatas = [];
         $labels = [];
         $states = State::orderBy('name')->get();

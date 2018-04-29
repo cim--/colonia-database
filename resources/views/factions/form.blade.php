@@ -19,6 +19,10 @@
 {!! Form::checkbox('virtual', 1) !!}
 </div>
 <div class='form-field'>
+{!! Form::label('hidden', "Is hidden?") !!}
+{!! Form::checkbox('hidden', 1) !!}
+</div>
+<div class='form-field'>
 {!! Form::label('government_id', "Government") !!}
 {!! Form::select('government_id', $governments) !!}
 </div>

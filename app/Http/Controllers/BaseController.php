@@ -69,7 +69,7 @@ class BaseController extends Controller
         
         
         $systems = System::with('phase', 'economy')->orderBy('name')->get();
-        $factions = Faction::with('government', 'ethos')->orderBy('name')->get();
+        $factions = Faction::with('government', 'ethos')->notHidden()->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
         $statescalc = [];
@@ -300,6 +300,7 @@ class BaseController extends Controller
         $pendingupdate = [];
         $factions = Faction::with('states')
             ->where('virtual', 0)
+            ->notHidden()
             ->orderBy('name')->get();
         foreach ($factions as $faction) {
             if ($faction->states->count() > 0 &&
@@ -325,7 +326,7 @@ class BaseController extends Controller
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*(1-($influenceupdate->count() / System::populated()->count())),
             'reportscomplete' => 100*(1-($reportsupdate->count() / System::populated()->count())),
-            'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::count())),
+            'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::notHidden()->notVirtual()->count())),
             'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
             'reader' => $reader,
             'alerts' => $alerts,
@@ -366,12 +367,19 @@ class BaseController extends Controller
         return view('intro/regions', [
             'systemcount' => System::where('population', '>', 0)->count(),
             'stationcount' => Station::count(),
-            'factioncount' => Faction::count(),
+            'factioncount' => Faction::notHidden()->count(),
             'totalPopulation' => System::sum('population'),
             'commodityReserves' => Reserve::where('current', 1)->where('reserves', '>', 0)->sum('reserves'),
             'commodityDemand' => -Reserve::where('current', 1)->where('reserves', '<', 0)->sum('reserves'),
-            'economies' => Economy::where('compare', '1')->orderBy('name')->get(),
-            'governments' => Government::orderBy('name')->get(),
+            'economies' => Economy::where('compare', '1')->with(['regions', 'systems', 'stations' => function($q) {
+                    $q->whereHas('stationclass', function($sc) {
+                        $sc->where('hasSmall', 1);
+                    });
+                }
+            ])->orderBy('name')->get(),
+            'governments' => Government::orderBy('name')->with(['regions', 'factions' => function($q) {
+                    $q->notHidden();
+                }])->get(),
             'regions' => Region::orderBy(\DB::raw('name = "Deep Space"'))->orderBy('population', 'desc')->with('economies', 'governments')->get()
         ]);
 

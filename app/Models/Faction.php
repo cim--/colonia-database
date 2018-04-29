@@ -38,6 +38,13 @@ class Faction extends Model
         return $this->belongsToMany('App\Models\State')->withPivot('date');
     }
 
+    public function scopeNotHidden($q) {
+        return $q->where('hidden', 0);
+    }
+    public function scopeNotVirtual($q) {
+        return $q->where('virtual', 0);
+    }
+    
     public function latestSystems() {
         return $this->influences()->where('current', 1)
                     ->with('system', 'state', 'system.economy')

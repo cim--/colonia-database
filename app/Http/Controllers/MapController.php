@@ -17,7 +17,7 @@ class MapController extends Controller
 
         return view('map/index', [
             'systems' => $systems,
-            'factions' => Faction::orderBy('name')->get(),
+            'factions' => Faction::orderBy('name')->notHidden()->get(),
             'facilities' => Facility::where('type', 'System')->orderBy('name')->get()
         ]);
     }

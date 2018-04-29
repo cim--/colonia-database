@@ -20,7 +20,7 @@ class FactionController extends Controller
      */
     public function index()
     {
-        $factions = Faction::with('government', 'states')->get();
+        $factions = Faction::with('government', 'states')->notHidden()->get();
         //
         return view('factions/index', [
             'factions' => $factions
@@ -77,6 +77,7 @@ class FactionController extends Controller
         $faction->government_id = $request->input('government_id');
         $faction->player = $request->input('player', 0);
         $faction->virtual = $request->input('virtual', 0);
+        $faction->hidden = $request->input('hidden', 0);
         $faction->system_id = $request->input('system_id');
         $faction->ethos_id = $request->input('ethos_id');
         $faction->save();
