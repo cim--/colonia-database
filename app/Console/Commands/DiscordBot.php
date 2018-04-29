@@ -694,6 +694,11 @@ class DiscordBot extends Command
                     if ($target->population == 0) {
                         continue;
                     }
+                    if (in_array($target->displayName(), ["Colonia", "Ratraii", "Ogmar", "Tenjin"])) {
+                        // always a possible destination for medium range
+                        $destinations[] = $target;
+                        continue;
+                    }
                     if ($target->distanceTo($system) > 15) {
                         continue;
                     }
@@ -709,10 +714,15 @@ class DiscordBot extends Command
                         $dist = $destination->distanceTo($system);
                         $result .= $destination->displayName()." (".number_format($dist,2)."LY)\n";
                     }
+                    $result .= "(Some destinations may have no missions in practice due to unmet prerequisites)\n";
                 } else {
-                    $result .= "No inhabited systems within 15 LY";
+                    $result .= "No inhabited systems within 15 LY\n";
                 }
 
+                if ($system->economy->name == "Tourism") {
+                    $result .= "\nInter-bubble courier or passenger missions to Sol bubble destinations are sometimes possible.";
+                }
+                
                 return $this->safe($result);
             }
         }, [
