@@ -4,7 +4,7 @@
 
 @section('content')
 
-<p>This table compares Colonia to other major settled regions.</p>
+<p>This table compares Colonia to other major settled regions and political entities.</p>
 
 <h2>Size and population</h2>
 @include('intro/regiontablehead')

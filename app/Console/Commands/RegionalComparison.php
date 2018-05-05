@@ -38,17 +38,33 @@ class RegionalComparison extends Command
 
     protected $data = [
         "Pleiades" => [
-            "sphere" => [-81,-149,-343,100] // Maia
+            "sphere" => [-81,-149,-343,100], // Maia
+            "allegiance" => null
         ],
         "Sol" => [
-            "sphere" => [0,0,0,500] // Sol
+            "sphere" => [0,0,0,500], // Sol
+            "allegiance" => null
         ],
         "California Nebula" => [
-            "sphere" => [-303,-236,-860,200] // HIP 18077
+            "sphere" => [-303,-236,-860,200], // HIP 18077
+            "allegiance" => null
         ],
         "Deep Space" => [
-            "sphere" => [0,0,0,21000] // Sol... checked in order so overlap is fine
-        ]
+            "sphere" => [0,0,0,21000], // Sol... checked in order so overlap is fine
+            "allegiance" => null
+        ],
+        "Federal Systems" => [
+            "sphere" => null,
+            "allegiance" => "Federation"
+        ],
+        "Imperial Systems" => [
+            "sphere" => null,
+            "allegiance" => "Empire"
+        ],
+        "Alliance Systems" => [
+            "sphere" => null,
+            "allegiance" => "Alliance"
+        ],
     ];
     
     /**
@@ -122,7 +138,6 @@ class RegionalComparison extends Command
             $sysinfo = json_decode($line);
             
             $key = $this->getRegion($sysinfo);
-
             if ($key) {
                 $this->data[$key]['systems'][$sysinfo->id] = true;
                 $this->data[$key]['population'] += $sysinfo->population;
@@ -133,6 +148,17 @@ class RegionalComparison extends Command
                     $this->data[$key]['factions'][$faction->minor_faction_id] = true;
                 }
             }
+
+            $key2 = $this->getAllegiance($sysinfo);
+            if ($key2) {
+                $this->data[$key2]['systems'][$sysinfo->id] = true;
+                $this->data[$key2]['population'] += $sysinfo->population;
+                if ($sysinfo->primary_economy && $sysinfo->primary_economy != "None") {
+                    $this->data[$key2]['economies'][$this->ecoName($sysinfo->primary_economy)]++;
+                }
+                // count factions later
+            }
+            
         }
         fclose($file);
     }
@@ -143,7 +169,18 @@ class RegionalComparison extends Command
             $statinfo = json_decode($line);
             
             foreach ($this->data as $key => $region) {
-                if (isset($region['systems'][$statinfo->system_id])) {
+                if ($region['sphere'] && isset($region['systems'][$statinfo->system_id])) {
+                    $this->data[$key]['stations'][$statinfo->id] = true;
+
+                    if ($statinfo->economies) {
+                        $secos = count($statinfo->economies);
+                        foreach ($statinfo->economies as $seco) {
+                            if ($seco != "None") {
+                                $this->data[$key]['stationeconomies'][$this->ecoName($seco)] += 1/$secos;
+                            }
+                        }
+                    }
+                } else if ($region['allegiance'] !== null && $region['allegiance'] == $statinfo->allegiance) {
                     $this->data[$key]['stations'][$statinfo->id] = true;
 
                     if ($statinfo->economies) {
@@ -167,11 +204,17 @@ class RegionalComparison extends Command
             $facinfo = json_decode($line);
             
             foreach ($this->data as $key => $region) {
-                if (isset($region['factions'][$facinfo->id])) {
+                if ($region['allegiance'] == $facinfo->allegiance) {
+                    $this->data[$key]['factions'][$facinfo->id] = true;
+                }
+
+                if (isset($this->data[$key]['factions'][$facinfo->id])) {
                     if (isset($this->data[$key]['governments'][$this->govName($facinfo->government)])) {
                         $this->data[$key]['governments'][$this->govName($facinfo->government)]++;
                     }
                 }
+
+                
             }
 
         }
@@ -250,11 +293,22 @@ class RegionalComparison extends Command
     
     private function getRegion($sysinfo) {
         foreach ($this->data as $key => $region) {
-            $x = $region['sphere'][0] - $sysinfo->x;
-            $y = $region['sphere'][1] - $sysinfo->y;
-            $z = $region['sphere'][2] - $sysinfo->z;
-            $r = $region['sphere'][3];
-            if ($x*$x+$y*$y+$z*$z <= $r*$r) {
+            if ($region['sphere'] !== null) {
+                $x = $region['sphere'][0] - $sysinfo->x;
+                $y = $region['sphere'][1] - $sysinfo->y;
+                $z = $region['sphere'][2] - $sysinfo->z;
+                $r = $region['sphere'][3];
+                if ($x*$x+$y*$y+$z*$z <= $r*$r) {
+                    return $key;
+                }
+            }
+        }
+        return null;
+    }
+
+    private function getAllegiance($sysinfo) {
+        foreach ($this->data as $key => $region) {
+            if ($region['allegiance'] == $sysinfo->allegiance) {
                 return $key;
             }
         }
