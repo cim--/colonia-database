@@ -74,6 +74,18 @@ class System extends Model
         return $distance;
     }
 
+    public function expansionCube(System $other, $radius=20) {
+        if (
+            (abs($this->x - $other->x) <= $radius) &&
+            (abs($this->y - $other->y) <= $radius) &&
+            (abs($this->z - $other->z) <= $radius)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    
     public function refreshEDSM() {
         $name = $this->displayName();
         // temp for names in EDSM

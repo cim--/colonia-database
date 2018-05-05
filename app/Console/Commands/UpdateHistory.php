@@ -115,7 +115,7 @@ class UpdateHistory extends Command
         // needs a condition on it, so use an 'everything' one
         Expansioncache::where('priority', '>=', 0)->delete();
 
-        $invdist = 22.5;
+        $invdist = 20;
         
         foreach (System::where('population', '>', 0)->get() as $system) {
             $faction = $system->controllingFaction();
@@ -137,7 +137,7 @@ class UpdateHistory extends Command
                  * candidate.
                  */
                 if (isset($pts[$i]) && (
-                    ($pts[$i]->distanceTo($system) <= $invdist) ||
+                    ($pts[$i]->expansionCube($system, $invdist)) ||
                     (isset($ats[$atsp]) && $pts[$i]->distanceTo($system) <= $ats[$atsp]->distanceTo($system)) ||
                     !isset($ats[$atsp])
                 )) {
@@ -147,6 +147,7 @@ class UpdateHistory extends Command
                     $ec->target_id = $pts[$i]->id;
                     $ec->priority = $found;
                     $ec->hostile = false;
+                    $ec->investment = !$pts[$i]->expansionCube($system, $invdist);
                     $ec->previousretreat = $faction->previouslyIn($pts[$i]);
                     $ec->save();
                 } else if (isset($ats[$atsp])) {
@@ -156,6 +157,7 @@ class UpdateHistory extends Command
                     $ec->target_id = $ats[$atsp]->id;
                     $ec->priority = $found;
                     $ec->hostile = true;
+                    $ec->investment = !$pts[$i]->expansionCube($system, $invdist);
                     $ec->previousretreat = $faction->previouslyIn($ats[$atsp]);
                     $ec->save();
                     $atsp++;

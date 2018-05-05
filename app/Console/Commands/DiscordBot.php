@@ -626,16 +626,20 @@ class DiscordBot extends Command
             $result = "**Expansion candidates** for **".$faction->name."** from **".$system->displayName()."**\n";
             $nearfound = false;
             $retreatnote = false;
+            $investnote = false;
             for ($i=0;$i<=3;$i++) {
                 if (isset($peacefulcandidates[$i])) {
                     $dist = $peacefulcandidates[$i]->distanceTo($system);
-                    if ($dist < 22) {
-                        $nearfound = true;
-                    }
                     $result .= $peacefulcandidates[$i]->displayName()." (".number_format($dist,2)."LY";
                     if ($faction->previouslyIn($peacefulcandidates[$i])) {
                         $result .= " ⏪";
                         $retreatnote = true;
+                    }
+                    if ($system->expansionCube($peacefulcandidates[$i], 20)) {
+                        $nearfound = true;
+                    } else {
+                        $result .= " ⭲";
+                        $investnote = true;
                     }
                     $result .= ")\n";
                 }
@@ -650,6 +654,10 @@ class DiscordBot extends Command
                             $result .= " ⏪";
                             $retreatnote = true;
                         }
+                        if (!$system->expansionCube($peacefulcandidates[$i], 20)) {
+                            $result .= " ⭲";
+                            $investnote = true;
+                        }
                         $result .= ")\n";
                     }
                 }
@@ -658,6 +666,9 @@ class DiscordBot extends Command
 
             if ($retreatnote) {
                 $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
+            }
+            if ($investnote) {
+                $result .= "\n⭲ indicates investment is required to expand here.";
             }
             
             return $result;
@@ -927,6 +938,7 @@ class DiscordBot extends Command
             } else {
                 $result = "**Possible expansions to ".$system->displayName()."**\n";
                 $retreatnote = false;
+                $investnote = false;
                 if ($system->population == 0) {
                     $result .= "Uninhabited system.\n";
                 } else {
@@ -944,6 +956,10 @@ class DiscordBot extends Command
                                 $result .= " ⏪";
                                 $retreatnote = true;
                             }
+                            if ($opt->investment) {
+                                $result .= " ⭲";
+                                $investnote = true;
+                            }
                             $result .= ")\n";
                         }
                     }
@@ -953,6 +969,10 @@ class DiscordBot extends Command
                 if ($retreatnote) {
                     $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
                 }
+                if ($investnote) {
+                    $result .= "\n⭲ indicates investment is required to expand here.";
+                }
+
                 return $this->safe($result);
             }
         }, [
