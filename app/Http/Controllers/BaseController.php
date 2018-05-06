@@ -325,7 +325,7 @@ class BaseController extends Controller
             'pendingupdate' => $pendingupdate,
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*(1-($influenceupdate->count() / System::populated()->count())),
-            'reportscomplete' => 100*(1-($reportsupdate->count() / System::populated()->count())),
+            'reportscomplete' => 100*(1-($reportsupdate->count() / System::populated()->where('virtualonly', 0)->count())),
             'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::notHidden()->notVirtual()->count())),
             'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
             'reader' => $reader,
