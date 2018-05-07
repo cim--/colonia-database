@@ -248,21 +248,28 @@ class StationController extends Controller
 
     public function outfitting(Station $station)
     {
-        $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($station) {
-                $q->isAvailableAtStation($station);
+        return $this->outfittingPage($station, false);
+    }
+    public function outfittingCurrent(Station $station)
+    {
+        return $this->outfittingPage($station, true);
+    }
+    private function outfittingPage(Station $station, $reqcurrent) {
+        $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($station, $reqcurrent) {
+                $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
 
-        $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($station) { 
-                $q->isAvailableAtStation($station);
+        $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($station, $reqcurrent) { 
+                $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
 
-        $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($station) {
+        $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($station, $reqcurrent) {
             $q->withCount('stations');
-            $q->isAvailableAtStation($station);
+            $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
         
-        $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($station) {
-                $q->isAvailableAtStation($station);
+        $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($station, $reqcurrent) {
+                $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
         $ships = Module::whereHas('moduletype', function($q) {
             $q->where('type', 'armour');
@@ -273,24 +280,23 @@ class StationController extends Controller
         }
         ksort($shiptypes);
 
-        $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($station) {
-                $q->isAvailableAtStation($station);
+        $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($station, $reqcurrent) {
+                $q->isAvailableAtStation($station, $reqcurrent);
                 $q->withCount('stations');
             }])->orderBy('description')->get();
 
         $utilities = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereIn('type', ['A','B','C','D','E']);
-        })->with(['modules' => function($q) use ($station) {
+        })->with(['modules' => function($q) use ($station, $reqcurrent) {
                 $q->withCount('stations');
-                $q->isAvailableAtStation($station);
+                $q->isAvailableAtStation($station, $reqcurrent);
             }])->orderBy('description')->get();
         
         $utilitiesns = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereNotIn('type', ['A','B','C','D','E']);
-        })->with(['modules' => function($q) use ($station) {
-                // all non-large so isAvailable not needed
+        })->with(['modules' => function($q) use ($station, $reqcurrent) {
                 $q->withCount('stations');
-                $q->isAvailableAtStation($station);
+                $q->isAvailableAtStation($station, $reqcurrent);
             }])->orderBy('description')->get();
 
         
@@ -304,6 +310,7 @@ class StationController extends Controller
             'weapons' => $weapons,
             'utilities' => $utilities,
             'utilitiesns' => $utilitiesns,
+            'reqcurrent' => $reqcurrent
         ]);
     }
 

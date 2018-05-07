@@ -70,6 +70,10 @@ Route::get('/stations/{station}/outfitting', [
     'as' => 'stations.showoutfitting',
     'uses' => 'StationController@outfitting'
 ]);
+Route::get('/stations/{station}/outfitting/current', [
+    'as' => 'stations.showoutfitting.current',
+    'uses' => 'StationController@outfittingCurrent'
+]);
 Route::resource('stations', 'StationController');
 
 Route::resource('missions', 'MissionController', ['except' => [
@@ -155,6 +159,10 @@ Route::get('/effects/s/{state}', [
     'uses' => 'TradeController@effectsState'
 ]);
 
+Route::get('/outfitting/current', [
+    'as' => 'outfitting.current',
+    'uses' => 'OutfittingController@current'
+]);
 Route::get('/outfitting/{moduletype}/{module}', [
     'as' => 'outfitting.module',
     'uses' => 'OutfittingController@module'

@@ -11,21 +11,29 @@ class OutfittingController extends Controller
 {
     
     public function index() {
-        $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) {
-                $q->isAvailable();
-        }])->orderBy('description')->get();
+        return $this->outfittingSummary(false);
+    }
+    
+    public function current() {
+        return $this->outfittingSummary(true);
+    }
 
-        $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) {
-                $q->isAvailable();
-        }])->orderBy('description')->get();
+    private function outfittingSummary($reqcurrent) {
+        $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
+            }])->orderBy('description')->get();
 
-        $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) {
-                // all non-large so isAvailable not needed
-            $q->withCount('stations');
-        }])->orderBy('description')->get();
+        $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
+            }])->orderBy('description')->get();
+
+        $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
+                $q->withCount('stations');
+            }])->orderBy('description')->get();
         
-        $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) {
-                $q->isAvailable();
+        $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
         }])->orderBy('description')->get();
         $ships = Module::whereHas('moduletype', function($q) {
             $q->where('type', 'armour');
@@ -36,22 +44,22 @@ class OutfittingController extends Controller
         }
         ksort($shiptypes);
 
-        $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) {
-                // all non-large so isAvailable not needed
+        $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
             }])->orderBy('description')->get();
 
         $utilities = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereIn('type', ['A','B','C','D','E']);
-        })->with(['modules' => function($q) {
-                // all non-large so isAvailable not needed
+        })->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
             }])->orderBy('description')->get();
         
         $utilitiesns = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereNotIn('type', ['A','B','C','D','E']);
-        })->with(['modules' => function($q) {
-                // all non-large so isAvailable not needed
+        })->with(['modules' => function($q) use ($reqcurrent) {
+                $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
             }])->orderBy('description')->get();
 
@@ -65,6 +73,7 @@ class OutfittingController extends Controller
             'weapons' => $weapons,
             'utilities' => $utilities,
             'utilitiesns' => $utilitiesns,
+            'reqcurrent' => $reqcurrent
         ]);
     }
 
