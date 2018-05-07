@@ -494,7 +494,7 @@ class EDDNReader extends Command
             if (!$module) {
                 // ignore for now
             } else {
-                $modules[] = $module->id;
+                $modules[$module->id] = ['current' => true];
                 if ($module->stations_count == 0) {
                     // not seen before
                     Alert::alert("Module ".$module->displayName()." now available at ".$station->name);
@@ -504,7 +504,19 @@ class EDDNReader extends Command
         /* Use syncWithoutDetaching to avoid people without
          * horizons/Cobra IV/etc. making the availability disappear
          * when it's just that they personally can't see it */
-        $station->modules()->syncWithoutDetaching($modules);
+
+        \DB::transaction(function() use ($station, $modules) { 
+            // set availability to false
+            \DB::table('module_station')->where('station_id', $station->id)
+                                        ->update(['current' => false]);
+            // sync modules found now
+            $station->modules()->syncWithoutDetaching($modules);
+            // any that have been available which aren't now, mark unreliable
+            \DB::table('module_station')->where('station_id', $station->id)
+                                        ->where('current', false)
+                                        ->update(['unreliable' => true]);
+        });
+
     }
     
 }
