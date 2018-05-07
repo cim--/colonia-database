@@ -14,7 +14,7 @@ class Module extends Model
 
     public function stations()
     {
-        return $this->belongsToMany('App\Models\Station');
+        return $this->belongsToMany('App\Models\Station')->withPivot('current', 'unreliable');
     }
 
     /* A module is available if either:

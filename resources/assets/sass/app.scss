@@ -176,7 +176,6 @@ h2 {
 .mission-danger {
 	background: #fff3f3;
 }
-.outfitting-danger-icon,
 .mission-danger-icon {
 	color: #900;
 	font-weight: bold;
@@ -267,6 +266,19 @@ div#newhere {
 	font-weight: bold;
 	background: #efe;
 }
+.outfitting-danger-icon {
+	font-weight: bold;
+	color: #900;
+}
+.outfitting-nostock-icon {
+	font-weight: bold;
+	color: #900;
+}
+.outfitting-lowstock-icon {
+	font-weight: bold;
+	color: #940;
+}
+
 
 #wordcloud {
 	height: 700px;

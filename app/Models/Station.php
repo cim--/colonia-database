@@ -36,7 +36,7 @@ class Station extends Model
 
     public function modules()
     {
-        return $this->belongsToMany('App\Models\Module');
+        return $this->belongsToMany('App\Models\Module')->withPivot('current', 'unreliable');
     }
     
     public function history() {
