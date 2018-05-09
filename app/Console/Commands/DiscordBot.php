@@ -654,7 +654,7 @@ class DiscordBot extends Command
                             $result .= " ⏪";
                             $retreatnote = true;
                         }
-                        if (!$system->expansionCube($peacefulcandidates[$i], 20)) {
+                        if (!$system->expansionCube($aggressivecandidates[$i], 20)) {
                             $result .= " ⭲";
                             $investnote = true;
                         }
