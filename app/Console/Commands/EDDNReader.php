@@ -15,6 +15,7 @@ use App\Models\Commodity;
 use App\Models\Reserve;
 use App\Models\Module;
 use App\Models\Eddnevent;
+use App\Models\Eddnblacklist;
 
 class EDDNReader extends Command
 {
@@ -89,6 +90,11 @@ class EDDNReader extends Command
 
     private function process($event)
     {
+        if (Eddnblacklist::check($event['header']['uploaderID'])) {
+            // this uploaderID is on a server sending unreliable information
+            return;
+        }
+
         if (!isset($event['message']['timestamp'])) {
             return;
         }
@@ -97,6 +103,7 @@ class EDDNReader extends Command
             // ignore data more than 1 hour old
             return;
         }
+        
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
             if ($event['message']['event'] == "FSDJump") {
                 if ($event['message']['StarPos'][2] < 10000) {
@@ -114,11 +121,41 @@ class EDDNReader extends Command
         }
     }
 
+    private function unreliableFSDEvent($event) {
+        switch ($event['message']['StarSystem']) {
+        case "Colonia":
+            $badpop = 750;
+            break;
+        case "Ogmar":
+            $badpop = 4500;
+            break;
+        case "Ratraii":
+            $badpop = 25000;
+            break;
+        case "Hephaestus":
+            $badpop = 3200;
+            break;
+        default:
+            return false; // none known for this system
+        }
+        \Log::info("Blacklisted data", [
+            'system' => $event['message']['StarSystem'],
+            'population' => $event['message']['Population'],
+        ]);
+        return ($event['message']['Population'] == $badpop);
+    }
+
     private function processFSDJump($event) {
         $system = System::where('name', $event['message']['StarSystem'])
             ->orWhere('catalogue', $event['message']['StarSystem'])
             ->first();
         if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
+
+            if ($this->unreliableFSDEvent($event)) {
+                Eddnblacklist::blacklist($event['header']['uploaderID']);
+                return;
+            }
+            
             \Log::info("Incoming data", [
                 'system' => $system->displayName()
             ]);
