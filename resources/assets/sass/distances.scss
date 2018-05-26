@@ -1,39 +1,42 @@
 #distancegrid {
 	.phase0 { /* CCS 0 */
-		background: #ffdddd;
+		background: #ff7777;
 	}
 	.phase1 { /* CCS 1 */
-		background: #ffe3dd;
+		background: #ff8877;
 	}
 	.phase2 { /* CEI 1 */
-		background: #ddffdd;
+		background: #77ff77;
 	}
 	.phase3 { /* CEI 2 */
-		background: #ddffee;
+		background: #77ffdd;
 	}
 	.phase4 { /* CEI 3 */
-		background: #ddffff;
+		background: #77ffff;
 	}
 	.phase5 { /* CCS 2 */
-		background: #ffeedd;
+		background: #ff9977;
 	}
 	.phase6 { /* CEI 4 */
-		background: #ddeeff;
+		background: #77ddff;
 	}
 	.phase7 { /* CCS 3 */
-		background: #fff5dd;
+		background: #ffaa77;
 	}
 	.phase8 { /* CEI 5 */
-		background: #ddddff;
+		background: #7777ff;
 	}
 	.phase9 { /* CEI 6 */
-		background: #eeddff;
+		background: #aa77ff;
 	}
 	.phase10 { /* Misc 1 */
-		background: #ddeeee;
+		background: #99cccc;
 	}
 	.phase11 { /* CCS 4 */
-		background: #ffffdd;
+		background: #ffbb77;
+	}
+	.phase12 { /* CCS 5 */
+		background: #ffcc77;
 	}
 	.controller {
 		min-width: 5em;
