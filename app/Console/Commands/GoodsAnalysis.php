@@ -108,6 +108,12 @@ class GoodsAnalysis extends Command
         }
         // significant changes to some goods in 3.0, so don't look before
         $reservesquery->where('date', '>', '2018-03-01');
+        // tax break week - don't use for analysis
+        $reservesquery->where(function ($q) {
+            $q->where('date', '>=', '2018-06-01')
+              ->orWhere('date', '<', '2018-05-24');
+        });
+        
         $reserves = $reservesquery->get();
         
         /* Any history event affecting either the station or the
