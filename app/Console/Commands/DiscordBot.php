@@ -627,6 +627,7 @@ class DiscordBot extends Command
             $nearfound = false;
             $retreatnote = false;
             $investnote = false;
+            $eightnote = false;
             for ($i=0;$i<=3;$i++) {
                 if (isset($peacefulcandidates[$i])) {
                     $dist = $peacefulcandidates[$i]->distanceTo($system);
@@ -658,6 +659,10 @@ class DiscordBot extends Command
                             $result .= " ⭲";
                             $investnote = true;
                         }
+                        if ($aggressivecandidates[$i]->latestFactions()->count() > 7) {
+                            $result .= " †";
+                            $eightnote = true;
+                        }
                         $result .= ")\n";
                     }
                 }
@@ -669,6 +674,9 @@ class DiscordBot extends Command
             }
             if ($investnote) {
                 $result .= "\n⭲ indicates investment is required to expand here.";
+            }
+            if ($eightnote) {
+                $result .= "\n† aggressive expansion here may not be possible as system already has 8 factions";
             }
             
             return $result;
