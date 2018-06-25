@@ -16,6 +16,7 @@ use App\Models\Reserve;
 use App\Models\Module;
 use App\Models\Eddnevent;
 use App\Models\Eddnblacklist;
+use App\Models\Ship;
 
 class EDDNReader extends Command
 {
