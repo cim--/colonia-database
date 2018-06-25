@@ -70,6 +70,10 @@ Route::get('/stations/{station}/outfitting', [
     'as' => 'stations.showoutfitting',
     'uses' => 'StationController@outfitting'
 ]);
+Route::get('/stations/{station}/shipyard', [
+    'as' => 'stations.showshipyard',
+    'uses' => 'StationController@shipyard'
+]);
 Route::get('/stations/{station}/outfitting/current', [
     'as' => 'stations.showoutfitting.current',
     'uses' => 'StationController@outfittingCurrent'
@@ -162,6 +166,14 @@ Route::get('/effects/s/{state}', [
 Route::get('/outfitting/current', [
     'as' => 'outfitting.current',
     'uses' => 'OutfittingController@current'
+]);
+Route::get('/outfitting/shipyard/{ship}', [
+    'as' => 'outfitting.shipyard.ship',
+    'uses' => 'OutfittingController@ship'
+]);
+Route::get('/outfitting/shipyard', [
+    'as' => 'outfitting.shipyard',
+    'uses' => 'OutfittingController@shipyard'
 ]);
 Route::get('/outfitting/{moduletype}/{module}', [
     'as' => 'outfitting.module',

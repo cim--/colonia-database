@@ -38,6 +38,12 @@ class Station extends Model
     {
         return $this->belongsToMany('App\Models\Module')->withPivot('current', 'unreliable');
     }
+
+    public function ships()
+    {
+        return $this->belongsToMany('App\Models\Ship');
+    }
+
     
     public function history() {
         return $this->morphMany('App\Models\History', 'location');

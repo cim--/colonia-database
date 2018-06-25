@@ -118,6 +118,8 @@ class EDDNReader extends Command
             $this->processCommodityReserveEvent($event);
         } else if ($event['$schemaRef'] == "https://eddn.edcd.io/schemas/outfitting/2") {
             $this->processOutfittingEvent($event);
+        } else if ($event['$schemaRef'] == "https://eddn.edcd.io/schemas/shipyard/2") {
+            $this->processShipyardEvent($event);
         }
     }
 
@@ -555,5 +557,53 @@ class EDDNReader extends Command
         });
 
     }
-    
+
+    private function processShipyardEvent($event) {
+        $system = System::where('name', $event['message']['systemName'])
+            ->orWhere('catalogue', $event['message']['systemName'])
+            ->first();
+        if (!$system) {
+            return;
+        }
+        
+        $station = Station::where('name', $event['message']['stationName'])
+            ->where('system_id', $system->id)->first();
+        if (!$station) {
+            // no alert - the Docking event should already have done it
+            return;
+        }
+        $this->line("[".date("YmdHis")."] Shipyard event for ".$system->displayName().": ".$station->name);
+
+        $ships = [];
+        foreach ($event['message']['ships'] as $shipcode) {
+            $ship = Ship::where('eddn', $shipcode)->withCount('stations')->first();
+            if (!$ship) {
+                Alert::alert("Ship code ".$shipcode." not known.");
+                continue;
+            } else {
+                $ships[$ship->id] = ['current' => true];
+                if ($ship->stations_count == 0) {
+                    // not seen before
+                    Alert::alert("Ship ".$ship->name." now available at ".$station->name);
+                }
+            }
+        }
+        /* Use syncWithoutDetaching to avoid people without
+         * horizons/Cobra IV/etc. making the availability disappear
+         * when it's just that they personally can't see it */
+
+        \DB::transaction(function() use ($station, $modules) { 
+            // set availability to false
+            \DB::table('ship_station')->where('station_id', $station->id)
+                                      ->update(['current' => false]);
+            // sync modules found now
+            $station->ships()->syncWithoutDetaching($ships);
+            // any that have been available which aren't now, mark unreliable
+            \DB::table('ship_station')->where('station_id', $station->id)
+                                      ->where('current', false)
+                                      ->update(['unreliable' => true]);
+        });
+
+    }
+
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Station;
 use App\Models\Module;
 use App\Models\Moduletype;
+use App\Models\Ship;
 
 class OutfittingController extends Controller
 {
@@ -108,6 +109,22 @@ class OutfittingController extends Controller
             'moduletype' => $moduletype,
             'module' => $module,
             'singular' => false
+        ]);
+    }
+
+
+    public function shipyard()
+    {
+        $ships = Ship::withCount("stations")->orderBy('name')->get();
+        return view('outfitting/shipyard', [
+            'ships' => $ships
+        ]);
+    }
+
+    public function ship(Ship $ship)
+    {
+        return view('outfitting/ship', [
+            'ship' => $ship
         ]);
     }
 

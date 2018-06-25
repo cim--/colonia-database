@@ -137,6 +137,7 @@ class StationController extends Controller
 
             /* Governance change will affect outfitting - reset */
             $station->modules()->detach();
+            $station->ships()->detach();
         }
         
         return redirect()->route('stations.show', $station->id);
@@ -314,6 +315,17 @@ class StationController extends Controller
         ]);
     }
 
+    public function shipyard(Station $station)
+    {
+        $ships = $station->ships()->orderBy('name')->get();
+
+        return view('stations/shipyard', [
+            'station' => $station,
+            'ships' => $ships
+        ]);
+    }
+
+    
     public function eddb($eddb) {
         $station = Station::where('eddb', $eddb)->first();
         if (!$station) {

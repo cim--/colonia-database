@@ -39,6 +39,7 @@
 		<li><a href="{{route('reserves')}}">Reserves</a></li>
      	<li><a href="{{route('effects')}}">Effects</a></li>
      	<li><a href="{{route('outfitting')}}">Outfitting</a></li>
+		<li><a href="{{route('outfitting.shipyard')}}">Shipyard</a></li>
 		<li><a href="{{route('missions.index')}}">Missions</a></li>
 	  </ul>
 	</li>
