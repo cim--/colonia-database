@@ -593,7 +593,7 @@ class EDDNReader extends Command
          * horizons/Cobra IV/etc. making the availability disappear
          * when it's just that they personally can't see it */
 
-        \DB::transaction(function() use ($station, $modules) { 
+        \DB::transaction(function() use ($station, $ships) { 
             // set availability to false
             \DB::table('ship_station')->where('station_id', $station->id)
                                       ->update(['current' => false]);
