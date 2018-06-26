@@ -142,10 +142,12 @@ class BaseController extends Controller
             }
             $governments[$faction->government->name]++;
 
-            if (!isset($ethoses[$faction->ethos->name])) {
-                $ethoses[$faction->ethos->name] = 0;
+            if (!$faction->virtual) {
+                if (!isset($ethoses[$faction->ethos->name])) {
+                    $ethoses[$faction->ethos->name] = 0;
+                }
+                $ethoses[$faction->ethos->name]++;
             }
-            $ethoses[$faction->ethos->name]++;
 
             $iconmap[$faction->government->name] = $faction->government->icon;
 

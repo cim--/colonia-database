@@ -36,9 +36,11 @@ class ReportController extends Controller
         $labels = [];
         $colours = [];
         foreach ($reports->sortByDesc($sort) as $report) {
-            $labels[] = $report->system->displayName();
-            $dataset[] = $report->$sort;
-            $colours[] = '#'.substr(md5($report->system->catalogue), 0, 6);
+            if (!$report->system->virtualonly) {
+                $labels[] = $report->system->displayName();
+                $dataset[] = $report->$sort;
+                $colours[] = '#'.substr(md5($report->system->catalogue), 0, 6);
+            }
         }
         
         $chart = app()->chartjs
@@ -76,7 +78,7 @@ class ReportController extends Controller
 
     public function reach() {
 
-        $reaches = \DB::select('SELECT f.id, f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.id, f.name ORDER BY reach DESC');
+        $reaches = \DB::select('SELECT f.id, f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 AND f.virtual = 0 GROUP BY f.id, f.name ORDER BY reach DESC');
         
         $dataset = [];
         $labels = [];
@@ -123,7 +125,7 @@ class ReportController extends Controller
 
     public function reachLog() {
             
-        $reaches = \DB::select('SELECT f.id, f.name, ROUND(SUM(i.influence/100 * LOG10(s.population)),2) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.id, f.name ORDER BY reach DESC');
+        $reaches = \DB::select('SELECT f.id, f.name, ROUND(SUM(i.influence/100 * LOG10(s.population)),2) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 AND f.virtual = 0 GROUP BY f.id, f.name ORDER BY reach DESC');
         
         $dataset = [];
         $labels = [];
@@ -171,7 +173,7 @@ class ReportController extends Controller
 
     public function control() {
         $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass')
-            ->notHidden()
+            ->notHidden()->notVirtual()
             ->with(['influences' => function($q) {
                     $q->where('current', 1);
                 }])
@@ -184,7 +186,7 @@ class ReportController extends Controller
 
     public function states() {
 
-        $factions = Faction::orderBy('name')->notHidden()->get();
+        $factions = Faction::orderBy('name')->notHidden()->notVirtual()->get();
         $tdatas = [];
         $labels = [];
         $states = State::orderBy('name')->get();
