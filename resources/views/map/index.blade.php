@@ -39,7 +39,7 @@
   </select> ;
   <label for='mapctrllinks'>Links</label>: <select id='mapctrllinks'>
 	<option value='C:off'>Off</option>
-	<option selected='selected' value='C:mission'>Missions (15 LY)</option>
+	<option selected='selected' value='C:mission'>Missions (20 LY)</option>
 	<!--    <option selected='selected' value='C:courier'>Courier Missions (10 LY)</option> -->
 	<option value='C:control'>Controlling faction</option>
 	<optgroup label='Expansions from'>

@@ -7,7 +7,7 @@ var CDBMap = function() {
 		systemdata: [],
 		canvas: null,
 		systemobjects: {},
-		systemlinks1: {}, // 15 LY
+		systemlinks1: {}, // 20 LY
 		systemlinks2: {}, // 30 LY
 		systemtexts: {}
 	}
@@ -274,9 +274,9 @@ var CDBMap = function() {
 	var LineWidth = function(link) {
 		/* if (link.cdb_distance <= 10) {
 			return 6;
-		} else */ if (link.cdb_distance <= 15) {
+		} else */ if (link.cdb_distance <= 20) {
 			return 4;
-		} else if (link.cdb_distance <= 22.5) {
+		} else if (link.cdb_distance <= 30) {
 			return 2;
 		}
 		return 1;
@@ -302,11 +302,11 @@ var CDBMap = function() {
 			return s1data.controlcolour;
 		}
 		if (s1data.population > 0 && s2data.population > 0) {
-			if (dist <= 15) {
+			if (dist <= 20) {
 				return'#44cc44';
-			} else if (dist <= 22.5) {
+			} else if (dist <= 30) {
 				return'#339933';
-			} else if (dist <= 35) {
+			} else if (dist <= 40) {
 				return'#116611';
 			}
 		} else {
@@ -335,7 +335,7 @@ var CDBMap = function() {
 						cen2[2] + cen2[0]
 					];
 					props.stroke = LinkColour(s1data, s2data, dist);
-					if (dist <= 15) {
+					if (dist <= 20) {
 						props.strokeWidth = 1;
 					} else {
 						props.strokeWidth = 0;
@@ -344,7 +344,7 @@ var CDBMap = function() {
 					var link = new fabric.Line(coords, props);
 					link.cdb_distance = dist;
 					obj.systemlinks2[s1data.name][s2data.name] = link;
-					if (dist <= 15) {
+					if (dist <= 20) {
 						obj.systemlinks1[s1data.name][s2data.name] = link;
 					}
 					obj.canvas.add(link);
