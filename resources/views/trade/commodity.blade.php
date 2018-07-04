@@ -88,7 +88,7 @@
 		{{number_format($station->system->distanceTo($reserve->station->system), 2)}}
 	  </td>
 	  @endif
-	  <td>
+	  <td data-sort="{{$reserve->created_at->timestamp}}">
 		{{$reserve->created_at->diffForHumans()}}
 	  </td>
 	</tr>
