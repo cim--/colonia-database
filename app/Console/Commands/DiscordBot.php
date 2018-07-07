@@ -15,6 +15,7 @@ use App\Models\Economy;
 use App\Models\Government;
 use App\Models\History;
 use App\Models\Expansioncache;
+use App\Models\Megaship;
 
 class DiscordBot extends Command
 {
@@ -60,6 +61,7 @@ class DiscordBot extends Command
 
         $this->registerHelpCommand();
         $this->registerSystemCommand();
+        $this->registerMegashipCommand();
         $this->registerStationCommand();
         $this->registerFactionCommand();
         $this->registerInfluenceCommand();
@@ -1022,5 +1024,52 @@ class DiscordBot extends Command
         ]);
     }
 
-            
+    private function registerMegashipCommand() {
+        $this->discord->registerCommand('megaship', function($message, $params) {
+            $sname = trim(join(" ", $params));
+            if ($sname != "") {
+                $megaship = Megaship::where('serial', 'like', $sname."%")->orderBy('serial')->first();
+            } else {
+                $megaship = false;
+            }
+            if (!$megaship) {
+                $result = "";
+                if ($sname != "") {
+                    $result .= $sname." not known.\n";
+                }
+                $result .= "**Known megaships:**\n";
+                $ships = Megaship::orderBy('serial')->get();
+                foreach($ships as $ship) {
+                    $result .= $ship->serial."\n";
+                }
+                return $this->safe($result);
+            } else {
+                $result = "**".$megaship->displayName()."**\n<".route('megaships.show', $megaship->id).">\n";
+                $routes = [];
+                foreach ($megaship->megashiproutes as $route) {
+                    $rdesc = "";
+                    if ($route->system_id) {
+                        $rdesc .= $route->system->displayName();
+                    } else {
+                        $rdesc .= $route->systemdesc;
+                    }
+                    $rdesc .= ": ";
+                    $from = $route->nextArrival();
+                    $to = $route->nextDeparture();
+                    if ($from) {
+                        $rdesc .= \App\Util::displayDate($from)." to ".\App\Util::displayDate($to);
+                    } else {
+                        $rdesc .= "Departing ".\App\Util::displayDate($to);
+                    }
+                    $routes[$to->format("Ymd")] = $rdesc;
+                }
+                ksort($routes);
+                $result .= join("\n",$routes);
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Return information about the named megaship.',
+            'usage' => '<megaship serial number>',
+        ]);
+    }            
 }
