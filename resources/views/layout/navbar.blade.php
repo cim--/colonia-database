@@ -17,10 +17,11 @@
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>
-	  <ul>
+	  <ul class='compactnav'>
 		<li><a href="{{route('systems.index')}}">Systems</a></li>
 		<li><a href="{{route('factions.index')}}">Factions</a></li>
 		<li><a href="{{route('stations.index')}}">Stations</a></li>
+     	<li><a href="{{route('megaships.index')}}">Megaships</a></li>
 	  </ul>
 	</li>
 	<li><div>Reports</div>

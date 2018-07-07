@@ -46,7 +46,8 @@ nav {
 	> ul {
 		@include make-row();
 		> li {
-			@include make-sm-column(2);
+			@include make-sm-column(4);
+			@include make-lg-column(2);
 			border-right: 1px #005090 dotted;
 			min-height: 4.8em;
 			div {
@@ -317,5 +318,12 @@ div#newhere {
 	}
 	.other, .otherr {
 		border-right: 2px #999 solid;
+	}
+}
+
+.megashipcurrentlocation {
+	td {
+		font-weight: bold;
+		background: #ffe;
 	}
 }

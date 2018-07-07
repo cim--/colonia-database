@@ -17,9 +17,9 @@ class CreateMegashipsTable extends Migration
             $table->increments('id');
             $table->integer('megashipclass_id');
             $table->string('serial');
-            $table->date('commissioned');
-            $table->date('decommissioned');
-            $table->text('cargodesc');
+            $table->date('commissioned')->nullable();
+            $table->date('decommissioned')->nullable();
+            $table->text('cargodesc')->nullable();
             $table->timestamps();
         });
     }
