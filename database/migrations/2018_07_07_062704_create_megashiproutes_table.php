@@ -18,7 +18,7 @@ class CreateMegashiproutesTable extends Migration
             $table->integer('megaship_id')->index();
             $table->integer('sequence')->unsigned();
             $table->integer('system_id')->nullable()->index();
-            $table->integer('systemdesc')->nullable();
+            $table->string('systemdesc')->nullable();
             $table->timestamps();
         });
     }

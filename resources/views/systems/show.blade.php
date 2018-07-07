@@ -105,7 +105,7 @@
 @if ($system->inhabited())
   <div class='col-sm-6'>
 	<h2>Stations</h2>
-	<table class='table table-bordered datatable' data-paging='false' data-searching='false'>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false'>
 	  <thead>
 		<tr><th>Name</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
@@ -121,6 +121,40 @@
 		@endforeach
 	  </tbody>
 	</table>
+
+	@if ($system->megashiproutes->count() > 0)
+	<h2>Megaships</h2>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false' data-order='[[1, "asc"]]'>
+	  <thead>
+		<tr><th>Class</th><th>Ship</th><th>Next Arrival</th><th>Next Departure</th>
+	  </thead>
+	  <tbody>
+		@foreach ($system->megashiproutes as $route)
+		<tr>
+		  <td>
+			@include($route->megaship->megashipclass->icon)
+			{{$route->megaship->megashipclass->name}}
+		  </td>
+		  <td>
+			<a href='{{route('megaships.show', $route->megaship_id)}}'>
+			  {{$route->megaship->serial}}
+			</a>
+		  </td>
+		  <td>
+			@if ($route->nextArrival())
+			{{App\Util::displayDate($route->nextArrival())}}
+			@else
+			<strong>Present</strong>
+			@endif
+		  </td>
+		  <td>
+			{{App\Util::displayDate($route->nextDeparture())}}
+		  </td>
+		@endforeach
+	  </tbody>
+	</table>
+	@endif
+
 	<h2>Factions</h2>
 	@if (!$system->virtualonly)
 	@if ($system->bgslock)

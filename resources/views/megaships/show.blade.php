@@ -24,6 +24,7 @@
 <p><strong>Typical cargo:</strong> {{$megaship->cargodesc}}</p>
 @endif
 
+<h2>Itinerary</h2>
 @if ($megaship->megashiproutes->count() > 0)
 <table class='table table-bordered datatable' data-paging='0' data-searching='0' data-info='0' data-order='[[2, "asc"]]'>
   <thead>

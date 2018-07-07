@@ -19,6 +19,6 @@
 {!! Form::textarea('cargodesc') !!}
 </div>
 
-@if ($megaship->id)
+@if (isset($megaship))
 @include('megaships.routeform')
 @endif

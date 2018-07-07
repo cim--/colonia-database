@@ -39,6 +39,10 @@ class System extends Model
     public function history() {
         return $this->morphMany('App\Models\History', 'location');
     }
+
+    public function megashiproutes() {
+        return $this->hasMany('App\Models\Megashiproute');
+    }
 //
     public function scopePopulated($q) {
         return $q->where('population', '>', 0);
