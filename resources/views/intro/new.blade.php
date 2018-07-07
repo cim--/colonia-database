@@ -48,17 +48,6 @@
 	</div>
 
 	<div>
-	  <h2>Mining</h2>
-
-	  @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
-	  
-	  <p>The briefness of human occupation of the region means that all mineral reserves are Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
-
-	  <p>Finding a booming economy to sell Painite is also easy.</p>
-
-	</div>
-
-	<div>
 	  <h2>Combat</h2>
 
 	  @include('intro.botbox', ['commands' => ["!locate feature High RES", "!locate state War", "!locate facility broker"]])
@@ -68,6 +57,23 @@
 	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. There is a permanent one in Colonia (except during Lockdown), and temporary ones are often set up in systems affected by War.</p>
 	</div>
 
+	<div>
+	  <h2>Piracy and Espionage</h2>
+
+	  @include('intro.botbox', ['commands' => ["!megaship"]])
+	  
+	  <p>A large number of megaships are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
+
+	  <p>These ships carry rare cargoes and localised cargoes which are sometimes in great demand in the region either on the conventional markets or for tech brokers.</p>
+
+	  <p>There are also a very large number of installations, used by the Council to provide facilities separate to the primary orbital stations. The cargo holds and data transmitters of these are also vulnerable to pirates.</p>
+
+	  <p>The usual opportunities for pirates to intercept courier ships are also available.</p>
+
+	  <p>In defence of the region, the Council and its allies take significant measures to prevent Anarchy factions taking control of stations or systems. This can make it more difficult for pirates to operate with impunity.</p>
+	  
+	</div>
+	
 	<div>
 	  <h2>Missions</h2>
 	  @include('intro.botbox', ['commands' => ["!mission system"]])
@@ -91,6 +97,17 @@
 	
   </div>
   <div class='newbox'>
+
+	<div>
+	  <h2>Mining</h2>
+
+	  @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
+	  
+	  <p>The briefness of human occupation of the region means that all mineral reserves are Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
+
+	  <p>Finding a booming economy to sell Painite is also easy.</p>
+
+	</div>
 	
 	<div>
 	  <h2>Outfitting and Shipyards</h2>
