@@ -1056,10 +1056,14 @@ class DiscordBot extends Command
                     $rdesc .= ": ";
                     $from = $route->nextArrival();
                     $to = $route->nextDeparture();
-                    if ($from) {
-                        $rdesc .= \App\Util::displayDate($from)." to ".\App\Util::displayDate($to);
+                    if ($megaship->megashipclass->operational) {
+                        if ($from) {
+                            $rdesc .= \App\Util::displayDate($from)." to ".\App\Util::displayDate($to);
+                        } else {
+                            $rdesc .= "Departing ".\App\Util::displayDate($to);
+                        }
                     } else {
-                        $rdesc .= "Departing ".\App\Util::displayDate($to);
+                        $rdesc .= "Not operational";
                     }
                     $routes[$to->format("Ymd")] = $rdesc;
                 }
