@@ -79,11 +79,11 @@
 		<li>"Famous explorer" passenger missions are very common, but due to the distribution of distant tourist beacons, mostly go to systems within 500 LY of Sol. Missions to Sag A*, Beagle Point or other deep space destinations do exist but may require visiting several passenger boards to find.</li>
 	  </ul>
 
-	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 15 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
+	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 20 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
 
 	  <p>In addition to these short range links:</p>
 	  <ul>
-		<li>All systems may generate mid-range missions to Colonia, Ratraii, Ogmar or Tenjin.</li>
+		<li>All systems may generate mid-range missions to the centre of the bubble (currently those systems within 11 LY of Colonia).</li>
 		<li>Tourism economies may sometimes generate long-range data courier and one-way passenger missions to systems in the Sol bubble.</li>
 	  </ul>
 	  
