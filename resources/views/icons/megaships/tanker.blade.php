@@ -1,0 +1,1 @@
+<span title='Tanker' class='icon-megaship-tanker'>&#x26FD;</span>
