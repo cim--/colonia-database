@@ -29,10 +29,13 @@ class Megaship extends Model
         if ($this->megashiproutes->count() == 0) {
             return null;
         }
-        $max = $this->megashiproutes->max('sequence');
-        $weeks = $this->commissioned->diffInWeeks();
-        $sequence = $weeks % ($max+1);
-        return $this->megashiproutes->where('sequence', $sequence)->first();
+        if ($this->megashipclass->operational) {
+            $max = $this->megashiproutes->max('sequence');
+            $weeks = $this->commissioned->diffInWeeks();
+            $sequence = $weeks % ($max+1);
+            return $this->megashiproutes->where('sequence', $sequence)->first();        } else {
+            return $this->megashiproutes->first();
+        }
     }
     
     public function currentLocation()

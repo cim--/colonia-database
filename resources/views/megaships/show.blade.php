@@ -5,6 +5,11 @@
 @endsection
 
 @section('content')
+@if ($userrank > 0)
+<a class='edit' href='{{route('megaships.edit', $megaship->id)}}'>Update</a>
+@endif
+
+
 <div><strong>Commissioned:</strong>
   @if ($megaship->commissioned)
   {{\App\Util::displayDate($megaship->commissioned)}}
@@ -24,6 +29,8 @@
 <p><strong>Typical cargo:</strong> {{$megaship->cargodesc}}</p>
 @endif
 
+@if ($megaship->megashipclass->operational)
+@if (!$megaship->decommissioned)
 <h2>Itinerary</h2>
 @if ($megaship->megashiproutes->count() > 0)
 <table class='table table-bordered datatable' data-paging='0' data-searching='0' data-info='0' data-order='[[2, "asc"]]'>
@@ -63,6 +70,15 @@
 </table>
 @else
 <p>Itinerary not known.</p>
+@endif
+@endif
+@else
+<p>
+  <strong>Location:</strong> <a href="{{route('systems.show', $megaship->megashiproutes[0]->system->id)}}">
+	@include($megaship->megashiproutes[0]->system->economy->icon)
+	{{$megaship->megashiproutes[0]->system->displayName()}}
+  </a>
+</p>
 @endif
 
 @endsection

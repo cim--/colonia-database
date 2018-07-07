@@ -148,7 +148,11 @@
 			@endif
 		  </td>
 		  <td>
+			@if ($route->megaship->megashipclass->operational)
 			{{App\Util::displayDate($route->nextDeparture())}}
+			@else
+			<strong>Not operational</strong>
+			@endif
 		  </td>
 		@endforeach
 	  </tbody>
