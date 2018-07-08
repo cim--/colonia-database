@@ -36,7 +36,6 @@ class MegashipController extends Controller
             \App::abort(403);
         }
 
-        $systems = System::orderBy('name')->get();
         $classes = Megashipclass::orderBy('name')->get();
 
         return view('megaships/create', [

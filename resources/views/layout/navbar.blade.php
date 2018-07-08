@@ -22,6 +22,7 @@
 		<li><a href="{{route('factions.index')}}">Factions</a></li>
 		<li><a href="{{route('stations.index')}}">Stations</a></li>
      	<li><a href="{{route('megaships.index')}}">Megaships</a></li>
+        <li><a href="{{route('installations.index')}}">Installations</a></li>
 	  </ul>
 	</li>
 	<li><div>Reports</div>

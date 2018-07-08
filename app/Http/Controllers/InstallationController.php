@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Installation;
+use App\Models\Installationclass;
+use App\Models\System;
 use Illuminate\Http\Request;
 
 class InstallationController extends Controller
@@ -14,7 +16,11 @@ class InstallationController extends Controller
      */
     public function index()
     {
-        //
+        $installations = Installation::with('system', 'system.economy', 'installationclass')->get();
+
+        return view('installations.index', [
+            'installations' => $installations
+        ]);
     }
 
     /**
@@ -24,7 +30,18 @@ class InstallationController extends Controller
      */
     public function create()
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+
+        $systems = System::orderBy('name')->get();
+        $classes = Installationclass::orderBy('name')->get();
+
+        return view('installations/create', [
+            'classes' => \App\Util::selectMap($classes),
+            'systems' => \App\Util::selectMap($systems, false, 'displayName'),
+        ]);
     }
 
     /**
@@ -35,9 +52,30 @@ class InstallationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+        $installation = new Installation;
+        return $this->save($installation, $request);
     }
 
+    private function save(Installation $installation, Request $request)
+    {
+        $this->validate($request, [
+            'planet' => 'required'
+        ]);
+        $installation->installationclass_id = $request->input('installationclass_id');
+        $installation->system_id = $request->input('system_id');
+        $installation->planet = $request->input('planet');
+        $installation->name = $request->input('name');
+        $installation->satellites = $request->input('satellites', false);
+        $installation->trespasszone = $request->input('trespasszone', false);
+        $installation->cargo = $request->input('cargo');
+        $installation->save();
+        return redirect()->route('installations.show', $installation->id);
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -46,7 +84,7 @@ class InstallationController extends Controller
      */
     public function show(Installation $installation)
     {
-        //
+        return view('installations.show', ['installation' => $installation]);
     }
 
     /**
@@ -57,7 +95,19 @@ class InstallationController extends Controller
      */
     public function edit(Installation $installation)
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+
+        $systems = System::orderBy('name')->get();
+        $classes = Installationclass::orderBy('name')->get();
+
+        return view('installations/edit', [
+            'classes' => \App\Util::selectMap($classes),
+            'systems' => \App\Util::selectMap($systems, false, 'displayName'),
+            'installation' => $installation
+        ]);
     }
 
     /**
@@ -69,7 +119,11 @@ class InstallationController extends Controller
      */
     public function update(Request $request, Installation $installation)
     {
-        //
+        $user = \Auth::user();
+        if ($user->rank < 2) {
+            \App::abort(403);
+        }
+        return $this->save($installation, $request);
     }
 
     /**
