@@ -24,7 +24,7 @@ Installations
   <tbody>
 	@foreach ($installations as $installation)
 	<tr>
-	  <td>
+	  <td data-sort='{{$installation->system->displayName()}}'>
 		@include($installation->system->economy->icon)
 		<a href='{{route('systems.show', $installation->system_id)}}'>
 		  {{$installation->system->displayName()}}
@@ -33,7 +33,7 @@ Installations
 	  <td>
 		{{$installation->planet}}
 	  </td>
-      <td>
+      <td data-sort='{{$installation->installationclass->name}}'>
 		@include($installation->installationclass->icon)
 		<a href='{{route('installations.show', $installation->id)}}'>
 		  {{$installation->installationclass->name}}
