@@ -43,6 +43,10 @@ class System extends Model
     public function megashiproutes() {
         return $this->hasMany('App\Models\Megashiproute');
     }
+
+    public function installations() {
+        return $this->hasMany('App\Models\Installation');
+    }
 //
     public function scopePopulated($q) {
         return $q->where('population', '>', 0);

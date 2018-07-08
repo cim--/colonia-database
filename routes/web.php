@@ -81,6 +81,7 @@ Route::get('/stations/{station}/outfitting/current', [
 Route::resource('stations', 'StationController');
 
 Route::resource('megaships', 'MegashipController');
+Route::resource('installations', 'InstallationController');
 
 Route::resource('missions', 'MissionController', ['except' => [
     'show', 'destroy' // for now
