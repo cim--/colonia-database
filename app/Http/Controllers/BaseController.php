@@ -357,6 +357,11 @@ class BaseController extends Controller
         return view('intro/about');
     }
 
+    public function story() {
+        return view('intro/story');
+    }
+
+    
     public function newToColonia() {
         return view('intro/new', [
             'systemcount' => System::where('population', '>', 0)->count(),

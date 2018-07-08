@@ -327,3 +327,15 @@ div#newhere {
 		background: #ffe;
 	}
 }
+
+#historyboxes {
+	div.historybox {
+		h2 {
+			border-bottom: 1px #005090 dotted;
+			padding: 0 -0.5em;
+		}
+		border: thin #005090 solid;
+		margin: 1em;
+		padding: 0.5em;
+	}
+}
