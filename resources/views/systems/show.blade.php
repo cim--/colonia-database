@@ -159,6 +159,32 @@
 	</table>
 	@endif
 
+	@if ($system->installations->count() > 0)
+	<h2>Installations</h2>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false' data-order='[[1, "asc"]]'>
+	  <thead>
+		<tr><th>Class</th><th>Planet</th>
+	  </thead>
+	  <tbody>
+		@foreach ($system->installations as $installation)
+		<tr>
+		  <td>
+			@include($installation->installationclass->icon)
+			<a href='{{route('installations.show', $installation->id)}}'>
+			  {{$installation->installationclass->name}}
+			  @if ($installation->name)
+			  ({{$installation->name}})
+			@endif
+			</a>
+		  </td>
+		  <td>
+			{{$installation->planet}}
+		  </td>
+		@endforeach
+	  </tbody>
+	</table>
+	@endif
+	
 	<h2>Factions</h2>
 	@if (!$system->virtualonly)
 	@if ($system->bgslock)
