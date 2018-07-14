@@ -8,6 +8,10 @@ use Carbon\Carbon;
 class Megaship extends Model
 {
     protected $dates = ["created_at", "updated_at", "commissioned", "decommissioned"];
+
+    /* Megaships usually move weekly, but sometimes 'stall'. This
+     * array is used to track weeks they stay still. */
+    protected $slips = ["2018-07-12"];
     
     public function megashipclass()
     {
@@ -32,6 +36,13 @@ class Megaship extends Model
         if ($this->megashipclass->operational) {
             $max = $this->megashiproutes->max('sequence');
             $weeks = $this->commissioned->diffInWeeks();
+            foreach ($this->slips as $idx => $slip) {
+                if ($this->commissioned->lt(Carbon::parse($slip))) {
+                    $weeks -= count($this->slips)-$idx;
+                    break;
+                }
+            }
+            
             $sequence = $weeks % ($max+1);
             return $this->megashiproutes->where('sequence', $sequence)->first();        } else {
             return $this->megashiproutes->first();
