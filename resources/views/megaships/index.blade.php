@@ -18,6 +18,7 @@ Megaships
 	  <th>Current Location</th>
 	  <th>Commissioned</th>
 	  <th>Decommissioned</th>
+	  <th class='megashipcargo'>Cargo</th>
 	</tr>
   </thead>
   <tbody>
@@ -53,6 +54,13 @@ Megaships
 		In Service
 	  </td>
 	  @endif
+	  <td class='megashipcargo'>
+		@if ($megaship->cargodesc)
+		{{$megaship->cargodesc}}
+		@else
+		Survey pending
+		@endif
+	  </td>
 	</tr>
 	@endforeach
   </tbody>
