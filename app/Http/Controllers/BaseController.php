@@ -16,6 +16,11 @@ use App\Models\Region;
 use App\Models\Reserve;
 use App\Models\Economy;
 use App\Models\Government;
+use App\Models\Facility;
+use App\Models\Megashipclass;
+use App\Models\Installationclass;
+use App\Models\Installation;
+use App\Models\Megaship;
 
 class BaseController extends Controller
 {
@@ -242,7 +247,9 @@ class BaseController extends Controller
             'bounties' => $bounties,
             'maxtraffic' => $maxtraffic,
             'mintraffic' => $mintraffic,
-            'wordmap' => $wordmap
+            'wordmap' => $wordmap,
+            'megacount' => Megaship::where('decommissioned', null)->count(),
+            'instcount' => Installation::count()
         ]);
     }
 //
@@ -391,5 +398,16 @@ class BaseController extends Controller
         ]);
 
     }
-    
+
+
+    public function icons() {
+        return view('intro/icons', [
+            'economies' => Economy::orderBy('name')->get(),
+            'governments' => Government::orderBy('name')->get(),
+            'states' => State::orderBy('name')->get(),
+            'facilities' => Facility::orderBy('name')->get(),
+            'megaships' => Megashipclass::orderBy('name')->get(),
+            'installations' => Installationclass::orderBy('name')->get(),
+        ]);
+    }
 }

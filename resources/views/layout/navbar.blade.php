@@ -7,6 +7,7 @@
 		<li><a title='The story of Colonia' href="{{route('intro.story')}}">Story</a></li>
 		<li><a title='Differences between Colonia and Sol' href="{{route('intro.new')}}">Contrasts</a></li>
 		<li><a title='Comparing Colonia to other settlements' href="{{route('intro.regions')}}">Regions</a></li>
+     	<li><a href="{{route('intro.icons')}}">Icon Key</a></li>
 	  </ul>
 	</li>
 	<li><div>Overview</div>

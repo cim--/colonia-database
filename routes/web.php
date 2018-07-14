@@ -22,6 +22,7 @@ Route::get('/about', 'BaseController@about')->name('intro.about');
 Route::get('/new', 'BaseController@newToColonia')->name('intro.new');
 Route::get('/regions', 'BaseController@regions')->name('intro.regions');
 Route::get('/story', 'BaseController@story')->name('intro.story');
+Route::get('/icons', 'BaseController@icons')->name('intro.icons');
 
 Route::get('/distances', 'DistancesController@index')->name('distances');
 
