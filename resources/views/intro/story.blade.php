@@ -93,7 +93,7 @@
 
   <p>However, the majority of the programme was put on hold, following Thargoid attacks on the Pleiades Nebula. While the vast majority of citizens in the Sol bubble believed - at the time! - their leaders' assurances that they were safe from attack, as stations burned and the initial Thargoid scouting fleet moved closer to the bubble, around 500,000 refugees were able to obtain bulk transports, and headed for Colonia. The Council adjusted its development plans, constructing five new outposts to house the refugees and integrate them into the colony's society.</p>
 
-  <p>Concerns that criminal groups - or an organised Sol bubble organisation fleeing the Thargoids - might again attempt to take over the region led to the construction of the Colonia Bastion Security Installation in April 3304.</p>
+  <p>Concerns that criminal groups - or an organised Sol bubble organisation fleeing the Thargoids - might again attempt to take over the region led to the construction of the <a href='{{route('installations.show', 1)}}'>Colonia Bastion</a> Security Installation in April 3304.</p>
   
 </div>
 
@@ -102,9 +102,9 @@
 
   <p>The need to plan for further refugees, and to maintain the sustainability of the colony, caused the Council to commission a research programme led by Alexei de la Vega. Initial data analysis suggested that while the colony's economy was strong on paper, with adequate production to supply a much larger population, there were likely to be significant logistical issues transporting these goods in future if the Council were to continue to solely rely on independent pilots in personal ships. The resupply bases between Colonia and Sol were considered particularly at threat.</p>
 
-  <p>The Council began by constructing a large number of <a href='{{route('installations.index')}}'>installations</a> to coordinate economic activity and monitor stocks of supplies in more detail, as well as purchasing several <a href='{{route('megaships.index')}}'>larger freighters</a> to move cargo in bulk.</p>
-
-  <p>Additional funding was provided to de la Vega's team, including the construction of a purpose-built research facility.</p>
+  <p>The Council began by constructing a large number of <a href='{{route('installations.index')}}'>installations</a> to coordinate economic activity and monitor stocks in more detail, as well as purchasing several <a href='{{route('megaships.index')}}'>larger freighters</a> to move cargo in bulk. A large donation by Zachary Rackham through the Council's charitable tax advantage programme also allowed basic shipyards to be constructed at all surface stations.</p>
+  
+  <p>Additional funding was provided to de la Vega's team, including the construction of a purpose-built research facility, to allow more in-depth studies to be carried out.</p>
   
 </div>
 
