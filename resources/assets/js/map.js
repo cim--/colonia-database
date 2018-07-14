@@ -301,6 +301,9 @@ var CDBMap = function() {
 		if (config.links == "C:control") {
 			return s1data.controlcolour;
 		}
+		if (config.links == "C:mission") {
+			return '#229922';
+		}
 		if (s1data.population > 0 && s2data.population > 0) {
 			if (dist <= 20) {
 				return'#44cc44';
