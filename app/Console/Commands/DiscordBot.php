@@ -1105,6 +1105,7 @@ class DiscordBot extends Command
         }, [
             'description' => 'List installations in the named system.',
             'usage' => '<system name>',
+            'aliases' => ['installations']
         ]);
     }
 
