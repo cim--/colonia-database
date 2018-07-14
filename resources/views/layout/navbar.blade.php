@@ -1,7 +1,7 @@
 <nav>
   <ul>
 	<li><div>Introduction</div>
-	  <ul class='compactnav'>
+	  <ul >
 		<li><a href="{{route('index')}}">Home</a></li>
 		<li><a title='About the Census' href="{{route('intro.about')}}">Census</a></li>
 		<li><a title='The story of Colonia' href="{{route('intro.story')}}">Story</a></li>
@@ -18,7 +18,7 @@
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>
-	  <ul class='compactnav'>
+	  <ul >
 		<li><a href="{{route('systems.index')}}">Systems</a></li>
 		<li><a href="{{route('factions.index')}}">Factions</a></li>
 		<li><a href="{{route('stations.index')}}">Stations</a></li>
@@ -27,7 +27,7 @@
 	  </ul>
 	</li>
 	<li><div>Reports</div>
-	  <ul class='compactnav'>
+	  <ul >
 		<li><a href="{{route('reports.traffic')}}">Traffic</a></li>
 		<li><a href="{{route('reports.crimes')}}">Crime</a></li>
 		<li><a href="{{route('reports.bounties')}}">Bounties</a></li>
@@ -37,7 +37,7 @@
 	  </ul>
 	</li>
 	<li><div>Economy</div>
-	  <ul class='compactnav'>
+	  <ul >
 		<li><a href="{{route('trade')}}">Trading</a></li>
 		<li><a href="{{route('reserves')}}">Reserves</a></li>
      	<li><a href="{{route('effects')}}">Effects</a></li>
