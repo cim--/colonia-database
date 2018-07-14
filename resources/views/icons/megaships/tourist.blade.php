@@ -1,0 +1,1 @@
+<span title='Tourist Ship' class='icon-megaship-tourist'>&#x26F1;</span>
