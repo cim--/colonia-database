@@ -26,6 +26,7 @@ Reserves at {{$station->name}}
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Price</th>
+	  <th>History</th>
 	</tr>
   </thead>
   <tbody>
@@ -52,6 +53,9 @@ Reserves at {{$station->name}}
 	  </td>
 	  <td>
 		{{$reserve->reserves->first()->price}}
+	  </td>
+	  <td>
+	    <a href='{{route('stations.showtradehistory', ['station'=>$station->id, 'commodity' =>$reserve->id])}}'>{{$reserve->displayName()}} History</a>
 	  </td>
 	</tr>
 	@endforeach

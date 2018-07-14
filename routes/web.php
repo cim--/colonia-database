@@ -68,6 +68,10 @@ Route::get('/stations/{station}/trade', [
     'as' => 'stations.showtrade',
     'uses' => 'StationController@trade'
 ]);
+Route::get('/stations/{station}/trade/{commodity}', [
+    'as' => 'stations.showtradehistory',
+    'uses' => 'StationController@tradeHistory'
+]);
 Route::get('/stations/{station}/outfitting', [
     'as' => 'stations.showoutfitting',
     'uses' => 'StationController@outfitting'

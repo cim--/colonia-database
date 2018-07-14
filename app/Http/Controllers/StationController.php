@@ -12,7 +12,9 @@ use App\Models\History;
 use App\Models\Commodity;
 use App\Models\Moduletype;
 use App\Models\Module;
+use App\Models\Reserve;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class StationController extends Controller
 {
@@ -335,4 +337,130 @@ class StationController extends Controller
         }
     }
 
+    public function tradeHistory(Request $request, Station $station, Commodity $commodity) {
+        $datasets = [
+            'price' => [
+                'label' => "Price",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#000090',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'price',
+            ],
+            'reserves' => [
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#900000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'reserves',
+            ]
+        ];
+        $properties = ['price', 'reserves'];
+
+        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        
+        $entries = Reserve::where('station_id', $station->id)
+            ->where('commodity_id', $commodity->id)
+            ->whereDate('date', '>=', $minrange)
+            ->whereDate('date', '<=', $maxrange->copy()->addDay())
+            ->where('price', '!=', 0)
+            ->with('state')
+            ->orderBy('created_at')
+            ->get();
+        if ($entries->count() == 0) {
+            $chart = null; 
+        } else {
+            foreach ($entries as $idx => $entry) {
+                if ($idx == 0) {
+                    if ($entry->reserves > 0) {
+                        $sign = 1;
+                        $reservelabel = $datasets['reserves']['label'] = "Supply";
+                    } else {
+                        $sign = -1;
+                        $reservelabel = $datasets['reserves']['label'] = "Demand";
+                    }
+                } else {
+                    if ($entry->reserves * $sign < 0) {
+                        continue;
+                    }
+                }
+                foreach ($properties as $prop) {
+                    $datasets[$prop]['data'][] = [
+                        'x' => \App\Util::graphDisplayDateTime($entry->created_at),
+                        'y' => abs($entry->$prop),
+                        'state' => $entry->state->name,
+                        'minrange' => $minrange,
+                        'maxrange' => $maxrange,
+                    ];
+                }
+            }
+            sort($datasets); // compact
+
+            $chart = app()->chartjs
+                ->name("tradehistory")
+                ->type("line")
+                ->size(["height" => 400, "width"=>1000])
+                ->datasets($datasets)
+                ->options(['scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'bottom',
+                            'ticks' => [
+                                'callback' => "@@chart_xaxis_callback_datetime@@"
+                            ]
+                        ]
+                    ],
+                    'yAxes' => [
+                        [
+                            'id' => 'price',
+                            'gridLines' => [
+                                'display' => false
+                            ],
+                            'scaleLabel' => [
+                                'labelString' => "Price",
+                                'display' => true
+                            ],
+                        ],
+                        [
+                            'id' => 'reserves',
+                            'gridLines' => [
+                                'display' => false
+                            ],
+                            'scaleLabel' => [
+                                'labelString' => $reservelabel,
+                                'display' => true
+                            ],
+                            'position' => 'right',
+                        ]
+                    ]
+                ],
+                'tooltips' => [
+                    'callbacks' => [
+                        'title' => "@@tooltip_label_datetime_title@@",
+                        'label' => "@@tooltip_label_datetime@@"
+                    ]
+                ] 
+                ]); 
+        }
+        
+        return view('stations/tradehistory', [
+            'station' => $station,
+            'commodity' => $commodity,
+            'chart' => $chart,
+            'minrange' => $minrange,
+            'maxrange' => $maxrange
+        ]);
+    }
 }

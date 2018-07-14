@@ -65,8 +65,17 @@ class Util {
         }
         return $date->format("j F ").(1286+$date->format("Y"));
     }
+    public static function formDisplayDate($date) {
+        if (!$date) {
+            return "";
+        }
+        return (1286+$date->format("Y")).$date->format("-m-d");
+    }
     public static function graphDisplayDate($date) {
         return $date->diffInDays(new Carbon("2017-03-01"));
+    }
+    public static function graphDisplayDateTime($date) {
+        return $date->diffInSeconds(new Carbon("2017-12-22"));
     }
 
     public static function stateColour($state) {
