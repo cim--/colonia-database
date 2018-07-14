@@ -16,6 +16,7 @@ use App\Models\Government;
 use App\Models\History;
 use App\Models\Expansioncache;
 use App\Models\Megaship;
+use App\Models\Installation;
 
 class DiscordBot extends Command
 {
@@ -61,10 +62,11 @@ class DiscordBot extends Command
 
         $this->registerHelpCommand();
         $this->registerSystemCommand();
-        $this->registerMegashipCommand();
         $this->registerStationCommand();
         $this->registerFactionCommand();
         $this->registerInfluenceCommand();
+        $this->registerMegashipCommand();
+        $this->registerInstallationCommand();
         $this->registerReportCommand();
         $this->registerLocateCommand();
         $this->registerExpansionCommand();
@@ -1076,4 +1078,34 @@ class DiscordBot extends Command
             'usage' => '<megaship serial number>',
         ]);
     }            
+
+
+    private function registerInstallationCommand() {
+        $this->discord->registerCommand('installation', function($message, $params) {
+            $sname = trim(join(" ", $params));
+            $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
+            if (!$system) {
+                return $sname." not known";
+            } else {
+                $result = "**Installations for ".$system->displayName()."**\n<".route('systems.show', $system->id).">\n";
+                $installations = $system->installations;
+                if ($installations->count() == 0) {
+                    $result .= "No installations in this system.";
+                } else {
+                    foreach ($installations as $installation) {
+                        $result .= $installation->installationclass->name." at ".$installation->planet;
+                        if ($installation->name) {
+                            $result .= " (".$installation->name.")";
+                        }
+                        $result .= "\n";
+                    }
+                }
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'List installations in the named system.',
+            'usage' => '<system name>',
+        ]);
+    }
+
 }
