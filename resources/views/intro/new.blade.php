@@ -144,7 +144,7 @@
 		<li>Guardian Tech: Jaques Station, Colonia</li>
 	  </ul>
 
-	  <p>In addition to normal sources of engineering materials, the Unauthorised Installations in Kojeara have satellites which can be scanned for some data, and miscellaneous manufactured materials (as well as some cargoes required by the Tech Brokers) can be found in the debris around the wrecked bulk carrier in Luchtaine.</p>
+	  <p>In addition to normal sources of engineering materials, some <a href='{{route('installations.index')}}'>installations</a> have satellites which can be scanned for data, and miscellaneous manufactured materials (as well as some cargoes required by the Tech Brokers) can be found in the debris around the <a href='{{route('megaships.show',9)}}'>wrecked bulk carrier</a> in Luchtaine or in its cargo holds.</p>
     </div>
     
 	<div>
@@ -171,7 +171,7 @@
 
 	  <p>Colonia contains some unique or rare points of interest.</p>
 
-	  <p><a href="{{route('stations.show', 62)}}">Foster Terminal</a> is a dockable megaship embedded in an ice ring. There are also three asteroid bases - <a href="{{route('stations.show', 56)}}">TolaGarf's Junkyard</a>, <a href="{{route('stations.show', 64)}}">Moore's Charm</a> and <a href="{{route('stations.show', 74)}}">Robardin Rock</a>. A second megaship, the <a href="{{route('stations.show', 62)}}">Dove Enigma</a>, orbits near Colonia following the <a href="https://forums.frontier.co.uk/showthread.php/398466-Enigma-Expedition-to-Colonia-for-Charity-and-for-with-CMDR-DoveEnigma13">Enigma Expedition</a>.</p>
+	  <p>There are several <a href='{{route('stations.index')}}#cruiser'>dockable megaships</a>, <a href='{{route('stations.index')}}#asteroid'>asteroid bases</a> and <a href='{{route('stations.index')}}#asteroid'>ring-embedded stations</a>.</p>
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
