@@ -6,6 +6,7 @@ use App\Models\Installation;
 use App\Models\Installationclass;
 use App\Models\System;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class InstallationController extends Controller
 {
@@ -72,6 +73,7 @@ class InstallationController extends Controller
         $installation->satellites = $request->input('satellites', false);
         $installation->trespasszone = $request->input('trespasszone', false);
         $installation->cargo = $request->input('cargo');
+        $installation->constructed = Carbon::parse($request->input('constructed'));
         $installation->save();
         return redirect()->route('installations.show', $installation->id);
     }

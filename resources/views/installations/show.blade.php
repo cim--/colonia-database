@@ -17,6 +17,7 @@
 	{{$installation->system->displayName()}}
   </a> {{$installation->planet}}
 </div>
+<div><strong>Constructed:</strong> {{App\Util::displayDate($installation->constructed)}}</div>
 
 @if ($installation->cargo)
 <p><strong>Typical cargo:</strong> {{$installation->cargo}}</p>

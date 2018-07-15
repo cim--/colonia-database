@@ -26,4 +26,8 @@
 {!! Form::label('cargo', "Cargo Description") !!}
 {!! Form::textarea('cargo') !!}
 </div>
+<div class='form-field'>
+{!! Form::label('constructed', "Construction Date") !!}
+{!! Form::text('constructed') !!}
+</div>
 

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Installation extends Model
 {
+    protected $dates = ['created_at', 'updated_at', 'constructed'];
+
     public function system() {
         return $this->belongsTo('App\Models\System');
     }
