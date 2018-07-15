@@ -21,6 +21,9 @@ Systems
 	  <th>Controlling Faction</th>
       <th>Exploration Value</th>
       <th>Locations</th>
+      <th>Installations</th>
+	  <th>Megaships</th>
+	  <th>Sites</th>
 	</tr>
   </thead>
   <tbody>
@@ -62,6 +65,9 @@ Systems
 		  @if (!$facility->pivot->enabled)</span>@endif
   		@endforeach
 	  </td>
+	  <td>{{$system->installations_count}}</td>
+	  <td>{{$system->megashiproutes_count}}</td>
+	  <td>{{$system->sites_count}}</td>
 	</tr>
 	@endforeach
   </tbody>
