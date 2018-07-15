@@ -60,7 +60,7 @@
 	<div>
 	  <h2>Piracy and Espionage</h2>
 
-	  @include('intro.botbox', ['commands' => ["!megaship"]])
+	  @include('intro.botbox', ['commands' => ["!megaship serial", "!installations system"]])
 	  
 	  <p>A large number of megaships are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
 
@@ -175,7 +175,7 @@
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
-	  <p><a href='https://forums.frontier.co.uk/showthread.php/303036-Fungal-Life-Found-on-Colonia-3-C-A'>Fungal life was discovered</a> in Colonia on planet 3 C a at <code>47.21 x -174.16</code>, though has since disappeared. There is a listening post near Colonia 2 which points to a crashed T-9 at <code title='The listening post says 29.24 x 39.14, incorrectly'>39.14 x 29.24</code> on Colonia 5 E a. There is a persistent distress call from a wrecked bulk cargo ship near Moore's Charm in Luchtaine.</p>
+      <p>A large number of <a href='{{route('installations.index')'>installations</a>, <a href='{{route('megaships.index')'>megaships</a> and <a href='{{route(sites.index')'>other sites</a> are present.</p>
 
       <p>A rare glowing green gas giant can be found in Eol Prou KW-L c8-32.</p>
 
