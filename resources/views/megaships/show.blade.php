@@ -74,10 +74,15 @@
 @endif
 @else
 <p>
-  <strong>Location:</strong> <a href="{{route('systems.show', $megaship->megashiproutes[0]->system->id)}}">
+  <strong>Location:</strong>
+  @if ($megaship->megashiproutes[0]->system)
+  <a href="{{route('systems.show', $megaship->megashiproutes[0]->system->id)}}">
 	@include($megaship->megashiproutes[0]->system->economy->icon)
 	{{$megaship->megashiproutes[0]->system->displayName()}}
   </a>
+  @else
+  {{$megaship->megashiproutes[0]->systemdesc}}
+  @endif
 </p>
 @endif
 
