@@ -11,8 +11,7 @@ use App\Models\Influences;
 class DistancesController extends Controller
 {
     
-    const EXPANSION_LIMIT = 30;
-    const MISSION_LIMIT = 15;
+    const MISSION_LIMIT = 20;
     
     public function index() {
         $systems = System::with('phase', 'stations', 'stations.faction')->get();
@@ -49,6 +48,7 @@ class DistancesController extends Controller
                 if ($idx == $idx2) {
                     $line[$system2->id] = [
                         'distance' => 0,
+                        'expansion' => false,
                         'present' => true,
                         'full' => false,
                         'available' => false,
@@ -62,6 +62,7 @@ class DistancesController extends Controller
                     
                     $details = [
                         'distance' => $system->distanceTo($system2),
+                        'expansion' => $system->expansionCube($system2),
                         'present' => isset($presents[$system2->id][$faction->id]),
                         'full' => count($presents[$system2->id]) >= 7 || $system2->bgslock,
                         'available' => (($system2->phase->sequence <= $maxphase) || ($system->phase->sequence >= $system2->phase->sequence)) && $system2->population > 0,
@@ -78,7 +79,7 @@ class DistancesController extends Controller
             $targets = 0;
             foreach ($line as $key => $properties) {
                 if (!$properties['present']) {
-                    if ($properties['distance'] > self::EXPANSION_LIMIT) {
+                    if (!$properties['expansion']) {
                         break; // that's it...
                     }
                     if ($properties['full'] || !$properties['available']) {
@@ -104,7 +105,6 @@ class DistancesController extends Controller
             'systems' => $systems,
             'grid' => $grid,
             'presents' => $presents,
-            'expansion' => self::EXPANSION_LIMIT,
             'missions' => self::MISSION_LIMIT,
         ]);
     }

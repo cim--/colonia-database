@@ -13,7 +13,7 @@
 	same-system
     @elseif ($missions >= $cell['distance'])
     mission-system
-	@elseif ($expansion >= $cell['distance'])
+	@elseif ($cell['expansion'])
     expandable-system
     @endif
   '>
