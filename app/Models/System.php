@@ -47,6 +47,11 @@ class System extends Model
     public function installations() {
         return $this->hasMany('App\Models\Installation');
     }
+
+    public function sites() {
+        return $this->hasMany('App\Models\Site');
+    }
+
 //
     public function scopePopulated($q) {
         return $q->where('population', '>', 0);

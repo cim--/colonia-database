@@ -244,6 +244,33 @@
 @endif
 
   <div class='col-sm-6'>
+
+	@if ($system->sites->count() > 0)
+	<h2>Sites</h2>
+	<table class='table table-bordered datatable' data-order='[[1, "asc"]]' data-paging='false' data-searching='false'>
+	  <thead>
+		<tr><th>Planet</th><th>Coordinates</th><th>Site</th></tr>
+	  </thead>
+	  <tbody>
+		@foreach ($system->sites as $site)
+		<tr>
+		  <td>{{$site->planet}}</td>
+		  <td>
+			@if ($site->coordinates)
+			{{$site->coordinates}}
+			@else
+			Orbit
+			@endif
+		  </td>
+		  <td>
+			<a href='{{route('sites.show', $site->id)}}'>{{$site->summary}}</a>
+		  </td>
+		</tr>
+		@endforeach
+	  </tbody>
+	</table>
+	@endif
+	
 	<h2>Distances</h2>
 	<table class='table table-bordered datatable' data-order='[[1, "asc"]]'>
 	  <thead>

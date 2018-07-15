@@ -88,6 +88,7 @@ Route::resource('stations', 'StationController');
 
 Route::resource('megaships', 'MegashipController');
 Route::resource('installations', 'InstallationController');
+Route::resource('sites', 'SiteController');
 
 Route::resource('missions', 'MissionController', ['except' => [
     'show', 'destroy' // for now
