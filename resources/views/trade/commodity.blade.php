@@ -10,6 +10,7 @@
 
 <p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}</p>
 <p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}</p>
+<p><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</a></p>
 
 <p>Use the &#x21c4; icons to sort the table by distance to this station.</p>
 

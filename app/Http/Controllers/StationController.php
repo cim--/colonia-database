@@ -399,9 +399,7 @@ class StationController extends Controller
                     $datasets[$prop]['data'][] = [
                         'x' => \App\Util::graphDisplayDateTime($entry->created_at),
                         'y' => abs($entry->$prop),
-                        'state' => $entry->state->name,
-                        'minrange' => $minrange,
-                        'maxrange' => $maxrange,
+                        'state' => $entry->state->name
                     ];
                 }
             }

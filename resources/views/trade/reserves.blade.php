@@ -45,6 +45,7 @@
 	  <th>Imported</th>
 	  <th>Buy</th>
 	  <th>Sell</th>
+	  <th>History</th>
 	</tr>
   </thead>
   <tbody>
@@ -87,6 +88,11 @@
 	  </td>
       <td title='{{$commodity['buyplace']}}'>{{number_format($commodity['buy'])}}</td>
 	  <td title='{{$commodity['sellplace']}}'>{{number_format($commodity['sell'])}}</td>
+	  <td>
+		<a href="{{route('reserves.commodity.history', $commodity['id'])}}">
+		  {{$commodity['name']}} History
+		</a>
+	  </td>
 	</tr>
 	@endforeach
   </tbody>

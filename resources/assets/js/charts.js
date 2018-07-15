@@ -26,5 +26,9 @@ var tooltip_label_title = function (t, d) {
 	}
 };
 var tooltip_label_datetime_title = function (t, d) {
-	return d.datasets[t[0].datasetIndex].label+" ("+d.datasets[t[0].datasetIndex].data[t[0].index].state+")";
+	if (d.datasets[t[0].datasetIndex].data[t[0].index].state) {
+		return d.datasets[t[0].datasetIndex].label+" ("+d.datasets[t[0].datasetIndex].data[t[0].index].state+")";
+	} else {
+		return d.datasets[t[0].datasetIndex].label;
+	}
 };
