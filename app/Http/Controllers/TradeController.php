@@ -279,6 +279,8 @@ class TradeController extends Controller
                 $last = $stations[$station];
                 if ($last*$amount < 0) {
                     continue;
+                } else if ($last == $amount) {
+                    continue; // ignore duplicates
                 }
                 if ($amount == 0) {
                     if ($last > 0) {
