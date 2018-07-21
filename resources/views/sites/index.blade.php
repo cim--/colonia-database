@@ -10,12 +10,13 @@ Sites
 <p><a class='edit' href='{{route('sites.create')}}'>New site</a></p>
 @endif
     
-<table class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"]]'>
+<table class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"],[1, "asc"]]'>
   <thead>
 	<tr>
 	  <th>System</th>
 	  <th>Planet</th>
-	  <th>Coordinates</th>
+	  <th>Location</th>
+      <th>Category</th>
 	  <th>Summary</th>
 	</tr>
   </thead>
@@ -36,6 +37,11 @@ Sites
 		{{$site->coordinates}}
 		@else
 		Orbital
+		@endif
+	  </td>
+	  <td>
+		@if ($site->sitecategory)
+		{{$site->sitecategory->name}}
 		@endif
 	  </td>
 	  <td>

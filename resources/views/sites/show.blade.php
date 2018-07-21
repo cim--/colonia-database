@@ -1,7 +1,11 @@
 @extends('layout/layout')
 
 @section('title')
+@if ($site->sitecategory)
+{{$site->sitecategory->name}}: {{$site->summary}}
+@else
 {{$site->summary}}
+@endif
 @endsection
 
 @section('content')

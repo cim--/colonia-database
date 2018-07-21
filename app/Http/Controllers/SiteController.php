@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\System;
 use App\Models\Site;
+use App\Models\Sitecategory;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
@@ -17,7 +18,7 @@ class SiteController extends Controller
     {
         $sites = Site::with('system', 'system.economy')->orderBy('summary')->get();
         return view('sites.index', [
-            'sites' => $sites
+            'sites' => $sites,
         ]);
     }
 
@@ -34,9 +35,11 @@ class SiteController extends Controller
         }
 
         $systems = System::orderBy('name')->get();
-
+        $categories = Sitecategory::orderBy('name')->get();
+        
         return view('sites/create', [
             'systems' => \App\Util::selectMap($systems, false, 'displayName'),
+            'categories' => \App\Util::selectMap($categories, false),
         ]);
     }
 
@@ -62,6 +65,7 @@ class SiteController extends Controller
             'summary' => 'required'
         ]);
         $site->system_id = $request->input('system_id');
+        $site->sitecategory_id = $request->input('sitecategory_id');
         $site->planet = $request->input('planet');
         $site->coordinates = $request->input('coordinates');
         $site->summary = $request->input('summary');
@@ -95,9 +99,11 @@ class SiteController extends Controller
         }
 
         $systems = System::orderBy('name')->get();
-
+        $categories = Sitecategory::orderBy('name')->get();
+        
         return view('sites/edit', [
             'systems' => \App\Util::selectMap($systems, false, 'displayName'),
+            'categories' => \App\Util::selectMap($categories, false),
             'site' => $site
         ]);
     }
