@@ -331,4 +331,42 @@ class FactionController extends Controller
     {
         //
     }
+
+    public function ethos()
+    {
+        /* As an approximation, Theocracies founded before 3301 are
+         * Social in Sol, but Authoritarian if founded afterwards. */
+        $soltypes = [
+            'Social' => ['Communist', 'Cooperative', 'Democracy', 'Confederacy', 'Theocracy'],
+            'Corporate' => ['Corporate'],
+            'Authoritarian' => ['Dictatorship', 'Patronage', 'Prison Colony', 'Feudal', 'Theocracy'],
+            'Criminal' => ['Anarchy']
+        ];
+        
+        $factions = Faction::notHidden()->notVirtual()->get();
+        $governments = Government::orderBy('name')->where('name', '!=', 'Detention Centre')->get();
+        $ethoses = Ethos::where('name', '!=', 'Unknown')->get();
+        
+        $grid = [];
+        foreach ($governments as $government) {
+            $grid[$government->id] = [];
+            foreach ($ethoses as $ethos) {
+                $grid[$government->id][$ethos->id] = [
+                    'count' => 0,
+                    'sol' => in_array($government->name, $soltypes[$ethos->name])
+                ];
+            }
+        }
+        foreach ($factions as $faction) {
+            if (isset($grid[$faction->government_id][$faction->ethos_id])) {
+                $grid[$faction->government_id][$faction->ethos_id]['count']++;
+            }
+        }
+        return view('factions.ethos', [
+            'governments' => $governments,
+            'ethoses' => $ethoses,
+            'grid' => $grid
+        ]);
+    }
+        
 }

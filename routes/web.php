@@ -47,6 +47,11 @@ Route::put('/systems/{system}/updatereport', [
     'uses' => 'SystemController@updatereport'
 ]);
 
+
+Route::get('/factions/ethos', [
+    'as' => 'factions.ethos',
+    'uses' => 'FactionController@ethos'
+]);
 Route::resource('factions', 'FactionController');
 Route::get('/factions/{faction}/history', [
     'as' => 'factions.showhistory',
