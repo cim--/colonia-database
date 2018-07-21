@@ -234,6 +234,13 @@ var CDBMap = function() {
 			} else {
 				return "#444444";
 			}
+		} else if (config.highlight.substr(0,2) == "P:") {
+			var sitetype = config.highlight.substr(2);
+			if (sdata.sites[sitetype] > 0) {
+				return "#AAAA00";
+			} else {
+				return "#444444";
+			}
 		}
 		return "#777777"; // unrecognised highlight
 	};
@@ -582,6 +589,8 @@ $(document).ready(function() {
 			$('#mapkeysfaction').show();
 		} else if (val.substr(0,1) == "L") {
 			$('#mapkeyslocation').show();
+		} else if (val.substr(0,1) == "P") {
+			$('#mapkeyssite').show();
 		}
 		
 

@@ -13,7 +13,8 @@ class MapController extends Controller
 {
     
     public function index(Request $request) {
-        $systems = System::with('phase', 'stations', 'stations.faction', 'facilities')->orderBy('name')->orderBy('catalogue')->get();
+        $systems = System::with('phase', 'stations', 'stations.faction', 'facilities', 'megashiproutes', 'megashiproutes.megaship', 'megashiproutes.megaship.megashipclass')
+            ->withCount('installations', 'sites')->orderBy('name')->orderBy('catalogue')->get();
 
         return view('map/index', [
             'systems' => $systems,

@@ -29,6 +29,9 @@
   <div id='mapkeyslocation'>
 	<strong>Location type</strong>: yellow yes, grey no
   </div>
+  <div id='mapkeyssite'>
+	<strong>Location type</strong>: yellow yes, grey no
+  </div>
 </div>
 <div id='mapctrls'>
 <p>
@@ -50,9 +53,15 @@
   </select> ;
   <label for='mapctrlcolour'>Colour</label>: <select id='mapctrlcolour'>
 	<option selected='selected' value='C:phase'>Settlement Phase</option>
-	<option selected='selected' value='C:factions'>Factions Present</option>
-    <option selected='selected' value='C:control'>Faction Control</option>
-	<option selected='selected' value='C:depth'>Depth</option>
+	<option value='C:factions'>Factions Present</option>
+    <option value='C:control'>Faction Control</option>
+	<option value='C:depth'>Depth</option>
+	<optgroup label='Points of Interest'>
+	  <option value='P:megaship'>Megaship</option>
+	  <option value='P:megashiproute'>Megaship Route</option>
+	  <option value='P:installation'>Installation</option>
+	  <option value='P:site'>Site</option>
+	</optgroup>
 	<optgroup label='Factions'>
 	  @foreach ($factions as $faction)
 	  <option value='F:{{$faction->name}}'>{{$faction->name}}</option>
@@ -118,6 +127,12 @@
     'largepad' : 0,
     'orbitals' : 0,
 	@endif
+	'sites' : {
+	'megaship' : {{ $system->megashiproutes->filter(function($x) { return $x->nextArrival() == null; })->count() }},
+	'megashiproute' : {{ $system->megashiproutes->count() }},
+	'installation' : {{ $system->installations_count }},
+	'site' : {{ $system->sites_count }},
+	},
 	@else
 	'controlling' : null,
     'controlcolour' : '#444444',
@@ -129,6 +144,12 @@
 	'shipyard' : 0,
 	'largepad' : 0,
     'orbitals' : 0,
+	'sites' : {
+	'megaship' : false,
+	'megashiproute' : false,
+	'installation' : false,
+	'site' : false,
+	},
 	@endif
 	'facilities' : [{!! $system->facilities->map(function($x) { return '"'.$x->name.'"'; })->implode(",") !!}],
 
