@@ -90,14 +90,24 @@ class DiscordBot extends Command
     }
 
     private function safe($str) {
+        $str = str_replace("@", "", $str);
         if (strlen($str) <= 1900) {
             return $str;
         }
         return substr($str, 0, 1900)."...\n**<transmission interrupted>**";
     }
 
+    private function syntaxCheck($params) {
+        foreach ($params as $param) {
+            if (strpos($param, '@') !== false) {
+                throw new Exception("Syntax check");
+            }
+        }
+    }
+    
     private function registerHelpCommand() {
         $this->discord->registerCommand('help', function($message, $params) {
+            $this->syntaxCheck($params);
             $prefix = env('DISCORD_COMMAND_PREFIX', '!');
             $commandopts = $this->discord->getCommandOptions();
             $commands = $this->discord->getCommands();
@@ -128,10 +138,11 @@ class DiscordBot extends Command
     
     private function registerSystemCommand() {
         $this->discord->registerCommand('system', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 $result = "**".$system->displayName()."**\n<".route('systems.show', $system->id).">\n";
                 if ($system->population == 0) {
@@ -180,10 +191,11 @@ class DiscordBot extends Command
 
     private function registerStationCommand() {
         $this->discord->registerCommand('station', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             $station = Station::where('name', 'like', $sname."%")->orderBy('name')->first();
             if (!$station) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 $result = "**".$station->name."**\n<".route('stations.show', $station->id).">\n";
                 $result .= "**Type**: ".$station->stationclass->name;
@@ -219,10 +231,11 @@ class DiscordBot extends Command
 
     private function registerFactionCommand() {
         $this->discord->registerCommand('faction', function($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             $faction = Faction::where('name', 'like', $fname."%")->orderBy('name')->first();
             if (!$faction) {
-                return $fname." not known";
+                return $this->safe($fname." not known");
             } else {
                 $result = "**".$faction->name."**\n";
                 $result .= "<".route('factions.show', $faction->id).">\n";
@@ -257,6 +270,7 @@ class DiscordBot extends Command
 
     private function registerInfluenceCommand() {
         $this->discord->registerCommand('influence', function($message, $params) {
+            $this->syntaxCheck($params);
             if (preg_match('/^33[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $params[0])) {
                 $datestr = array_shift($params);
                 $date = new Carbon($datestr);
@@ -269,7 +283,7 @@ class DiscordBot extends Command
             if (!$system) {
                 $faction = Faction::where('name', 'like', $sname."%")->orderBy('name')->first();
                 if (!$faction) {
-                    return $sname." not known";
+                    return $this->safe($sname." not known");
                 } else {
                    if ($date !== null) {
                        $result = "**".$faction->name."** on **".\App\Util::displayDate($date)."**\n";
@@ -347,6 +361,7 @@ class DiscordBot extends Command
 
     private function registerReportCommand() {
         $this->discord->registerCommand('report', function($message, $params) {
+            $this->syntaxCheck($params);
             if (preg_match('/^33[0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/', $params[0])) {
                 $datestr = array_shift($params);
                 $date = new Carbon($datestr);
@@ -357,7 +372,7 @@ class DiscordBot extends Command
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 if ($date !== null) {
                     $result = "**".$system->displayName()."** on **".\App\Util::displayDate($date)."**\n";
@@ -387,7 +402,8 @@ class DiscordBot extends Command
 
     private function registerLocateCommand() {
         $locate = $this->discord->registerCommand('locate', function($message, $params) {
-            return "Use the subcommands to find things - e.g. `locate feature Earth-like World`";
+            $this->syntaxCheck($params);
+            return $this->safe("Use the subcommands to find things - e.g. `locate feature Earth-like World`");
         }, [
             'description' => 'Find systems or stations with particular properties. For all subcommands omit the parameter to get a list of possibilities.',
             'usage' => '<feature | facility | economy | government | state> [name?]'
@@ -402,6 +418,7 @@ class DiscordBot extends Command
 
     private function registerLocateFeatureCommand($locate) {
         $locate->registerSubCommand('feature', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             if ($fname == "") {
                 $features = Facility::systemFacilities();
@@ -431,6 +448,7 @@ class DiscordBot extends Command
 
     private function registerLocateFacilityCommand($locate) {
         $locate->registerSubCommand('facility', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             if ($fname == "") {
                 $features = Facility::stationFacilities();
@@ -460,6 +478,7 @@ class DiscordBot extends Command
 
     private function registerLocateEconomyCommand($locate) {
         $locate->registerSubCommand('economy', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             if ($fname == "") {
                 $economies = Economy::orderBy('name')->get();
@@ -499,6 +518,7 @@ class DiscordBot extends Command
 
     private function registerLocateGovernmentCommand($locate) {
         $locate->registerSubCommand('government', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             if ($fname == "") {
                 $governments = Government::orderBy('name')->get();
@@ -546,6 +566,7 @@ class DiscordBot extends Command
     
     private function registerLocateStateCommand($locate) {
         $locate->registerSubCommand('state', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             if ($fname == "") {
                 $states = State::orderBy('name')->get();
@@ -586,6 +607,7 @@ class DiscordBot extends Command
 
     private function registerExpansionCommand() {
         $this->discord->registerCommand('expansion', function($message, $params) {
+            $this->syntaxCheck($params);
 
             $str = trim(join(" ", $params));
             if (strpos($str, ";")) {
@@ -602,12 +624,12 @@ class DiscordBot extends Command
                 if ($sname == "") {
                     $system = System::where('name', 'like', $fname."%")->orWhere('catalogue', 'like', $fname."%")->orderBy('name')->first();
                     if (!$system) {
-                        return "Faction ".$fname." not found";
+                        return $this->safe("Faction ".$fname." not found");
                     } else {
                         $faction = $system->controllingFaction();
                     }
                 } else {
-                    return "Faction ".$fname." not found";
+                    return $this->safe("Faction ".$fname." not found");
                 }
             }
             if (!$system) {
@@ -616,12 +638,12 @@ class DiscordBot extends Command
                 } else {
                     $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
                     if (!$system) {
-                        return "System ".$sname." not found";
+                        return $this->safe("System ".$sname." not found");
                     }
                 }
             }
             if ($faction->virtual) {
-                return $faction->name." is virtual and cannot expand.";
+                return $this->safe($faction->name." is virtual and cannot expand.");
             }
             
 
@@ -683,7 +705,7 @@ class DiscordBot extends Command
                 $result .= "\n† aggressive expansion here may not be possible as system already has 8 factions";
             }
             
-            return $result;
+            return $this->safe($result);
 
         }, [
             'description' => 'Give likely expansion targets for a faction, defaulting to home system if not specified, or for a system and its controlling faction',
@@ -701,10 +723,11 @@ class DiscordBot extends Command
 
     private function registerMissionsCommand() {
         $this->discord->registerCommand('missions', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 $result = "**Mission** destinations from **".$system->displayName()."**\n<".route('systems.show', $system->id).">\n";
 
@@ -757,8 +780,9 @@ class DiscordBot extends Command
 
     private function registerCartographyCommand() {
         $this->discord->registerCommand('cartography', function($message, $params) {
+            $this->syntaxCheck($params);
             if (count($params) < 3) {
-                return "All three parameters are required:\n<max-gravity> (use 0 for orbital stations only)\n<pad-size> (S, M, or L)\n<max-dist> (Ls from primary star)";
+                return $this->safe("All three parameters are required:\n<max-gravity> (use 0 for orbital stations only)\n<pad-size> (S, M, or L)\n<max-dist> (Ls from primary star)");
             }
             $grav = (float)$params[0];
             $pad = $params[1];
@@ -812,6 +836,7 @@ class DiscordBot extends Command
 
     private function registerSummaryCommand() {
         $this->discord->registerCommand('summary', function($message, $params) {
+            $this->syntaxCheck($params);
             if (count($params) == 0) {
                 $params = [""];
             }
@@ -898,6 +923,7 @@ class DiscordBot extends Command
 
     private function registerHistoryCommand() {
         $this->discord->registerCommand('history', function ($message, $params) {
+            $this->syntaxCheck($params);
             $fname = trim(join(" ", $params));
             
             $query = History::with('faction','location');
@@ -926,7 +952,7 @@ class DiscordBot extends Command
                 });
                 $hname = "faction ".$faction->name;
             } else {
-                return "History query parameter not recognised as a date, faction, station or system";
+                return $this->safe("History query parameter not recognised as a date, faction, station or system");
             }
 
             $histories = $query->orderBy('date', 'desc')->get();
@@ -943,10 +969,11 @@ class DiscordBot extends Command
 
     private function registerExpansionsToCommand() {
         $this->discord->registerCommand('expansionsto', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 $result = "**Possible expansions to ".$system->displayName()."**\n";
                 $retreatnote = false;
@@ -996,9 +1023,10 @@ class DiscordBot extends Command
 
     private function registerAddreportCommand() {
         $this->discord->registerCommand('addreport', function($message, $params) {
+            $this->syntaxCheck($params);
             $str = trim(join(" ", $params));
             if (count(explode(";", $str)) != 4) {
-                return "All four parameters separated by ; are required";
+                return $this->safe("All four parameters separated by ; are required");
             }
             list ($sname, $traffic, $crimes, $bounties) = explode(";", $str);
             $traffic = trim($traffic);
@@ -1006,20 +1034,20 @@ class DiscordBot extends Command
             $bounties = trim($bounties);
 //            return "[$sname] [$traffic] [$crimes] [$bounties]";
             if (!is_numeric($traffic) || !is_numeric($crimes) || !is_numeric($bounties)) {
-                return "Traffic, crimes and bounties must all be numeric";
+                return $this->safe("Traffic, crimes and bounties must all be numeric");
             }
             if ($traffic < 0 || $crimes < 0 || $bounties < 0) {
-                return "Traffic, crimes and bounties must all be positive";
+                return $this->safe("Traffic, crimes and bounties must all be positive or zero");
             }
             $system = System::where('name', $sname)->orWhere('catalogue', $sname)->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known (must be exact)";
+                return $this->safe($sname." not known (must be exact)");
             }
 
             Systemreport::file($system, $traffic, $bounties, $crimes, "via Discord", false);
 
 
-            return "Reports added for ".$system->displayName().". Thank you.";
+            return $this->safe("Reports added for ".$system->displayName().". Thank you.");
         }, [
             'description' => "Add traffic, crimes and bounties reports for today to a system.\nYou can get these reports from the local Galnet when docked at a station. Bounties should be the credit total, not the number of bounties collected.\ne.g. addreport Barnard's Star ; 182 ; 402752 ; 76399",
             'usage' => '<system name> ; <traffic> ; <crimes> ; <bounties>'
@@ -1028,6 +1056,7 @@ class DiscordBot extends Command
 
     private function registerMegashipCommand() {
         $this->discord->registerCommand('megaship', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             if ($sname != "") {
                 $megaship = Megaship::where('serial', 'like', $sname."%")->orderBy('serial')->first();
@@ -1082,10 +1111,11 @@ class DiscordBot extends Command
 
     private function registerInstallationCommand() {
         $this->discord->registerCommand('installation', function($message, $params) {
+            $this->syntaxCheck($params);
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
-                return $sname." not known";
+                return $this->safe($sname." not known");
             } else {
                 $result = "**Installations for ".$system->displayName()."**\n<".route('systems.show', $system->id).">\n";
                 $installations = $system->installations;
