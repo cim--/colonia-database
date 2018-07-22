@@ -91,7 +91,7 @@ class SystemController extends Controller
             $system->refreshCoordinates();
         }
         
-        $system->load('phase', 'economy', 'stations', 'stations.stationclass', 'facilities');
+        $system->load('phase', 'economy', 'stations', 'stations.stationclass', 'stations.economy', 'facilities', 'sites', 'sites.sitecategory', 'megashiproutes', 'megashiproutes.megaship', 'megashiproutes.megaship.megashiproutes', 'megashiproutes.megaship.megashipclass');
         $others = System::where('id', '!=', $system->id)->with('economy', 'stations', 'stations.faction', 'stations.faction.government')->get();
 
         $user = \Auth::user();

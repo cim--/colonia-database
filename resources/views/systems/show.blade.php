@@ -249,7 +249,7 @@
 	<h2>Sites</h2>
 	<table class='table table-bordered datatable' data-order='[[1, "asc"]]' data-paging='false' data-searching='false'>
 	  <thead>
-		<tr><th>Planet</th><th>Coordinates</th><th>Site</th></tr>
+		<tr><th>Planet</th><th>Location</th><th>Site</th></tr>
 	  </thead>
 	  <tbody>
 		@foreach ($system->sites as $site)
@@ -263,7 +263,7 @@
 			@endif
 		  </td>
 		  <td>
-			<a href='{{route('sites.show', $site->id)}}'>{{$site->summary}}</a>
+			{{$site->sitecategory->name}}: <a href='{{route('sites.show', $site->id)}}'>{{$site->summary}}</a>
 		  </td>
 		</tr>
 		@endforeach
