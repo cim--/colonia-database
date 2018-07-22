@@ -62,11 +62,11 @@
 
 	  @include('intro.botbox', ['commands' => ["!megaship serial", "!installations system"]])
 	  
-	  <p>A large number of megaships are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
+	  <p>A large number of <a href='{{route('megaships.index')}}'>megaships</a> are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
 
 	  <p>These ships carry rare cargoes and localised cargoes which are sometimes in great demand in the region either on the conventional markets or for tech brokers.</p>
 
-	  <p>There are also a very large number of installations, used by the Council to provide facilities separate to the primary orbital stations. The cargo holds and data transmitters of these are also vulnerable to pirates.</p>
+	  <p>There are also a very large number of <a href='{{route('installations.index')}}'>installations</a>, used by the Council to provide facilities separate to the primary orbital stations. The cargo holds and data transmitters of these are also vulnerable to pirates.</p>
 
 	  <p>The usual opportunities for pirates to intercept courier ships are also available.</p>
 
@@ -89,7 +89,7 @@
 
 	  <p>In addition to these short range links:</p>
 	  <ul>
-		<li>All systems may generate mid-range missions to the centre of the bubble (currently those systems within 11 LY of Colonia).</li>
+		<li>All systems may generate mid-range missions to the centre of the region (currently those systems within 11 LY of Colonia).</li>
 		<li>Tourism economies may sometimes generate long-range data courier and one-way passenger missions to systems in the Sol bubble.</li>
 	  </ul>
 	  
@@ -154,7 +154,7 @@
 	  <p>The settlement of Colonia has led to an extremely unusual distribution of factions. Major differences from the Sol bubble include:</p>
 	  <ul>
 		<li>All factions are Independent. There are no superpowers in the region.</li>
-		<li>There is a very strong bias towards the 'Cooperative' faction type, which is rare in the Sol bubble.</li>
+		<li>There is a very strong bias towards the 'Cooperative' faction type, which is rare in the Sol bubble. Some <a href='{{route('factions.ethos')}}'>government types</a> are unique to Colonia.</li>
 		<li>Each system has one or occasionally two home factions. Other factions have expanded there to fill the remaining space. Retreats are therefore more common.</li>
 		<li>The Colonia Council faction has been placed as an initial (non-native) faction in most systems. It is currently present in over 50 systems in the region, plus more along the highway.</li>
 		<li>Over half of the factions are player-founded, mostly through the Colonia Expansion Initiative. While the Sol bubble has approximately one player faction for every 25 systems, here the ratio is one player faction for every two systems.</li>
@@ -175,7 +175,7 @@
 
 	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
 
-      <p>A large number of <a href='{{route('installations.index')'>installations</a>, <a href='{{route('megaships.index')'>megaships</a> and <a href='{{route(sites.index')'>other sites</a> are present.</p>
+      <p>A large number of <a href='{{route('installations.index')'>installations</a>, <a href='{{route('megaships.index')'>mobile megaships</a> and <a href='{{route(sites.index')'>other sites</a> are present.</p>
 
       <p>A rare glowing green gas giant can be found in Eol Prou KW-L c8-32.</p>
 
