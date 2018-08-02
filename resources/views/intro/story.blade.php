@@ -104,7 +104,7 @@
 
   <p>The Council began by constructing a large number of <a href='{{route('installations.index')}}'>installations</a> to coordinate economic activity and monitor stocks in more detail, as well as purchasing several <a href='{{route('megaships.index')}}'>larger freighters</a> to move cargo in bulk. A large donation by Zachary Rackham through the Council's charitable tax advantage programme also allowed basic shipyards to be constructed at all surface stations.</p>
   
-  <p>Additional funding was provided to de la Vega's team, including the construction of a purpose-built research facility, to allow more in-depth studies to be carried out.</p>
+<p>Additional funding was provided to de la Vega's team, including the construction of a <a href='{{route('installations.show', 31)}}'>purpose-built research facility</a>, to allow more in-depth studies to be carried out.</p>
   
 </div>
 
