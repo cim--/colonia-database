@@ -77,7 +77,7 @@ class GoodsAnalysis2 extends Command
         foreach ($commodities as $commodity) {
             $demandregen = [];
             $supplyregen = [];
-            $this->info("Commodity: ".trim($commodity->description));
+//            $this->info("Commodity: ".trim($commodity->description));
             foreach ($stations as $station) {
                 foreach ($states as $state) {
                     $regen = $this->analyseRegeneration($commodity, $station, $state, $demandregen==0, $supplyregen==0);
@@ -172,10 +172,10 @@ class GoodsAnalysis2 extends Command
             // insufficient data
             return null;
         }
-        $this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
+//        $this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
         $avgrate = (int)$this->median($slopes);
         $regentime = $avgrate * $max;
-        $this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days");
+//        $this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days");
         return $regentime * $sign;
     }
 
