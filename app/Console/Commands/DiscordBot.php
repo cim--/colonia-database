@@ -1076,6 +1076,9 @@ class DiscordBot extends Command
                 return $this->safe($result);
             } else {
                 $result = "**".$megaship->displayName()."**\n<".route('megaships.show', $megaship->id).">\n";
+                if ($megaship->megashiprole && !$megaship->decommisioned) {
+                    $result .= "Role: ".$megaship->megashiprole->name."\n";
+                }
                 $routes = [];
                 foreach ($megaship->megashiproutes as $route) {
                     $rdesc = "";
