@@ -140,6 +140,18 @@ class TradeController extends Controller
             }
             $crow['stock'] = $stock;
             $crow['demand'] = $demand;
+            $crow['supplycycle'] = $commodity->supplycycle ? round($commodity->supplycycle/86400,1) : null;
+            $crow['demandcycle'] = $commodity->demandcycle ? round(-$commodity->demandcycle/86400,1) : null;
+            if ($crow['supplycycle'] !== null) {
+                $crow['cycstock'] = floor($stock/$crow['supplycycle']);
+            } else {
+                $crow['cycstock'] = null;
+            }
+            if ($crow['demandcycle'] !== null) {
+                $crow['cycdemand'] = floor($demand/$crow['demandcycle']);
+            } else {
+                $crow['cycdemand'] = null;
+            }
             $crow['exported'] = $exported;
             $crow['imported'] = $imported;
             $crow['buy'] = $bestbuy;

@@ -8,8 +8,16 @@
 
 @section('content')
 
-<p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}</p>
-<p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}</p>
+<p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}
+  @if ($commodity->supplycycle)
+  (restock cycle: {{number_format($commodity->supplycycle/86400, 1)}} days)
+  @endif
+</p>
+<p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}
+  @if ($commodity->demandcycle)
+  (usage cycle: {{number_format(-$commodity->demandcycle/86400, 1)}} days)
+  @endif
+</p>
 <p><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</a></p>
 
 <p>Use the &#x21c4; icons to sort the table by distance to this station.</p>

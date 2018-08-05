@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\EDDNReader::class,
         Commands\DiscordBot::class,
         Commands\GoodsAnalysis::class,
+        Commands\GoodsAnalysis2::class,
         Commands\TrafficEstimates::class,
         Commands\RegionalComparison::class,
         //

@@ -27,7 +27,7 @@ class GoodsAnalysis extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Analyse goods to find state effects';
 
     /**
      * Create a new command instance.
