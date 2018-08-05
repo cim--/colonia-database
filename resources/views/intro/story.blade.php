@@ -89,7 +89,7 @@
 <div class='historybox'>
   <h2>Refugees and Threats</h2>
   
-  <p>With Colonia economically self-sufficient and in many respects outstripping the original bubble for production efficiency, the Council's focus had originally intended to move to consolidation and development of its existing systems. A small part of this programme was completed separately under the coordination of the <a href='{{route('factions.show', 18)}}'>Galcop Colonial Defence Commission</a> who built <a href='{{route('stations.show', 108)}}'>Whirling Station</a> in late 3303.</p>
+  <p>With Colonia economically self-sufficient and in many respects outstripping the original bubble for production efficiency, the Council's focus had originally intended to move to consolidation and development of its existing systems. A small part of this programme was completed separately under the coordination of the <a href='{{route('factions.show', 18)}}'>Galcop Colonial Defence Commission</a> who built <a href='{{route('stations.show', 108)}}'>Whirling Station</a> in late 3303. Partners in the Sol bubble also assisted with the construction of three further resupply bases at Rohini, Gandharvi and Kashyapa.</p>
 
   <p>However, the majority of the programme was put on hold, following Thargoid attacks on the Pleiades Nebula. While the vast majority of citizens in the Sol bubble believed - at the time! - their leaders' assurances that they were safe from attack, as stations burned and the initial Thargoid scouting fleet moved closer to the bubble, around 500,000 refugees were able to obtain bulk transports, and headed for Colonia. The Council adjusted its development plans, constructing five new outposts to house the refugees and integrate them into the colony's society.</p>
 
@@ -102,10 +102,12 @@
 
   <p>The need to plan for further refugees, and to maintain the sustainability of the colony, caused the Council to commission a research programme led by Alexei de la Vega. Initial data analysis suggested that while the colony's economy was strong on paper, with adequate production to supply a much larger population, there were likely to be significant logistical issues transporting these goods in future if the Council were to continue to solely rely on independent pilots in personal ships. The resupply bases between Colonia and Sol were considered particularly at threat.</p>
 
-  <p>The Council began by constructing a large number of <a href='{{route('installations.index')}}'>installations</a> to coordinate economic activity and monitor stocks in more detail, as well as purchasing several <a href='{{route('megaships.index')}}'>larger freighters</a> to move cargo in bulk. A large donation by Zachary Rackham through the Council's charitable tax advantage programme also allowed basic shipyards to be constructed at all surface stations.</p>
+  <p>The Council began by constructing a large number of <a href='{{route('installations.index')}}'>installations</a> to coordinate economic activity and monitor stocks in more detail, as well as purchasing several <a href='{{route('megaships.index')}}'>larger freighters</a> to move cargo in bulk - logistics routes through the region, support and tourism ships for the highway stations, and trade ships to supply some of Colonia's surplus production to the Sol bubble in exchange for the few goods not produced locally. The Colonia system became a major cargo exchange hub for these freighters.</p>
+
+  <p>A large donation by Zachary Rackham through the Council's charitable tax advantage programme also allowed basic shipyards to be constructed at all surface stations.</p>
   
-<p>Additional funding was provided to de la Vega's team, including the construction of a <a href='{{route('installations.show', 31)}}'>purpose-built research facility</a>, to allow more in-depth studies to be carried out.</p>
-  
+  <p>Additional funding was provided to de la Vega's team, including the construction of a <a href='{{route('installations.show', 31)}}'>purpose-built research facility</a>, to allow more in-depth studies to be carried out and plan for further expansion.</p>
+
 </div>
 
 <div class='historybox'>
