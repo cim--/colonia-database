@@ -18,7 +18,7 @@ class MegashipController extends Controller
      */
     public function index()
     {
-        $megaships = Megaship::with('megashipclass', 'megashiproutes')->orderBy('serial')->get();
+        $megaships = Megaship::with('megashipclass', 'megashiprole', 'megashiproutes')->orderBy('serial')->get();
 
         return view('megaships/index', [
             'megaships' => $megaships

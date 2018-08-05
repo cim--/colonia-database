@@ -24,7 +24,7 @@
   In Service
   @endif
 </div>
-@if (!$megaship->decommissioned)
+@if (!$megaship->decommissioned && $megaship->megashiprole)
 <div><strong>{{$megaship->megashiprole->name}}</strong>: {{$megaship->megashiprole->description}}</div>
 @endif
 
