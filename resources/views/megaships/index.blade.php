@@ -10,10 +10,11 @@ Megaships
 <p><a class='edit' href='{{route('megaships.create')}}'>New megaship</a></p>
 @endif
     
-<table class='table table-bordered datatable' data-page-length='25' data-order='[[1, "asc"]]'>
+<table class='table table-bordered datatable' data-page-length='25' data-order='[[2, "asc"]]'>
   <thead>
 	<tr>
 	  <th>Class</th>
+	  <th>Role</th>
 	  <th>Serial</th>
 	  <th>Current Location</th>
 	  <th>Commissioned</th>
@@ -28,6 +29,15 @@ Megaships
 		@include($megaship->megashipclass->icon)
 		{{$megaship->megashipclass->name}}
 	  </td>
+	  @if ($megaship->decommissioned)
+	  <td>Decommissioned</td>
+	  @elseif( $megaship->megashiprole)
+	  <td title="{{$megaship->megashiprole->description}}">
+		{{$megaship->megashiprole->name}}
+	  </td>
+	  @else
+	  <td>Unknown</td>
+	  @endif
       <td>
 		<a href='{{route('megaships.show', $megaship->id)}}'>
 		  {{$megaship->serial}}

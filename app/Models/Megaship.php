@@ -18,6 +18,12 @@ class Megaship extends Model
         return $this->belongsTo('App\Models\Megashipclass');
     }
 
+    public function megashiprole()
+    {
+        return $this->belongsTo('App\Models\Megashiprole');
+    }
+
+    
     public function megashiproutes()
     {
         return $this->hasMany('App\Models\Megashiproute');

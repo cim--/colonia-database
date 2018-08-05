@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Megaship;
 use App\Models\System;
 use App\Models\Megashipclass;
+use App\Models\Megashiprole;
 use App\Models\Megashiproute;
 use Illuminate\Http\Request;
 
@@ -37,9 +38,11 @@ class MegashipController extends Controller
         }
 
         $classes = Megashipclass::orderBy('name')->get();
+        $roles = Megashiprole::orderBy('name')->get();
 
         return view('megaships/create', [
-            'classes' => \App\Util::selectMap($classes)
+            'classes' => \App\Util::selectMap($classes),
+            'roles' => \App\Util::selectMap($roles)
         ]);
     }
 
@@ -57,6 +60,7 @@ class MegashipController extends Controller
         }
         $this->validate($request, [
             'megashipclass_id' => 'required|numeric',
+            'megashiprole_id' => 'required|numeric',
             'serial' => 'required',
             'commissioned' => 'nullable|date',
             'decommissioned' => 'nullable|date',
@@ -69,6 +73,7 @@ class MegashipController extends Controller
     private function saveShip(Request $request, Megaship $megaship)
     {
         $megaship->megashipclass_id = $request->input('megashipclass_id');
+        $megaship->megashiprole_id = $request->input('megashiprole_id');
         $megaship->serial = $request->input('serial');
         $megaship->commissioned = $request->input('commissioned');
         $megaship->decommissioned = $request->input('decommissioned');
@@ -104,11 +109,13 @@ class MegashipController extends Controller
 
         $systems = System::orderBy('name')->get();
         $classes = Megashipclass::orderBy('name')->get();
+        $roles = Megashiprole::orderBy('name')->get();
 
         return view('megaships/edit', [
             'megaship' => $megaship,
             'systems' => \App\Util::selectMap($systems, true, 'displayName'),
-            'classes' => \App\Util::selectMap($classes)
+            'classes' => \App\Util::selectMap($classes),
+            'roles' => \App\Util::selectMap($roles)
         ]);
     }
 
@@ -127,6 +134,7 @@ class MegashipController extends Controller
         }
         $this->validate($request, [
             'megashipclass_id' => 'required|numeric',
+            'megashiprole_id' => 'required|numeric',
             'serial' => 'required',
             'commissioned' => 'nullable|date',
             'decommissioned' => 'nullable|date'

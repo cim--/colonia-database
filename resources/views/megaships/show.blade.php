@@ -24,6 +24,9 @@
   In Service
   @endif
 </div>
+@if (!$megaship->decommissioned)
+<div><strong>{{$megaship->megashiprole->name}}</strong>: {{$megaship->megashiprole->description}}</div>
+@endif
 
 @if ($megaship->cargodesc)
 <p><strong>Typical cargo:</strong> {{$megaship->cargodesc}}</p>

@@ -3,6 +3,10 @@
 {!! Form::select('megashipclass_id', $classes) !!}
 </div>
 <div class='form-field'>
+{!! Form::label('megashiprole_id', "Role") !!}
+{!! Form::select('megashiprole_id', $roles) !!}
+</div>
+<div class='form-field'>
 {!! Form::label('serial', "Serial") !!}
 {!! Form::text('serial') !!}
 </div>
