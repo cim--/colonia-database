@@ -25,6 +25,7 @@ Reserves at {{$station->name}}
 	  <th>Commodity</th>
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
+	  <th>Baseline Stock/Demand</th>
 	  <th>Price</th>
 	  <th>History</th>
 	</tr>
@@ -50,6 +51,9 @@ Reserves at {{$station->name}}
 		@else
 		<span class='deficit'>{{$reserve->reserves->first()->reserves}}</span>
 		@endif
+	  </td>
+	  <td>
+		@include('components/surplusdeficit', ['value' => $station->baselinestocks->where('commodity_id', $reserve->id)->first()])
 	  </td>
 	  <td>
 		{{$reserve->reserves->first()->price}}

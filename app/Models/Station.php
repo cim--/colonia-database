@@ -25,6 +25,11 @@ class Station extends Model
     public function reserves() {
         return $this->hasMany('App\Models\Reserve');
     }
+
+    public function baselinestocks()
+    {
+        return $this->hasMany('App\Models\Baselinestock');
+    }
     
     public function facilities() {
         return $this->belongsToMany('App\Models\Facility')->withPivot('enabled');

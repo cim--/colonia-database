@@ -13,6 +13,11 @@ class Commodity extends Model
         return $this->hasMany('App\Models\Reserve');
     }
 
+    public function baselinestocks()
+    {
+        return $this->hasMany('App\Models\Baselinestock');
+    }
+    
     public function effects()
     {
         return $this->hasMany('App\Models\Effect');

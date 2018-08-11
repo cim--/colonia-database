@@ -38,12 +38,15 @@
 	<tr>
       <th>Category</th>
 	  <th>Commodity</th>
-	  <th>Reserves</th>
-	  <th>Demand</th>
+	  <th>Current Reserves</th>
+	  <th>Current Demand</th>
+	  <th title='Current stocks/demand difference in tonnes'>Current Surplus</th>
+	  <th>Baseline Reserves</th>
+	  <th>Baseline Demand</th>
+      <th title='Baseline stocks/demand difference in tonnes'>Baseline Surplus</th>
 	  <th title='How long it takes an empty station to produce to full capacity'>Production Cycle</th>
       <th title='How long it takes a filled station to return to full demand'>Consumption Cycle</th>
-	  <th title='Current stocks/demand difference in tonnes'>Current Surplus</th>
-	  <th title='Current stocks/demand difference adjusting for differences in production and consumption cycles'>Cyclic Surplus</th>
+	  <th title='Current stocks/demand difference adjusting for differences in production and consumption cycles'>Daily Baseline Surplus</th>
 	  <th>Exported</th>
 	  <th>Imported</th>
 	  <th>Buy</th>
@@ -64,14 +67,21 @@
 	  </td>
 	  <td>{{number_format($commodity['stock'])}}</td>
 	  <td>{{number_format($commodity['demand'])}}</td>
-	  <td>{{$commodity['supplycycle']?number_format($commodity['supplycycle'],1):''}}</td>
-	  <td>{{$commodity['demandcycle']?number_format($commodity['demandcycle'],1):''}}</td>
 	  @if ($commodity['demand'] > $commodity['stock'])
 	  <td><span class='deficit'>{{$commodity['stock'] - $commodity['demand']}}</span></td>
 	  @else
 	  <td><span class='surplus'>{{$commodity['stock'] - $commodity['demand']}}</span></td>
 	  @endif
-	  @if ($commodity['cycdemand'] == null || $commodity['cycstock'] == null)
+	  <td>{{number_format($commodity['baselinestock'])}}</td>
+	  <td>{{number_format(-$commodity['baselinedemand'])}}</td>
+	  @if (-$commodity['baselinedemand'] > $commodity['baselinestock'])
+	  <td><span class='deficit'>{{$commodity['baselinestock'] + $commodity['baselinedemand']}}</span></td>
+	  @else
+	  <td><span class='surplus'>{{$commodity['baselinestock'] + $commodity['baselinedemand']}}</span></td>
+	  @endif
+	  <td>{{$commodity['supplycycle']?number_format($commodity['supplycycle'],1):''}}</td>
+	  <td>{{$commodity['demandcycle']?number_format($commodity['demandcycle'],1):''}}</td>
+	  @if ($commodity['cycdemand'] === null || $commodity['cycstock'] === null)
 	  <td></td>
 	  @elseif ($commodity['cycdemand'] > $commodity['cycstock'])
 	  <td><span class='deficit'>{{$commodity['cycstock'] - $commodity['cycdemand']}}</span></td>

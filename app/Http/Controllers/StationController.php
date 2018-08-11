@@ -13,6 +13,7 @@ use App\Models\Commodity;
 use App\Models\Moduletype;
 use App\Models\Module;
 use App\Models\Reserve;
+use App\Models\Baselinestock;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -245,7 +246,7 @@ class StationController extends Controller
             'station' => $station,
             'reserves' => $reserves,
             'supply' => $supply,
-            'demand' => $demand,
+            'demand' => $demand
         ]);
     }
 

@@ -25,8 +25,8 @@
 </div>
 
 <ul class='commoditynav'>
-  <li><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</li>
-  <li><a href='{{route('effects.commodity', $commodity->id)}}'>State effects</li>
+  <li><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</a></li>
+  <li><a href='{{route('effects.commodity', $commodity->id)}}'>State effects</a></li>
 </ul>
 </div>
 
@@ -42,6 +42,7 @@
       <th>Docking</th>
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
+	  <th>Baseline Stock/Demand</th>
 	  <th>Price</th>
 	  @if ($station !== null)
 	  <th>Distance to {{$station->name}} (LY)</th>
@@ -95,6 +96,9 @@
 		@else
 		<span class='deficit'>{{$reserve->reserves}}</span>
 		@endif
+	  </td>
+	  <td>
+		@include('components/surplusdeficit', ['value' => $commodity->baselinestocks->where('station_id', $reserve->station->id)->first()])
 	  </td>
 	  <td>
 		{{$reserve->price}}

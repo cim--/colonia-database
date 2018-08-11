@@ -76,7 +76,7 @@ class TradeController extends Controller
                 $q->where('current', true);
             })->with(['reserves' => function($q) {
                 $q->where('current', true);
-                }, 'reserves.station', 'reserves.station.economy', 'effects'])
+                }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
                ->orderBy('name')->get();
 
         $cdata = [];
@@ -104,18 +104,19 @@ class TradeController extends Controller
             $bestsellplace = null;
             $imported = [];
             $exported = [];
+            $crow['baselinedemand'] = $commodity->baselinestocks->where('reserves', '<', 0)->sum('reserves');
+            $crow['baselinestock'] = $commodity->baselinestocks->where('reserves', '>', 0)->sum('reserves');
+            $nominalstocktotal += $crow['baselinestock'];
+            $nominaldemandtotal += $crow['baselinedemand'];
+            
             foreach ($commodity->reserves as $reserve) {
                 if (!isset($stations[$reserve->station_id])) {
-                    $stations[$reserve->station_id] = $reserve->station->currentStateID();
+                    $stations[$reserve->station_id] = 1;
                 }
-                $effect = $commodity->effectForStateID($stations[$reserve->station_id]);
-                $supplyfactor = ($effect&&$effect->supplysize) ? (1/$effect->supplysize) : 1;
-                $demandfactor = ($effect&&$effect->demandsize) ? (1/$effect->demandsize) : 1;
                 
                 $total += $reserve->reserves;
                 if ($reserve->reserves > 0) {
                     $stock += $reserve->reserves;
-                    $nominalstock += $reserve->reserves * $supplyfactor;
                     $exported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($bestbuy === null || $bestbuy > $reserve->price) {
                         if ($reserve->price !== null) {
@@ -125,7 +126,6 @@ class TradeController extends Controller
                     }
                 } else {
                     $demand -= $reserve->reserves;
-                    $nominaldemand -= $reserve->reserves * $demandfactor;
                     $imported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($bestsell === null || $bestsell < $reserve->price) {
                         if ($reserve->price !== null) {
@@ -143,12 +143,12 @@ class TradeController extends Controller
             $crow['supplycycle'] = $commodity->supplycycle ? round($commodity->supplycycle/86400,1) : null;
             $crow['demandcycle'] = $commodity->demandcycle ? round(-$commodity->demandcycle/86400,1) : null;
             if ($crow['supplycycle'] !== null) {
-                $crow['cycstock'] = floor($stock/$crow['supplycycle']);
+                $crow['cycstock'] = floor($crow['baselinestock']/$crow['supplycycle']);
             } else {
                 $crow['cycstock'] = null;
             }
             if ($crow['demandcycle'] !== null) {
-                $crow['cycdemand'] = floor($demand/$crow['demandcycle']);
+                $crow['cycdemand'] = -floor($crow['baselinedemand']/$crow['demandcycle']);
             } else {
                 $crow['cycdemand'] = null;
             }
@@ -163,8 +163,6 @@ class TradeController extends Controller
             }
             $stocktotal += $stock;
             $demandtotal += $demand;
-            $nominalstocktotal += $nominalstock;
-            $nominaldemandtotal += $nominaldemand;
             
             $cdata[] = $crow;
         }
@@ -193,7 +191,7 @@ class TradeController extends Controller
 
     public function commodity(Commodity $commodity) {
         $reserves = $commodity->reserves()->where('current', true)->with('station', 'station.system', 'station.economy')->get();
-
+        $commodity->load('baselinestocks');
         return view('trade/commodity', [
             'commodity' => $commodity,
             'reserves' => $reserves,

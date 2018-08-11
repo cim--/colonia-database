@@ -12,6 +12,7 @@ use App\Models\History;
 use App\Models\Effect;
 use App\Models\Tradebalance;
 use App\Models\Economy;
+use App\Models\Baselinestock;
 
 class GoodsAnalysis2 extends Command
 {
@@ -40,6 +41,8 @@ class GoodsAnalysis2 extends Command
     }
 
     protected $commodityinfo = [];
+    private $maxsupmultiplier = 0;
+    private $maxdemmultiplier = 0;
     
     /**
      * Execute the console command.
@@ -58,6 +61,7 @@ class GoodsAnalysis2 extends Command
         }
     }
 
+    
     private function runGoodsAnalysis() {
         
         $stations = Station::whereHas('stationclass', function($q) {
@@ -65,20 +69,28 @@ class GoodsAnalysis2 extends Command
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
         })->whereHas('economy', function($q) {
-            // ignore stations with hybrid or damaged economies
+            // ignore stations with damaged economies
             // as they'll confuse the analysis
-            $q->where('analyse', true);
+            $q->where('analyse', true)
+              ->orWhere('name', 'Industrial-Refinery')
+              ->orWhere('name', 'Industrial-Extraction');
+            // hybrids are fine for this, though
         })->with('economy')->get();
 
-        $commodities = Commodity::orderBy('name')->get();
+        $commodities = Commodity::with('effects')
+            ->orderBy('name')->get();
 
         $states = State::where('name', '!=', 'Lockdown')->orderBy('name')->get();
 
+        Baselinestock::where('station_id','>',0)->delete();
+        
         foreach ($commodities as $commodity) {
             $demandregen = [];
             $supplyregen = [];
 //            $this->info("Commodity: ".trim($commodity->description));
             foreach ($stations as $station) {
+                $this->maxsupmultiplier = 0;
+                $this->maxdemmultiplier = 0;
                 foreach ($states as $state) {
                     $regen = $this->analyseRegeneration($commodity, $station, $state, $demandregen==0, $supplyregen==0);
                     if ($regen !== null) {
@@ -126,6 +138,9 @@ class GoodsAnalysis2 extends Command
             return null;
         }
 
+        $effect = Effect::where('commodity_id', $commodity->id)
+            ->where('state_id', $state->id)->first();
+        
         $sign = ($reserves[0]->reserves > 0)?1:-1;
 
         $max = 0;
@@ -138,10 +153,43 @@ class GoodsAnalysis2 extends Command
                 $stability++;
             }
         }
-        if ($stability < 25) {
-            // unlikely to have enough datapoints elsewhere for a good analysis
+        if ($stability < 5) {
+            // insufficient to confirm baseline
             return null;
         }
+
+        if ($effect) {
+            $multiplier = ($sign==1)?$effect->supplysize:$effect->demandsize;
+            
+            if ($multiplier >= 1 && $multiplier > ($sign==1?$this->maxsupmultiplier:$this->maxdemmultiplier)) {
+                if ($sign == 1) {
+                    $this->maxsupmultiplier = $multiplier;
+                } else {
+                    $this->maxdemmultiplier = $multiplier;
+                }
+                /* Because of discrepancies between estimated tick,
+                 * commodity tick and system state tick, it's best to use
+                 * the highest multiplier state and then divide back down
+                 * for the estimates of the baseline maximum, as 'max' for
+                 * this is most likely to be accurate */
+            
+                Baselinestock::where('station_id', $station->id)
+                    ->where('commodity_id', $commodity->id)->delete();
+            
+                $baseline = new Baselinestock;
+                $baseline->station_id = $station->id;
+                $baseline->commodity_id = $commodity->id;
+                $baseline->reserves = ($max*$sign) / $multiplier;
+                $baseline->save();
+            }
+        }
+        
+        if ($stability < 25) {
+            // unlikely to be good enough for slope estimation
+            return null;
+        }
+
+        
         $slopes = [];
         $last = null;
         foreach ($reserves as $reserve) {

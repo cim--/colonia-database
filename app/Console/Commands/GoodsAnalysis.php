@@ -161,8 +161,8 @@ class GoodsAnalysis extends Command
         $entries = [];
         ksort($stockdata); // always process in same order
         foreach ($stockdata as $sid => $rdata) {
-            $stockavg = $this->mean($rdata);
-            $priceavg = $this->mean($pricedata[$sid]);
+            $stockavg = $this->median($rdata);
+            $priceavg = $this->median($pricedata[$sid]);
 ////            $this->line($sid." ".$states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
             $entries[] = [
                 'state' => $states[$sid],
@@ -173,6 +173,16 @@ class GoodsAnalysis extends Command
         $this->commodityinfo[$commodity->id]['statechanges'][] = $entries;
     }
 
+    private function median($arr) {
+        sort($arr);
+        $mid = (count($arr)-1)/2;
+        if ($mid == floor($mid)) {
+            return $arr[$mid];
+        } else {
+            return ($arr[floor($mid)]+$arr[ceil($mid)])/2;
+        }
+    }
+    
     private function mean($arr) {
         $acc = 0;
         $zeroes = 0;
@@ -248,11 +258,11 @@ class GoodsAnalysis extends Command
                             if ($j != $i) {
                                 $second = $stationinfo[$j];
                                 if ($first['stock'] > 0) {
-                                    $statedata[$second['state']->id]['supplyfactor'][] = $this->mean($statedata[$first['state']->id]['supplyfactor']) * $second['stock'] / $first['stock'];
-                                    $statedata[$second['state']->id]['supplypricefactor'][] = $this->mean($statedata[$first['state']->id]['supplypricefactor']) * $second['price'] / $first['price'];
+                                    $statedata[$second['state']->id]['supplyfactor'][] = $this->median($statedata[$first['state']->id]['supplyfactor']) * $second['stock'] / $first['stock'];
+                                    $statedata[$second['state']->id]['supplypricefactor'][] = $this->median($statedata[$first['state']->id]['supplypricefactor']) * $second['price'] / $first['price'];
                                 } else {
-                                    $statedata[$second['state']->id]['demandfactor'][] = $this->mean($statedata[$first['state']->id]['demandfactor']) * $second['stock'] / $first['stock'];
-                                    $statedata[$second['state']->id]['demandpricefactor'][] = $this->mean($statedata[$first['state']->id]['demandpricefactor']) * $second['price'] / $first['price'];
+                                    $statedata[$second['state']->id]['demandfactor'][] = $this->median($statedata[$first['state']->id]['demandfactor']) * $second['stock'] / $first['stock'];
+                                    $statedata[$second['state']->id]['demandpricefactor'][] = $this->median($statedata[$first['state']->id]['demandpricefactor']) * $second['price'] / $first['price'];
                                 }
                         
                             }
@@ -275,14 +285,14 @@ class GoodsAnalysis extends Command
                 $effect->commodity_id = $commodity->id;
                 $effect->state_id = $stateinfo['state']->id;
                 if (count($stateinfo['supplyfactor']) > 0) {
-////                    $this->line("    Exports: ".number_format($this->mean($stateinfo['supplyfactor']),2)."x @ ".number_format($this->mean($stateinfo['supplypricefactor']),2)."x Cr");
-                    $effect->supplysize = $this->mean($stateinfo['supplyfactor']);
-                    $effect->supplyprice = $this->mean($stateinfo['supplypricefactor']);
+////                    $this->line("    Exports: ".number_format($this->median($stateinfo['supplyfactor']),2)."x @ ".number_format($this->median($stateinfo['supplypricefactor']),2)."x Cr");
+                    $effect->supplysize = $this->median($stateinfo['supplyfactor']);
+                    $effect->supplyprice = $this->median($stateinfo['supplypricefactor']);
                 }
                 if (count($stateinfo['demandfactor']) > 0) {
-////                    $this->line("    Imports: ".number_format($this->mean($stateinfo['demandfactor']),2)."x @ ".number_format($this->mean($stateinfo['demandpricefactor']),2)."x Cr");
-                    $effect->demandsize = $this->mean($stateinfo['demandfactor']);
-                    $effect->demandprice = $this->mean($stateinfo['demandpricefactor']);
+////                    $this->line("    Imports: ".number_format($this->median($stateinfo['demandfactor']),2)."x @ ".number_format($this->median($stateinfo['demandpricefactor']),2)."x Cr");
+                    $effect->demandsize = $this->median($stateinfo['demandfactor']);
+                    $effect->demandprice = $this->median($stateinfo['demandpricefactor']);
                 }
                 $effect->save();
             }
