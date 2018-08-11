@@ -11,7 +11,7 @@ class Megaship extends Model
 
     /* Megaships usually move weekly, but sometimes 'stall'. This
      * array is used to track weeks they stay still. */
-    protected $slips = ["2018-07-12", "2018-07-26"];
+    protected $slips = ["2018-07-12", "2018-07-26", "2018-08-09"];
     
     public function megashipclass()
     {
