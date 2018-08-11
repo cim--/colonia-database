@@ -32,6 +32,7 @@
 
 <p>Oldest data: {{App\Util::displayDate($oldest)}}</p>
 
+
 <table id='reservestable' class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"],[1, "asc"]]'>
   <thead>
 	<tr>

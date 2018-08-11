@@ -368,3 +368,13 @@ table#ethosgrid {
 		background: #ffddff;
 	}
 }
+
+div.commodityhead {
+	@include make-row();
+	ul.commoditynav {
+		@include make-lg-column(4)
+	}
+	div {
+		@include make-lg-column(8)
+	}
+}

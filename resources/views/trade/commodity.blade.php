@@ -8,6 +8,9 @@
 
 @section('content')
 
+<div class='commodityhead'>
+
+<div>
 <p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}
   @if ($commodity->supplycycle)
   (restock cycle: {{number_format($commodity->supplycycle/86400, 1)}} days)
@@ -18,9 +21,14 @@
   (usage cycle: {{number_format(-$commodity->demandcycle/86400, 1)}} days)
   @endif
 </p>
-<p><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</a></p>
-
 <p>Use the &#x21c4; icons to sort the table by distance to this station.</p>
+</div>
+
+<ul class='commoditynav'>
+  <li><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</li>
+  <li><a href='{{route('effects.commodity', $commodity->id)}}'>State effects</li>
+</ul>
+</div>
 
 <table class='table table-bordered datatable' data-page-length='25'
 	   @if($station !== null)
