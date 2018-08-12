@@ -493,7 +493,11 @@ class EDDNReader extends Command
 
         foreach ($event['message']['commodities'] as $cdata) {
             $commodity = Commodity::firstOrCreate(['name' => $cdata['name']]);
-
+            if ($commodity->averageprice != $cdata['meanPrice']) {
+                $commodity->averageprice = $cdata['meanPrice'];
+                $commodity->save();
+            }
+            
             $reserve = new Reserve;
             $reserve->current = true;
             $reserve->date = new Carbon($event['message']['timestamp']);
