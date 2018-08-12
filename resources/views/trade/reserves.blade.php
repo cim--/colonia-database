@@ -5,7 +5,7 @@
 @section('content')
 
 <p>
-  Total surplus/deficit:
+  Total surplus/deficit in markets:
   <strong>
   @if ($total >= 0)
   <span class='surplus'>{{number_format($total)}}</span>
@@ -22,8 +22,17 @@
   @endif
   </strong>
   tonnes excluding mined/salvaged/etc. goods).<br>
-  Total demand: {{number_format($demandtotal)}} tonnes (baseline {{number_format($nominaldemandtotal)}} tonnes)<br>
-  Total reserves: {{number_format($stocktotal)}} tonnes (baseline {{number_format($nominalstocktotal)}} tonnes)
+  Daily balance of production and consumption:
+  <strong>
+  @if ($cyclictotal >= 0)
+  <span class='surplus'>{{number_format($cyclictotal)}}</span>
+  @else
+  <span class='deficit'>{{number_format($cyclictotal)}}</span>
+  @endif
+  </strong> tonnes.<br>
+  
+  Total demand: {{number_format($demandtotal)}} tonnes (baseline {{number_format(-$nominaldemandtotal)}} tonnes, daily consumption {{number_format($cyclicdemandtotal)}} tonnes)<br>
+  Total reserves: {{number_format($stocktotal)}} tonnes (baseline {{number_format($nominalstocktotal)}} tonnes, daily production {{number_format($cyclicstocktotal)}} tonnes)
 </p>
 
 @if ($totalstations > $stations)
@@ -80,10 +89,28 @@
 	  @else
 	  <td><span class='surplus'>{{$commodity['baselinestock'] + $commodity['baselinedemand']}}</span></td>
 	  @endif
-	  <td>{{$commodity['supplycycle']?number_format($commodity['supplycycle'],1):''}}</td>
-	  <td>{{$commodity['demandcycle']?number_format($commodity['demandcycle'],1):''}}</td>
+	  <td data-sort='{{number_format($commodity['supplycycle'])}}'>
+		@if (count($commodity['exported']) > 0 && $commodity['supplycycle'])
+		{{number_format($commodity['supplycycle'],1)}}
+		@if ($commodity['cycestimate'] == "Supply" || $commodity['cycestimate'] == "Both")
+		<span title='Estimated'>~</span>
+		@endif
+		@endif
+	  </td>
+	  <td data-sort='{{number_format($commodity['demandcycle'])}}'>
+		@if ($commodity['demandcycle'])
+		{{$commodity['demandcycle']?number_format($commodity['demandcycle'],1):''}}
+		@if ($commodity['cycestimate'] == "Demand" || $commodity['cycestimate'] == "Both")
+		<span title='Estimated'>~</span>
+		@endif
+		@endif
+	  </td>
 	  @if ($commodity['cycdemand'] === null || $commodity['cycstock'] === null)
+	  @if ($commodity['cycdemand'] !== null && $commodity['baselinestock'] === 0)
+	  <td><span class='deficit'>{{-$commodity['cycdemand']}}</span></td>
+	  @else
 	  <td></td>
+	  @endif
 	  @elseif ($commodity['cycdemand'] > $commodity['cycstock'])
 	  <td><span class='deficit'>{{$commodity['cycstock'] - $commodity['cycdemand']}}</span></td>
 	  @else

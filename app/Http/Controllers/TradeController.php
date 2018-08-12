@@ -86,6 +86,8 @@ class TradeController extends Controller
         $demandtotal = 0;
         $nominalstocktotal = 0;
         $nominaldemandtotal = 0;
+        $nominaldailystocktotal = 0;
+        $nominaldailydemandtotal = 0;
         $stations = [];
         $oldest = Carbon::now();
         foreach ($commodities as $commodity) {
@@ -143,16 +145,20 @@ class TradeController extends Controller
             $crow['demand'] = $demand;
             $crow['supplycycle'] = $commodity->supplycycle ? round($commodity->supplycycle/86400,1) : null;
             $crow['demandcycle'] = $commodity->demandcycle ? round(-$commodity->demandcycle/86400,1) : null;
-            if ($crow['supplycycle'] !== null) {
+            if ($crow['supplycycle'] !== null && count($exported) > 0) {
                 $crow['cycstock'] = floor($crow['baselinestock']/$crow['supplycycle']);
+                $nominaldailystocktotal += $crow['cycstock'];
             } else {
                 $crow['cycstock'] = null;
             }
             if ($crow['demandcycle'] !== null) {
                 $crow['cycdemand'] = -floor($crow['baselinedemand']/$crow['demandcycle']);
+                $nominaldailydemandtotal += $crow['cycdemand'];
+
             } else {
                 $crow['cycdemand'] = null;
             }
+            $crow['cycestimate'] = $commodity->cycleestimate;
             $crow['exported'] = $exported;
             $crow['imported'] = $imported;
             $crow['buy'] = $bestbuy;
@@ -184,6 +190,9 @@ class TradeController extends Controller
             'demandtotal' => $demandtotal,
             'nominalstocktotal' => $nominalstocktotal,
             'nominaldemandtotal' => $nominaldemandtotal,
+            'cyclicstocktotal' => $nominaldailystocktotal,
+            'cyclicdemandtotal' => $nominaldailydemandtotal,
+            'cyclictotal' => $nominaldailystocktotal-$nominaldailydemandtotal,
             'stations' => count($stations),
             'totalstations' => $totalstations,
             'oldest' => $oldest

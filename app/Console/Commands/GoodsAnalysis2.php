@@ -53,7 +53,7 @@ class GoodsAnalysis2 extends Command
     {
         try {
             \DB::transaction(function() {
-                // $this->runGoodsAnalysis();
+                $this->runGoodsAnalysis();
                 $this->runEconomySizeAnalysis();
             });
         } catch (\Throwable $e) {
@@ -103,16 +103,29 @@ class GoodsAnalysis2 extends Command
                     }
                 }
             }
+            $estimate = "Neither";
             if (count($supplyregen)>0) {
                 $commodity->supplycycle = $this->median($supplyregen);
+            } else if ($commodity->averageprice > 0) {
+                /* The broad trend seems to be 2 days + 1 minute per
+                 * credit of average price */
+                $commodity->supplycycle = 172800 + (60 * $commodity->averageprice);
+                $estimate = "Supply";
             } else {
                 $commodity->supplycycle = null;
             }
             if (count($demandregen)>0) {
                 $commodity->demandcycle = $this->median($demandregen);
+            } else if ($commodity->averageprice > 0) {
+                /* The broad trend seems to be 2.5x the supply cycle,
+                 * so 5 days + 2.5 minutes per credit of average
+                 * price */
+                $commodity->demandcycle = -(432000 + (150 * $commodity->averageprice));
+                $estimate = ($estimate == "Supply") ? "Both" : "Demand";
             } else {
                 $commodity->demandcycle = null;
             }
+            $commodity->cycleestimate = $estimate;
             $commodity->save();
         }
         
