@@ -50,6 +50,7 @@
 	  <th>Exported</th>
 	  <th>Imported</th>
 	  <th>Buy</th>
+	  <th>Average</th>
 	  <th>Sell</th>
 	  <th>History</th>
 	</tr>
@@ -107,6 +108,11 @@
 		@endforeach
 	  </td>
       <td title='{{$commodity['buyplace']}}'>{{number_format($commodity['buy'])}}</td>
+	  <td>
+		@if ($commodity['average'])
+		{{number_format($commodity['average'])}}
+		@endif
+	  </td>
 	  <td title='{{$commodity['sellplace']}}'>{{number_format($commodity['sell'])}}</td>
 	  <td>
 		<a href="{{route('reserves.commodity.history', $commodity['id'])}}">

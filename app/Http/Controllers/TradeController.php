@@ -93,6 +93,7 @@ class TradeController extends Controller
             $crow['id'] = $commodity->id;
             $crow['name'] = $commodity->displayName();
             $crow['category'] = $commodity->category;
+            $crow['average'] = $commodity->averageprice;
 
             $stock = 0;
             $demand = 0;
