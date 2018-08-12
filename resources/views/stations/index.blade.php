@@ -21,6 +21,7 @@ Stations
       <th>Docking</th>
       <th>Facilities</th>
 	  <th>Economy</th>
+      <th>Economy Size</th>
 	  <th>Controlling Faction</th>
       <th>Primary?</th>
 	</tr>
@@ -71,6 +72,11 @@ Stations
 	  <td>
 		@include($station->economy->icon)
 		{{$station->economy->name}}
+	  </td>
+	  <td>
+		@if ($station->economysize)
+		{{number_format($station->economysize)}}
+		@endif
 	  </td>
 	  <td data-search="{{$station->faction->government->name}} {{$station->faction->name}}">
 		@include($station->faction->government->icon)

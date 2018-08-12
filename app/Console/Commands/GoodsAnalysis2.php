@@ -53,7 +53,8 @@ class GoodsAnalysis2 extends Command
     {
         try {
             \DB::transaction(function() {
-                $this->runGoodsAnalysis();
+                // $this->runGoodsAnalysis();
+                $this->runEconomySizeAnalysis();
             });
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
@@ -254,5 +255,59 @@ class GoodsAnalysis2 extends Command
         }
     }
 
+    
+    private function runEconomySizeAnalysis() {
+        /* Hydrogen Fuel appears to be a non-specialised good (with
+         * the exception of Colony, which we only have one of
+         * anyway. Empirically, the size of the economy corresponds
+         * roughly to baseline (HFuel/43)^2 - which for single-station
+         * systems is approximately the population, and for
+         * multi-station systems gets complicated especially for
+         * secondary stations. */
+        
+        $stations = $stations = Station::whereHas('stationclass', function($q) {
+            $q->where('hasSmall', true)
+              ->orWhere('hasMedium', true)
+              ->orWhere('hasLarge', true);
+        })->whereHas('economy', function($q) {
+            // ignore stations with damaged economies
+            // as they'll confuse the analysis
+            $q->where('analyse', true)
+              ->orWhere('name', 'Industrial-Refinery')
+              ->orWhere('name', 'Industrial-Extraction');
+            // hybrids are fine for this, though
+        })->with('economy')->with('baselinestocks')->get();
+
+        $hydrogen = Commodity::where('name', 'HydrogenFuel')->first();
+
+        $commodities = Commodity::get();
+        
+        foreach ($stations as $station) {
+            $hfuelbaseline = $station->baselinestocks->where('commodity_id', $hydrogen->id)->first();
+            if (!$hfuelbaseline) {
+                continue;
+            }
+            $hfb = $hfuelbaseline->reserves;
+            
+            $economysize = ($hfb*$hfb)/(1849);
+            $station->economysize = $economysize;
+            $station->save();
+
+            $ecsizefactor = sqrt($economysize);
+
+            /* This calculates the intensity of production/consumption
+             * of each good relative to the baseline set by HFuel. */
+            
+            foreach ($commodities as $commodity) {
+                $baseline = $station->baselinestocks->where('commodity_id', $commodity->id)->first();
+                if ($baseline) {
+                    $intensity = $baseline->reserves / $ecsizefactor;
+                    $baseline->intensity = $intensity;
+                    $baseline->save();
+                }
+            }
+        }
+
+    }
     
 }
