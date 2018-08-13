@@ -13,6 +13,7 @@ use App\Models\Effect;
 use App\Models\Tradebalance;
 use App\Models\Economy;
 use App\Models\Baselinestock;
+use App\Models\Commoditystat;
 
 class GoodsAnalysis2 extends Command
 {
@@ -21,7 +22,7 @@ class GoodsAnalysis2 extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:goodsanalysis2';
+    protected $signature = 'cdb:goodsanalysis2 {--sizeonly}';
 
     /**
      * The console command description.
@@ -43,6 +44,8 @@ class GoodsAnalysis2 extends Command
     protected $commodityinfo = [];
     private $maxsupmultiplier = 0;
     private $maxdemmultiplier = 0;
+    private $colonysizefactor = 0;
+    private $genericsizefactor = 0;
     
     /**
      * Execute the console command.
@@ -51,9 +54,17 @@ class GoodsAnalysis2 extends Command
      */
     public function handle()
     {
+        /* Derived by comparing hydrogen fuel baselines with CEI bases */
+        $this->genericsizefactor = 1806.52032;
+        $this->colonysizefactor = 0.18432;
+        
         try {
             \DB::transaction(function() {
-                $this->runGoodsAnalysis();
+                if (!$this->option('sizeonly')) {
+                    $this->runGoodsAnalysis();
+                } else {
+                    $this->info("Size analysis only");
+                }
                 $this->runEconomySizeAnalysis();
             });
         } catch (\Throwable $e) {
@@ -105,7 +116,7 @@ class GoodsAnalysis2 extends Command
             }
             $estimate = "Neither";
             if (count($supplyregen)>0) {
-                $commodity->supplycycle = $this->median($supplyregen);
+                $commodity->supplycycle = floor($this->median($supplyregen));
             } else if ($commodity->averageprice > 0) {
                 /* The broad trend seems to be 2 days + 1 minute per
                  * credit of average price */
@@ -115,7 +126,7 @@ class GoodsAnalysis2 extends Command
                 $commodity->supplycycle = null;
             }
             if (count($demandregen)>0) {
-                $commodity->demandcycle = $this->median($demandregen);
+                $commodity->demandcycle = floor($this->median($demandregen));
             } else if ($commodity->averageprice > 0) {
                 /* The broad trend seems to be 2.5x the supply cycle,
                  * so 5 days + 2.5 minutes per credit of average
@@ -167,8 +178,9 @@ class GoodsAnalysis2 extends Command
                 $stability++;
             }
         }
-        if ($stability < 5) {
+        if ($stability < 5 && $commodity->id != 1) {
             // insufficient to confirm baseline
+            // will use for HFuel *anyway* because a guess is better than nothing
             return null;
         }
 
@@ -235,7 +247,7 @@ class GoodsAnalysis2 extends Command
             return null;
         }
 //        $this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
-        $avgrate = (int)$this->median($slopes);
+        $avgrate = floor($this->median($slopes));
         $regentime = $avgrate * $max;
 //        $this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days");
         return $regentime * $sign;
@@ -259,13 +271,7 @@ class GoodsAnalysis2 extends Command
     }
 
     private function median($arr) {
-        sort($arr);
-        $mid = (count($arr)-1)/2;
-        if ($mid == floor($mid)) {
-            return $arr[$mid];
-        } else {
-            return floor(($arr[floor($mid)]+$arr[ceil($mid)])/2);
-        }
+        return $this->percentile($arr, 0.5);
     }
 
     
@@ -294,6 +300,11 @@ class GoodsAnalysis2 extends Command
         $hydrogen = Commodity::where('name', 'HydrogenFuel')->first();
 
         $commodities = Commodity::get();
+
+        $cdata = [
+            'supply'=>[],
+            'demand'=>[]
+        ];
         
         foreach ($stations as $station) {
             $hfuelbaseline = $station->baselinestocks->where('commodity_id', $hydrogen->id)->first();
@@ -301,8 +312,14 @@ class GoodsAnalysis2 extends Command
                 continue;
             }
             $hfb = $hfuelbaseline->reserves;
+
+            if ($station->economy->name == "Colony") {
+                $esf = $this->colonysizefactor;
+            } else {
+                $esf = $this->genericsizefactor;
+            }
             
-            $economysize = ($hfb*$hfb)/(1849);
+            $economysize = ($hfb*$hfb)/($esf);
             $station->economysize = $economysize;
             $station->save();
 
@@ -315,12 +332,83 @@ class GoodsAnalysis2 extends Command
                 $baseline = $station->baselinestocks->where('commodity_id', $commodity->id)->first();
                 if ($baseline) {
                     $intensity = $baseline->reserves / $ecsizefactor;
+                    if ($intensity > 0) {
+                        if (!isset($cdata['supply'][$commodity->id])) {
+                            $cdata['supply'][$commodity->id] = [];
+                        }
+                        $cdata['supply'][$commodity->id][] = $intensity;
+                    } else if ($intensity < 0) {
+                        if (!isset($cdata['demand'][$commodity->id])) {
+                            $cdata['demand'][$commodity->id] = [];
+                        }
+                        $cdata['demand'][$commodity->id][] = -$intensity;
+                    }
                     $baseline->intensity = $intensity;
                     $baseline->save();
                 }
             }
         }
 
+        foreach ($commodities as $commodity) {
+            $demand = isset($cdata['demand'][$commodity->id])?$cdata['demand'][$commodity->id]:[];
+            $supply = isset($cdata['supply'][$commodity->id])?$cdata['supply'][$commodity->id]:[];
+            $dstats = $this->stats($demand);
+            $sstats = $this->stats($supply);
+
+            $stat = Commoditystat::firstOrNew(['commodity_id' => $commodity->id]);
+            
+            $stat->demandmin = $dstats['min'];
+            $stat->demandlowq = $dstats['lowq'];
+            $stat->demandmed = $dstats['median'];
+            $stat->demandhighq = $dstats['highq'];
+            $stat->demandmax = $dstats['max'];
+            $stat->supplymin = $sstats['min'];
+            $stat->supplylowq = $sstats['lowq'];
+            $stat->supplymed = $sstats['median'];
+            $stat->supplyhighq = $sstats['highq'];
+            $stat->supplymax = $sstats['max'];
+
+            $stat->save();
+        }
+    }
+
+
+
+    private function stats($arr) {
+        if (count($arr) == 0) {
+            return [
+                'min' => null,
+                'max' => null,
+                'lowq' => null,
+                'median' => null,
+                'highq' => null
+            ];
+        }
+        sort($arr);
+        return [
+            'min' => $arr[0],
+            'max' => $arr[count($arr)-1],
+            'lowq' => $this->lowq($arr),
+            'median' => $this->median($arr),
+            'highq' => $this->highq($arr)
+        ];
+    }
+
+    private function percentile($arr, $per) {
+        sort($arr);
+        $mid = (count($arr)-1)*$per;
+        if ($mid == floor($mid)) {
+            return $arr[$mid];
+        } else {
+            return ($arr[floor($mid)]+$arr[ceil($mid)])/2;
+        }
     }
     
+    private function lowq($arr) {
+        return $this->percentile($arr, 0.25);
+    }
+    private function highq($arr) {
+        return $this->percentile($arr, 0.5);
+    }
+
 }

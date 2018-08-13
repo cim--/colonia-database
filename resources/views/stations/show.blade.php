@@ -62,6 +62,12 @@
 		<a href="{{route('stations.showtrade', $station->id)}}">
 		  {{$facility->name}}
 		</a>
+		(economy size:
+		@if ($station->economysize)
+		{{number_format($station->economysize)}})
+		@else
+		Unknown)
+		@endif
 		@elseif ($facility->name == "Outfitting")
 		<a href="{{route('stations.showoutfitting', $station->id)}}">
 		  {{$facility->name}}

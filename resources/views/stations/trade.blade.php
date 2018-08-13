@@ -10,6 +10,13 @@ Reserves at {{$station->name}}
 
 @section('content')
 
+<p>Economy size:
+  @if ($station->economysize)
+  {{number_format($station->economysize)}}
+  @else
+  Unknown
+  @endif
+</p>
 <p>Total estimated reserves: {{number_format($supply)}}</p>
 <p>Total estimated demand: {{number_format($demand)}}</p>
 
@@ -26,6 +33,7 @@ Reserves at {{$station->name}}
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Baseline Stock/Demand</th>
+	  <th title='Allowing for the overall size of the station economy, how much does this produce/consume relative to other stations?'>Relative Production/Consumpion</th>
 	  <th>Price</th>
 	  <th>History</th>
 	</tr>
@@ -55,6 +63,7 @@ Reserves at {{$station->name}}
 	  <td>
 		@include('components/surplusdeficit', ['value' => $station->baselinestocks->where('commodity_id', $reserve->id)->first()])
 	  </td>
+	  @include('components/intensity', ['baseline' => $station->baselinestocks->where('commodity_id', $reserve->id)->first(), 'stats' => $reserve->commoditystat])
 	  <td>
 		{{$reserve->reserves->first()->price}}
 	  </td>

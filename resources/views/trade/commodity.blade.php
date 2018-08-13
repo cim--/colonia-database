@@ -43,6 +43,7 @@
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Baseline Stock/Demand</th>
+	  <th>Trade Intensity</th>
 	  <th>Price</th>
 	  @if ($station !== null)
 	  <th>Distance to {{$station->name}} (LY)</th>
@@ -100,6 +101,7 @@
 	  <td>
 		@include('components/surplusdeficit', ['value' => $commodity->baselinestocks->where('station_id', $reserve->station->id)->first()])
 	  </td>
+	  @include('components/intensity', ['baseline' => $commodity->baselinestocks->where('station_id', $reserve->station->id)->first(), 'stats' => $commodity->commoditystat])
 	  <td>
 		{{$reserve->price}}
 	  </td>
