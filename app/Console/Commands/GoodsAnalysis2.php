@@ -186,8 +186,10 @@ class GoodsAnalysis2 extends Command
 
         if ($effect) {
             $multiplier = ($sign==1)?$effect->supplysize:$effect->demandsize;
-            
-            if ($multiplier >= 1 && $multiplier > ($sign==1?$this->maxsupmultiplier:$this->maxdemmultiplier)) {
+
+            /* Really high multipliers can give odd results as they
+             * push the level over the 999999 display limit. */
+            if ($multiplier >= 1 && $multiplier > ($sign==1?$this->maxsupmultiplier:$this->maxdemmultiplier) && $multiplier < 10) {
                 if ($sign == 1) {
                     $this->maxsupmultiplier = $multiplier;
                 } else {

@@ -430,6 +430,12 @@ class TradeController extends Controller
             'minrange' => $minrange,
             'maxrange' => $maxrange
         ]);
-        
+    }
+
+    public function specialisation() {
+        $commodities = Commodity::with('commoditystat')->orderBy('category')->orderBy('name')->get();
+        return view('trade/specialisation', [
+            'commodities' => $commodities
+        ]);
     }
 }

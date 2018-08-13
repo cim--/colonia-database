@@ -39,10 +39,11 @@
 	  </ul>
 	</li>
 	<li><div>Economy</div>
-	  <ul >
+	  <ul class='compactnav'>
 		<li><a href="{{route('trade')}}">Trading</a></li>
 		<li><a href="{{route('reserves')}}">Reserves</a></li>
      	<li><a href="{{route('effects')}}">Effects</a></li>
+        <li><a href="{{route('specialisation')}}">Specialities</a></li>
      	<li><a href="{{route('outfitting')}}">Outfitting</a></li>
 		<li><a href="{{route('outfitting.shipyard')}}">Shipyard</a></li>
 		<li><a href="{{route('missions.index')}}">Missions</a></li>
