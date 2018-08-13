@@ -229,7 +229,7 @@ class StationController extends Controller
         })->with(['reserves' => function($q) use ($station) {
             $q->where('station_id', $station->id)
               ->where('current', true);
-            }])->orderBy('name')->get();
+            }])->with('commoditystat')->orderBy('name')->get();
 
         $supply = 0;
         $demand = 0;
