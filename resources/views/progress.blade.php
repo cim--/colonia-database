@@ -102,7 +102,7 @@ visible change.</p>
 
 <h2>Stations needing market updates ({{number_format($marketscomplete)}}%)</h2>
 @if (count($marketsupdate) > 0)
-<p>The following stations do not have market updates today. You will need to dock at the station using a Companion API tool to upload market data. This does not need daily updates for everywhere!</p>
+<p>The following stations do not have market updates today. You will need to dock at the station to upload market data. This does not need daily updates for everywhere!</p>
 <p>Stations currently in Lockdown cannot be updated. Most tools (though not currently EDDiscovery, which needs the relevant screen to be entered) will also update Outfitting and Shipyard data at the same time.</p>
 <ul class='compact'>
   @foreach ($marketsupdate as $station)

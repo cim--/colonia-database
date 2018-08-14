@@ -16,7 +16,8 @@ Systems
 	  <th>Phase</th>
 	  <th>Name</th>
 	  <th>Population</th>
-	  <th>Economy</th>
+	  <th>Economy Size</th>
+	  <th>Economy Type</th>
 	  <th>Government</th>
 	  <th>Controlling Faction</th>
       <th>Exploration Value</th>
@@ -33,6 +34,7 @@ Systems
 	  <td><a href="{{route('systems.show', $system->id)}}">{{$system->displayName()}}</a></td>
 	  @if ($system->inhabited())
 	  <td>{{number_format($system->population, 0)}}</td>
+	  <td>{{number_format($system->economySize(), 0)}}
       <td>
 		@include($system->economy->icon)
 		{{$system->economy->name}}
@@ -49,6 +51,7 @@ Systems
 	  </td>
 	  @else
 	  <td>0</td>
+	  <td></td>
 	  <td></td>
 	  <td></td>
 	  <td></td>

@@ -67,7 +67,7 @@
 
   <p>Difficulties in providing supplies, especially the limited agricultural supplied by the <a href='{{route('stations.show', 8)}}'>Vitto Orbital</a> outpost, led the Council to approach a number of entrepreneurs to operate stations in the region. Mostly junior but ambitious staff from existing organisations, they worked with the Council and funders from the bubble to construct <a href='{{route('systems.index')}}#"core 3"'>sixteen new orbital stations</a> of varying sizes in June 3303.</p>
 
-  <p>A month later, additional outposts were constructed in the larger of these systems, to diversify the economies and provide additional landing space for ships.</p>
+<p>A month later, additional outposts were constructed in the larger of these systems, to diversify the economies, install the latest production tools, and provide additional landing space for ships.</p>
 
   <p>Organising the economy with a focus on high-tech manufacturing, services, and tourism, the Colonia Council was able to take advantage of its 'clean start' position and lack of legacy infrastructure to develop <a href='{{route('outfitting')}}'>major shipyards</a> considerably better than most Sol bubble facilities. Independent manufacturers were happy to license their designs - at a slightly higher cost - to supply what was by now becoming a major exploration and mining hub.</p>
 </div>

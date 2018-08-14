@@ -75,7 +75,7 @@ Stations
 	  </td>
 	  <td>
 		@if ($station->economysize)
-		{{number_format($station->economysize)}}
+		{{number_format($station->displayEconomysize())}}
 		@endif
 	  </td>
 	  <td data-search="{{$station->faction->government->name}} {{$station->faction->name}}">

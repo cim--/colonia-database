@@ -59,7 +59,17 @@ class Station extends Model
         return $this->name;
     }
 //
-
+    public function displayEconomySize() {
+        if (!$this->economysize) {
+            return 0;
+        }
+        $len = strlen($this->economysize);
+        $places = $len-3;
+        $power = 10**$places;
+        return round($this->economysize/$power)*$power;
+    }
+    
+    
     public function scopeDockable($q) {
         return $q->whereHas('stationclass', function($s) {
             $s->where('hasSmall', 1)

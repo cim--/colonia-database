@@ -12,7 +12,7 @@ Reserves at {{$station->name}}
 
 <p>Economy size:
   @if ($station->economysize)
-  {{number_format($station->economysize)}}
+  {{number_format($station->displayEconomysize())}}
   @else
   Unknown
   @endif

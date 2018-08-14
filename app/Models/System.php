@@ -233,4 +233,11 @@ class System extends Model
         return 0;
     }
 
+    public function economySize() {
+        $size = $this->stations->sum('economysize');
+        $len = strlen($size);
+        $places = $len-3;
+        $power = 10**$places;
+        return round($size/$power)*$power;
+    }
 }

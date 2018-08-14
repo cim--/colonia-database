@@ -166,8 +166,10 @@ class BaseController extends Controller
             'z' => System::where('population', '>', 0)->avg('z')
         ]);
         $maxdist = 0;
+        $ecsize = 0;
         foreach ($systems as $system) {
             if ($system->population > 0) {
+                $ecsize += $system->economySize();
                 $ccoords = $system->coloniaCoordinates();
                 $dist = \App\Util::distance($ccoords, $avgcoordinates);
                 if ($dist > $maxdist) {
@@ -248,6 +250,7 @@ class BaseController extends Controller
             'maxtraffic' => $maxtraffic,
             'mintraffic' => $mintraffic,
             'wordmap' => $wordmap,
+            'ecsize' => $ecsize,
             'megacount' => Megaship::where('decommissioned', null)->count(),
             'instcount' => Installation::count()
         ]);

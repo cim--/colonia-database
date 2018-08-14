@@ -16,6 +16,7 @@
 		people
 		@endif</li>
 	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements)</li>
+	  <li>Modern production facilities manufacture goods with {{number_format(100*$ecsize/$population)}}% of standard efficiency.</li>
 	  <li>{{$instcount}} installations and {{$megacount}} operational mobile megaships</li>
 	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>

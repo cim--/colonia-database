@@ -9,6 +9,8 @@ Sites
 @if ($userrank > 1)
 <p><a class='edit' href='{{route('sites.create')}}'>New site</a></p>
 @endif
+
+<p>Not all tip-off sites will be visitable simultaneously. Obtain the appropriate information before visiting to avoid disappointment.</p>
     
 <table class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"],[1, "asc"]]'>
   <thead>
