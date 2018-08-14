@@ -20,7 +20,7 @@ class GoodsAnalysis extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:goodsanalysis';
+    protected $signature = 'cdb:goodsanalysis {--balanceonly}';
 
     /**
      * The console command description.
@@ -50,7 +50,11 @@ class GoodsAnalysis extends Command
     {
         try {
             \DB::transaction(function() {
-                $this->runGoodsAnalysis();
+                if (!$this->option('balanceonly')) {
+                    $this->runGoodsAnalysis();
+                } else {
+                    $this->info("Balance analysis only");
+                }
                 $this->runBalanceAnalysis();
             });
         } catch (\Throwable $e) {
