@@ -6,7 +6,7 @@
 
 <p>This table shows the variation in baseline trade quantities, adjusted for economy size. Tonnage is normally proportional to the square root of the economy size.</p>
 
-<table class='table table-bordered datatable'>
+<table class='table table-bordered datatable' data-page-length='25'>
   <thead>
 	<tr>
 	  <th rowspan='2'>Category</th>
