@@ -6,7 +6,7 @@
 
 <p>The Colonia Census aims to provide current, accurate and comprehensive information about the inhabited systems and population of the Colonia Region, for the use of all residents and visitors.</p>
 
-<p>If you are new to the region, or thinking of visiting, then the <a href="{{route('intro.new')}}">new to Colonia</a> page will answer some common questions.</p>
+<p>If you are new to the region, or thinking of visiting, then the <a href="{{route('intro.new')}}">new to Colonia</a> page will answer some common questions. You can use the <a href='{{route('visit')}}'>visit tracker</a> to keep a record of which parts of Colonia you have visited so far.</p>
 
 <p>Discussion of the census data, its collection, or suggestions for additional features can take place on the <a href="">Discord Server</a>. This server also contains a bot (CensusBot) who can answer various questions about the region - extensive queries can be carried out by private message or in the <code>#bot</code> channel.</p>
 
