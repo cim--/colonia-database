@@ -14,13 +14,13 @@ use App\Models\Site;
 class VisitController extends Controller
 {
     public function index() {
-        $systems = System::count();
-        $stations = Station::count();
-        $factions = Faction::count();
-        $installations = Installation::count();
-        $megaships = Megaship::count();
-        $sites = Site::count();
-
+        $systems = System::get()->sortBy(function($v,$k) { return $v->displayName(); });
+        $stations = Station::get()->sortBy(function($v,$k) { return $v->displayName(); });
+        $factions = Faction::get()->sortBy(function($v,$k) { return $v->displayName(); });;
+        $installations = Installation::get()->sortBy(function($v,$k) { return $v->displayName(); });;
+        $megaships = Megaship::get()->sortBy(function($v,$k) { return $v->displayName(); });;
+        $sites = Site::get()->sortBy(function($v,$k) { return $v->displayName(); });
+        
         return view('visit.index', [
             'systems' => $systems,
             'stations' => $stations,

@@ -1,25 +1,59 @@
 #tracktools {
 	.tracker {
-		@include make-row();
 		margin-bottom: 0.5em;
-		.category {
-			@include make-sm-column(2);
-			text-align: right;
+		.trackrow {
+			@include make-row();
+			.category {
+				@include make-sm-column(2);
+				text-align: right;
+			}
+			.progressbar {
+				@include make-sm-column(7);
+				border: thin black solid;
+				padding: 0;
+			}
+			.recorded {
+				background: #090;
+				width: 0%;
+				height: 1.5em;
+			}
+			.numbers {
+				@include make-sm-column(3);
+				.tracked {
+					font-weight: bold;
+				}
+			}
+			.spacer {
+				@include make-sm-column(2);
+			}			
+			.items {
+				@include make-sm-column(7);
+				background: #eef;
+				border: thin black solid;
+				border-radius: 2px;
+				border-top: 0;
+			}
 		}
-		.progressbar {
-			@include make-sm-column(7);
-			border: thin black solid;
-			padding: 0;
-		}
-		.recorded {
-			background: #090;
-			width: 0%;
-			height: 1.5em;
-		}
-		.numbers {
-			@include make-sm-column(3);
-			.tracked {
-				font-weight: bold;
+		.itemlist {
+			display: none;
+			.items > span {
+				display: inline-block;
+				border: thin black dotted;
+				padding: 0 3px;
+				&.visited {
+					background: #efe;
+					.marker:before {
+						content: '\02714';
+						color: #090;
+					}
+				}
+				&.unvisited {
+					background: #fee;
+					.marker:after {
+						content: '\02718';
+						color: #900;
+					}
+				}
 			}
 		}
 	}

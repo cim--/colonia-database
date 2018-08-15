@@ -13,4 +13,9 @@ class Site extends Model
     public function system() {
         return $this->belongsTo('App\Models\System');
     }
+
+    public function displayName() {
+        return $this->system->displayName()." ".$this->planet." ".$this->summary;
+    }
+
 }

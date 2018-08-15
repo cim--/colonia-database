@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+@include('components/trackbox', ['domain' => 'installations', 'id' => $installation->id])
 @if ($userrank > 1)
 <a class='edit' href='{{route('installations.edit', $installation->id)}}'>Update</a>
 @endif

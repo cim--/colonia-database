@@ -80,6 +80,17 @@ var CDBTracker = function() {
 		var percent = count * 100 / total;
 		$(element+" .recorded").css('width', percent+"%");
 		$(element+" .tracked").text(count);
+
+		$(element+" .items span").each(function() {
+			var id = $(this).data('number');
+			if(obj.visited(domain, id)) {
+				$(this).addClass('visited');
+				$(this).removeClass('unvisited');
+			} else {
+				$(this).addClass('unvisited');
+				$(this).removeClass('visited');
+			}
+		});
 	};
 
 	obj.refresh = function() {
@@ -134,5 +145,23 @@ $(document).ready(function() {
 			$('#trackbox').removeClass('visited');
 		});
 	});
+
+	$('#tracktools span').click(function() {
+		if (!CDBTracker.active()) {
+			return;
+		}
+		var domain = $(this).data('domain');
+		var id = $(this).data('number');
+		if ($(this).hasClass('unvisited')) {
+			CDBTracker.visit(domain, id);
+		} else {
+			CDBTracker.unvisit(domain, id);
+		}
+		CDBTracker.refresh();
+	});
+
 	
+	$('.tracker .progressbar').click(function() {
+		$(this).closest('.tracker').find('.itemlist').toggle();
+	});
 });

@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+@include('components/trackbox', ['domain' => 'sites', 'id' => $site->id])
 @if ($userrank > 1)
 <a class='edit' href='{{route('sites.edit', $site->id)}}'>Update</a>
 @endif

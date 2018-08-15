@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-
+@include('components/trackbox', ['domain' => 'stations', 'id' => $station->id])
 @if ($userrank > 0)
 <a class='edit' href='{{route('stations.edit', $station->id)}}'>Update</a>
 @endif

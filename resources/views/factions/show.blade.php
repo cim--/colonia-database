@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-
+@include('components/trackbox', ['domain' => 'factions', 'id' => $faction->id])
 <div class='row'>
   <div class='col-sm-12 faction-properties'>
     @if ($faction->player)

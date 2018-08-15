@@ -15,4 +15,11 @@ class Installation extends Model
     public function installationclass() {
         return $this->belongsTo('App\Models\Installationclass');
     }
+
+    public function displayName() {
+        if ($this->name) {
+            return $this->name;
+        }
+        return $this->system->displayName()." ".$this->planet." ".$this->installationclass->name;
+    }
 }

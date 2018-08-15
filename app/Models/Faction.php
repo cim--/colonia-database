@@ -56,6 +56,11 @@ class Faction extends Model
         return $this->influences()->where('current', 1)->count();
     }
 
+    // convenience
+    public function displayName() {
+        return $this->name;
+    }
+
     
     public function currentState(System $system) {
         $influence = $this->influences()->where('current', 1)

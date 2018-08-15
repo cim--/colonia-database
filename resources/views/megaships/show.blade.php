@@ -5,7 +5,8 @@
 @endsection
 
 @section('content')
-@if ($userrank > 0)
+@include('components/trackbox', ['domain' => 'megaships', 'id' => $megaship->id])
+@if ($userrank > 1)
 <a class='edit' href='{{route('megaships.edit', $megaship->id)}}'>Update</a>
 @endif
 
