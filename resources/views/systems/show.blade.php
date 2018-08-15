@@ -279,7 +279,7 @@
 	  </thead>
 	  <tbody>
 		@foreach ($others as $other)
-		<tr class="{{$other->inhabited() ? 'inhabited-system' : 'uninhabited-system'}}">
+		<tr class="{{$other->inhabited() ? 'inhabited-system' : 'uninhabited-system'}} {{$system->distanceTo($other) <= 20 ? 'near-system' : 'far-system'}}">
 		  <td>
 			<a href="{{route('systems.show', $other->id)}}">
 			  {{$other->displayName()}}
