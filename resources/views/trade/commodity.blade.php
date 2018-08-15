@@ -81,6 +81,10 @@
 		<span class='lockdown'>{{$reserve->reserves}}</span>
 	  </td>
 	  <td>
+		@include('components/surplusdeficit', ['value' => $commodity->baselinestocks->where('station_id', $reserve->station->id)->first()])
+	  </td>
+	  @include('components/intensity', ['baseline' => $commodity->baselinestocks->where('station_id', $reserve->station->id)->first(), 'stats' => $commodity->commoditystat])
+	  <td>
 		<span class='lockdown'>{{$reserve->price}}</span>
 	  </td>
 	  @else
