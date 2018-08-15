@@ -10,6 +10,7 @@
 
 @import "icons";
 @import "distances";
+@import "tracker";
 
 body {
 	background: #000;
@@ -79,6 +80,7 @@ div#main {
 	padding: 0.5em 15px;
 	background: $body-bg;
 	color: $text-color;
+	position: relative;
 }
 
 .uninhabited-system {

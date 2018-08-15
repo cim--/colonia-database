@@ -1,0 +1,71 @@
+#tracktools {
+	.tracker {
+		@include make-row();
+		margin-bottom: 0.5em;
+		.category {
+			@include make-sm-column(2);
+			text-align: right;
+		}
+		.progressbar {
+			@include make-sm-column(7);
+			border: thin black solid;
+			padding: 0;
+		}
+		.recorded {
+			background: #090;
+			width: 0%;
+			height: 1.5em;
+		}
+		.numbers {
+			@include make-sm-column(3);
+			.tracked {
+				font-weight: bold;
+			}
+		}
+	}
+
+	&.inactive {
+		background: #555;
+	}
+	
+	#enabletracktools {
+		border: outset green 2px;
+		&:hover {
+			background: #cfc;
+		}
+	}
+	#disabletracktools {
+		border: outset red 2px;
+		&:hover {
+			background: #f00;
+		}
+	}
+}
+
+#trackbox {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	width: 100px;
+	text-align: right;
+	&.visited {
+		.visit {
+			display: none;
+		}
+	}
+	&.unvisited {
+		.unvisit {
+			display: none;
+		}
+	}
+	button {
+		border: outset 2px #999;
+		background: #ccc;
+		&.visit .marker {
+			color: #900;
+		}
+		&.unvisit .marker {
+			color: #090;
+		}
+	}
+}

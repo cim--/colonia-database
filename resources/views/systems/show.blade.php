@@ -6,6 +6,7 @@
 
 @section('content')
 
+@include('components/trackbox', ['domain' => 'systems', 'id' => $system->id])
 <div class='row'>
   <div class='col-sm-6 system-properties'>
 	@if ($system->name)

@@ -211,3 +211,8 @@ Route::get('/outfitting', [
     'as' => 'outfitting',
     'uses' => 'OutfittingController@index'
 ]);
+
+Route::get('/visit', [
+    'as' => 'visit',
+    'uses' => 'VisitController@index'
+]);
