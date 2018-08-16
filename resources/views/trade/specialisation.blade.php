@@ -4,6 +4,17 @@
 
 @section('content')
 
+<ul class='compact'>
+  @foreach ($economies as $economy)
+  <li>
+	<a href='{{route('specialisation.economy', $economy->id)}}'>
+	  @include($economy->icon)
+	  {{$economy->name}}
+	</a>
+  </li>
+  @endforeach
+</ul>
+
 <p>This table shows the variation in baseline trade quantities, adjusted for economy size. Tonnage is normally proportional to the square root of the economy size.</p>
 
 <table class='table table-bordered datatable' data-page-length='25'>

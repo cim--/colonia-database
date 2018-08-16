@@ -434,8 +434,129 @@ class TradeController extends Controller
 
     public function specialisation() {
         $commodities = Commodity::with('commoditystat')->orderBy('category')->orderBy('name')->get();
+        $economies = Economy::analyse()->whereHas('stations')->orderBy('name')->get();
         return view('trade/specialisation', [
-            'commodities' => $commodities
+            'commodities' => $commodities,
+            'economies' => $economies
+        ]);
+    }
+
+    public function specialisationEconomy(Economy $economy) {
+        $stations = Station::where('economy_id', $economy->id)->whereHas('baselinestocks')->with('baselinestocks', 'baselinestocks.commodity', 'baselinestocks.commodity.commoditystat')->orderBy('name')->get();
+
+        $sys = [];
+        foreach ($stations as $idx => $station) {
+//            $sys[$station->id] = 5+(10*$idx);
+            $sys[$station->id] = $idx;
+            $slabels[$idx] = $station->displayName();
+        }
+
+        $commodities = Commodity::whereHas('baselinestocks', function($q) use ($economy) {
+            $q->whereHas('station', function ($q2) use ($economy) {
+                $q2->where('economy_id', $economy->id);
+            });
+        })->where('category', '!=', 'Salvage')->orderBy('category')->orderBy('description')->get();
+        $cxs = [];
+        foreach ($commodities as $idx => $commodity) {
+            $cxs[$commodity->id] = $idx;
+            $clabels[$idx] = trim($commodity->description);
+        }
+        
+        $imports = [];
+        $exports = [];
+        $idescs = ['', 'Very Low', 'Low', 'Average', 'High', 'Very High'];
+        foreach ($stations as $station) {
+            foreach ($station->baselinestocks as $baseline) {
+                if ($baseline->commodity->category == "Salvage") {
+                    continue;
+                }
+                $x = $baseline->commodity_id;
+                $y = $station->id;
+                $r = $baseline->commodity->commoditystat->getLevel($baseline->intensity);
+                if (!isset($cxs[$x])) {
+                    // can happen with some rares
+                    continue;
+                }
+                $point = [
+                    'x' => $cxs[$x],
+                    'y' => $sys[$y],
+                    'r' => $r*2,
+                    'desc' => $station->displayName()." -- ".trim($baseline->commodity->description),
+                    'intensity' => $idescs[$r]
+                ];
+                if ($baseline->intensity > 0) {
+                    $exports[] = $point;
+                } else {
+                    $imports[] = $point;
+                }
+            }
+        }
+        
+        $datasets = [
+            [
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#009000',
+                'fill' => false,
+                'data' => $imports,
+                'label' => "Imports"
+            ],
+            [
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#900000',
+                'fill' => false,
+                'data' => $exports,
+                'label' => "Exports"
+            ]
+        ];
+        
+        
+        $options = [
+            'scales' => [
+                'xAxes' => [
+                    [
+                        'type' => 'linear',
+                        'position' => 'bottom',
+                        'ticks' => [
+                            'display' => false
+                        ],
+                        'gridLines' => [
+                            'display' => false,
+                            'drawBorder' => false
+                        ],
+                    ]
+                ],
+                'yAxes' => [
+                    [
+                        'type' => 'linear',
+                        'position' => 'left',
+                        'ticks' => [
+                            'display' => false
+                        ],
+                        'gridLines' => [
+                            'display' => false,
+                            'drawBorder' => false
+                        ],
+                    ],
+                ] 
+            ],
+            'tooltips' => [
+                'callbacks' => [
+                    'title' => "@@tooltip_label_desc@@",
+                    'label' => "@@tooltip_label_intensity@@"
+                ]
+            ] 
+        ];
+
+        $chart = app()->chartjs
+                ->name("specialisationeconomy")
+                ->type("bubble")
+                ->size(["height" => 400, "width"=>1000])
+                ->datasets($datasets)
+                ->options($options);
+        
+        return view('trade/specialisationeconomy', [
+            'economy' => $economy,
+            'chart' => $chart,
         ]);
     }
 }

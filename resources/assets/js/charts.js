@@ -25,6 +25,14 @@ var tooltip_label_title = function (t, d) {
 		return d.datasets[t[0].datasetIndex].label;
 	}
 };
+
+var tooltip_label_desc = function (t, d) {
+	return d.datasets[t[0].datasetIndex].data[t[0].index].desc;
+};
+var tooltip_label_intensity = function (t, d) {
+	return d.datasets[t.datasetIndex].data[t.index].intensity;
+};
+
 var tooltip_label_datetime_title = function (t, d) {
 	if (d.datasets[t[0].datasetIndex].data[t[0].index].state) {
 		return d.datasets[t[0].datasetIndex].label+" ("+d.datasets[t[0].datasetIndex].data[t[0].index].state+")";

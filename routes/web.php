@@ -172,6 +172,12 @@ Route::get('/specialisation', [
     'uses' => 'TradeController@specialisation'
 ]);
 
+Route::get('/specialisation/{economy}', [
+    'as' => 'specialisation.economy',
+    'uses' => 'TradeController@specialisationEconomy'
+]);
+
+
 Route::get('/effects', [
     'as' => 'effects',
     'uses' => 'TradeController@effects'

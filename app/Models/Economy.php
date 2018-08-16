@@ -31,6 +31,10 @@ class Economy extends Model
     {
         return $this->belongsToMany('App\Models\Region')->withPivot('frequency', 'stationfrequency');
     }
+    
+    public function scopeAnalyse($q) {
+        return $q->where('analyse', 1);
+    }
 
 
     
