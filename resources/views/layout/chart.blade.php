@@ -1,5 +1,5 @@
 {!! preg_replace(
     '/"@@([a-z_]+)@@"/',
-    '$1',
+    'ChartCallbacks.$1',
     $chart->render()
 ) !!}

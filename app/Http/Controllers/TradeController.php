@@ -442,7 +442,7 @@ class TradeController extends Controller
     }
 
     public function specialisationEconomy(Economy $economy) {
-        $stations = Station::where('economy_id', $economy->id)->whereHas('baselinestocks')->with('baselinestocks', 'baselinestocks.commodity', 'baselinestocks.commodity.commoditystat')->orderBy('name')->get();
+        $stations = Station::where('economy_id', $economy->id)->whereHas('baselinestocks')->with('baselinestocks', 'baselinestocks.commodity', 'baselinestocks.commodity.commoditystat')->orderBy('name', 'desc')->get();
 
         $sys = [];
         foreach ($stations as $idx => $station) {
@@ -517,7 +517,11 @@ class TradeController extends Controller
                         'type' => 'linear',
                         'position' => 'bottom',
                         'ticks' => [
-                            'display' => false
+                            'min' => -1,
+                            'stepSize' => 1,
+                            'maxTicksLimit' => 1000,
+                            'autoSkip' => false,
+                            'callback' => "@@chart_commodity_callback@@"
                         ],
                         'gridLines' => [
                             'display' => false,
@@ -530,7 +534,11 @@ class TradeController extends Controller
                         'type' => 'linear',
                         'position' => 'left',
                         'ticks' => [
-                            'display' => false
+                            'min' => -1,
+                            'stepSize' => 1,
+                            'autoSkip' => false,
+                            'maxTicksLimit' => 1000,
+                            'callback' => "@@chart_station_callback@@"
                         ],
                         'gridLines' => [
                             'display' => false,
@@ -550,13 +558,15 @@ class TradeController extends Controller
         $chart = app()->chartjs
                 ->name("specialisationeconomy")
                 ->type("bubble")
-                ->size(["height" => 400, "width"=>1000])
+                ->size(["height" => 100+(25*$stations->count()), "width"=>1000])
                 ->datasets($datasets)
                 ->options($options);
         
         return view('trade/specialisationeconomy', [
             'economy' => $economy,
             'chart' => $chart,
+            'slabels' => $slabels,
+            'clabels' => $clabels,
         ]);
     }
 }
