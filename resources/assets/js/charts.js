@@ -29,13 +29,13 @@ ChartCallbacks.chart_xaxis_callback_datetime = function(v, i, vs) {
 
 
 ChartCallbacks.tooltip_label_number = function (t, d) {
-	return chart_xaxis_callback(t.xLabel)+" = "+t.yLabel;
+	return ChartCallbacks.chart_xaxis_callback(t.xLabel)+" = "+t.yLabel;
 };
 ChartCallbacks.tooltip_label_datetime = function (t, d) {
 	return moment("3303-12-22").add(t.xLabel, 'seconds').format("D MMM YYYY HH:mm")+" = "+t.yLabel;
 };
 ChartCallbacks.tooltip_label_percent = function (t, d) {
-	return chart_xaxis_callback(t.xLabel)+" = "+t.yLabel + "%";
+	return ChartCallbacks.chart_xaxis_callback(t.xLabel)+" = "+t.yLabel + "%";
 };
 ChartCallbacks.tooltip_label_title = function (t, d) {
 	if (d.datasets[t[0].datasetIndex].data[t[0].index].estimated) {
