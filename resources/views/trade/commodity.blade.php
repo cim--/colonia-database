@@ -32,7 +32,7 @@
 
 <table class='table table-bordered datatable' data-page-length='25'
 	   @if($station !== null)
-	   data-order='[[5, "asc"]]'
+	   data-order='[[8, "asc"]]'
 	   @endif
 	   >
   <thead>
