@@ -2,9 +2,16 @@ var ChartCallbacks = {};
 
 ChartCallbacks.data = {};
 
+ChartCallbacks.leapYearConspiracy = function(t) {
+	var dm = t.format("D MMM ");
+	var y = parseInt(t.format("YYYY"));
+	y += 1286;
+	return dm+y;
+};
+
 ChartCallbacks.chart_xaxis_callback = function(v, i, vs) {
-	/* TODO: adjust for the leap year shift */
-	return moment("3303-03-02").add(v, 'days').format("D MMM YYYY");
+	var t = moment("2017-03-02").add(v, 'days');
+	return ChartCallbacks.leapYearConspiracy(t);
 };
 
 ChartCallbacks.chart_commodity_callback = function(v, i, vs) {
@@ -23,8 +30,8 @@ ChartCallbacks.chart_station_callback = function(v, i, vs) {
 
 
 ChartCallbacks.chart_xaxis_callback_datetime = function(v, i, vs) {
-	/* TODO: adjust for the leap year shift */
-	return moment("3303-12-22").add(v, 'seconds').format("D MMM YYYY");
+	var t = moment("2017-12-22").add(v, 'seconds');
+	return ChartCallbacks.leapYearConspiracy(t);
 };
 
 
@@ -32,7 +39,8 @@ ChartCallbacks.tooltip_label_number = function (t, d) {
 	return ChartCallbacks.chart_xaxis_callback(t.xLabel)+" = "+t.yLabel;
 };
 ChartCallbacks.tooltip_label_datetime = function (t, d) {
-	return moment("3303-12-22").add(t.xLabel, 'seconds').format("D MMM YYYY HH:mm")+" = "+t.yLabel;
+	var ts = moment("2017-12-22").add(t.xLabel, 'seconds');
+	return ChartCallbacks.leapYearConspiracy(ts) + ts.format(" HH:mm")+" = "+t.yLabel;
 };
 ChartCallbacks.tooltip_label_percent = function (t, d) {
 	return ChartCallbacks.chart_xaxis_callback(t.xLabel)+" = "+t.yLabel + "%";
