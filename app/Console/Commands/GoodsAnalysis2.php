@@ -104,7 +104,7 @@ class GoodsAnalysis2 extends Command
                 $this->maxsupmultiplier = 0;
                 $this->maxdemmultiplier = 0;
                 foreach ($states as $state) {
-                    $regen = $this->analyseRegeneration($commodity, $station, $state, $demandregen==0, $supplyregen==0);
+                    $regen = $this->analyseRegeneration($commodity, $station, $state);
                     if ($regen !== null) {
                         if ($regen > 0) {
                             $supplyregen[] = $regen;
@@ -149,13 +149,7 @@ class GoodsAnalysis2 extends Command
             ->where('commodity_id', $commodity->id)
             ->where('state_id', $state->id)
             ->where('reserves', '!=', 0)
-            ->where('reserves', '>', -100000) // ignore high CG demands
-            ->where('date', '>', '2018-03-01') // changes in 3.0
-            ->where(function ($q) {
-                // ignore the tax-break week
-                $q->where('date', '>=', '2018-06-01')
-                  ->orWhere('date', '<', '2018-05-24');
-            });
+            ->normalMarkets();
         
         $reserves = $reservesquery->get();
 
@@ -170,10 +164,31 @@ class GoodsAnalysis2 extends Command
 
         $max = 0;
         $stability = 0;
+
+        $newmax = 0;
+        $newstab = 0;
         foreach ($reserves as $reserve) {
             if (abs($reserve->reserves) > $max) {
-                $max = abs($reserve->reserves);
-                $stability = 1;
+                if ($stability > 5) {
+                    /* It's possible that someone sold back to a
+                     * max-supply market */
+                    if (abs($reserve->reserves) != $newmax) {
+                        $newmax = abs($reserve->reserves);
+                        $newstab = 1;
+                    } else {
+                        $newstab++;
+                        if ($newstab >= 5) {
+                            // now there's been at least as many, so use it
+                            $newmax = 0;
+                            $newstab = 0;
+                            $max = abs($reserve->reserves);
+                            $stability = 1;
+                        }
+                    }
+                } else {
+                    $max = abs($reserve->reserves);
+                    $stability = 1;
+                }
             } else if (abs($reserve->reserves) == $max) {
                 $stability++;
             }
