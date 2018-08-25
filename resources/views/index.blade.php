@@ -15,7 +15,7 @@
 		@else
 		people
 		@endif</li>
-	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements)</li>
+	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements) including {{$engineers}} engineers</li>
 	  <li>Modern production facilities manufacture goods with {{number_format(100*$ecsize/$population)}}% of standard efficiency.</li>
 	  <li>{{$instcount}} installations and {{$megacount}} operational mobile megaships</li>
 	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>

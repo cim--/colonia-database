@@ -111,7 +111,18 @@
 </div>
 
 <div class='historybox'>
-  <p>To be continued...</p>
+  <h2>Development</h2>
+  <p>To avoid requiring the potentially destructive use of Earth-like Worlds for farming, and as a quicker alternative to terraforming, the region had been making heavy use of hydroponics, with stations like <a href='{{route('stations.show', 104)}}'>Jonas Station</a> or <a href='{{route('stations.show', 78)}}'>Pilkington Orbital</a> orbiting dead ice worlds and providing food through internal facilities.</p>
+
+  <p>Professor Diana VanCleef recommended to the Council that a major hydroponics facility and research centre be constructed, with the well-defended Randgnid system chosen as its location.</p>
+
+  <p>At the same time, the Council recruited specialist <a href='{{route('engineers.index')}}'>engineers</a> to develop the shipyards and outfitting capabilities of the region further. Their initial facilities were basic, but allowed experimental modifications to be made locally, and received assistance from many pilots to develop their capabilities.</p>
+</div>
+
+
+
+<div class='historybox'>
+  ...to be continued...
 </div>
 
 </div>

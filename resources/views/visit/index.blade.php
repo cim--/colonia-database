@@ -19,6 +19,7 @@
   @include('visit/tracker', ['id' => 'installationtrack', 'label' => 'Installations', 'entries' => $installations])
   @include('visit/tracker', ['id' => 'megashiptrack', 'label' => 'Megaships', 'entries' => $megaships])
   @include('visit/tracker', ['id' => 'sitetrack', 'label' => 'Sites', 'entries' => $sites])
+  @include('visit/tracker', ['id' => 'engineertrack', 'label' => 'Engineers', 'entries' => $engineers])
 
   <button id='disabletracktools'>Disable tracking tools</button>
 </div>

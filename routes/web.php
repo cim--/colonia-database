@@ -95,6 +95,8 @@ Route::resource('megaships', 'MegashipController');
 Route::resource('installations', 'InstallationController');
 Route::resource('sites', 'SiteController');
 
+Route::resource('engineers', 'EngineerController');
+
 Route::resource('missions', 'MissionController', ['except' => [
     'show', 'destroy' // for now
 ]]);

@@ -4,6 +4,8 @@
 
 @section('content')
 
+@include('outfitting/engineertext')
+    
 @if ($module->stations->count() > 0)
 <p>This module is produced at the following stations. Note that stations in Lockdown will temporarily not have outfitting available.</p>
 

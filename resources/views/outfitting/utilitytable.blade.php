@@ -17,6 +17,7 @@
 	<tr>
       <td>
 		<a href='{{route('outfitting.moduletype', $utility->id)}}'>{{$utility->description}}</a>
+		@include('outfitting.blueprint', ['mtype' => $utility])
 	  </td>
 	  @include('outfitting.utilitycell', ['class' => 'A', 'utility' => $utility])
 	  @include('outfitting.utilitycell', ['class' => 'B', 'utility' => $utility])

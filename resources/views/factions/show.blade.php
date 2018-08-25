@@ -11,6 +11,11 @@
     @if ($faction->player)
     <p>Player faction</p>
     @endif
+
+	@if ($faction->government->name == "Engineer" && $faction->engineers->count() > 0)
+	<p>This is an Engineer faction supporting <a href='{{route('engineers.show', $faction->engineers[0]->id)}}'>{{$faction->engineers[0]->name}}</a>.</p>
+	@endif
+	
 	<p><span class='faction-property'>Government</span>: 
 	  @include($faction->government->icon)
 	  {{$faction->government->name}}

@@ -16,6 +16,7 @@ var CDBTracker = function() {
 		window.localStorage.setItem('installations', "X");
 		window.localStorage.setItem('megaships', "X");
 		window.localStorage.setItem('sites', "X");
+		window.localStorage.setItem('engineers', "X");
 		$("#enabletracktools").hide();
 		$("#disabletracktools").show();
 		$('#tracktools').removeClass('inactive');
@@ -69,6 +70,7 @@ var CDBTracker = function() {
 		if (list) {
 			return list.split(";").length-1;
 		} else {
+			window.localStorage.setItem(domain, "X");
 			return 0;
 		}
 	};
@@ -100,6 +102,7 @@ var CDBTracker = function() {
 		obj.progressBar('#megashiptrack', 'megaships');
 		obj.progressBar('#installationtrack', 'installations');
 		obj.progressBar('#sitetrack', 'sites');
+		obj.progressBar('#engineertrack', 'engineers');
 	};
 
 	

@@ -21,6 +21,7 @@
 	@else
 	@include('layout.no')
 	@endif
+	@include('outfitting.blueprint')
   </li>
   @endforeach
 </ul>
@@ -44,6 +45,7 @@
 	@else
 	@include('layout.no')
 	@endif
+    @include('outfitting.blueprint')
   </li>
   @endforeach
 </ul>

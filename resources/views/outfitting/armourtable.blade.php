@@ -2,21 +2,11 @@
   <thead>
 	<tr>
 	  <th>Ship</th>
-	  <th>
-		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Lightweight Alloy')->first()->id)}}'>Lightweight</a>
-	  </th>
-	  <th>
-		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Reinforced Alloy')->first()->id)}}'>Reinforced</a>
-	  </th>
-	  <th>
-		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Military Grade Composite')->first()->id)}}'>Military</a>
-	  </th>
-	  <th>
-		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Mirrored Surface Composite')->first()->id)}}'>Mirrored</a>
-	  </th>
-	  <th>
-		<a href='{{route('outfitting.moduletype', $armours->where('description', 'Reactive Surface Composite')->first()->id)}}'>Reactive</a>
-	  </th>
+	  @include ('outfitting.armourheadcell', ['mtype' => $armours->where('description', 'Lightweight Alloy')->first()])
+	  @include ('outfitting.armourheadcell', ['mtype' => $armours->where('description', 'Reinforced Alloy')->first()])
+	  @include ('outfitting.armourheadcell', ['mtype' => $armours->where('description', 'Military Grade Composite')->first()])
+	  @include ('outfitting.armourheadcell', ['mtype' => $armours->where('description', 'Mirrored Surface Composite')->first()])
+	  @include ('outfitting.armourheadcell', ['mtype' => $armours->where('description', 'Reactive Surface Composite')->first()])
 	</tr>
   </thead>
   <tbody>

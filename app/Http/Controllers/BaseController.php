@@ -21,6 +21,7 @@ use App\Models\Megashipclass;
 use App\Models\Installationclass;
 use App\Models\Installation;
 use App\Models\Megaship;
+use App\Models\Engineer;
 
 class BaseController extends Controller
 {
@@ -239,6 +240,7 @@ class BaseController extends Controller
             'systems' => $systems,
             'factions' => $factions,
             'stations' => $stations,
+            'engineers' => Engineer::count(),
             'historys' => $history,
             'importants' => $important,
             'lowinfluences' => $lowinfluences,

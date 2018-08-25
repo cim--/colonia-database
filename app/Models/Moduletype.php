@@ -12,4 +12,9 @@ class Moduletype extends Model
     {
         return $this->hasMany('App\Models\Module');
     }
+
+    public function blueprints()
+    {
+        return $this->hasMany('App\Models\Blueprint');
+    }
 }

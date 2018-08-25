@@ -10,15 +10,18 @@ icon will give a more detailed description. A key of all icons is
 provided below.</p>
 
 <div id='iconlist'>
-  <div class='iconcol'>
+  <div class='iconrow'>
 
 	@include('intro.iconbox', ['title'=>'Economies', 'entries' => $economies])
 	@include('intro.iconbox', ['title'=>'Station Facilities', 'entries' => $facilities->where('type', 'Station')])
 	@include('intro.iconbox', ['title'=>'System Facilities', 'entries' => $facilities->where('type', 'System')])
+  </div>
+  <div class='iconrow'>
 	@include('intro.iconbox', ['title'=>'Governments', 'entries' => $governments])
 	@include('intro.iconbox', ['title'=>'Installations', 'entries' => $installations])
 	@include('intro.iconbox', ['title'=>'Megaships', 'entries' => $megaships])
-
+  </div>
+  <div class='iconrow'>
 	<div class='iconbox'>
 	  <div>
 		<h2>Miscellaneous</h2>
@@ -30,9 +33,8 @@ provided below.</p>
 		</ul>
 	  </div>
 	</div>
-
-	
   </div>
+
 </div>
 
 @endsection

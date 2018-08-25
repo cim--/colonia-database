@@ -350,17 +350,19 @@ div#newhere {
 }
 
 div#iconlist {
-	@include make-row();
-	div.iconbox {
-		@include make-sm-column(6);
-		@include make-lg-column(4);
-		h2 {
-			border-bottom: 1px #005090 dotted;
-		}
-		> div {
-			margin: 0.5em;
-			padding: 0.5em;
-			border: thin #005090 solid;
+	div.iconrow {
+		@include make-row();
+		div.iconbox {
+			@include make-sm-column(6);
+			@include make-lg-column(4);
+			h2 {
+				border-bottom: 1px #005090 dotted;
+			}
+			> div {
+				margin: 0.5em;
+				padding: 0.5em;
+				border: thin #005090 solid;
+			}
 		}
 	}
 }
@@ -381,5 +383,25 @@ div.commodityhead {
 	}
 	div {
 		@include make-lg-column(8)
+	}
+}
+
+#blueprintlist {
+	@include make-row()
+	margin: 0;
+	padding: 0;
+	li {
+		@include make-lg-column(3)
+		list-style-type: none;
+		border: thin black solid;
+	}
+}
+
+span.blueprint {
+	span {
+		color: #bbb;
+	}
+	strong {
+		color: #902050;
 	}
 }

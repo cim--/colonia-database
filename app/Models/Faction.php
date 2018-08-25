@@ -32,6 +32,12 @@ class Faction extends Model
     public function history() {
         return $this->hasMany('App\Models\History');
     }
+
+    public function engineers()
+    {
+        // unlikely to ever have more than one
+        return $this->hasMany('App\Models\Engineer');
+    }
     
     // pending states
     public function states() {

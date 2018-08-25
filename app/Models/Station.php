@@ -49,6 +49,11 @@ class Station extends Model
         return $this->belongsToMany('App\Models\Ship');
     }
 
+    public function engineers()
+    {
+        // unlikely to ever have more than one
+        return $this->hasMany('App\Models\Engineer');
+    }
     
     public function history() {
         return $this->morphMany('App\Models\History', 'location');

@@ -21,6 +21,10 @@
 <p>Due to its unique resources, this station is designated a strategic asset for the Colonia region.</p>
 @endif
 
+@if ($station->stationclass->name == "Engineer Base" && $station->engineers->count() > 0)
+<p>This is the workshop of <a href='{{route('engineers.show', $station->engineers[0]->id)}}'>{{$station->engineers[0]->name}}</a>.</p>
+@endif
+
 <table class='table table-bordered'>
   <tr>
 	<th>Type</th>

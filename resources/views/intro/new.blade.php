@@ -133,7 +133,7 @@
     <div>
 	  <h2>Engineering</h2>
 
-	  <p>Colonia has no engineers, but if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules.</p>
+	  <p>Colonia has <a href='{{route('engineers.index')}}'>limited engineering options</a> locally, but if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects.</p>
 
 	  <p>While the system populations at under 1 million would normally be insufficient to support Material and Tech Brokers, there is one of each present:</p>
 	  <ul>

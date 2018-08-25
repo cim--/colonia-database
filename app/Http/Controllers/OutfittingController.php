@@ -22,23 +22,23 @@ class OutfittingController extends Controller
     private function outfittingSummary($reqcurrent) {
         $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
 
         $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
 
         $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
         
         $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
-        }])->orderBy('description')->get();
+        }])->with('blueprints')->orderBy('description')->get();
         $ships = Module::whereHas('moduletype', function($q) {
             $q->where('type', 'armour');
-        })->get();
+        })->with('moduletype', 'moduletype.blueprints')->get();
         $shiptypes = [];
         foreach ($ships as $ship) {
             $shiptypes[$ship->type] = $ship->type;
@@ -48,21 +48,21 @@ class OutfittingController extends Controller
         $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
 
         $utilities = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereIn('type', ['A','B','C','D','E']);
         })->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
         
         $utilitiesns = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereNotIn('type', ['A','B','C','D','E']);
         })->with(['modules' => function($q) use ($reqcurrent) {
                 $q->isAvailable($reqcurrent);
                 $q->withCount('stations');
-            }])->orderBy('description')->get();
+            }])->with('blueprints')->orderBy('description')->get();
 
         
         return view('outfitting/index', [
@@ -83,7 +83,7 @@ class OutfittingController extends Controller
     {
         $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
             $q->orderBy('name');
-        }])->with('moduletype')->orderBy('size')->orderBy('type')->get();
+            }])->with('moduletype', 'moduletype.blueprints', 'moduletype.blueprints.engineer')->orderBy('size')->orderBy('type')->get();
 
         if ($modules->count() == 1) {
             return view('outfitting/module', [
@@ -103,7 +103,7 @@ class OutfittingController extends Controller
     {
         $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
             $q->orderBy('name');
-        }])->with('moduletype')->orderBy('size')->orderBy('type')->get();
+        }])->with('moduletype', 'moduletype.blueprints', 'moduletype.blueprints.engineer')->orderBy('size')->orderBy('type')->get();
 
         return view('outfitting/module', [
             'moduletype' => $moduletype,

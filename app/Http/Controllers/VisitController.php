@@ -10,6 +10,7 @@ use App\Models\Station;
 use App\Models\Installation;
 use App\Models\Megaship;
 use App\Models\Site;
+use App\Models\Engineer;
 
 class VisitController extends Controller
 {
@@ -20,6 +21,7 @@ class VisitController extends Controller
         $installations = Installation::get()->sortBy(function($v,$k) { return $v->displayName(); });;
         $megaships = Megaship::get()->sortBy(function($v,$k) { return $v->displayName(); });;
         $sites = Site::get()->sortBy(function($v,$k) { return $v->displayName(); });
+        $engineers = Engineer::get()->sortBy(function($v,$k) { return $v->displayName(); });
         
         return view('visit.index', [
             'systems' => $systems,
@@ -27,7 +29,8 @@ class VisitController extends Controller
             'factions' => $factions,
             'installations' => $installations,
             'megaships' => $megaships,
-            'sites' => $sites
+            'sites' => $sites,
+            'engineers' => $engineers
         ]);
     }
 }
