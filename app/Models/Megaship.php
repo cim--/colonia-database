@@ -9,10 +9,8 @@ class Megaship extends Model
 {
     protected $dates = ["created_at", "updated_at", "commissioned", "decommissioned"];
 
-    /* Megaships usually move weekly, but sometimes 'stall'. This
-     * array is used to track weeks they stay still. */
-    protected $slips = ["2018-07-12", "2018-07-26", "2018-08-09"];
-    
+    protected $firstmove = "2018-07-05";
+   
     public function megashipclass()
     {
         return $this->belongsTo('App\Models\Megashipclass');
@@ -42,14 +40,15 @@ class Megaship extends Model
         if ($this->megashipclass->operational) {
             $max = $this->megashiproutes->max('sequence');
             $weeks = $this->commissioned->diffInWeeks();
-            foreach ($this->slips as $idx => $slip) {
-                if ($this->commissioned->lt(Carbon::parse($slip))) {
-                    $weeks -= count($this->slips)-$idx;
-                    break;
-                }
+            $phase = $this->commissioned->diffInWeeks(Carbon::parse($this->firstmove));
+
+            if ($phase % 2 == 1) {
+                $moves = floor(($weeks+1)/2);
+            } else {
+                $moves = floor($weeks/2);
             }
             
-            $sequence = $weeks % ($max+1);
+            $sequence = $moves % ($max+1);
             return $this->megashiproutes->where('sequence', $sequence)->first();        } else {
             return $this->megashiproutes->first();
         }
