@@ -39,8 +39,11 @@ class Megashiproute extends Model
         }
         $count = $this->megaship->sequenceCount();
         $date = $this->lastThursday();
+        if ($date->diffInWeeks($this->megaship->firstMove()) == 1) {
+            $date->subWeek();
+        }
         do {
-            $date->addWeek();
+            $date->addWeek(2);
             $current++;
             if ($current == $count) {
                 $current = 0;
@@ -54,9 +57,12 @@ class Megashiproute extends Model
         $current = $this->megaship->currentSequence()->sequence;
         if ($current == $this->sequence) {
             $date = $this->lastThursday();
+            if ($date->diffInWeeks($this->megaship->firstMove()) == 1) {
+                $date->subWeek();
+            }
         } else {
             $date = $this->nextArrival();
         }
-        return $date->addWeek();
+        return $date->addWeek(2);
     }
 }

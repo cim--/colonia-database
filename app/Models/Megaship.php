@@ -71,4 +71,9 @@ class Megaship extends Model
     {
         return $this->megashipclass->name." ".$this->serial;
     }
+
+    public function firstMove()
+    {
+        return Carbon::parse($this->firstmove);
+    }
 }
