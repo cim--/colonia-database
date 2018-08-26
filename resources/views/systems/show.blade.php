@@ -65,9 +65,12 @@
 	  @foreach ($system->facilities->sortBy('name') as $facility)
 	  @if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		@include ($facility->icon)
-		{{$facility->name}}@if (!$loop->last),@endif
+		{{$facility->name}}@if (!$loop->last || $system->cfthmc),@endif
 		@if (!$facility->pivot->enabled)</span>@endif
 	  @endforeach
+	  @if ($system->cfthmc)
+	  {{$system->cfthmc}} lifeless terraformables
+	  @endif
 	</p>
 
 	@if ($system->eddb)

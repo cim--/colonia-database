@@ -22,6 +22,7 @@
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
 	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
 	  <li>The exploration value of the inhabited and planned systems is estimated at {{number_format($exploration)}} credits.</li>
+	  <li>The currently inhabited systems have {{$terraformable}} terraforming candidates which do not have any native life.</li>
 	</ul>
 
 	<h2>Economies</h2>

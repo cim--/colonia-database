@@ -168,6 +168,7 @@ class BaseController extends Controller
         ]);
         $maxdist = 0;
         $ecsize = 0;
+        $terraformable = 0;
         foreach ($systems as $system) {
             if ($system->population > 0) {
                 $ecsize += $system->economySize();
@@ -176,6 +177,7 @@ class BaseController extends Controller
                 if ($dist > $maxdist) {
                     $maxdist = $dist;
                 }
+                $terraformable += $system->cfthmc;
                 $this->wordmap($wordmap, $system->displayName());
             }
 
@@ -229,6 +231,7 @@ class BaseController extends Controller
         return view('index', [
             'population' => $population,
             'exploration' => $exploration,
+            'terraformable' => $terraformable,
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),

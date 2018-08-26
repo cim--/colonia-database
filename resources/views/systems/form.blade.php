@@ -35,6 +35,14 @@
 {!! Form::select('phase_id', $phases) !!}
 </div>
 <div class='form-field'>
+{!! Form::label('cftww', "Terraformable Water Worlds") !!}
+{!! Form::text('cftww') !!}
+</div>
+<div class='form-field'>
+{!! Form::label('cfthmc', "Terraformable High Metal Content") !!}
+{!! Form::text('cfthmc') !!}
+</div>
+<div class='form-field'>
 {!! Form::label('economy_id', "Economy") !!}
 {!! Form::select('economy_id', $economies) !!}
 </div>

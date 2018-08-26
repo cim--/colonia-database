@@ -478,6 +478,8 @@ class SystemController extends Controller
         $system->explorationvalue = $request->input('explorationvalue');
         $system->phase_id = $request->input('phase_id');
         $system->economy_id = $request->input('economy_id');
+        $system->cftww = $request->input('cftww');
+        $system->cfthmc = $request->input('cfthmc');
         $system->save();
 
         $system->facilities()->sync($request->input('facility',[]));
