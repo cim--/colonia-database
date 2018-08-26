@@ -83,7 +83,13 @@ class Station extends Model
         });
     }
 
+    public function scopeTradable($tq) {
+        return $tq->whereHas('facilities', function($q) {
+            $q->where('name', 'Commodities');
+        })->dockable();
+    }
 
+    
     public function currentState()
     {
         if ($this->faction->virtual) {

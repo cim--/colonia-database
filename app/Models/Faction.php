@@ -111,7 +111,7 @@ class Faction extends Model
         } else if ($hold) {
             return [$hold]; // return "None" if it's the only one
         } else {
-            return []; // fallback in case of bad data
+            return [State::where('name', 'None')->first()]; // fallback in case of bad data
         }
     }
     

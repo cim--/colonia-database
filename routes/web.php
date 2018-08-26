@@ -179,6 +179,19 @@ Route::get('/specialisation/{economy}', [
     'uses' => 'TradeController@specialisationEconomy'
 ]);
 
+Route::get('/logistics', [
+    'as' => 'logistics',
+    'uses' => 'LogisticsController@form'
+]);
+Route::post('/logistics/configure', [
+    'as' => 'logistics.configure',
+    'uses' => 'LogisticsController@configure'
+]);
+Route::get('/logistics/{config}', [
+    'as' => 'logistics.report',
+    'uses' => 'LogisticsController@report'
+]);
+
 
 Route::get('/effects', [
     'as' => 'effects',
