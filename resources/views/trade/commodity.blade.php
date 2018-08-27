@@ -21,7 +21,7 @@
   (usage cycle: {{number_format(-$commodity->demandcycle/86400, 1)}} days)
   @endif
 </p>
-<p>Use the &#x21c4; icons to sort the table by distance to this station.</p>
+<p>Use the &#x21c4; icons to sort the table by distance to this station, or the &#x23f0; icons to show history at that station.</p>
 </div>
 
 <ul class='commoditynav'>
@@ -65,6 +65,7 @@
 		</a>
 		@include($reserve->station->economy->icon)
 		<a href="{{route('reserves.commodity.reference', [$reserve->commodity_id, $reserve->station->id])}}" title='Relative to {{$reserve->station->name}}'>&#x21c4;</a>
+		<a href="{{route('stations.showtradehistory', [$reserve->station->id, $reserve->commodity_id])}}" title='History at {{$reserve->station->name}}'>&#x23F0;</a>
 	  </td>
 	  <td data-search='
 		@if ($reserve->station->stationclass->hasSmall) Small Pad @endif
