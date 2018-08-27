@@ -8,6 +8,14 @@
 		{{$item->name}}
 	  </li>
 	  @endforeach
+      @if (isset($extras))
+      @foreach ($extras as $name => $icon)
+	  <li>
+		@include($icon)
+		{{$name}}
+	  </li>
+	  @endforeach
+	  @endif
 	</ul>
   </div>
 </div>

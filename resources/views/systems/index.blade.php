@@ -60,13 +60,17 @@ Systems
 	  <td data-search='
 		@foreach ($system->facilities as $facility)
 {{$facility->name}}
-@endforeach
+		@endforeach
+		@if ($system->cfthmc > 0) Terraforming Candidate @endif
 '>
 		@foreach ($system->facilities->sortBy('name') as $facility)
 		@if (!$facility->pivot->enabled)<span class='facility-disabled'>@endif
 		  @include ($facility->icon)
 		  @if (!$facility->pivot->enabled)</span>@endif
   		@endforeach
+		@if ($system->cfthmc > 0)
+		@include("icons/facilities/systems/terraformable")
+		@endif
 	  </td>
 	  <td>{{$system->installations_count}}</td>
 	  <td>{{$system->megashiproutes_count}}</td>

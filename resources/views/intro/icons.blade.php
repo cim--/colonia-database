@@ -14,7 +14,7 @@ provided below.</p>
 
 	@include('intro.iconbox', ['title'=>'Economies', 'entries' => $economies])
 	@include('intro.iconbox', ['title'=>'Station Facilities', 'entries' => $facilities->where('type', 'Station')])
-	@include('intro.iconbox', ['title'=>'System Facilities', 'entries' => $facilities->where('type', 'System')])
+	@include('intro.iconbox', ['title'=>'System Facilities', 'entries' => $facilities->where('type', 'System'), 'extras' => ['Terraforming Candidate' => 'icons/facilities/systems/terraformable']])
   </div>
   <div class='iconrow'>
 	@include('intro.iconbox', ['title'=>'Governments', 'entries' => $governments])

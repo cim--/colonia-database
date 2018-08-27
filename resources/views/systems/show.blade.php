@@ -69,7 +69,13 @@
 		@if (!$facility->pivot->enabled)</span>@endif
 	  @endforeach
 	  @if ($system->cfthmc)
-	  {{$system->cfthmc}} lifeless terraformables
+	  @include('icons/facilities/systems/terraformable')
+	  {{$system->cfthmc}} lifeless
+      @if ($system->cfthmc > 1)
+      terraformables
+	  @else
+	  terraformable
+	  @endif
 	  @endif
 	</p>
 

@@ -74,7 +74,7 @@ class BaseController extends Controller
         }
         
         
-        $systems = System::with('phase', 'economy')->orderBy('name')->get();
+        $systems = System::with('phase', 'economy', 'facilities')->orderBy('name')->get();
         $factions = Faction::with('government', 'ethos')->notHidden()->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
@@ -169,6 +169,9 @@ class BaseController extends Controller
         $maxdist = 0;
         $ecsize = 0;
         $terraformable = 0;
+        $water = 0;
+        $earthlike = 0;
+        $ammonia = 0;
         foreach ($systems as $system) {
             if ($system->population > 0) {
                 $ecsize += $system->economySize();
@@ -178,6 +181,13 @@ class BaseController extends Controller
                     $maxdist = $dist;
                 }
                 $terraformable += $system->cfthmc;
+                $water += $system->cftww;
+                if ($system->facilities->where('name', 'Earthlike')->count() > 0) {
+                    $earthlike++;
+                }
+                if ($system->facilities->where('name', 'Ammonia World')->count() > 0) {
+                    $ammonia++;
+                }
                 $this->wordmap($wordmap, $system->displayName());
             }
 
@@ -232,6 +242,9 @@ class BaseController extends Controller
             'population' => $population,
             'exploration' => $exploration,
             'terraformable' => $terraformable,
+            'elwcount' => $earthlike,
+            'wwcount' => $water,
+            'awcount' => $ammonia,
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
