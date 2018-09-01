@@ -33,7 +33,7 @@
   @foreach ($moduletypes as $mtype)
   <div class='form-field'>
 	{!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
-	{!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>3, 'step'=>1]) !!}
+	{!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>1]) !!}
   </div>
   @endforeach
 </fieldset>
