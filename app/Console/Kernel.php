@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\GoodsAnalysis2::class,
         Commands\TrafficEstimates::class,
         Commands\RegionalComparison::class,
+        Commands\LengthOfState::class,
         //
     ];
 
