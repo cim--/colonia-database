@@ -105,6 +105,10 @@ var CDBTracker = function() {
 		obj.progressBar('#engineertrack', 'engineers');
 	};
 
+	obj.validate = function() {
+		// clears old data if present
+		obj.unvisit('systems', 51); // old Kinesi entry
+	};
 	
 	return obj;
 }();
@@ -117,6 +121,7 @@ $(document).ready(function() {
 
 	if (CDBTracker.active()) {
 		$("#enabletracktools").hide();
+		CDBTracker.validate();
 	} else {
 		$("#disabletracktools").hide();
 		$('#tracktools').addClass('inactive');
