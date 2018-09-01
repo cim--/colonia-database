@@ -433,7 +433,7 @@ class TradeController extends Controller
     }
 
     public function specialisation() {
-        $commodities = Commodity::with('commoditystat')->orderBy('category')->orderBy('name')->get();
+        $commodities = Commodity::whereHas('commoditystat')->with('commoditystat')->orderBy('category')->orderBy('name')->get();
         $economies = Economy::analyse()->whereHas('stations')->orderBy('name')->get();
         return view('trade/specialisation', [
             'commodities' => $commodities,
