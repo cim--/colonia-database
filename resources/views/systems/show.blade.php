@@ -134,7 +134,7 @@
 
 	@if ($system->megashiproutes->count() > 0)
 	<h2>Megaships</h2>
-	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false' data-order='[[1, "asc"]]'>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false' data-order='[[2, "asc"],[1, "asc"]]'>
 	  <thead>
 		<tr><th>Class</th><th>Ship</th><th>Next Arrival</th><th>Next Departure</th>
 	  </thead>
@@ -150,14 +150,14 @@
 			  {{$route->megaship->serial}}
 			</a>
 		  </td>
-		  <td>
+		  <td data-sort='{{$route->nextArrival() ? $route->nextArrival()->format("Y-m-d") : 0}}'>
 			@if ($route->nextArrival())
 			{{App\Util::displayDate($route->nextArrival())}}
 			@else
 			<strong>Present</strong>
 			@endif
 		  </td>
-		  <td>
+		  <td data-sort='{{$route->nextDeparture()->format("Y-m-d")}}'>
 			@if ($route->megaship->megashipclass->operational)
 			{{App\Util::displayDate($route->nextDeparture())}}
 			@else
