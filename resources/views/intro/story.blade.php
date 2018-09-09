@@ -117,6 +117,8 @@
   <p>Professor Diana VanCleef recommended to the Council that a major hydroponics facility and research centre be constructed, with the well-defended Randgnid system chosen as its location.</p>
 
   <p>At the same time, the Council recruited specialist <a href='{{route('engineers.index')}}'>engineers</a> to develop the shipyards and outfitting capabilities of the region further. Their initial facilities were basic, but allowed experimental modifications to be made locally, and received assistance from many pilots to develop their capabilities.</p>
+
+  <p>Shortly after, an unauthorised settlement, carefully concealed within rings and asteroid belts, was discovered in a system originally planned for CEI colonisation. The settlement - <a href='{{route('systems.show', 79)}}'>Kinesi</a> - showed signs of having had a major and continuing schism, and it is possible that one of the losing factions had leaked its existence in self-defence.</p>
 </div>
 
 
