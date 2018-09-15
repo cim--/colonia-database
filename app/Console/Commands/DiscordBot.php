@@ -126,6 +126,8 @@ class DiscordBot extends Command
                     }
                 }
                 $result .= "```";
+                $result .= "Read the bot privacy policy - <https://cdb.sotl.org.uk/about#bpp> - before using `!addreport` or `!contribute`";
+                                
             } else {
                 if (isset($commands[$params[0]])) {
                     $help = $commands[$params[0]]->getHelp($prefix);
@@ -1213,7 +1215,7 @@ class DiscordBot extends Command
                 $contribution = new Contribution;
                 $contribution->objective_id = $objective->id;
                 $contribution->amount = (int)$params[2];
-                $contribution->contributor = $message->author->user->username." #".$message->author->user->discriminator;
+                $contribution->contributor = \Crypt::encryptString($message->author->user->username." #".$message->author->user->discriminator);
                 $contribution->save();
 
                 $result = "Thank you. Your contribution has been logged.\n";

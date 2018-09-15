@@ -10,6 +10,8 @@ Projects
 <p><a class='edit' href='{{route('projects.create')}}'>New project</a></p>
 @endif
 
+<p>The following projects are available to collect census data or to improve facilities in the region.</p>
+
 <ul>
 @foreach ($projects as $project)
 <li>

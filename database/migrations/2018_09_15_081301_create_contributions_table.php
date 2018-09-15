@@ -17,7 +17,7 @@ class CreateContributionsTable extends Migration
             $table->increments('id');
             $table->integer('objective_id')->unsigned();
             $table->integer('amount');
-            $table->string('contributor');
+            $table->text('contributor');
             $table->timestamps();
         });
     }

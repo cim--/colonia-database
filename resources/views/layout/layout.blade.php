@@ -42,7 +42,7 @@
 		  The site is created using data from <a href='https://www.elitedangerous.com/'>Elite: Dangerous</a>, with the permission of Frontier Developments plc, for non-commercial purposes. It is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
 		</p>
 		<p>
-		  The site uses cookies for essential purposes only. No personal data is stored in the cookies unless you use the Login system. The majority of site features do not require a login, and no personal data will be shared with any third party.
+		  The site uses cookies for essential purposes only. No personal data is stored in the cookies unless you use the Login system. The majority of site features do not require a login, and no personal data will be shared with any third party. If you use the Discord Bot, please see the additional <a href='{{route('intro.about')}}#bpp'>bot privacy policy</a>.
 		</p>
       </footer>
 	</body>
