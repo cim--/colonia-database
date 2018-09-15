@@ -22,6 +22,7 @@ use App\Models\Installationclass;
 use App\Models\Installation;
 use App\Models\Megaship;
 use App\Models\Engineer;
+use App\Models\Project;
 
 class BaseController extends Controller
 {
@@ -237,6 +238,8 @@ class BaseController extends Controller
                 //unset($wordmap[$key]);
             }
         }
+
+        $projects = Project::where('complete', false)->orderBy('priority')->orderBy('summary')->get();
         
         return view('index', [
             'population' => $population,
@@ -257,6 +260,7 @@ class BaseController extends Controller
             'factions' => $factions,
             'stations' => $stations,
             'engineers' => Engineer::count(),
+            'projects' => $projects,
             'historys' => $history,
             'importants' => $important,
             'lowinfluences' => $lowinfluences,

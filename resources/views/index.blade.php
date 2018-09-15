@@ -116,7 +116,16 @@
 	
   </div>
 
-<div class='col-sm-6'>
+  <div class='col-sm-6'>
+	@if ($projects->count() > 0)
+	<h2>Current Projects</h2>
+	<ul>
+	  @foreach ($projects as $project)
+	  <li><a href='{{route('projects.show', $project->id)}}'>{{$project->summary}}</a></li>
+	  @endforeach
+	</ul>
+	@endif
+	
 	<h2>Current Events</h2>
 <ul id='major-events'>
   @foreach ($importants as $important)
