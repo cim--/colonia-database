@@ -1193,15 +1193,15 @@ class DiscordBot extends Command
             if (count($params) < 3) {
                 return $this->safe("Usage: !contribute <project code> <objective code> <amount>");
             } else {
-                $objective = Objective::where('code', $params[1])->first();
+                $objective = Objective::where('code', $params[1])->whereHas('project', function($q) use ($params) {
+                    $q->where('code', $params[0]);
+                })->first();
+                
                 if (!$objective) {
-                    return $this->safe("Objective ".$params[1]." not found");
+                    return $this->safe("Objective ".$params[1]." not found on project ".$params[0]);
                 }
 
                 $project = $objective->project;
-                if ($project->code != $params[0]) {
-                    return $this->safe("Objective ".$params[1]." not found on project ".$params[0]);
-                }
 
                 if ($project->complete) {
                     return $this->safe("This project has been completed");
