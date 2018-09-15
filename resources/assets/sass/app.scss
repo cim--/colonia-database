@@ -424,3 +424,18 @@ span.blueprint {
 .logistics-recommendation-7 {
 	font-weight: bold;
 }
+
+.objectivelist {
+	div.botbox {
+		margin: 0.5em 0;
+		width: 35em;
+		padding: 0.5em;
+		border: thin #005090 solid;
+		background: #000;
+		color: #fff;
+		.command {
+			font-family: monospace;
+			color: #009000;
+		}
+	}
+}

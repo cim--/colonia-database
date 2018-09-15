@@ -55,6 +55,7 @@
 	  <ul>
 		<li><a href="{{route('progress')}}">Progress</a></li>
 		<li><a href="{{route('visit')}}">Visits</a></li>
+     	<li><a href="{{route('projects.index')}}">Projects</a></li>
 		@if (Auth::user())
 		<li><a href="{{route('logout')}}">Logout</a></li>
 		@else

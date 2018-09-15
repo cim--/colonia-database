@@ -97,6 +97,8 @@ Route::resource('sites', 'SiteController');
 
 Route::resource('engineers', 'EngineerController');
 
+Route::resource('projects', 'ProjectController');
+
 Route::resource('missions', 'MissionController', ['except' => [
     'show', 'destroy' // for now
 ]]);
