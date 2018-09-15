@@ -17,6 +17,9 @@ use App\Models\History;
 use App\Models\Expansioncache;
 use App\Models\Megaship;
 use App\Models\Installation;
+use App\Models\Project;
+use App\Models\Objective;
+use App\Models\Contribution;
 
 class DiscordBot extends Command
 {
@@ -76,7 +79,9 @@ class DiscordBot extends Command
         $this->registerSummaryCommand();
         $this->registerHistoryCommand();
         $this->registerAddReportCommand();
-
+        $this->registerProjectCommand();
+        $this->registerContributionCommand();
+        
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
                 'name' => route('index'),
@@ -1142,4 +1147,91 @@ class DiscordBot extends Command
         ]);
     }
 
+    private function registerProjectCommand() {
+        $this->discord->registerCommand('project', function($message, $params) {
+            $this->syntaxCheck($params);
+            $project = false;
+
+            if (isset($params[0])) {
+                $project = Project::where('code', '=', $params[0])->first();
+            }
+            if (!$project) {
+                $result = "**Current projects:**\n";
+                $projects = Project::orderBy('priority')->where('complete', false)->get();
+                foreach($projects as $project) {
+                    $result .= '**'.$project->code."**: ".$project->summary."\n";
+                }
+                return $this->safe($result);
+            } else {
+                $result = "**".$project->summary."**\n<".route('projects.show', $project->id).">\n";
+                if ($project->objectives->count() > 0) {
+                    foreach ($project->objectives as $objective) {
+                        $result .= "**".$objective->code."**: ".$objective->label."\n";
+                        $result .= "... ".number_format($objective->contributions->sum('amount'))." / ".($objective->target?number_format($objective->target):"???");
+                        if ($objective->target && $objective->target <= $objective->contributions->sum('amount')) {
+                            $result .= " - **Objective completed!**";
+                        }
+                        $result .= "\n\n";
+                    }
+                } else {
+                    $result .= "No objectives";
+                }
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Return information about a project.',
+            'usage' => '<project code>',
+            'aliases' => ['projects']
+        ]);
+    }     
+
+    private function registerContributionCommand() {
+        $this->discord->registerCommand('contribute', function($message, $params) {
+            $this->syntaxCheck($params);
+            if (count($params) < 3) {
+                return $this->safe("Usage: !contribute <project code> <objective code> <amount>");
+            } else {
+                $objective = Objective::where('code', $params[1])->first();
+                if (!$objective) {
+                    return $this->safe("Objective ".$params[1]." not found");
+                }
+
+                $project = $objective->project;
+                if ($project->code != $params[0]) {
+                    return $this->safe("Objective ".$params[1]." not found on project ".$params[0]);
+                }
+
+                if ($project->complete) {
+                    return $this->safe("This project has been completed");
+                }
+
+                if ($params[2] < 1) {
+                    return $this->safe("You must contribute at least 1 unit");
+                }
+
+                
+                $contribution = new Contribution;
+                $contribution->objective_id = $objective->id;
+                $contribution->amount = (int)$params[2];
+                $contribution->contributor = $message->author->user->username." #".$message->author->user->discriminator;
+                $contribution->save();
+
+                $result = "Thank you. Your contribution has been logged.\n";
+                $progress = $objective->contributions->sum('amount');
+                if ($objective->target) {
+                    $result .= "Progress is now ".number_format($progress)." / ".number_format($objective->target)."\n";
+                    if ($objective->target <= $progress) {
+                        $result .= "**Objective completed!**\n";
+                    }
+                } else {
+                    $result .= "Progress is now ".number_format($progress)."\n";
+                }
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Record a contribution to a project objective.',
+            'usage' => '<project code> <objective code> <amount>',
+            'aliases' => ['contribution']
+        ]);
+    }
 }
