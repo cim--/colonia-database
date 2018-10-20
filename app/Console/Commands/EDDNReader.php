@@ -138,14 +138,20 @@ class EDDNReader extends Command
         case "Hephaestus":
             $badpop = 3200;
             break;
+        case "Trakath":
+            $badpop = 1900;
+            break;
         default:
             return false; // none known for this system
         }
-        \Log::info("Blacklisted data", [
-            'system' => $event['message']['StarSystem'],
-            'population' => $event['message']['Population'],
-        ]);
-        return ($event['message']['Population'] == $badpop);
+        if ($event['message']['Population'] == $badpop) {
+            \Log::info("Blacklisted data", [
+                'system' => $event['message']['StarSystem'],
+                'population' => $event['message']['Population'],
+            ]);
+            return true;
+        }
+        return false;
     }
 
     private function processFSDJump($event) {
