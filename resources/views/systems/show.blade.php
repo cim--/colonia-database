@@ -117,7 +117,7 @@
 	<h2>Stations</h2>
 	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false'>
 	  <thead>
-		<tr><th>Name</th><th>Planet</th><th>Type</th></tr>
+		<tr><th>Name</th><th>Planet</th><th>Type</th><th>Controller</th></tr>
 	  </thead>
 	  <tbody>
 		@foreach ($system->stations as $station)
@@ -127,6 +127,10 @@
 		  </td>
 		  <td>{{$station->planet}}</td>
 		  <td>{{$station->stationclass->name}}</td>
+		  <td>
+			@include($station->faction->government->icon)
+			<a href='{{route('factions.show', $station->faction_id)}}'>{{$station->faction->name}}</a>
+		  </td>
 		</tr>
 		@endforeach
 	  </tbody>
