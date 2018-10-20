@@ -139,7 +139,7 @@ class SystemController extends Controller
                 $datasets[$prop]['pointRadius'][] = $report->estimated ? 5:3;
             }
         }
-        sort($datasets); // compact
+        rsort($datasets); // compact
         
         $chart = app()->chartjs
             ->name("reporthistory")

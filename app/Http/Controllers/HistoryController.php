@@ -119,7 +119,7 @@ class HistoryController extends Controller
             $latest[$report->system_id] = $report;
         }
         $finalisedate($datasets, $date, $latest); // do the last one
-        sort($datasets);
+        rsort($datasets);
         $chart = app()->chartjs
             ->name("reporthistory")
             ->type("line")
