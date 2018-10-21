@@ -1,3 +1,5 @@
+Chart.defaults.global.elements.line.cubicInterpolationMode = "monotone";
+
 var ChartCallbacks = {};
 
 ChartCallbacks.data = {};
