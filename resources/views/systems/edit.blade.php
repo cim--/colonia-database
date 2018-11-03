@@ -11,14 +11,18 @@
 	<h2>Yesterday</h2>
     <table class='table table-bordered'>
 	  <thead>
-		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
+		<tr><th>Name</th><th>Influence</th><th>States</th></tr>
 	  </thead>
 	  <tbody>
 		@foreach ($yesterday as $faction)
 		<tr>
 		  <td>{{$faction->faction->name}}</td>
 		  <td>{{number_format($faction->influence, 1)}}</td>
-		  <td>{{$faction->state->name}}</td>
+		  <td>
+			@foreach ($faction->states as $state)
+			{{$state->name}}
+			@endforeach
+		  </td>
 		</tr>
 		@endforeach
 	  </tbody>
@@ -42,7 +46,7 @@
 			{!! Form::number("influence[$idx]", $faction->influence, ['min' => 0, 'max' => 100, 'step' => 0.1]) !!}
 		  </td>
 		  <td>
-			{!! Form::select("state[$idx]", $states, $faction->state->id) !!}
+			{!! Form::select("state[$idx][]", $states, $faction->states->pluck('id'), ['multiple' => 'multiple', 'size' => 3]) !!}
 		  </td>
 		</tr>
 		@endforeach
@@ -55,7 +59,7 @@
 			{!! Form::number("influence[$idx]", 0, ['min' => 0, 'max' => 100, 'step' => 0.1]) !!}
 		  </td>
 		  <td>
-			{!! Form::select("state[$idx]", $states) !!}
+			{!! Form::select("state[$idx][]", $states, [],  ['multiple' => 'multiple', 'size' => 3]) !!}
 		  </td>
 		</tr>
         @endfor

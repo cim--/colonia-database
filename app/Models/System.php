@@ -144,7 +144,7 @@ class System extends Model
 
     public function factions(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
-                    ->with('faction', 'state')->orderBy('influence', 'desc')
+                    ->with('faction', 'states')->orderBy('influence', 'desc')
                     ->get();
     }
 

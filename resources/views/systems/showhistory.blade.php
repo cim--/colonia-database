@@ -32,8 +32,8 @@
 	  @foreach ($factions as $factionid => $faction)
 	  <td>
 		@if(isset($history[$date][$factionid]))
-		@include($history[$date][$factionid][1]->icon)
 		{{$history[$date][$factionid][0]}}
+		@include('components.stateicons', ['states' => $history[$date][$factionid][1]])
 		@else
 		
 		@endif

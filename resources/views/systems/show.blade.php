@@ -208,7 +208,7 @@
 
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
-		<tr><th>Name</th><th>Influence</th><th>State</th></tr>
+		<tr><th>Name</th><th>Influence</th><th>States</th></tr>
 	  </thead>
 	  <tfoot>
 		<tr>
@@ -238,8 +238,10 @@
 		  </td>
 		  <td>{{number_format($faction->influence, 1)}}</td>
 		  <td>
-			@include($faction->state->icon)
-			{{$faction->state->name}}
+			@foreach($faction->states as $state)
+			@include($state->icon)
+			{{$state->name}}
+			@endforeach
 		  </td>
 		</tr>
 		@endforeach

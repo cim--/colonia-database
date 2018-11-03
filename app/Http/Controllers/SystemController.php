@@ -211,7 +211,7 @@ class SystemController extends Controller
     {
         $influences = Influence::where('system_id', $system->id)
             ->with('faction')
-            ->with('state')
+            ->with('states')
             ->orderBy('date')
             ->get();
 
@@ -257,7 +257,7 @@ class SystemController extends Controller
             $dates[$date] = 1;
             $factions[$faction] = $influence->faction;
 
-            $entries[$date][$faction] = [$influence->influence, $influence->state];
+            $entries[$date][$faction] = [$influence->influence, $influence->states];
 
             $datasets[$influence->faction_id]['data'][] = [
                 'x' => \App\Util::graphDisplayDate($influence->date),
@@ -445,11 +445,12 @@ class SystemController extends Controller
                 $obj = new Influence;
                 $obj->system_id = $system->id;
                 $obj->faction_id = $factions[$i];
-                $obj->state_id = $states[$i];
+                $obj->state_id = 0; // TODO: delete this field
                 $obj->date = $target;
                 $obj->influence = $influences[$i];
                 $obj->current = true;
                 $obj->save();
+                $obj->states()->attach($states[$i]);
             }
         }
         \Log::info("Influence update", [

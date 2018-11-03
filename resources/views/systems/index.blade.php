@@ -44,9 +44,7 @@ Systems
 		{{$system->controllingFaction()->government->name}}
 	  </td>
 	  <td>
-		@if ($system->controllingFaction()->currentState($system))
-		@include ($system->controllingFaction()->currentState($system)->icon)
-		@endif
+		@include('components.stateicons', ['states' => $system->controllingFaction()->currentStateList($system)])
 		<a href="{{route('factions.show', $system->controllingFaction()->id)}}">{{$system->controllingFaction()->name}}</a>
 	  </td>
 	  @else
