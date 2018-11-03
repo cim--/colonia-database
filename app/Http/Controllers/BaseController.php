@@ -340,19 +340,6 @@ class BaseController extends Controller
             $q->where('name', 'Commodities');
         })->with('faction', 'system')->orderBy('name')->get();
 
-        $pendingupdate = [];
-        $factions = Faction::with('states')
-            ->where('virtual', 0)
-            ->notHidden()
-            ->orderBy('name')->get();
-        foreach ($factions as $faction) {
-            if ($faction->states->count() > 0 &&
-            $target->isSameDay(new Carbon($faction->states[0]->pivot->date))) {
-                // pending states up to date
-            } else {
-                $pendingupdate[] = $faction;
-            }
-        }
 
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
 
@@ -365,11 +352,9 @@ class BaseController extends Controller
             'userrank' => $user ? $user->rank : 0, // TODO: Composer
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
-            'pendingupdate' => $pendingupdate,
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*(1-($influenceupdate->count() / System::populated()->where('virtualonly', 0)->count())),
             'reportscomplete' => 100*(1-($reportsupdate->count() / System::populated()->where('virtualonly', 0)->count())),
-            'pendingcomplete' => 100*(1-(count($pendingupdate) / Faction::notHidden()->notVirtual()->count())),
             'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
             'reader' => $reader,
             'alerts' => $alerts,

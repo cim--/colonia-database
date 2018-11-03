@@ -49,33 +49,6 @@ visible change.</p>
 <p><strong>All systems updated!</strong></p>
 @endif
 
-<h2>Factions needing pending state updates ({{number_format($pendingcomplete)}}%)</h2>
-@if (count($pendingupdate) > 0)
-@if($userrank > 0)
-<p>The following factions do not have pending state updates today. You will need to enter the system to view the pending states in the right panel.</p>
-@endif
-<p>You can update this data without needing to log in by entering a system where the faction is present while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI).</p>
-<p>Most pending states will be picked up routinely by passing traffic, though a few fringe factions present in a single system may not get daily updates this way.</p>
-<ul class='compact'>
-  @foreach ($pendingupdate as $faction)
-  <li>
-	@if($userrank > 0)
-	<a href="{{route('factions.edit',$faction->id)}}">{{$faction->name}}</a>
-	@else
-	<a href="{{route('factions.show',$faction->id)}}">{{$faction->name}}</a>
-	@endif
-	@if ($target !== $today)
-	@include('progressage', ['date' => \App\Util::age($faction->states->count() > 0 ? $faction->states[0]->pivot->date : null)-1])
-	@else
-	@include('progressage', ['date' => \App\Util::age($faction->states->count() > 0 ? $faction->states[0]->pivot->date : null)])
-	@endif
-  </li>
-  @endforeach
-</ul>
-@else
-<p><strong>All factions updated!</strong></p>
-@endif
-
 
 
 <h2>Systems needing report updates ({{number_format($reportscomplete)}}%)</h2>
