@@ -2,7 +2,7 @@
 
 @section('title')
 Reserves at <a href="{{route('stations.show', $station->id)}}">{{$station->name}}</a>
-@include($station->currentState()->icon)
+@include('components.stateicons', ['states' => $station->currentStateList()])
 @endsection
 @section('headtitle')
 Reserves at {{$station->name}}
@@ -22,7 +22,7 @@ Reserves at {{$station->name}}
 
 <p>Last update: {{\App\Util::displayDate($reserves->first()->reserves->first()->created_at)}}</p>
 
-@if ($station->currentState()->name == "Lockdown")
+@if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
 <p><strong>Station is currently in Lockdown - commodity market unavailable.</strong> Table shows last known market state.</p>
 @endif
 

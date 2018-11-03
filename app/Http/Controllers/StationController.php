@@ -376,7 +376,7 @@ class StationController extends Controller
             ->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<=', $maxrange->copy()->addDay())
             ->where('price', '!=', 0)
-            ->with('state')
+            ->with('states')
             ->orderBy('created_at')
             ->get();
         if ($entries->count() == 0) {
@@ -400,7 +400,7 @@ class StationController extends Controller
                     $datasets[$prop]['data'][] = [
                         'x' => \App\Util::graphDisplayDateTime($entry->created_at),
                         'y' => abs($entry->$prop),
-                        'state' => $entry->state->name
+                        'state' => $entry->states->implode('name', ', ')
                     ];
                 }
             }

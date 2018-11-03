@@ -90,12 +90,12 @@ class Station extends Model
     }
 
     
-    public function currentState()
+    public function currentStateList()
     {
         if ($this->faction->virtual) {
-            return State::where('name', 'None')->first();
+            return [State::where('name', 'None')->first()];
         } else {
-            return $this->faction->currentState($this->system);
+            return $this->faction->currentStateList($this->system);
         }
     }
 

@@ -2,7 +2,7 @@
 
 @section('title')
 Outfitting at <a href="{{route('stations.show', $station->id)}}">{{$station->name}}</a>
-@include($station->currentState()->icon)
+@include('components.stateicons', ['states' => $station->currentStateList()])
 @endsection
 @section('headtitle')
 Outfitting at {{$station->name}}
@@ -10,7 +10,7 @@ Outfitting at {{$station->name}}
 
 @section('content')
 
-@if ($station->currentState()->name == "Lockdown")
+@if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
 <p><strong>Station is currently in Lockdown - outfitting unavailable.</strong> Showing last known state.</p>
 @endif
 
