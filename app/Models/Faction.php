@@ -53,7 +53,7 @@ class Faction extends Model
     
     public function latestSystems() {
         return $this->influences()->where('current', 1)
-                    ->with('system', 'state', 'system.economy')
+                    ->with('system', 'states', 'system.economy')
                     ->orderBy('influence', 'desc')->get();
     }
 
@@ -94,16 +94,18 @@ class Faction extends Model
     
     public function currentStates() {
         $influences = $this->influences()->where('current', 1)
-                           ->with('state')->get();
+                           ->with('states')->get();
         $states = [];
         $hold = null;
         foreach ($influences as $influence) {
-            if ($influence->state->name != "None") {
-                if (!isset($states[$influence->state->id])) {
-                    $states[$influence->state->id] = $influence->state;
+            foreach ($influence->states as $state) {
+                if ($state->name != "None") {
+                    if (!isset($states[$state->id])) {
+                        $states[$state->id] = $state;
+                    }
+                } else {
+                    $hold = $influence->state;
                 }
-            } else {
-                $hold = $influence->state;
             }
         }
         if (count($states) > 0) {
@@ -117,7 +119,7 @@ class Faction extends Model
     
     public function systems(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
-                    ->with('system', 'state', 'system.economy')
+                    ->with('system', 'states', 'system.economy')
                     ->orderBy('influence', 'desc')->get();
     }
 

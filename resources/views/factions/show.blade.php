@@ -82,8 +82,10 @@
 		  </td>
 		  <td>{{number_format($system->influence,1)}}</td>
 		  <td>
-			@include($system->state->icon)
-			{{$system->state->name}}
+			@foreach ($system->states as $state)
+			@include($state->icon)
+			{{$state->name}}
+			@endforeach
 		  </td>
 		  <td>
 			{{$faction->currentRankString($system->system)}}

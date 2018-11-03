@@ -111,7 +111,10 @@ class FactionController extends Controller
                         [ 'stacked' => true ]
                     ],
                     'xAxes' => [
-                        [ 'stacked' => true ]
+                        [
+                            'stacked' => true,
+                            'label' => 'system-days'
+                        ]
                     ],
                 ]
             ]);
@@ -127,7 +130,7 @@ class FactionController extends Controller
     {
         $influences = Influence::where('faction_id', $faction->id)
             ->with('system')
-            ->with('state')
+            ->with('states')
             ->orderBy('date')
             ->get();
 
@@ -177,7 +180,7 @@ class FactionController extends Controller
             $dates[$date] = 1;
             $systems[$system] = $influence->system;
 
-            $entries[$date][$system] = [$influence->influence, $influence->state];
+            $entries[$date][$system] = [$influence->influence, $influence->states];
             $datasets[$influence->system_id]['data'][] = [
                 'x' => \App\Util::graphDisplayDate($influence->date),
                 'y' => $influence->influence

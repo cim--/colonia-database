@@ -29,8 +29,8 @@
 	  <td>
 		@if(isset($history[$date][$systemid]))
         @if(isset($history[$date][$systemid][0]))
-		@include($history[$date][$systemid][1]->icon)
 		{{$history[$date][$systemid][0]}}
+        @include('components.stateicons', ['states' => $history[$date][$systemid][1]])
 		@else
 		<span title="Not collected">?</span>
 		@endif
