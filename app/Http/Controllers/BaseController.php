@@ -34,7 +34,7 @@ class BaseController extends Controller
             ->where('date', '>=', Carbon::yesterday()->format("Y-m-d"))
             ->orderBy('date', 'desc')->get();
 
-        $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'state')
+        $influences = Influence::with('system', 'system.stations', 'system.economy', 'faction', 'faction.government', 'states')
             ->where('current', 1)
             ->get()->sort(function($a, $b) {
                 $cmp = strcmp($a->system->displayName(), $b->system->displayName());
@@ -47,18 +47,23 @@ class BaseController extends Controller
             if (!$value->system || !$value->system->inhabited()) {
                 return false; // safety for bad data
             }
-            $states = ['Boom', 'Investment', 'None'];
-            // ignore uninteresting states
-            if (in_array($value->state->name, $states)) {
-                return false;
-            }
-            $states = ['War', 'Election'];
-            if (!in_array($value->state->name, $states)) {
-                if ($value->system->controllingFaction()->id != $value->faction->id) {
-                    return false; // ignore most states for non-controlling factions
+            $use = false;
+            foreach ($value->states as $state) {
+                $states = ['Boom', 'Investment', 'Civil Liberty', 'None'];
+                // ignore uninteresting and positive states
+                if (in_array($state->name, $states)) {
+                    continue;
                 }
+                $states = ['War', 'Election'];
+                if (!in_array($state->name, $states)) {
+                    if ($value->system->controllingFaction()->id != $value->faction->id) {
+                        continue; // ignore most states for non-controlling factions
+                    }
+                }
+                $use = true;
+                break;
             }
-            return true;
+            return $use;
         });
 
         $lowinfluences = [];
@@ -87,12 +92,14 @@ class BaseController extends Controller
             $statescalc[$faction->id] = [];
         }
         foreach ($influences as $influence) {
-            if ($influence->state->name != "None") {
-                if (!isset($statescalc[$influence->faction_id][$influence->state_id])) {
-                    $statescalc[$influence->faction_id][$influence->state_id] = $influence->state;
+            foreach ($influence->states as $state) {
+                if ($state->name != "None") {
+                    if (!isset($statescalc[$influence->faction_id][$state->id])) {
+                        $statescalc[$influence->faction_id][$state->id] = $state;
+                    }
+                } else {
+                    $none = $state;
                 }
-            } else {
-                $none = $influence->state;
             }
         }
         foreach ($statescalc as $faction) {
@@ -112,12 +119,14 @@ class BaseController extends Controller
             }
             $controls = $faction->stations->where('primary', true);
             foreach ($controls as $station) {
-                $state = $faction->currentState($station->system);
-                if ($state != null) {
-                    if (!isset($states[$state->name])) {
-                        $states[$state->name] = ['state' => $state, 'count' => 0, 'syscount' => 0];
+                $fstates = $faction->currentStateList($station->system);
+                if ($fstates != null) {
+                    foreach ($fstates as $state) {
+                        if (!isset($states[$state->name])) {
+                            $states[$state->name] = ['state' => $state, 'count' => 0, 'syscount' => 0];
+                        }
+                        $states[$state->name]['syscount']++;
                     }
-                    $states[$state->name]['syscount']++;
                 }
             }
         }

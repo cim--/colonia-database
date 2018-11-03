@@ -129,29 +129,31 @@
 	<h2>Current Events</h2>
 <ul id='major-events'>
   @foreach ($importants as $important)
+  @foreach ($important->states as $state)
+  @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None']))
   <li>
 	@include($important->faction->government->icon)
 	<a href='{{route('factions.show', $important->faction->id)}}'>
 	  {{$important->faction->name}}
 	</a>
 	in
-    @if ($important->state->name == "War" || $important->state->name == "Election")
+    @if ($state->name == "War" || $state->name == "Election")
 	@if ($important->system->controllingFaction()->id == $important->faction->id)
 	<strong>system control</strong>
 	@elseif ($important->faction->controlsAsset($important->system))
 	<em>station control</em>
 	@endif
 	@endif
-	@include($important->state->icon)
-	{{$important->state->name}}
-	@if (!in_array($important->state->name, $fakeglobals))
+	@include($state->icon)
+	{{$state->name}}
 	in
 	@include($important->system->economy->icon)
 	<a href='{{route('systems.show', $important->system->id)}}'>
 	  {{$important->system->displayName()}}
 	</a>
-	@endif
   </li>
+  @endif
+  @endforeach
   @endforeach
   @foreach ($historys as $history)
   <li>

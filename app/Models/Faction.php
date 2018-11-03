@@ -68,14 +68,14 @@ class Faction extends Model
     }
 
     
-    public function currentState(System $system) {
+    public function currentStateList(System $system) {
         $influence = $this->influences()->where('current', 1)
                           ->where('system_id', $system->id)
-                          ->with('state')->first();
+                          ->with('states')->first();
         if ($influence === null) {
             return null;
         } else {
-            return $influence->state;
+            return $influence->states;
         }
     }
 
