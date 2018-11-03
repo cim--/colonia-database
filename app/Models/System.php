@@ -131,7 +131,7 @@ class System extends Model
     
     public function latestFactions() {
         return $this->influences()->where('current', 1)
-                    ->with('faction', 'state')->orderBy('influence', 'desc')
+                    ->with('faction', 'states')->orderBy('influence', 'desc')
                     ->get();
     }
 
