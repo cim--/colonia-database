@@ -6,6 +6,11 @@ Logistics Planner
 
 @section('content')
 
+<div class='alert alert-danger'>
+  Warning: due to recent economic changes there is insufficient data to consider faction states properly in this planner. Recommendations will be incomplete for now.
+</div>
+
+    
 <p>The logistics planner allows you to set up bulk shipping operations and provides information which may be useful to optimise cargo transfer or estimate completion times.</p>
 
 {!! Form::open(['route' => ['logistics.configure']]) !!}

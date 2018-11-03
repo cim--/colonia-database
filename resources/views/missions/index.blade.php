@@ -6,6 +6,8 @@ Mission Types
 
 @section('content')
 
+@include('components.unstableanalysis')
+    
 @if ($userrank > 1)
 <p><a class='edit' href='{{route('missions.create')}}'>New type</a></p>
 @endif

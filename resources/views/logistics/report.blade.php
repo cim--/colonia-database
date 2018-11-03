@@ -6,6 +6,10 @@ Logistics Planner - Report
 
 @section('content')
 
+<div class='alert alert-danger'>
+  Warning: due to recent economic changes there is insufficient data to consider faction states properly in this planner. Recommendations will be incomplete for now.
+</div>
+    
 <h2>Shipping to {{$destination->name}}, {{$destination->system->displayName()}}</h2>
 <p><strong>Target</strong>: {{number_format($volume)}} tonnes in {{$duration}} days.</p>
 <ul>

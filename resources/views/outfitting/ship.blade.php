@@ -8,7 +8,7 @@ Availability of {{$ship->name}}
 
 @if ($ship->stations->count())
 <p>The {{$ship->name}} is available at the following shipyards:</p>
-<ul>
+<ul class='compact'>
 @foreach ($ship->stations->sortBy('name') as $station)
 <li>
   <a href="{{route('stations.show', $station->id)}}">

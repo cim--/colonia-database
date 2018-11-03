@@ -17,8 +17,8 @@
   @foreach ($module->stations->sortBy('name') as $station)
   <li>
 	<a href='{{route('stations.showoutfitting', $station->id)}}'>{{$station->displayName()}}</a>
-	@if ($station->currentState()->name == "Lockdown")
-	@include($station->currentState()->icon)
+	@if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
+	<strong>Lockdown</strong>
 	@endif
 	@if ($module->largeship && !$station->stationclass->hasLarge)
 	<span class='outfitting-danger-icon'>&#x2762;</span>

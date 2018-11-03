@@ -45,13 +45,23 @@ class TradeController extends Controller
                     }
                     if (count($sparam)) {
                         $influence = $station->faction->currentInfluence($station->system);
-                        if (!$influence || !in_array($influence->state_id, $sparam)) {
+                        if (!$influence) {
+                            continue;
+                        }
+                        $found = false;
+                        foreach ($influence->states as $state) {
+                            if (in_array($state->id, $sparam)) {
+                                $found = true;
+                                break;
+                            }
+                        }
+                        if (!$found) {
                             continue;
                         }
                     }
                     $inf = $station->faction->currentInfluence($station->system);
                     if ($inf) {
-                        $station->stateicon = $inf->state->icon;
+                        $station->stateicon = $inf->states;
                     }
                     
                     $search[] = $station;

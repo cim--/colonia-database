@@ -76,7 +76,7 @@
 		@if ($reserve->station->stationclass->hasMedium) M @endif
 		@if ($reserve->station->stationclass->hasLarge) L @endif
 	  </td>
-	  @if ($reserve->station->currentState()->name == "Lockdown")
+      @if ($reserve->station->currentStateList()->where('name', "Lockdown")->count() > 0)
 	  <td>Lockdown</td>
 	  <td>
 		<span class='lockdown'>{{$reserve->reserves}}</span>

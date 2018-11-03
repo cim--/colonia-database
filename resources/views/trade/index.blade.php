@@ -75,7 +75,7 @@
 		</td>
 		<td>
 		  @if($result->stateicon)
-		  @include($result->stateicon)
+          @include('components.stateicons', ['states' => $result->stateicon])
 		  @endif
 		  <a href='{{route("factions.show", $result->faction->id)}}'>
 			{{$result->faction->name}}

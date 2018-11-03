@@ -93,7 +93,7 @@ class Station extends Model
     public function currentStateList()
     {
         if ($this->faction->virtual) {
-            return [State::where('name', 'None')->first()];
+            return collect([State::where('name', 'None')->first()]);
         } else {
             return $this->faction->currentStateList($this->system);
         }

@@ -1,0 +1,1 @@
+<div class='alert alert-danger'>Warning: this data is likely out of date following recent economic changes. Analysis is on hold and will recommence once further data has been gathered.</div>

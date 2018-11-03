@@ -4,6 +4,8 @@
 
 @section('content')
 
+@include('components.unstableanalysis')
+    
 <p><a href='{{route('reserves.commodity', $commodity->id)}}'>Current reserves</a></p>
     
 <table class='table table-bordered datatable' data-page-length='25'>

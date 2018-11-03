@@ -102,8 +102,10 @@ class LogisticsController extends Controller
 
                         $total += $current->reserves;
                         
-                        $supplyeffect = $effects[$commodity->id]->where('state_id', $option['state']->id)->first();
+                        // $supplyeffect = $effects[$commodity->id]->where('state_id', $option['state']->id)->first();
+                        $supplyeffect = null;
                         if ($supplyeffect) {
+/*
                             $option['sbaseline'] = $supplyeffect->supplysize * $option['baseline']->reserves;
 
                         
@@ -124,8 +126,11 @@ class LogisticsController extends Controller
                                     }
                                 }
                             }
+*/
                         } else {
                             $option['sbaseline'] = $option['baseline']->reserves;
+                            $option['supplysize'] = 1;
+                            $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
                         }
                         
                         if ($commodity->supplycycle > 0) {

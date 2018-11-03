@@ -4,6 +4,8 @@
 
 @section('content')
 
+@include('components.unstableanalysis')
+    
 <p>This section shows the effects on commodity prices and supply/demand levels by state. Data for uncommon states is more likely to be incomplete or inaccurate.</p>
 
 <h2>Effects of States</h2>
