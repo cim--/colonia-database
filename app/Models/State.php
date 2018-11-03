@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class State extends Model
 {
     public function influences() {
-        return $this->hasMany('App\Models\Influence');
+        return $this->belongsToMany('App\Models\Influence');
     }
 
     public function reserves() {
-        return $this->hasMany('App\Models\Reserve');
+        return $this->belongsToMany('App\Models\Reserve');
     }
 
     public function effects()

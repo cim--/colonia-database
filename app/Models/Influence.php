@@ -20,8 +20,8 @@ class Influence extends Model
         return $this->belongsTo('App\Models\Faction');
     }
 
-    public function state() {
-        return $this->belongsTo('App\Models\State');
+    public function states() {
+        return $this->belongsToMany('App\Models\State');
     }
 
 

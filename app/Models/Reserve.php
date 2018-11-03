@@ -18,9 +18,9 @@ class Reserve extends Model
         return $this->belongsTo('App\Models\Station');
     }
 
-    public function state()
+    public function states()
     {
-        return $this->belongsTo('App\Models\State');
+        return $this->belongsToMany('App\Models\State');
     }
 
     /* Restrict market analysis to normal market types */
