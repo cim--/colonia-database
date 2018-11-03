@@ -22,6 +22,7 @@ provided below.</p>
 	@include('intro.iconbox', ['title'=>'Megaships', 'entries' => $megaships])
   </div>
   <div class='iconrow'>
+    @include('intro.iconbox', ['title'=>'States', 'entries' => $states])
 	<div class='iconbox'>
 	  <div>
 		<h2>Miscellaneous</h2>
