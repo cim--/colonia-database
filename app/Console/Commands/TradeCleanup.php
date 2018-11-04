@@ -61,7 +61,7 @@ class TradeCleanup extends Command
 
             // keep full data for current month
             $threshold = date("Y-m-01");
-            $reserves = Reserve::where('station_id', $station->id)->where('commodity_id', $commodity->id)->where('created_at', '<', $threshold)->orderBy('created_at')->get();
+            $reserves = Reserve::where('station_id', $station->id)->where('commodity_id', $commodity->id)->where('created_at', '<', $threshold)->with('states')->orderBy('created_at')->get();
             $last = null;
             $curr = null;
             $next = null;
@@ -82,7 +82,7 @@ class TradeCleanup extends Command
                     $next = $reserve;
                 }
 //            $this->line([$last->reserves, $curr->reserves, $next->reserves]);
-                if ($last->reserves == $curr->reserves && $curr->reserves == $next->reserves && $last->state_id == $curr->state_id && $curr->state_id == $next->state_id && $last->price == $curr->price && $curr->price == $next->price) {
+                if ($last->reserves == $curr->reserves && $curr->reserves == $next->reserves && $last->stateString() == $curr->stateString() && $curr->stateString() == $next->stateString() && $last->price == $curr->price && $curr->price == $next->price) {
                     // all three are materially the same
                     // delete the middle one
                     $curr->delete();

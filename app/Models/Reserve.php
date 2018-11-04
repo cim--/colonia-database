@@ -42,4 +42,9 @@ class Reserve extends Model
         });
         $q->where('reserves', '>', -100000); // ignore high CG demands
     }
+
+    public function stateString()
+    {
+        return $this->states->sortBy('name')->implode('name', ',');
+    }
 }
