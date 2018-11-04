@@ -259,7 +259,7 @@ class DiscordBot extends Command
                     if ($idx++ > 0) {
                         $result .= ", ";
                     }
-                    $result .= $influence->system->displayName()." (".$influence->influence.", ".$influence->state->name.")";
+                    $result .= $influence->system->displayName()." (".$influence->influence.", ".$influence->states->implode('name', ', ').")";
                 }
                 $result .= "\n";
                 $result .= "**Assets controlled**: ".Station::where('faction_id', $faction->id)->count()."\n";
@@ -317,7 +317,7 @@ class DiscordBot extends Command
                        } else {
                            $result .= $influence->system->displayName();
                        }
-                       $result .= ": ".$influence->influence."%, ".$influence->state->name;
+                       $result .= ": ".$influence->influence."%, ".$influence->states->implode('name', ', ');
                        if ($influence->system->id == $faction->system_id) {
                            $result .= " (**home**)";
                        }
@@ -351,7 +351,7 @@ class DiscordBot extends Command
                     } else {
                         $result .= $influence->faction->name;
                     }
-                    $result .= ": ".$influence->influence."%, ".$influence->state->name;
+                    $result .= ": ".$influence->influence."%, ".$influence->states->implode('name', ', ');
                     if ($system->id == $influence->faction->system_id) {
                         $result .= " (**home**)";
                     }
@@ -591,7 +591,10 @@ class DiscordBot extends Command
                     $stations = Station::with('faction','system')->whereHas('faction', function($q) use ($state) {
                         $q->whereHas('influences', function ($qi) use ($state) {
                             $qi->where('current', 1)
-                               ->where('state_id', $state->id);
+                               ->where('system_id', \DB::raw('`stations`.`system_id`'))
+                               ->whereHas('states', function ($qs) use ($state) {
+                                   $qs->where('states.id', $state->id);
+                               });
                         });
                     })->orderBy('name')->get();
                     foreach ($stations as $station) {
@@ -814,7 +817,7 @@ class DiscordBot extends Command
             $result = "**Exploration sale options**\nMax gravity: ".($grav>0?number_format($grav,2):"orbital only")."\nPad size: $pad\nMax dist: ".number_format($dist)."Ls\n\n";
             foreach ($options as $option) {
                 $result .= $option->name.", ".$option->system->displayName()." (".$option->faction->name." - ";
-                $states = $option->faction->currentStates();
+/*                $states = $option->faction->currentStates();
                 $commas = false;
                 foreach ($states as $idx => $state) {
                     if ($commas) {
@@ -827,7 +830,7 @@ class DiscordBot extends Command
                     } else {
                         $result .= $state->name;
                     }
-                }
+                    } */
                 $result .= ") [".($option->gravity?number_format($option->gravity,2)."G":"Orbital").", ".$option->stationclass->name.", ".number_format($option->distance)."Ls]\n";
             }
 
@@ -901,14 +904,14 @@ class DiscordBot extends Command
                     $result .= $government->name.": ".$government->factions_count."\n";
                 }
                 break;
-            case "state":
+/*            case "state":
             case "states":
                 $states = State::where('name', '!=', 'None')->orderBy('name')->get();
                 $result = "Faction states\n";
                 foreach ($states as $state) {
                     $result .= $state->name.": ".$state->currentFactions()->get()->count()."\n";
                 }
-                break;
+                break; */ // not very useful with multistate
             case "reach":
                 $reaches = \DB::select('SELECT f.name, FLOOR(SUM(i.influence/100 * s.population)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 GROUP BY f.name ORDER BY reach DESC LIMIT 10');
                 $result = "Top 10 reaches:\n";
@@ -922,7 +925,7 @@ class DiscordBot extends Command
             
             return $this->safe($result);
         }, [
-            'description' => 'Return summaries of information. Available summaries are: population, traffic, crimes, bounties, systems, stations, economy, government, state and reach',
+            'description' => 'Return summaries of information. Available summaries are: population, traffic, crimes, bounties, systems, stations, economy, government and reach',
             'usage' => '<summary>'
         ]);
         

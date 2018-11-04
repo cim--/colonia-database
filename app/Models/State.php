@@ -28,12 +28,4 @@ class State extends Model
         return $this->belongsToMany('App\Models\Faction')->withPivot('date');
     }
 
-    // current states
-    public function currentFactions() {
-        return $this->belongsToMany(
-            'App\Models\Faction',
-            'influences'
-        )->wherePivot('current', 1)->distinct();
-    }
-//
 }
