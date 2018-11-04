@@ -48,6 +48,9 @@ class GoodsAnalysis extends Command
      */
     public function handle()
     {
+        $this->error("Not multistate compatible");
+        exit;
+        
         try {
             \DB::transaction(function() {
                 if (!$this->option('balanceonly')) {

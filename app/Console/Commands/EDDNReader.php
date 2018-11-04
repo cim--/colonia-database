@@ -195,20 +195,26 @@ class EDDNReader extends Command
                         continue;
                     }
                     $inf = round($faction['Influence'], 3)*100;
-                    $faction['FactionState'] = $this->renameState($faction['FactionState']);
-                    $state = State::where('name', $faction['FactionState'])->first();
-                    if (!$state) {
-                        $error = "Unrecognised faction state ".$faction['FactionState']." for ".$faction['Name']." in ".$system->displayName();
-                        Alert::alert($error);
-                        \Log::error($error);
-                        $this->error($error);
-                        return;
+
+                    $states = $faction['ActiveStates'];
+                    $active = [];
+                    foreach ($states as $fstate) {
+                        $fstate = $this->renameState($fstate);
+                        $state = State::where('name', $fstate)->first();
+                        if (!$state) {
+                            $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
+                            Alert::alert($error);
+                            \Log::error($error);
+                            $this->error($error);
+                            return;
+                        }
+                        $active[] = $state;
                     }
                     $pending = [];
                     if (isset($faction['PendingStates'])) {
                         $pending = $faction['PendingStates'];
                     }
-                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => $state, 'pending' => $pending];
+                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => collect($active), 'pending' => $pending];
                 }
                 usort($influences, function($a, $b) {
                     return $b['influence'] - $a['influence'];
@@ -235,6 +241,10 @@ class EDDNReader extends Command
     }
 
     private function renameState($state) {
+        if ($state == "CivilLiberty") {
+            // to our name
+            return "Civil Liberty";
+        }
         if ($state == "CivilUnrest") {
             // to our name
             return "Civil Unrest";
@@ -255,14 +265,16 @@ class EDDNReader extends Command
             ->count();
         if ($exists > 0) {
             // already have data for this tick
-            // but it might have been manually entered so
+
+            // ignore pending states for now
+            /*           // but it might have been manually entered so
             // there might be pending states still to get
             \DB::transaction(function() use ($influences) {
                 foreach ($influences as $influence) {
                     $this->updatePendingStates($influence['faction'], $influence['pending']);
                 }
                 $this->info("Updated pending states");
-            });
+                }); */
             return;
         }
 
@@ -300,11 +312,13 @@ class EDDNReader extends Command
                 $io = new Influence;
                 $io->system_id = $system->id;
                 $io->faction_id = $influence['faction']->id;
-                $io->state_id = $influence['state']->id;
+//                $io->state_id = $influence['state']->id;
                 $io->influence = $influence['influence'];
                 $io->current = 1;
                 $io->date = $target;
                 $io->save();
+
+                $io->states()->attach($influence['active']->pluck('id'));
             }
             \Log::info("Influence update", [
                 'system' => $system->displayName(),
@@ -320,6 +334,8 @@ class EDDNReader extends Command
         });
     }
 
+    /* TODO: this will need updating to be system-specific, but wait
+     * to see if it's useful first */
     private function updatePendingStates($faction, $pending) {
         $states = [];
         $haswar = false;
@@ -486,16 +502,7 @@ class EDDNReader extends Command
         }
         $this->line("[".date("YmdHis")."] Commodity event for ".$system->displayName().": ".$station->name);
 
-        $state = $station->faction->currentState($station->system);
-        if ($state->name == "None") {
-            $states = $station->faction->currentStates();
-            foreach ($states as $otherstate) {
-                if ($otherstate->name == "War" || $otherstate->name == "Election") {
-                    // treat conflict elsewhere as active here
-                    $state = $otherstate;
-                }
-            }
-        }
+        $states = $station->faction->currentStateList($station->system)->pluck('id');
         
         Reserve::where('station_id', $station->id)->update(['current' => false]);
 
@@ -511,7 +518,7 @@ class EDDNReader extends Command
             $reserve->date = new Carbon($event['message']['timestamp']);
             $reserve->commodity_id = $commodity->id;
             $reserve->station_id = $station->id;
-            $reserve->state_id = $state->id;
+//            $reserve->state_id = $state->id;
 
             if ($cdata['stock'] > 0) {
                 $reserve->reserves = $cdata['stock'];
@@ -521,6 +528,8 @@ class EDDNReader extends Command
                 $reserve->price = $cdata['sellPrice'];
             }
             $reserve->save();
+            // sync state list from current influence
+            $reserve->states()->attach($states);
         }
     }
 

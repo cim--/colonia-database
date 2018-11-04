@@ -54,6 +54,10 @@ class GoodsAnalysis2 extends Command
      */
     public function handle()
     {
+        $this->error("Not multistate compatible");
+        exit;
+
+        
         /* Derived by comparing hydrogen fuel baselines with CEI bases */
         $this->genericsizefactor = 1806.52032;
         $this->colonysizefactor = 0.18432;
