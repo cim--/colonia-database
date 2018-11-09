@@ -141,6 +141,13 @@ class FactionController extends Controller
 
         $seen = [];
         $lastdate = null;
+
+        $exists = \DB::select("SELECT system_id, date FROM influences GROUP BY system_id, date");
+        $infexists = [];
+        foreach ($exists as $existent) {
+            $infexists[$existent->system_id][$existent->date] = 1;
+        }
+
         
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
@@ -148,7 +155,7 @@ class FactionController extends Controller
                 if ($lastdate != null) {
                     foreach ($systems as $sid => $system) {
                         if (!isset($seen[$sid])) {
-                            if (Influence::where('system_id', $sid)->where('date', $lastdate)->count() > 0) {
+                            if (isset($infexists[$sid]) && isset($infexists[$sid][$lastdate->format("Y-m-d")])) {
                                 $datasets[$sid]['data'][] = [
                                     'x' => \App\Util::graphDisplayDate($lastdate),
                                     'y' => null
