@@ -43,6 +43,7 @@ class BaseController extends Controller
                 }
                 return $b->influence - $a->influence;
             });
+
         $important = $influences->filter(function ($value, $key) {
             if (!$value->system || !$value->system->inhabited()) {
                 return false; // safety for bad data
@@ -68,7 +69,12 @@ class BaseController extends Controller
 
         $lowinfluences = [];
         $sysid = 0;
+        $happiness = 0;
+
         foreach ($influences as $influence) {
+
+            $happiness += (25*(5-$influence->happiness)) * $influence->influence * $influence->system->population / 100;
+            
             if ($influence->system_id != $sysid) {
                 if ($influence->system->controllingFaction()->id != $influence->faction_id) {
                     $lowinfluences[] = $influence->system;
@@ -84,6 +90,7 @@ class BaseController extends Controller
         $factions = Faction::with('government', 'ethos')->notHidden()->orderBy('name')->get();
         $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
 
+        
         $statescalc = [];
         $states = [];
         $statecounter = 0;
@@ -252,6 +259,7 @@ class BaseController extends Controller
         
         return view('index', [
             'population' => $population,
+            'happiness' => $happiness,
             'exploration' => $exploration,
             'terraformable' => $terraformable,
             'elwcount' => $earthlike,

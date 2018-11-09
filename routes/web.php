@@ -144,6 +144,10 @@ Route::get('/reports/reach/log', [
     'as' => 'reports.reach.log',
     'uses' => 'ReportController@reachLog'
 ]);
+Route::get('/reports/reach/happy', [
+    'as' => 'reports.reach.happy',
+    'uses' => 'ReportController@reachHappy'
+]);
 Route::get('/reports/states', [
     'as' => 'reports.states',
     'uses' => 'ReportController@states'

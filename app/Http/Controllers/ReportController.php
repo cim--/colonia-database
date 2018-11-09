@@ -114,7 +114,7 @@ class ReportController extends Controller
                 ]
             ]);
 
-        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>. The (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included. An <a href='".route('reports.reach.log')."'>alternative logarithmic measure</a> is also available.";
+        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>. The (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.</p><p>Alternative measures <a href='".route('reports.reach.log')."'>using logarithmic population</a> or <a href='".route('reports.reach.happy')."'>including happiness</a> are also available.";
         
         return view('reports/report', [
             'report' => "Reach",
@@ -170,7 +170,53 @@ class ReportController extends Controller
         ]);
     }
 
+    public function reachHappy() {
+        $reaches = \DB::select('SELECT f.id, f.name, FLOOR(SUM(i.influence/100 * s.population * (5-i.happiness)/4)) AS reach FROM factions f INNER JOIN influences i ON (f.id = i.faction_id) INNER JOIN systems s ON (s.id = i.system_id) WHERE i.current = 1 AND f.virtual = 0 GROUP BY f.id, f.name ORDER BY reach DESC');
+        
+        $dataset = [];
+        $labels = [];
+        $colours = [];
+        foreach ($reaches as $reach) {
+            $labels[] = $reach->name;
+            $dataset[] = $reach->reach;
+            $colours[] = '#'.Faction::find($reach->id)->colour();
+        }
+        
+        $chart = app()->chartjs
+            ->name("reportchart")
+            ->type("horizontalBar")
+            ->size(["height" => 20*(count($reaches)+1), "width"=>1000])
+            ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'top',
+                        ]
+                    ],
+                ],
+                "legend" => [
+                    "display" => false,
+                ]
+            ])
+            ->labels($labels)
+            ->datasets([
+                [
+                    'backgroundColor' => $colours,
+                    'data' => $dataset
+                ]
+            ]);
 
+        $desc = "Happiness Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for happiness, multiplying influence in each system by the happiness of the population (Elated=1, Despondent=0). As with the normal Reach measure, the (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.";
+        
+        return view('reports/report', [
+            'report' => "Reach",
+            'chart' => $chart,
+            'desc' => $desc
+        ]);
+    }
+
+    
     public function control() {
         $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass')
             ->notHidden()->notVirtual()
