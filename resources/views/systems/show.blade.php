@@ -208,7 +208,7 @@
 
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
-		<tr><th>Name</th><th>Influence</th><th>States</th></tr>
+		<tr><th>Name</th><th>Influence</th><th>States</th><th>Mood</th></tr>
 	  </thead>
 	  <tfoot>
 		<tr>
@@ -242,6 +242,9 @@
 			@include($state->icon)
 			{{$state->name}}
 			@endforeach
+		  </td>
+		  <td>
+			@include('icons/happiness', ['happiness' => $faction->happiness, 'label'=>true])
 		  </td>
 		</tr>
 		@endforeach
