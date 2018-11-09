@@ -38,6 +38,10 @@ Route::get('/systems/{system}/history', [
     'as' => 'systems.showhistory',
     'uses' => 'SystemController@showhistory'
 ]);
+Route::get('/systems/{system}/happiness', [
+    'as' => 'systems.showhappiness',
+    'uses' => 'SystemController@showhappiness'
+]);
 Route::get('/systems/{system}/editreport', [
     'as' => 'systems.editreport',
     'uses' => 'SystemController@editreport'
@@ -56,6 +60,10 @@ Route::resource('factions', 'FactionController');
 Route::get('/factions/{faction}/history', [
     'as' => 'factions.showhistory',
     'uses' => 'FactionController@showhistory'
+]);
+Route::get('/factions/{faction}/happiness', [
+    'as' => 'factions.showhappiness',
+    'uses' => 'FactionController@showhappiness'
 ]);
 
 

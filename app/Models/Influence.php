@@ -28,4 +28,15 @@ class Influence extends Model
     public function displayDate() {
         return \App\Util::displayDate($this->date); 
     }
+
+    public function happinessString() {
+        switch ($this->happiness) {
+        case "1": return "Elated";
+        case "2": return "Happy";
+        case "3": return "Discontented";
+        case "4": return "Unhappy";
+        case "5": return "Despondent";
+        }
+        return "";
+    }
 }

@@ -232,6 +232,111 @@ class FactionController extends Controller
         ]);
     }
 
+    public function showHappiness(Faction $faction)
+    {
+        $influences = Influence::where('faction_id', $faction->id)
+            ->whereNotNull('happiness')
+            ->with('system')
+            ->orderBy('date')
+            ->get();
+
+        $systems = [];
+        $dates = [];
+        $entries = [];
+        $datasets = [];
+
+        $seen = [];
+        $lastdate = null;
+        
+        foreach ($influences as $influence) {
+            $date = $influence->date->format("Y-m-d");
+            if ($lastdate != $influence->date) {
+                if ($lastdate != null) {
+                    foreach ($systems as $sid => $system) {
+                        if (!isset($seen[$sid])) {
+                            if (Influence::where('system_id', $sid)->where('date', $lastdate)->count() > 0) {
+                                $datasets[$sid]['data'][] = [
+                                    'x' => \App\Util::graphDisplayDate($lastdate),
+                                    'y' => null
+                                ];
+                            } else {
+                                $entries[$lastdate->format("Y-m-d")][$sid] = [];
+                            }
+                        }
+                    }
+                    
+                }
+                $lastdate = $influence->date;
+                $seen = [];
+            }
+            
+            $system = $influence->system_id;
+            $seen[$system] = 1;
+            
+            if (!isset($datasets[$influence->system_id])) {
+                $datasets[$influence->system_id] = [
+                    'label' => $influence->system->displayName(),
+                    'backgroundColor' => 'transparent',
+                    'borderColor' => '#'.substr(md5($influence->system->catalogue), 0, 6),
+                    'fill' => false,
+                    'data' => []
+                ];
+            }
+            
+            $dates[$date] = 1;
+            $systems[$system] = $influence->system;
+
+            $entries[$date][$system] = [$influence->happiness, $influence->states];
+            $datasets[$influence->system_id]['data'][] = [
+                'x' => \App\Util::graphDisplayDate($influence->date),
+                'y' => $influence->happinessString()
+            ];
+        }
+
+
+        sort($datasets); // compact
+        krsort($dates);
+
+        $chart = app()->chartjs
+            ->name("influencehistory")
+            ->type("line")
+            ->size(["height" => 350, "width"=>1000])
+            ->datasets($datasets)
+            ->options([
+                'scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'bottom',
+                            'ticks' => [
+                                'callback' => "@@chart_xaxis_callback@@"
+                            ]
+                        ]
+                    ],
+                    'yAxes' => [
+                        [
+                            'type' => 'category',
+                            'labels' => ['Elated','Happy','Discontented','Unhappy','Despondent'],
+                        ]
+                    ]
+                ],
+                'tooltips' => [
+                    'callbacks' => [
+                        'title' => "@@tooltip_label_title@@",
+                        'label' => "@@tooltip_label_percent@@"
+                    ]
+                ]
+            ]);
+        
+        return view('factions/showhappiness', [
+            'chart' => $chart,
+            'faction' => $faction,
+            'history' => $entries,
+            'systems' => $systems,
+            'dates' => $dates
+        ]);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

@@ -204,7 +204,10 @@
 	@if ($system->bgslock)
 	<p>Political activity in this system is restricted.</p>
 	@endif
-	<p><a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a></p>
+	<p>
+	  <a href='{{route("systems.showhistory", $system->id)}}'>Influence history</a>,
+	  <a href='{{route("systems.showhappiness", $system->id)}}'>Happiness history</a>
+	</p>
 
 	<table class='table table-bordered datatable' data-order='[[1, "desc"]]' data-paging='false' data-searching='false'>
 	  <thead>
