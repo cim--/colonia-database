@@ -1,1 +1,1 @@
-<span title='Bulk Cargo - Damaged' class='icon-megaship-bulkcargodamaged'>&#x25A3;</span>
+<span title='Bulk Cargo - Damaged' class='icon-megaship-bulkcargodamaged'>&#x25A3;&#xFE0E;</span>

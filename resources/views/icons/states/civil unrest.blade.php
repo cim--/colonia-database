@@ -1,1 +1,1 @@
-<span title='Civil Unrest' class='icon-state-civilunrest'>&#x2639;</span>
+<span title='Civil Unrest' class='icon-state-civilunrest'>&#x2639;&#xFE0E;</span>

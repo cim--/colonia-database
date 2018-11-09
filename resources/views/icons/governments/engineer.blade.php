@@ -1,1 +1,1 @@
-<span title='Engineer' class='icon-government-engineer'>&#x2699;</span>
+<span title='Engineer' class='icon-government-engineer'>&#x2699;&#xFE0E;</span>

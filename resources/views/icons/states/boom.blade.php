@@ -1,1 +1,1 @@
-<span title='Boom' class='icon-state-boom'>&#x25B2;</span>
+<span title='Boom' class='icon-state-boom'>&#x25B2;&#xFE0E;</span>

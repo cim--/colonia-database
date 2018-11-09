@@ -1,1 +1,1 @@
-<span title='Civil Liberty' class='icon-state-civilliberty'>&#x263A;</span>
+<span title='Civil Liberty' class='icon-state-civilliberty'>&#x263A;&#xFE0E;</span>

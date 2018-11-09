@@ -1,1 +1,1 @@
-<span title='Cooperative' class='icon-government-cooperative'>&#x229C;</span>
+<span title='Cooperative' class='icon-government-cooperative'>&#x229C;&#xFE0E;</span>

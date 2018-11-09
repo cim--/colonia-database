@@ -1,1 +1,1 @@
-<span title='Science' class='icon-megaship-science'>&#x269B;</span>
+<span title='Science' class='icon-megaship-science'>&#x269B;&#xFE0E;</span>

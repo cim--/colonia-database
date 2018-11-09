@@ -1,1 +1,1 @@
-<span title='Thargoid Interference' class='icon-economy-thargoid'>&#x2623;</span>
+<span title='Thargoid Interference' class='icon-economy-thargoid'>&#x2623;&#xFE0E;</span>

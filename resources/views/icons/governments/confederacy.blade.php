@@ -1,1 +1,1 @@
-<span title='Confederacy' class='icon-government-confederacy'>&#x2724;</span>
+<span title='Confederacy' class='icon-government-confederacy'>&#x2724;&#xFE0E;</span>

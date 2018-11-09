@@ -1,1 +1,1 @@
-<span title='Detention Centre' class='icon-government-detention'>&#x25A6;</span>
+<span title='Detention Centre' class='icon-government-detention'>&#x25A6;&#xFE0E;</span>

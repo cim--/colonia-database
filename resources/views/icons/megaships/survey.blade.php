@@ -1,1 +1,1 @@
-<span title='Survey' class='icon-megaship-survey'>&#x26F0;</span>
+<span title='Survey' class='icon-megaship-survey'>&#x26F0;&#xFE0E;</span>

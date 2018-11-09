@@ -1,1 +1,1 @@
-<span title='Lockdown' class='icon-state-lockdown'>&#x26BF;</span>
+<span title='Lockdown' class='icon-state-lockdown'>&#x26BF;&#xFE0E;</span>

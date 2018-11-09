@@ -1,1 +1,1 @@
-<span title='Tanker' class='icon-megaship-tanker'>&#x26FD;</span>
+<span title='Tanker' class='icon-megaship-tanker'>&#x26FD;&#xFE0E;</span>

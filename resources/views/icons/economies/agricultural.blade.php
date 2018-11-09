@@ -1,1 +1,1 @@
-<span title='Agricultural' class='icon-economy-agricultural'>&#x2698;</span>
+<span title='Agricultural' class='icon-economy-agricultural'>&#x2698;&#xFE0E;</span>

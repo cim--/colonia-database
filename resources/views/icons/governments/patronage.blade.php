@@ -1,1 +1,1 @@
-<span title='Patronage' class='icon-government-patronage'>&#x265A;</span>
+<span title='Patronage' class='icon-government-patronage'>&#x265A;&#xFE0E;</span>

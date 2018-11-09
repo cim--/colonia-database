@@ -1,1 +1,1 @@
-<span title='Investment' class='icon-state-investment'>&#x21E5;</span>
+<span title='Investment' class='icon-state-investment'>&#x21E5;&#xFE0E;</span>

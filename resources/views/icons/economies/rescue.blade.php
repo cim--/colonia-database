@@ -1,1 +1,1 @@
-<span title='Rescue' class='icon-economy-rescue'>&#x229a;</span>
+<span title='Rescue' class='icon-economy-rescue'>&#x229a;&#xFE0E;</span>

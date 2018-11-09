@@ -1,1 +1,1 @@
-<span title='Scientific Installation' class='icon-installation-sci'>&#x269B;</span>
+<span title='Scientific Installation' class='icon-installation-sci'>&#x269B;&#xFE0E;</span>

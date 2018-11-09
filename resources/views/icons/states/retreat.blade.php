@@ -1,1 +1,1 @@
-<span title='Retreat' class='icon-state-retreat'>&#x23EA;</span>
+<span title='Retreat' class='icon-state-retreat'>&#x23EA;&#xFE0E;</span>

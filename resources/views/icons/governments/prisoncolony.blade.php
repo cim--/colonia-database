@@ -1,1 +1,1 @@
-<span title='Prison Colony' class='icon-government-prisoncolony'>&#x25A5;</span>
+<span title='Prison Colony' class='icon-government-prisoncolony'>&#x25A5;&#xFE0E;</span>

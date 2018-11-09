@@ -1,1 +1,1 @@
-<span title='High-Tech' class='icon-economy-hightech'>&#x269B;</span>
+<span title='High-Tech' class='icon-economy-hightech'>&#x269B;&#xFE0E;</span>

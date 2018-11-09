@@ -1,1 +1,1 @@
-<span title='None' class='icon-state-none'>&#x25CB;</span>
+<span title='None' class='icon-state-none'>&#x25CB;&#xFE0E;</span>
