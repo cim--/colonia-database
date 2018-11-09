@@ -199,7 +199,7 @@ class EDDNReader extends Command
                     $states = $faction['ActiveStates'];
                     $active = [];
                     foreach ($states as $fstate) {
-                        $fstate = $this->renameState($fstate);
+                        $fstate = $this->renameState($fstate['State']);
                         $state = State::where('name', $fstate)->first();
                         if (!$state) {
                             $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
