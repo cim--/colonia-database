@@ -24,18 +24,7 @@
 	  @endif
 	</p>
 	@if (!$faction->virtual)
-	<p><span class='faction-property'>Pending States</span>:
-	  @if (count($faction->states) > 0)
-	  @foreach ($faction->states as $state)
-	  <span class='pending-state'>
-		@include($state->icon)
-		{{$state->name}}
-	  </span>
-	  @endforeach
-	  @else
-	  Unknown
-	  @endif
-
+	<p>
 	  @if ($userrank > 0)
 	  <a class='edit' href='{{route('factions.edit', $faction->id)}}'>Update</a>
 	  @endif

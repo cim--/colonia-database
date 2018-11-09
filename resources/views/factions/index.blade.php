@@ -18,7 +18,6 @@ Factions
 	  <th>Name</th>
 	  <th>Government</th>
       <th>Current States</th>
-	  <th>Pending States</th>
 	  <th>Player?</th>
 	</tr>
   </thead>
@@ -34,7 +33,6 @@ Factions
 		@endif
 	  </td>
 	  @include('factions.statecell', ['states' => $faction->currentStates()])
-	  @include('factions.statecell', ['states' => $faction->states])
       <td>
 		@if ($faction->player)
 		@include('layout/yes')
