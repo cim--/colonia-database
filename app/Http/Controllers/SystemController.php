@@ -442,6 +442,14 @@ class SystemController extends Controller
 
         $phases = Phase::orderBy('sequence')->get();
         $economies = Economy::orderBy('name')->get();
+
+        $hlevels = [
+            1 => "Elated",
+            2 => "Happy",
+            3 => "Discontented",
+            4 => "Unhappy",
+            5 => "Despondent"
+        ];
         
         return view('systems/edit', [
             'today' => $today->count() > 0 ? $today : $yesterday,
@@ -452,7 +460,8 @@ class SystemController extends Controller
             'states' => \App\Util::selectMap($states),
             'phases' => \App\Util::selectMap($phases),
             'economies' => \App\Util::selectMap($economies, true),
-            'systemFacilities' => Facility::systemFacilities()
+            'systemFacilities' => Facility::systemFacilities(),
+            'happinesslevels' => $hlevels
         ]);
     }
 
@@ -513,6 +522,7 @@ class SystemController extends Controller
 
         $factions = $request->input('faction');
         $influences = $request->input('influence');
+        $happiness = $request->input('happiness');
         $states = $request->input('state');
 
         $total = 0;
@@ -551,6 +561,7 @@ class SystemController extends Controller
                 $obj->state_id = 0; // TODO: delete this field
                 $obj->date = $target;
                 $obj->influence = $influences[$i];
+                $obj->happiness = $happiness[$i];
                 $obj->current = true;
                 $obj->save();
                 $obj->states()->attach($states[$i]);

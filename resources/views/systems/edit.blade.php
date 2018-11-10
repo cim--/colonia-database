@@ -23,6 +23,9 @@
 			{{$state->name}}
 			@endforeach
 		  </td>
+		  <td>
+			{{$faction->happinessString()}}
+		  </td>
 		</tr>
 		@endforeach
 	  </tbody>
@@ -48,6 +51,9 @@
 		  <td>
 			{!! Form::select("state[$idx][]", $states, $faction->states->pluck('id'), ['multiple' => 'multiple', 'size' => 3]) !!}
 		  </td>
+		  <td>
+			{!! Form::select("happiness[$idx]", $happinesslevels, $faction->happiness) !!}
+		  </td>
 		</tr>
 		@endforeach
 		@for ($idx = count($today); 8 > $idx ; $idx++)
@@ -60,6 +66,9 @@
 		  </td>
 		  <td>
 			{!! Form::select("state[$idx][]", $states, [],  ['multiple' => 'multiple', 'size' => 3]) !!}
+		  </td>
+		  <td>
+			{!! Form::select("happiness[$idx]", $happinesslevels, 2) !!}
 		  </td>
 		</tr>
         @endfor
