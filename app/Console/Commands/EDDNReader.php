@@ -195,7 +195,7 @@ class EDDNReader extends Command
                         continue;
                     }
                     $inf = round($faction['Influence'], 3)*100;
-
+                    $hap = substr($faction['Happiness'],22,1);
                     $states = $faction['ActiveStates'];
                     $active = [];
                     foreach ($states as $fstate) {
@@ -214,7 +214,7 @@ class EDDNReader extends Command
                     if (isset($faction['PendingStates'])) {
                         $pending = $faction['PendingStates'];
                     }
-                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => collect($active), 'pending' => $pending];
+                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => collect($active), 'pending' => $pending, 'happiness' => $hap];
                 }
                 usort($influences, function($a, $b) {
                     return $b['influence'] - $a['influence'];
@@ -314,6 +314,7 @@ class EDDNReader extends Command
                 $io->faction_id = $influence['faction']->id;
 //                $io->state_id = $influence['state']->id;
                 $io->influence = $influence['influence'];
+                $io->happiness = $influence['happiness'];
                 $io->current = 1;
                 $io->date = $target;
                 $io->save();
