@@ -82,7 +82,7 @@ class EngineerController extends Controller
         $moduletypes = Moduletype::orderBy('type')->orderBy('description')->get();
         foreach ($moduletypes as $mtype) {
             $level = $request->input('blueprint'.$mtype->id);
-            if ($level == 0) {
+            if ($level < 1.0) {
                 Blueprint::where('engineer_id', $engineer->id)->where('moduletype_id', $mtype->id)->delete();
             } else {
                 $blueprint = Blueprint::firstOrNew(['engineer_id'=>$engineer->id,'moduletype_id'=> $mtype->id]);

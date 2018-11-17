@@ -35,7 +35,7 @@
 <ul id='blueprintlist'>
   @foreach ($engineer->blueprints as $blueprint)
   <li>
-	@include ('components.blueprint')
+	@include ('components.blueprint', ['fractional' => true])
 	<a href='{{route('outfitting.moduletype', $blueprint->moduletype)}}'>
 	  {{$blueprint->moduletype->description}}
 	</a>
