@@ -13,7 +13,19 @@
 <p><a href='{{route("systems.show", $system->id)}}'>System details</a></p>
 
 @include('layout/chart')
+
+{!! Form::open(['route' => ['systems.showhistory', 'system' =>$system->id], 'method' => 'GET']) !!}
+
+{!! Form::label('minrange', 'Start date') !!}
+{!! Form::text('minrange', App\Util::formDisplayDate($minrange)) !!}
+{!! Form::label('maxrange', 'End date') !!}
+{!! Form::text('maxrange', App\Util::formDisplayDate($maxrange)) !!}
+
+{!! Form::submit('Set date range') !!}
+<a href='{{route('systems.showhistory', ['system' =>$system->id])}}'>(Show all data)</a>
+{!! Form::close() !!}
     
+
 <table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
   <thead>
 	<tr>

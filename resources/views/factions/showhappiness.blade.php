@@ -9,6 +9,17 @@
 <p><a href='{{route("factions.show", $faction->id)}}'>Faction details</a></p>
 
 @include('layout/chart')
+
+{!! Form::open(['route' => ['factions.showhappiness', 'faction' =>$faction->id], 'method' => 'GET']) !!}
+
+{!! Form::label('minrange', 'Start date') !!}
+{!! Form::text('minrange', App\Util::formDisplayDate($minrange)) !!}
+{!! Form::label('maxrange', 'End date') !!}
+{!! Form::text('maxrange', App\Util::formDisplayDate($maxrange)) !!}
+
+{!! Form::submit('Set date range') !!}
+<a href='{{route('factions.showhappiness', ['faction' =>$faction->id])}}'>(Show all data)</a>
+{!! Form::close() !!}
     
 <table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
   <thead>

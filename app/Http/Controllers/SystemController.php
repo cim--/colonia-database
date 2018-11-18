@@ -207,9 +207,26 @@ class SystemController extends Controller
         ]);
     }
 
-    public function showHistory(System $system)
+    public function showHistory(Request $request, System $system)
     {
+        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+
+        
         $influences = Influence::where('system_id', $system->id)
+            ->whereDate('date', '>=', $minrange)
+            ->whereDate('date', '<', $maxrangecomp)
             ->with('faction')
             ->with('states')
             ->orderBy('date')
@@ -307,13 +324,31 @@ class SystemController extends Controller
             'system' => $system,
             'history' => $entries,
             'factions' => $factions,
-            'dates' => $dates
+            'dates' => $dates,
+            'minrange' => $minrange,
+            'maxrange' => $maxrange
         ]);
     }
 
-    public function showHappiness(System $system)
+    public function showHappiness(Request $request, System $system)
     {
+        $minrange = Carbon::parse($request->input('minrange', '3304-12-01'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+        
         $influences = Influence::where('system_id', $system->id)
+            ->whereDate('date', '>=', $minrange)
+            ->whereDate('date', '<', $maxrangecomp)
             ->whereNotNull('happiness')
             ->with('faction')
             ->orderBy('date')
@@ -410,7 +445,9 @@ class SystemController extends Controller
             'system' => $system,
             'history' => $entries,
             'factions' => $factions,
-            'dates' => $dates
+            'dates' => $dates,
+            'minrange' => $minrange,
+            'maxrange' => $maxrange
         ]);
     }
     
