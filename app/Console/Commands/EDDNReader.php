@@ -210,6 +210,18 @@ class EDDNReader extends Command
                         }
                         $active[] = $state;
                     }
+                    if ($faction['FactionState'] != "None") {
+                        $fstate = $this->renameState($faction['FactionState']);
+                        $state = State::where('name', $fstate)->first();
+                        if (!$state) {
+                            $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
+                            Alert::alert($error);
+                            \Log::error($error);
+                            $this->error($error);
+                            return;
+                        }
+                        $active[] = $state;
+                    }
                     $pending = [];
                     if (isset($faction['PendingStates'])) {
                         $pending = $faction['PendingStates'];
