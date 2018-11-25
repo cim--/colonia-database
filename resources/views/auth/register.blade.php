@@ -4,9 +4,9 @@
     
 @section('content')
 
-<p>You do not need to register to see any of the data stored in this system, only to participate in updating it. If you register, you will get access to update information on current influence levels, pending states, and traffic reports, once you have contacted Ian Doncaster on the <a href="https://discord.gg/fE49mGw">Colonia Census Discord</a> to confirm you've signed up</p>
+<p>In general, you <strong>do not need a user account</strong>. Most information is better updated by running an EDDN-compatible tool, and traffic reports may be submitted through CensusBot. You do not need an account to read any of the data on the site or to contribute to projects.</p>
 
-<p>Updates to the information are designed to be easy to collect while going about your normal business in Colonia. If you dock in a system, check if it needs a traffic report update and take a minute to file it. If you're travelling in supercruise, updating the pending state reports for the system can be done while you fly. There is no minimum commitment required - every person who adds a single report saves everyone else effort.</p>
+<p>If you are sure you need an account, contact Ian Doncaster on the Census Discord to have it enabled once you have registered, or it won't do anything anyway.</p>
 
 <p>Your email address will only be used if you forget your password and use the password reset features, never for anything else. If you aren't going to forget your password - or don't mind having to prod Ian if you do - you can safely use a fake one.</p>
 
