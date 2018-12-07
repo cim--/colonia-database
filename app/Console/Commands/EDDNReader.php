@@ -271,7 +271,10 @@ class EDDNReader extends Command
     private function updateInfluences($system, $influences) {
         $target = \App\Util::tick();
 
-       
+        $latest = Influence::where('system_id', $system->id)
+            ->where('faction_id', $influences[0]['faction']->id)
+            ->where('current', 1)
+            ->first();
         $exists = Influence::where('system_id', $system->id)
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->count();
@@ -287,13 +290,20 @@ class EDDNReader extends Command
                 }
                 $this->info("Updated pending states");
                 }); */
+
+            if ($latest) {
+                // we have data for this tick but the influence values
+                // don't match this - double-tick? missed tick? other
+                // oddities?
+                if(abs($latest->influence - $influences[0]['influence']) > 0.1) {
+                    Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                }
+            }
+            
             return;
         }
 
-        $latest = Influence::where('system_id', $system->id)
-            ->where('faction_id', $influences[0]['faction']->id)
-            ->where('current', 1)
-            ->first();
+
         if ($latest) {
             // if not, then new system being read
             if(abs($latest->influence - $influences[0]['influence']) < 0.1) {
