@@ -15,18 +15,18 @@
 
 	  @include('intro.botbox', ['commands' => ["!help", "!summary systems"]])
 	  
-	  <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
+	  <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol, near the border of the Inner Scutum-Centaurus Arm with the Odin's Hold region of the galactic core. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
 	  
 	  <p>A set of 6 surface resupply outposts and a newer set of 3 orbital stations break the journey from Sol into easier and shorter stages, and the neutron highways are well mapped.</p>
 	  
-	  <p>The populated region now consists of {{$systemcount}} systems and is approximately 100 LY in radius.</p>
+	  <p>The populated region now consists of {{$systemcount}} systems and is approximately 100 LY in diameter.</p>
 	</div>
 
 	<div>
 	  <h2>Trading</h2>
 	  @include('intro.botbox', ['commands' => ["!report system", "!locate economy name", "!summary economy"]])
 
-	  <p>High-Tech and Service economies are much more common. On the other hand, as there are numerous known earth-like worlds for a population of only {{number_format($totalPopulation)}}, there are no Terraforming economies. Colony economies are also very rare - in general, Tourism economies have taken their place.</p>
+	  <p>High-Tech and Service economies are much more common. On the other hand, there are not yet any Terraforming economies - the colony is small enough not to need the extra living space yet. Colony economies are also very rare - in general, Tourism economies have taken their place.</p>
 
 	  <p>None of the systems have a high population so supply and demand levels for goods are generally low - however, many of the outlying systems also have low traffic levels, so surpluses and deficits can build up.</p>
 
