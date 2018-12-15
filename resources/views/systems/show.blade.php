@@ -215,7 +215,7 @@
 	  </thead>
 	  <tfoot>
 		<tr>
-		  <td colspan='3'>
+		  <td colspan='4'>
 			@if ($factions->count() > 0)
 			Last updated: <span title='{{$factions[0]->created_at->format("H:i")}}'>{{ $factions[0]->displayDate() }}</span>
 			@else
