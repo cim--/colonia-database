@@ -196,7 +196,7 @@ class EDDNReader extends Command
                     }
                     $inf = round($faction['Influence'], 3)*100;
                     $hap = substr($faction['Happiness'],22,1);
-                    $states = $faction['ActiveStates'];
+                    $states = isset($faction['ActiveStates']) ? $faction['ActiveStates'] : [];
                     $active = [];
                     foreach ($states as $fstate) {
                         $fstate = $this->renameState($fstate['State']);
@@ -221,6 +221,9 @@ class EDDNReader extends Command
                             return;
                         }
                         $active[] = $state;
+                    }
+                    if (count($active) == 0) {
+                        $active[] = State::where('name', 'None')->first();
                     }
                     $pending = [];
                     if (isset($faction['PendingStates'])) {
@@ -341,7 +344,7 @@ class EDDNReader extends Command
                 $io->date = $target;
                 $io->save();
 
-                $io->states()->attach($influence['active']->pluck('id'));
+                $io->states()->attach($influence['state']->pluck('id')->unique());
             }
             \Log::info("Influence update", [
                 'system' => $system->displayName(),
@@ -349,10 +352,10 @@ class EDDNReader extends Command
             ]);
             $this->info("Updated influence for ".$system->displayName());
 
-            foreach ($influences as $influence) {
+/*            foreach ($influences as $influence) {
                 $this->updatePendingStates($influence['faction'], $influence['pending']);
             }
-            $this->info("Updated pending states");
+            $this->info("Updated pending states"); */
                             
         });
     }
