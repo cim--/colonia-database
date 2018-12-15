@@ -132,27 +132,29 @@
   @foreach ($importants as $important)
   @foreach ($important->states as $state)
   @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None']))
+  @if (($state->name != "War" && $state->name != "Election") || $important->faction->controlsAsset($important->system))
   <li>
-	@include($important->faction->government->icon)
-	<a href='{{route('factions.show', $important->faction->id)}}'>
-	  {{$important->faction->name}}
-	</a>
-	in
+    @include($important->faction->government->icon)
+    <a href='{{route('factions.show', $important->faction->id)}}'>
+      {{$important->faction->name}}
+    </a>
+    in
     @if ($state->name == "War" || $state->name == "Election")
-	@if ($important->system->controllingFaction()->id == $important->faction->id)
-	<strong>system control</strong>
-	@elseif ($important->faction->controlsAsset($important->system))
-	<em>station control</em>
-	@endif
-	@endif
-	@include($state->icon)
-	{{$state->name}}
-	in
-	@include($important->system->economy->icon)
-	<a href='{{route('systems.show', $important->system->id)}}'>
-	  {{$important->system->displayName()}}
-	</a>
+    @if ($important->system->controllingFaction()->id == $important->faction->id)
+    <strong>system control</strong>
+    @elseif ($important->faction->controlsAsset($important->system))
+    <em>station control</em>
+    @endif
+    @endif
+    @include($state->icon)
+    {{$state->name}}
+    in
+    @include($important->system->economy->icon)
+    <a href='{{route('systems.show', $important->system->id)}}'>
+      {{$important->system->displayName()}}
+    </a>
   </li>
+  @endif
   @endif
   @endforeach
   @endforeach
