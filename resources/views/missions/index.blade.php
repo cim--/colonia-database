@@ -42,7 +42,7 @@ Mission Types
 		@else
 		{{$mission->type}}
 		@endif
-		@if ($mission->updated_at->lt(new \Carbon\Carbon("1 February 2018")))
+		@if ($mission->updated_at->lt(new \Carbon\Carbon("10 December 2018")))
 		<span class='mission-verify-icon' title='Caution: verification needed'>&#x2754;</span>
 		@endif
 	  </td>
