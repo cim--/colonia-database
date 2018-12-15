@@ -112,6 +112,12 @@ class EDDNReader extends Command
                     return;
                 }
                 $this->processFSDJump($event);
+            } else if ($event['message']['event'] == "Location") {
+                if ($event['message']['StarPos'][2] < 10000) {
+                    // in case of duplicate names
+                    return;
+                }
+                $this->processLocation($event);
             } else if ($event['message']['event'] == "Docked") {
                 $this->processStationDocking($event);
             }
@@ -174,70 +180,9 @@ class EDDNReader extends Command
             $eddnevent->save();
                     
             $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
-            if (!$system->virtualonly) {
-                $factions = $event['message']['Factions'];
-                $influences = [];
-                foreach ($factions as $faction) {
-                    if ($faction['Name'] == "Pilots Federation Local Branch") {
-                        // virtual faction, ignore
-                        continue;
-                    }
-                    $fo = Faction::where('name', $faction['Name'])->first();
-                    if (!$fo) {
-                        $error = "Unrecognised faction ".$faction['Name']." in ".$system->displayName();
-                        Alert::alert($error);
-                        \Log::error($error);
-                        $this->error($error);
-                        return;
-                    }
-                    if ($fo->virtual) {
-                        // virtual faction, ignore
-                        continue;
-                    }
-                    $inf = round($faction['Influence'], 3)*100;
-                    $hap = substr($faction['Happiness'],22,1);
-                    $states = isset($faction['ActiveStates']) ? $faction['ActiveStates'] : [];
-                    $active = [];
-                    foreach ($states as $fstate) {
-                        $fstate = $this->renameState($fstate['State']);
-                        $state = State::where('name', $fstate)->first();
-                        if (!$state) {
-                            $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
-                            Alert::alert($error);
-                            \Log::error($error);
-                            $this->error($error);
-                            return;
-                        }
-                        $active[] = $state;
-                    }
-                    if ($faction['FactionState'] != "None") {
-                        $fstate = $this->renameState($faction['FactionState']);
-                        $state = State::where('name', $fstate)->first();
-                        if (!$state) {
-                            $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
-                            Alert::alert($error);
-                            \Log::error($error);
-                            $this->error($error);
-                            return;
-                        }
-                        $active[] = $state;
-                    }
-                    if (count($active) == 0) {
-                        $active[] = State::where('name', 'None')->first();
-                    }
-                    $pending = [];
-                    if (isset($faction['PendingStates'])) {
-                        $pending = $faction['PendingStates'];
-                    }
-                    $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => collect($active), 'pending' => $pending, 'happiness' => $hap];
-                }
-                usort($influences, function($a, $b) {
-                    return $b['influence'] - $a['influence'];
-                });
-                $this->updateInfluences($system, $influences);
-            }
-            $this->updateSecurity($system, $event['message']);
 
+            $this->processSystemData($event, $system);
+            
         } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
             $traditional = new \stdClass;
             $traditional->x = $event['message']['StarPos'][0];
@@ -253,6 +198,111 @@ class EDDNReader extends Command
                 Alert::alert("New inhabited system ".$event['message']['StarSystem']);
             }
         }
+    }
+
+    private function processLocation($event) {
+        $system = System::where('name', $event['message']['StarSystem'])
+            ->orWhere('catalogue', $event['message']['StarSystem'])
+            ->first();
+        if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
+
+            if ($this->unreliableFSDEvent($event)) {
+                Eddnblacklist::blacklist($event['header']['uploaderID']);
+                return;
+            }
+            
+            \Log::info("Incoming data", [
+                'system' => $system->displayName()
+            ]);
+            // no eddn event count for Location as that doesn't imply a jump
+            
+            $this->line("[".date("YmdHis")."] Location event for ".$system->displayName());
+
+            $this->processSystemData($event, $system);
+            
+        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
+            $traditional = new \stdClass;
+            $traditional->x = $event['message']['StarPos'][0];
+            $traditional->y = $event['message']['StarPos'][1];
+            $traditional->z = $event['message']['StarPos'][2];
+            
+            $coords = \App\Util::coloniaCoordinates($traditional);
+            $colonia = new \stdClass;
+            $colonia->x = 0;
+            $colonia->y = 0;
+            $colonia->z = 0;
+            if (\App\Util::distance($coords, $colonia) < 1000) {
+                Alert::alert("New inhabited system ".$event['message']['StarSystem']);
+            }
+        }
+    }
+
+    
+    private function processSystemData($event, $system) {
+        if (!$system->virtualonly) {
+            $factions = $event['message']['Factions'];
+            $influences = [];
+            foreach ($factions as $faction) {
+                if ($faction['Name'] == "Pilots Federation Local Branch") {
+                    // virtual faction, ignore
+                    continue;
+                }
+                $fo = Faction::where('name', $faction['Name'])->first();
+                if (!$fo) {
+                    $error = "Unrecognised faction ".$faction['Name']." in ".$system->displayName();
+                    Alert::alert($error);
+                    \Log::error($error);
+                    $this->error($error);
+                    return;
+                }
+                if ($fo->virtual) {
+                    // virtual faction, ignore
+                    continue;
+                }
+                $inf = round($faction['Influence'], 3)*100;
+                $hap = substr($faction['Happiness'],22,1);
+                $states = isset($faction['ActiveStates']) ? $faction['ActiveStates'] : [];
+                $active = [];
+                foreach ($states as $fstate) {
+                    $fstate = $this->renameState($fstate['State']);
+                    $state = State::where('name', $fstate)->first();
+                    if (!$state) {
+                        $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
+                        Alert::alert($error);
+                        \Log::error($error);
+                        $this->error($error);
+                        return;
+                    }
+                    $active[] = $state;
+                }
+                if ($faction['FactionState'] != "None") {
+                    $fstate = $this->renameState($faction['FactionState']);
+                    $state = State::where('name', $fstate)->first();
+                    if (!$state) {
+                        $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
+                        Alert::alert($error);
+                        \Log::error($error);
+                        $this->error($error);
+                        return;
+                    }
+                    $active[] = $state;
+                }
+                if (count($active) == 0) {
+                    $active[] = State::where('name', 'None')->first();
+                }
+                $pending = [];
+                if (isset($faction['PendingStates'])) {
+                    $pending = $faction['PendingStates'];
+                }
+                $influences[] = ['faction' => $fo, 'influence' => $inf, 'state' => collect($active), 'pending' => $pending, 'happiness' => $hap];
+            }
+            usort($influences, function($a, $b) {
+                return $b['influence'] - $a['influence'];
+            });
+            $this->updateInfluences($system, $influences);
+        }
+        $this->updateSecurity($system, $event['message']);
+
     }
 
     private function renameState($state) {
