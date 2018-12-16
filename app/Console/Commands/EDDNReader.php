@@ -275,6 +275,7 @@ class EDDNReader extends Command
                     }
                     $active[] = $state;
                 }
+		/*
                 if ($faction['FactionState'] != "None") {
                     $fstate = $this->renameState($faction['FactionState']);
                     $state = State::where('name', $fstate)->first();
@@ -286,7 +287,8 @@ class EDDNReader extends Command
                         return;
                     }
                     $active[] = $state;
-                }
+		}
+		 */
                 if (count($active) == 0) {
                     $active[] = State::where('name', 'None')->first();
                 }
