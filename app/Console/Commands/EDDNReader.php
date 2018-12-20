@@ -277,7 +277,7 @@ class EDDNReader extends Command
                 }
 
                 if (!in_array($hap, [1,2,3,4,5])) {
-                    $error = "Happiness value ".$faction['Happiness']." unrecognised for ".faction['Name']." in ".$system->displayName();
+                    $error = "Happiness value ".$faction['Happiness']." unrecognised for ".$faction['Name']." in ".$system->displayName();
                     \Log::error($error);
                     $this->error($error);
                     return;
