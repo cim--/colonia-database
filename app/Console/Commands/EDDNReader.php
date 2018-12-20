@@ -275,6 +275,13 @@ class EDDNReader extends Command
                     }
                     $active[] = $state;
                 }
+
+                if (!in_array($hap, [1,2,3,4,5])) {
+                    $error = "Happiness value ".$faction['Happiness']." unrecognised for ".faction['Name']." in ".$system->displayName();
+                    \Log::error($error);
+                    $this->error($error);
+                    return;
+                }
 		/*
                 if ($faction['FactionState'] != "None") {
                     $fstate = $this->renameState($faction['FactionState']);
@@ -351,7 +358,16 @@ class EDDNReader extends Command
                 // don't match this - double-tick? missed tick? other
                 // oddities?
                 if(abs($latest->influence - $influences[0]['influence']) > 0.1) {
-                    Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                    // check for the obvious case - cached data from previous tick
+                    $lasttarget = $target->copy()->subDay();
+                    $last = Influence::where('system_id', $system->id)
+                        ->where('faction_id', $influences[0]['faction']->id)
+                        ->where('date', $lasttarget->format("Y-m-d 00:00:00"))
+                        ->first();
+                    if ($last && abs($last->influence - $influences[0]['influence']) > 0.1) {
+                        // also different to previous day's figure
+                        Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                    }
                 }
             }
             

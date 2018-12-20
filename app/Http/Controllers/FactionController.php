@@ -146,7 +146,7 @@ class FactionController extends Controller
             ->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<', $maxrangecomp)
             ->with('system')
-            ->with('states')
+            ->with('states:states.id,icon')
             ->orderBy('date')
             ->get();
 
@@ -164,7 +164,7 @@ class FactionController extends Controller
             $infexists[$existent->system_id][$existent->date] = 1;
         }
 
-        
+
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
             if ($lastdate != $influence->date) {
