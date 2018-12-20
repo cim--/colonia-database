@@ -132,6 +132,7 @@
   @foreach ($importants as $important)
   @foreach ($important->states as $state)
   @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None']))
+  @if ($state->name != "Expansion" || $important->system_id == $important->faction->system_id)
   @if (($state->name != "War" && $state->name != "Election") || $important->faction->controlsAsset($important->system))
   <li>
     @include($important->faction->government->icon)
@@ -148,12 +149,15 @@
     @endif
     @include($state->icon)
     {{$state->name}}
+    @if ($state->name != "Expansion")
     in
     @include($important->system->economy->icon)
     <a href='{{route('systems.show', $important->system->id)}}'>
       {{$important->system->displayName()}}
     </a>
+    @endif
   </li>
+  @endif
   @endif
   @endif
   @endforeach

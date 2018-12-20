@@ -55,18 +55,23 @@ class BaseController extends Controller
                 if (in_array($state->name, $states)) {
                     continue;
                 }
-                $states = ['War', 'Election'];
+                $states = ['War', 'Election', 'Expansion'];
                 if (!in_array($state->name, $states)) {
                     if ($value->system->controllingFaction()->id != $value->faction->id) {
                         continue; // ignore most states for non-controlling factions
                     }
                 }
+                if ($state->name == "Expansion" && $value->system_id != $value->faction->system_id) {
+                    continue; // hide expansions for all but home system
+                    // Later: maybe we'll get expansion source in the journal
+                }
+
                 $use = true;
                 break;
             }
             return $use;
         });
-
+        
         $lowinfluences = [];
         $sysid = 0;
         $happiness = 0;
