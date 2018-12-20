@@ -141,6 +141,32 @@
 		@endforeach
 	  </tbody>
 	</table>
+
+	<h2>Installations</h2>
+	<table class='table table-bordered datatable'>
+	  <thead>
+		<tr><th>System</th><th>Planet</th><th>Type</th></tr>
+	  </thead>
+	  <tbody>
+		@foreach ($faction->installations as $installation)
+		<tr>
+		  <td><a href="{{route('systems.show', $installation->system->id)}}">{{$installation->system->displayName()}}</a>
+		  </td>
+		  <td>{{$installation->planet}}</td>
+		  <td>
+		    @include($installation->installationclass->icon)
+		    <a href='{{route('installations.show', $installation->id)}}'>
+		      {{$installation->installationclass->name}}
+		      @if ($installation->name)
+		      ({{$installation->name}})
+		      @endif
+		    </a>
+		  </td>
+		</tr>
+		@endforeach
+	  </tbody>
+	</table>
+
 	@if (!$faction->virtual)
 	<h2>State History</h2>
 	@include('layout/chart')

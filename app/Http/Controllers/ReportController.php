@@ -218,7 +218,7 @@ class ReportController extends Controller
 
     
     public function control() {
-        $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass')
+        $factions = Faction::with('government', 'system', 'system.economy', 'stations', 'stations.stationclass', 'installations')
             ->notHidden()->notVirtual()
             ->with(['influences' => function($q) {
                     $q->where('current', 1);

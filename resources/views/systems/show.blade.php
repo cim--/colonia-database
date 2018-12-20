@@ -177,7 +177,7 @@
 	<h2>Installations</h2>
 	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false' data-order='[[1, "asc"]]'>
 	  <thead>
-		<tr><th>Class</th><th>Planet</th>
+		<tr><th>Class</th><th>Planet</th><th>Owner</th>
 	  </thead>
 	  <tbody>
 		@foreach ($system->installations as $installation)
@@ -193,6 +193,16 @@
 		  </td>
 		  <td>
 			{{$installation->planet}}
+		  </td>
+		  <td>
+		    @if ($installation->faction_id)
+		    @include ($installation->faction->government->icon)
+		    <a href='{{route('factions.show', $installation->faction_id)}}'>
+		      {{$installation->faction->name}}
+		    </a>
+		    @else
+		    Not Known
+		    @endif
 		  </td>
 		@endforeach
 	  </tbody>

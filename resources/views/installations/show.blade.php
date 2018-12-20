@@ -19,6 +19,15 @@
   </a> {{$installation->planet}}
 </div>
 <div><strong>Constructed:</strong> {{App\Util::displayDate($installation->constructed)}}</div>
+<div><strong>Owner:</strong>
+  @if ($installation->faction_id)
+  <a href='{{route('factions.show', $installation->faction_id)}}'>
+    {{$installation->faction->name}}
+  </a>
+  @else
+  Not Known
+  @endif
+</div>
 
 @if ($installation->cargo)
 <p><strong>Typical cargo:</strong> {{$installation->cargo}}</p>

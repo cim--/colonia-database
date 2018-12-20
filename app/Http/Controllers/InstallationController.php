@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Installation;
 use App\Models\Installationclass;
 use App\Models\System;
+use App\Models\Faction;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -17,7 +18,7 @@ class InstallationController extends Controller
      */
     public function index()
     {
-        $installations = Installation::with('system', 'system.economy', 'installationclass')->get();
+        $installations = Installation::with('system', 'system.economy', 'installationclass', 'faction', 'faction.government')->get();
 
         return view('installations.index', [
             'installations' => $installations
@@ -38,9 +39,11 @@ class InstallationController extends Controller
 
         $systems = System::orderBy('name')->get();
         $classes = Installationclass::orderBy('name')->get();
-
+        $factions = Faction::orderBy('name')->get();
+        
         return view('installations/create', [
             'classes' => \App\Util::selectMap($classes),
+            'factions' => \App\Util::selectMap($factions),
             'systems' => \App\Util::selectMap($systems, false, 'displayName'),
         ]);
     }
@@ -68,6 +71,7 @@ class InstallationController extends Controller
         ]);
         $installation->installationclass_id = $request->input('installationclass_id');
         $installation->system_id = $request->input('system_id');
+        $installation->faction_id = $request->input('faction_id');
         $installation->planet = $request->input('planet');
         $installation->name = $request->input('name');
         $installation->satellites = $request->input('satellites', false);
@@ -104,9 +108,11 @@ class InstallationController extends Controller
 
         $systems = System::orderBy('name')->get();
         $classes = Installationclass::orderBy('name')->get();
-
+        $factions = Faction::orderBy('name')->get();
+        
         return view('installations/edit', [
             'classes' => \App\Util::selectMap($classes),
+            'factions' => \App\Util::selectMap($factions),
             'systems' => \App\Util::selectMap($systems, false, 'displayName'),
             'installation' => $installation
         ]);

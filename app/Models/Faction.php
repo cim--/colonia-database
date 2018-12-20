@@ -25,6 +25,10 @@ class Faction extends Model
         return $this->hasMany('App\Models\Station');
     }
 
+    public function installations() {
+        return $this->hasMany('App\Models\Installation');
+    }
+    
     public function influences() {
         return $this->hasMany('App\Models\Influence');
     }
@@ -150,6 +154,15 @@ class Faction extends Model
         return false;
     }
 
+    public function controlsInstallation(System $system) {
+        foreach ($system->installations as $installation) {
+            if ($installation->faction_id == $this->id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public function currentRankString(System $system) {
         $influences = $system->latestFactions();
         

@@ -16,6 +16,7 @@ Installations
 	  <th>System</th>
 	  <th>Planet</th>
 	  <th>Type</th>
+	  <th>Owner</th>
 	  <th>Satellites</th>
 	  <th>Trespass</th>
 	  <th>Cargo</th>
@@ -41,6 +42,16 @@ Installations
 		  ({{$installation->name}})
 		  @endif
 		</a>
+      </td>
+	  <td>
+	    @if ($installation->faction_id)
+	    @include($installation->faction->government->icon)
+	    <a href='{{route('factions.show', $installation->faction_id)}}'>
+	      {{$installation->faction->name}}
+	    </a>
+	    @else
+	    -
+	    @endif
 	  </td>
       <td>
 		@if ($installation->satellites)

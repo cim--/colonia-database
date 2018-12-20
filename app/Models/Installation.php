@@ -12,6 +12,10 @@ class Installation extends Model
         return $this->belongsTo('App\Models\System');
     }
 
+    public function faction() {
+        return $this->belongsTo('App\Models\Faction');
+    }
+
     public function installationclass() {
         return $this->belongsTo('App\Models\Installationclass');
     }

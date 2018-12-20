@@ -7,6 +7,10 @@
 {!! Form::select('system_id', $systems) !!}
 </div>
 <div class='form-field'>
+{!! Form::label('faction_id', "Faction") !!}
+{!! Form::select('faction_id', $factions) !!}
+</div>
+<div class='form-field'>
 {!! Form::label('planet', "Planet") !!}
 {!! Form::text('planet') !!}
 </div>

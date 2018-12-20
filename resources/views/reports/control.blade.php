@@ -4,7 +4,7 @@
 
 @section('content')
 
-<table class='table table-bordered datatable' data-page-length='25' data-order='[[3, "desc"], [4, "desc"], [2,"desc"]]'>
+<table class='table table-bordered datatable' data-page-length='25' data-order='[[3, "desc"], [4, "desc"], [2,"desc"], [5, "desc"]]'>
   <thead>
 	<tr>
 	  <th>Faction</th>
@@ -12,6 +12,7 @@
 	  <th>Systems Present</th>
 	  <th>Systems Controlled</th>
 	  <th>Stations Controlled</th>
+	  <th>Installations Controlled</th>
 	  <th>Orbitals</th>
 	  <th>Planet Bases</th>
 	  <th>Settlements</th>
@@ -43,6 +44,7 @@
 	  <td>{{$faction->influences->count()}}</td>
 	  <td>{{$faction->stations->where('primary', 1)->count()}}</td>
 	  <td>{{$faction->stations->count()}}</td>
+	  <td>{{$faction->installations->count()}}</td>
 	  <td>{{$faction->stations->where('gravity', null)->count()}}</td>
 	  <td>
 		{{$faction->stations->where('gravity', '>', 0)
