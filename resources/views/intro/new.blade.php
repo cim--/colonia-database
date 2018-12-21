@@ -45,6 +45,7 @@
 
 	  <p>The Colonia region is near to numerous larger and planetary nebula in the Festival Grounds area, and is just above a large neutron field. As the most centrally-located known human colony, and the best equipped one outside Sol, it makes an excellent base for expeditions to most of the galaxy.</p>
 
+	  <p>Lagrange clouds are common around the nebula, including species of umbrella mollusc.</p>
 	</div>
 
 	<div>
@@ -133,7 +134,7 @@
     <div>
 	  <h2>Engineering</h2>
 
-	  <p>Colonia has <a href='{{route('engineers.index')}}'>limited engineering options</a> locally, but if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects.</p>
+	  <p>Colonia has <a href='{{route('engineers.index')}}'>improving engineering options</a> locally, and if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects.</p>
 
 	  <p>While the system populations at under 1 million would normally be insufficient to support Material and Tech Brokers, there is one of each present:</p>
 	  <ul>
