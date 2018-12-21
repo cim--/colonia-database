@@ -28,4 +28,13 @@ class State extends Model
         return $this->belongsToMany('App\Models\Faction')->withPivot('date');
     }
 
+    public static function idList() {
+        $list = [];
+        $states = State::all();
+        foreach ($states as $state) {
+            $list[$state->id] = $state;
+        }
+        return $list;
+    }
+
 }

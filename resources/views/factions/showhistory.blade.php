@@ -18,7 +18,6 @@
 {!! Form::text('maxrange', App\Util::formDisplayDate($maxrange)) !!}
 
 {!! Form::submit('Set date range') !!}
-<a href='{{route('factions.showhistory', ['faction' =>$faction->id])}}'>(Show all data)</a>
 {!! Form::close() !!}
     
 <table class='table table-bordered datatable' data-order='[[0, "desc"]]' data-searching='false' data-page-length='25'>
@@ -41,7 +40,7 @@
 		@if(isset($history[$date][$systemid]))
         @if(isset($history[$date][$systemid][0]))
 		{{$history[$date][$systemid][0]}}
-        @include('components.stateicons', ['states' => $history[$date][$systemid][1]])
+		@include('components.stateiconsmap', ['statekeys' => $history[$date][$systemid][1], 'states' => $states ])
 		@else
 		<span title="Not collected">?</span>
 		@endif

@@ -128,7 +128,9 @@ class FactionController extends Controller
 
     public function showHistory(Request $request, Faction $faction)
     {
-        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
+        $mindefault = (date("Y", strtotime("-99 days"))+1286).date("-m-d", strtotime("-99 days"));
+        
+        $minrange = Carbon::parse($request->input('minrange', $mindefault));
         $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
 
         $minrange->year -= 1286;
@@ -146,7 +148,6 @@ class FactionController extends Controller
             ->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<', $maxrangecomp)
             ->with('system')
-            ->with('states:states.id,icon')
             ->orderBy('date')
             ->get();
 
@@ -164,6 +165,15 @@ class FactionController extends Controller
             $infexists[$existent->system_id][$existent->date] = 1;
         }
 
+        $infstate = \DB::table("influence_state")->select('influence_id', 'state_id')->whereIn('influence_id', $influences->pluck('id'))->get();
+        $infstates = [];
+        foreach ($infstate as $link) {
+            if (!isset($infstates[$link->influence_id])) {
+                $infstates[$link->influence_id] = [];
+            }
+            $infstates[$link->influence_id][$link->state_id] = 1;
+        }
+        
 
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
@@ -203,7 +213,10 @@ class FactionController extends Controller
             $dates[$date] = 1;
             $systems[$system] = $influence->system;
 
-            $entries[$date][$system] = [$influence->influence, $influence->states];
+            $entries[$date][$system] = [
+                $influence->influence,
+                isset($infstates[$influence->id]) ? $infstates[$influence->id] : []
+            ];
             $datasets[$influence->system_id]['data'][] = [
                 'x' => \App\Util::graphDisplayDate($influence->date),
                 'y' => $influence->influence
@@ -253,7 +266,8 @@ class FactionController extends Controller
             'systems' => $systems,
             'dates' => $dates,
             'minrange' => $minrange,
-            'maxrange' => $maxrange
+            'maxrange' => $maxrange,
+            'states' => State::idList(),
         ]);
     }
 
