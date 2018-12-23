@@ -41,7 +41,7 @@ class Station extends Model
 
     public function modules()
     {
-        return $this->belongsToMany('App\Models\Module')->withPivot('current', 'unreliable');
+        return $this->belongsToMany('App\Models\Module')->withPivot('current', 'unreliable')->withTimestamps();
     }
 
     public function ships()

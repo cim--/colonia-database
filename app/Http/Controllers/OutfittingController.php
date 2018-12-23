@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Station;
+use App\Models\System;
 use App\Models\Module;
 use App\Models\Moduletype;
 use App\Models\Ship;
@@ -99,16 +100,30 @@ class OutfittingController extends Controller
         }
     }
 
-    public function module(Moduletype $moduletype, Module $module)
+    public function module(Moduletype $moduletype, Module $module, Request $request)
     {
-        $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
-            $q->orderBy('name');
-        }])->with('moduletype', 'moduletype.blueprints', 'moduletype.blueprints.engineer')->orderBy('size')->orderBy('type')->get();
+        $modules = Module::where('moduletype_id', $moduletype->id)
+            ->with(['stations' => function($q) {
+                    $q->orderBy('name');
+                }])
+            ->with('stations.stationclass', 'stations.system', 'moduletype', 'moduletype.blueprints', 'moduletype.blueprints.engineer')
+            ->orderBy('size')->orderBy('type')->get();
 
+        $reference = null;
+        if ($refid = $request->input('reference', false)) {
+            $reference = System::find($refid);
+        }
+        if ($reference === null) {
+            // no or bad reference
+            $reference = System::where('name', 'Colonia')->first();
+        }
+        $systems = System::orderBy('name')->orderBy('catalogue')->populated()->get();
         return view('outfitting/module', [
             'moduletype' => $moduletype,
             'module' => $module,
-            'singular' => false
+            'singular' => false,
+            'reference' => $reference,
+            'systems' => $systems
         ]);
     }
 

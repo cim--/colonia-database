@@ -13,24 +13,69 @@
 <p>This module has pre-requisites (e.g. Horizons, Tech Broker, ranks) and will only be available to pilots who meet the pre-requisites.</p>
 @endif
 
-<ul class='compact'>
-  @foreach ($module->stations->sortBy('name') as $station)
-  <li>
+<form action='{{route('outfitting.module', [$moduletype->id, $module->id])}}'>
+  <div>
+    Change reference system: <select name='reference'>
+      @foreach ($systems as $system)
+      <option value='{{$system->id}}' @if ($system->id == $reference->id)
+	selected='selected'
+	@endif>
+	{{$system->displayName()}}
+      </option>
+      @endforeach
+    </select>
+    <input type='submit' value='Update'>
+  </div> 
+</form>
+
+<table class='table table-bordered datatable'>
+  <thead>
+    <tr>
+      <th>System</th>
+      <th>Station</th>
+      <th>Station type</th>
+      <th>Availability</th>
+      <th>Distance to {{$reference->displayName()}}</th>
+      <th>Last Update</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach ($module->stations->sortBy('name') as $station)
+    <tr>
+      <td>
+	<a href='{{route('systems.show', $station->system_id)}}'>
+	  {{$station->system->displayName()}}
+	</a>
+      </td>
+      <td>
 	<a href='{{route('stations.showoutfitting', $station->id)}}'>{{$station->displayName()}}</a>
+      </td>
+      <td>
+	{{$station->stationclass->name}}
+      </td>
+      <td>
 	@if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
-	@include('icons/states/lockdown')
+	@include('icons/states/lockdown') Lockdown
+	@elseif ($module->largeship && !$station->stationclass->hasLarge)
+	<span class='outfitting-danger-icon'>&#x2762;</span> No Pad
+	@elseif (!$station->pivot->current)
+	<span class='outfitting-nostock-icon'>&#x2718;</span> No Stock
+	@elseif ($station->pivot->unreliable)
+	<span class='outfitting-lowstock-icon'>&#x2754;</span> Available (unreliable)
+	@else
+	Available
 	@endif
-	@if ($module->largeship && !$station->stationclass->hasLarge)
-	<span class='outfitting-danger-icon'>&#x2762;</span>
-	@endif
-    @if (!$station->pivot->current)
-	<span class='outfitting-nostock-icon'>&#x2718;</span>
-    @elseif ($station->pivot->unreliable)
-    <span class='outfitting-lowstock-icon'>&#x2754;</span>
-    @endif
-  </li>
-  @endforeach
-</ul>
+      </td>
+      <td>
+	{{number_format($station->system->distanceTo($reference),2)}}
+      </td>
+      <td data-sort="{{$station->pivot->updated_at ? $station->pivot->updated_at->timestamp : 0}}">
+	{{\App\Util::displayDate($station->pivot->updated_at)}}
+      </td>
+    </tr>
+    @endforeach
+  </tbody>
+</table>
 
 @if ($module->largeship && $module->stations->filter(function($s) {
 return !$s->stationclass->hasLarge;
