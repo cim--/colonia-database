@@ -57,7 +57,7 @@ Engineers
 
 <h2>Engineering Research</h2>
 
-<p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type. (Grade 5 is currently only estimated)</p>
+<p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type. (Grade 5 is currently only estimated based on the pattern of the previous grades)</p>
 <table class='table table-bordered'>
   <thead>
     <tr><td rowspan='2' colspan='2'></td><th scope="col" colspan='4'>Blueprints available</th></tr>
@@ -65,13 +65,13 @@ Engineers
   </thead>
   <tfoot>
     <tr>
-      <td colspan='6'>As the higher grade blueprints will be researched through a combination of rolls, the total required at any individual grade will be lower than stated here - the figures are if the entire research was made up of that grade.</td>
+      <td colspan='6'>As the higher grade blueprints will be researched through a combination of rolls, the total required at any individual grade will be lower than stated here - the figures are if the entire research was made up of that grade once it becomes available.</td>
     </tr>
   <tbody>
     <tr><th scope="row" rowspan='4'>Upgrades made</th>
       <th scope="row">Grade 1</th><td>3000</td><td>7500</td><td>19000</td><td>48000</td></tr>
     <tr>
-      <th scope="row">Grade 2</th><td>-</td><td>3750</td><td>8000</td><td>22500</td>
+      <th scope="row">Grade 2</th><td>-</td><td>2250</td><td>8000</td><td>22500</td>
     </tr>
     <tr>
       <th scope="row">Grade 3</th><td>-</td><td>-</td><td>3800</td><td>13500</td>
@@ -82,6 +82,6 @@ Engineers
   </tbody>
 </table>
 
-<p>It is believed that use of pinned blueprints and application of experimental effects do not contribute to research.</p>
+<p>It is believed that use of pinned blueprints and application of experimental effects do not contribute to research. You will need to log out and in to see an upgrade once the threshold is crossed.</p>
 
 @endsection
