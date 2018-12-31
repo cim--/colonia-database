@@ -30,7 +30,11 @@ class Influence extends Model
     }
 
     public function happinessString() {
-        switch ($this->happiness) {
+        return self::happinessAsString($this->happiness);
+    }
+
+    public static function happinessAsString($happiness) {
+        switch ($happiness) {
         case "1": return "Elated";
         case "2": return "Happy";
         case "3": return "Discontented";
@@ -39,4 +43,5 @@ class Influence extends Model
         }
         return "";
     }
+
 }

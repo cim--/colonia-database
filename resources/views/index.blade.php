@@ -16,7 +16,14 @@
 		people
 		@endif</li>
 	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements) including {{$engineers}} engineers</li>
-	  <li>Current happiness is {{number_format($happiness/$population)}}%</li>
+      <li>Current happiness is {{number_format($happiness/$population)}}%:
+	@foreach ($happinesses as $idx => $pop)
+	@if ($pop > 0)
+	@if ($idx > 1) - @endif
+	{{number_format($pop)}} {{\App\Models\Influence::happinessAsString($idx)}}
+	@endif
+	@endforeach
+      </li>
 	  <li>Modern production facilities manufacture goods with {{number_format(100*$ecsize/$population)}}% of standard efficiency.</li>
 	  <li>{{$instcount}} installations and {{$megacount}} operational mobile megaships</li>
 	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>

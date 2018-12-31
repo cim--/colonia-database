@@ -75,10 +75,12 @@ class BaseController extends Controller
         $lowinfluences = [];
         $sysid = 0;
         $happiness = 0;
-
+        $happinesses = [1=>0,2=>0,3=>0,4=>0,5=>0];
+        
         foreach ($influences as $influence) {
 
             $happiness += (25*(5-$influence->happiness)) * $influence->influence * $influence->system->population / 100;
+            $happinesses[$influence->happiness] += $influence->influence * $influence->system->population / 100;
             
             if ($influence->system_id != $sysid) {
                 if ($influence->system->controllingFaction()->id != $influence->faction_id) {
@@ -265,6 +267,7 @@ class BaseController extends Controller
         return view('index', [
             'population' => $population,
             'happiness' => $happiness,
+            'happinesses' => $happinesses,
             'exploration' => $exploration,
             'terraformable' => $terraformable,
             'elwcount' => $earthlike,
