@@ -327,6 +327,10 @@ class EDDNReader extends Command
             // no real need to distinguish
             return "War";
         }
+        if ($state == "PirateAttack") {
+            // to our name
+            return "Pirate Attack";
+        }
         return $state;
     }
 
