@@ -578,9 +578,11 @@ class EDDNReader extends Command
         }
         $this->line("[".date("YmdHis")."] Docking event for ".$system->displayName().": ".$station->name);
 
-        if (strtolower($station->faction->name) != strtolower($event['message']['StationFaction'])) {
-            Alert::alert("Ownership changed ".$station->name." was '".$station->faction->name."' is now '".$event['message']['StationFaction']."'");
-            // for now, don't automatically update
+        if (isset($event['message']['StationFaction']) && is_array($event['message']['StationFaction'])) {
+            if (strtolower($station->faction->name) != strtolower($event['message']['StationFaction']['Name'])) {
+                Alert::alert("Ownership changed ".$station->name." was '".$station->faction->name."' is now '".$event['message']['StationFaction']['Name']."'");
+                // for now, don't automatically update
+            }
         }
     }
 
