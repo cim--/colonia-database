@@ -440,3 +440,12 @@ span.blueprint {
 		}
 	}
 }
+
+.engbox {
+    border: thin black solid;
+    background: #000;
+    .engbar {
+	background: #6c6;
+	text-align: center;
+    }
+}

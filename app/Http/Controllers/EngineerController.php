@@ -19,8 +19,13 @@ class EngineerController extends Controller
     public function index()
     {
         $engineers = Engineer::with('station', 'station.system', 'station.system.economy', 'blueprints')->orderBy('name')->get();
+
+        $progress = \DB::select("SELECT SUM(IF(level<2,(level-1)*3000,IF(level<3,3000+((level-2)*4500),IF(level<4,7500+((level-3)*12500),19000+((level-4)*29000))))) points FROM blueprints WHERE moduletype_id NOT IN (2,3,4,5,44,51,52,56)");
+        
         return view('engineers/index', [
-            'engineers' => $engineers
+            'engineers' => $engineers,
+            'progress' => $progress[0]->points,
+            'total' => 38 * 48000
         ]);
     }
 

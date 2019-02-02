@@ -31,10 +31,21 @@
 <div class='col-lg-6'>
 <fieldset><legend>Blueprints</legend>
   @foreach ($moduletypes as $mtype)
+  @if ($blueprints->where('moduletype_id', $mtype->id)->first())
   <div class='form-field'>
-	{!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
-	{!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>0.05]) !!}
+    {!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
+    {!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>0.05]) !!}
   </div>
+  @endif
+  @endforeach
+  <hr>
+  @foreach ($moduletypes as $mtype)
+  @if (!$blueprints->where('moduletype_id', $mtype->id)->first())
+  <div class='form-field'>
+    {!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
+    {!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>0.05]) !!}
+  </div>
+  @endif
   @endforeach
 </fieldset>
 </div>

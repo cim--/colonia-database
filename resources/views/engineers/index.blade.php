@@ -19,6 +19,7 @@ Engineers
       <th>Planet</th>
       <th>Station</th>
 	  <th>Blueprints</th>
+	  <th>Completed</th>
       <th>Development Level</th>
 	</tr>
   </thead>
@@ -45,10 +46,13 @@ Engineers
 		</a>
 	  </td>
 	  <td>
-		{{$engineer->blueprints->count()}}
+		{{$engineer->blueprints()->unduplicated()->count()}}
 	  </td>
 	  <td>
-		{{number_format($engineer->blueprints->average('level'),1)}}
+		{{$engineer->blueprints()->unduplicated()->where('level', 5)->count()}}
+	  </td>
+	  <td>
+		{{number_format($engineer->blueprints()->unduplicated()->avg('level'),1)}}
 	  </td>
 	</tr>
 	@endforeach
@@ -56,6 +60,10 @@ Engineers
 </table>
 
 <h2>Engineering Research</h2>
+
+<div class="engbox">
+<div class="engbar" title="{{number_format($progress*100/$total)}}% complete" style="width:{{$progress*100/$total}}%">Estimated progress: {{number_format($progress)}}/{{number_format($total)}}</div>
+</div>
 
 <p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type. (Grade 5 is currently only estimated based on the pattern of the previous grades)</p>
 <table class='table table-bordered'>

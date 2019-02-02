@@ -18,4 +18,8 @@ class Blueprint extends Model
         return $this->belongsTo('App\Models\Moduletype');
     }
 
+    public function scopeUnduplicated($q)
+    {
+        return $q->whereNotIn('moduletype_id', [2,3,4,5,44,51,52,56]);
+    }
 }
