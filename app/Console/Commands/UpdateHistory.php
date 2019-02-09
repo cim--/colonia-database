@@ -8,6 +8,7 @@ use App\Models\System;
 use App\Models\History;
 use App\Models\Expansioncache;
 use App\Models\Eddnevent;
+use App\Models\Influence;
 
 class UpdateHistory extends Command
 {
@@ -16,7 +17,7 @@ class UpdateHistory extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:history {--tick=0} {--debug}';
+    protected $signature = 'cdb:history {--tick=0} {--debug} {--all}';
 
     /**
      * The console command description.
@@ -43,21 +44,39 @@ class UpdateHistory extends Command
     public function handle()
     {
         \DB::transaction(function() {
-            $this->updateHistory();
+            if ($this->option('all')) {
+                $this->updateAllHistory();
+            } else {
+                $this->updateHistory();
+            }
             $this->updateExpansionCache();
             $this->clearEventData();
         });
         //
     }
 
+    
+    private function updateAllHistory() {
+        $start = new Carbon(Influence::min('date'));
+        $now = \App\Util::tick();
+        while ($start->lte($now)) {
+            $this->line($start->format("Y-m-d"));
+            $this->doUpdateHistory($start);
+            $start->addDay();
+        }
+    }
+    
     private function updateHistory() {
-        $debug = $this->option('debug');
-            
         if ($tick = $this->option('tick')) {
             $tick = new Carbon($tick);
         } else {
             $tick = \App\Util::tick();
         }
+        $this->doUpdateHistory($tick);
+    }
+
+    private function doUpdateHistory($tick) {
+        $debug = $this->option('debug');
         $previous = $tick->copy()->subDay();
             
         History::where('date', $tick->format("Y-m-d 00:00:00"))
@@ -88,7 +107,11 @@ class UpdateHistory extends Command
                     $history->faction_id = $faction->id;
                     $history->date = $tick;
                     $history->expansion = true;
-                    $history->description = 'expanded to';
+                    if ($factions->count() > 7) {
+                        $history->description = 'expanded by invasion to';
+                    } else {
+                        $history->description = 'expanded to';
+                    }
                     $history->save();
                 }
             }
