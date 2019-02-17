@@ -43,7 +43,7 @@
 	  
 	  <p>In the early days of Colonia cartographics services were rare. Nowadays, a wide range of stations provide these services - for historical reasons, the <a href="{{route('stations.show', 2)}}">Colonia Hub</a> surface base in Colonia and the <a href="{{route('stations.show', 7)}}">Colonia Dream</a> Coriolis in Ratraii do not.</p>
 
-	  <p>The Colonia region is near to numerous larger and planetary nebula in the Festival Grounds area, and is just above a large neutron field. As the most centrally-located known human colony, and the best equipped one outside Sol, it makes an excellent base for expeditions to most of the galaxy.</p>
+	  <p>The Colonia region is near to numerous larger and planetary nebula in the Festival Grounds area, and is just above a large neutron field. As a well-equipped settlement with a reasonably central position, it makes an excellent base for expeditions to most of the galaxy.</p>
 
 	  <p>Lagrange clouds are common around the nebula, including species of umbrella mollusc.</p>
 	</div>
@@ -53,9 +53,9 @@
 
 	  @include('intro.botbox', ['commands' => ["!locate feature High RES", "!locate state War", "!locate facility broker"]])
 	  
-	  <p>The usual range of combat hotspots are available - nav beacons, resource extraction sites and combat zones. There are also two unauthorised installations in the <a href='{{route('systems.show', 47)}}'>Kojeara</a> system providing some more interesting scenery for bounty hunting.</p>
+	  <p>The usual range of combat hotspots are available - nav beacons, resource extraction sites and combat zones. There are also many <a href='{{route('installations.index')}}'>installations</a> and <a href='{{route('megaships.index')}}'>megaships</a> in the region, including some Unauthorised Installations</p>
 
-	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. There is a permanent one in Colonia (except during Lockdown), and temporary ones are often set up in systems affected by War.</p>
+	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. The locations of IF services vary depending on political states, but there are usually several about.</p>
 	</div>
 
 	<div>
@@ -106,7 +106,7 @@
 	  
 	  <p>The briefness of human occupation of the region means that all mineral reserves are Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
 
-	  <p>Finding a booming economy to sell Painite is also easy.</p>
+	  <p>System states are generally favourable to the selling of core-mined deposits.</p>
 
 	</div>
 	
@@ -121,7 +121,7 @@
 		<li>Fuel scoops and AFMUs, A-grade</li>
 		<li>Other core and optional internals, most sizes, A-, B- or C-grade maximum depending on size (A-rated size 3 or below, B- or C- at size 4 or above)</li>
 		<li>All weapons, all sizes</li>
-		<li>All independent ship hulls</li>
+		<li>All independent ship hulls (currently except the Mamba)</li>
 	  </ul>
 	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
 	  
@@ -157,8 +157,8 @@
 		<li>All factions are Independent. There are no superpowers in the region.</li>
 		<li>There is a very strong bias towards the 'Cooperative' faction type, which is rare in the Sol bubble. Some <a href='{{route('factions.ethos')}}'>government types</a> are unique to Colonia.</li>
 		<li>Each system has one or occasionally two home factions. Other factions have expanded there to fill the remaining space. Retreats are therefore more common.</li>
-		<li>The Colonia Council faction has been placed as an initial (non-native) faction in most systems. It is currently present in over 50 systems in the region, plus more along the highway.</li>
-		<li>Over half of the factions are player-founded, mostly through the Colonia Expansion Initiative. While the Sol bubble has approximately one player faction for every 25 systems, here the ratio is one player faction for every two systems.</li>
+		<li>The Colonia Council faction has been placed as an initial (non-native) faction in most systems, and while it has since Retreated from many of these it still retains a substantial presence.</li>
+		<li>Over half of the factions are player-founded, mostly through the Colonia Expansion Initiative. While the Sol bubble has approximately one player faction for every 10 systems, here the ratio is one player faction for every two systems.</li>
 		<li>Systems have low NPC population levels but often relatively high player population levels, which allows for rapid changes in influence levels.</li>
 		<li>The area does not fall within any Powerplay bubbles and it is in practice impossible for any power in the Sol bubble to accumulate enough CC to expand here.</li>
 	  </ul>
@@ -169,8 +169,6 @@
 	</div>
 	<div>
 	  <h2>Other points of interest</h2>
-
-	  <p>Colonia contains some unique or rare points of interest.</p>
 
 	  <p>There are several <a href='{{route('stations.index')}}#cruiser'>dockable megaships</a>, <a href='{{route('stations.index')}}#asteroid'>asteroid bases</a> and <a href='{{route('stations.index')}}#asteroid'>ring-embedded stations</a>.</p>
 
