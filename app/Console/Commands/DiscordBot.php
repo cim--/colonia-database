@@ -60,7 +60,10 @@ class DiscordBot extends Command
             'token' => env('DISCORD_TOKEN'),
             'description' => "Colonia Census Information Retrieval.\nUse the 'help' command to see a list of commands. You can send commands in chat or by private message.",
             'prefix' => env('DISCORD_COMMAND_PREFIX', '!'),
-            'defaultHelpCommand' => false
+            'defaultHelpCommand' => false,
+            'discordOptions' => [
+                'disabledEvents' => ['PRESENCE_UPDATE'] // don't use it and the implementation can cause the client to crash
+            ]
         ]);
 
         $this->registerHelpCommand();
@@ -675,14 +678,14 @@ class DiscordBot extends Command
                     if ($system->expansionCube($peacefulcandidates[$i], 20)) {
                         $nearfound = true;
                     } else {
-                        $result .= " ⭲";
+                        $result .= " ⏩";
                         $investnote = true;
                     }
                     $result .= ")\n";
                 }
             }
             if (!$nearfound && count($aggressivecandidates) > 0) {
-                $result .= "\nAs all candidates are likely to require *Investment*, an aggressive expansion is also possible:\n";
+                $result .= "\nAs all candidates are likely to require *increased range*, an aggressive expansion is also possible:\n";
                 for ($i=0;$i<=3;$i++) {
                     if (isset($aggressivecandidates[$i])) {
                         $dist = $aggressivecandidates[$i]->distanceTo($system);
@@ -692,7 +695,7 @@ class DiscordBot extends Command
                             $retreatnote = true;
                         }
                         if (!$system->expansionCube($aggressivecandidates[$i], 20)) {
-                            $result .= " ⭲";
+                            $result .= " ⏩";
                             $investnote = true;
                         }
                         if ($aggressivecandidates[$i]->latestFactions()->count() > 7) {
@@ -709,7 +712,7 @@ class DiscordBot extends Command
                 $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
             }
             if ($investnote) {
-                $result .= "\n⭲ indicates investment is required to expand here.";
+                $result .= "\n⏩ indicates increased range from a previous failed expansion is required to expand here.";
             }
             if ($eightnote) {
                 $result .= "\n† aggressive expansion here may not be possible as system already has 8 factions";
