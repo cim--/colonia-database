@@ -285,7 +285,7 @@ class ReportController extends Controller
                             ]
                         ],
                     ],
-                ],
+                ]
             ]);
 
 

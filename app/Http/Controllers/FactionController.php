@@ -116,6 +116,9 @@ class FactionController extends Controller
                             'label' => 'system-days'
                         ]
                     ],
+                ],
+                'tooltips' => [
+                    'mode' => 'dataset',
                 ]
             ]);
         

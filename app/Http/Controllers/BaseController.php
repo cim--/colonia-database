@@ -254,6 +254,9 @@ class BaseController extends Controller
                         ],
                     ],
                 ],
+                'tooltips' => [
+                    'mode' => 'dataset',
+                ]
             ]);
 
         foreach ($wordmap as $key => $count) {
