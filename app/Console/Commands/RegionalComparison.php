@@ -49,8 +49,14 @@ class RegionalComparison extends Command
             "sphere" => [-303,-236,-860,200], // HIP 18077
             "allegiance" => null
         ],
+        /* This entry is ignored in the end, it's just to subtract
+         * them from the Deep Space numbers */
+        "Colonia" => [
+            "sphere" => [-9530, -910, 19808, 1000], // Colonia
+            "allegiance" => null
+        ],
         "Deep Space" => [
-            "sphere" => [0,0,0,21000], // Sol... checked in order so overlap is fine
+            "sphere" => [0,0,0,80000], // Sol... checked in order so overlap is fine
             "allegiance" => null
         ],
         "Federal Systems" => [
@@ -240,32 +246,32 @@ class RegionalComparison extends Command
     
     private function report() {
         foreach ($this->data as $key => $region) {
-            $report = Region::firstOrNew(['name' => $key]);
-            
-            $report->systems = count($region['systems']);
-            $report->stations = count($region['stations']);
-            $report->factions = count($region['factions']);
-            $report->population = $region['population'];
-            $report->stock = $region['stock'];
-            $report->demand = $region['demand'];
+            if ($key != "Colonia") {
+                $report = Region::firstOrNew(['name' => $key]);
+                $report->systems = count($region['systems']);
+                $report->stations = count($region['stations']);
+                $report->factions = count($region['factions']);
+                $report->population = $region['population'];
+                $report->stock = $region['stock'];
+                $report->demand = $region['demand'];
 
-            $report->save();
+                $report->save();
 
-            foreach ($region['economies'] as $ename => $frequency) {
-                $economy = Economy::where('name', $ename)->first();
-                if ($economy) {
-                    $report->economies()->detach($economy->id);
-                    $report->economies()->attach($economy->id, ['frequency' => $frequency, 'stationfrequency' => $region['stationeconomies'][$ename]]);
+                foreach ($region['economies'] as $ename => $frequency) {
+                    $economy = Economy::where('name', $ename)->first();
+                    if ($economy) {
+                        $report->economies()->detach($economy->id);
+                        $report->economies()->attach($economy->id, ['frequency' => $frequency, 'stationfrequency' => $region['stationeconomies'][$ename]]);
+                    }
+                }
+                foreach ($region['governments'] as $gname => $frequency) {
+                    $government = Government::where('name', $gname)->first();
+                    if ($government) {
+                        $report->governments()->detach($government->id);
+                        $report->governments()->attach($government->id, ['frequency' => $frequency]);
+                    }
                 }
             }
-            foreach ($region['governments'] as $gname => $frequency) {
-                $government = Government::where('name', $gname)->first();
-                if ($government) {
-                    $report->governments()->detach($government->id);
-                    $report->governments()->attach($government->id, ['frequency' => $frequency]);
-                }
-            }
-            
         }
     }
     
@@ -308,7 +314,7 @@ class RegionalComparison extends Command
 
     private function getAllegiance($sysinfo) {
         foreach ($this->data as $key => $region) {
-            if ($region['allegiance'] == $sysinfo->allegiance) {
+            if ($region['allegiance'] == $sysinfo->allegiance && $region['allegiance'] !== null) {
                 return $key;
             }
         }
