@@ -248,7 +248,7 @@ class BaseController extends Controller
                             'stacked' => true,
                             'ticks' => [
                                 'min' => 0,
-                                'max' => $factions->count()
+                                'max' => Faction::notHidden()->notVirtual()->count()
                             ],
 
                         ],
