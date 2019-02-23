@@ -24,6 +24,12 @@ visible change.</p>
 <p>You can update this data without needing to log in by entering the system while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI). On consoles, <a href="https://www.edsm.net/en/settings/import/capi">EDSM provides a synchronisation tool</a>.</p>
 
 <p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update.</p>
+
+{!! Form::open(['route' => 'progress', 'method' => 'GET']) !!}
+{!! Form::label('age', 'Age threshold') !!}
+{!! Form::number("age", 0, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
+{!! Form::submit('Filter') !!}
+{!! Form::close() !!}
   
 <h2>Systems needing influence update ({{number_format($influencecomplete)}}%)</h2>
 @if (count($influenceupdate) > 0)

@@ -323,7 +323,7 @@ class BaseController extends Controller
         }
     }
     
-    public function progress() {
+    public function progress(Request $request) {
         $user = \Auth::user();
         /*          // now allows anonymous read-only access
         if (!$user) {
@@ -336,21 +336,25 @@ class BaseController extends Controller
 
         $today = Carbon::now();
         $target = \App\Util::tick();
+        if ($age = $request->input('age', false)) {
+            $target->subDays($age);
+            $today->subDays($age);
+        }
         $influenceupdate = System::where('population', '>', 0)
             ->where('virtualonly', 0)
             ->whereDoesntHave('influences', function($q) use ($target) {
-                $q->where('date', $target->format("Y-m-d 00:00:00"));
+                $q->where('date', '>=', $target->format("Y-m-d 00:00:00"));
             })->orderBy('catalogue')->get();
 
         $reportsupdate = System::where('population', '>', 0)
             ->where('virtualonly', 0)
             ->whereDoesntHave('systemreports', function($q) use ($today) {
-                $q->where('date', $today->format("Y-m-d 00:00:00"))
+                $q->where('date', '>=', $today->format("Y-m-d 00:00:00"))
                   ->where('estimated', false);
             })->orderBy('catalogue')->get();
 
         $marketsupdate = Station::whereDoesntHave('reserves', function($q) use ($today) {
-            $q->where('date', $today->format("Y-m-d 00:00:00"));
+            $q->where('date', '>=', $today->format("Y-m-d 00:00:00"));
         })->whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
