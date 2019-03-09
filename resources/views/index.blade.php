@@ -140,7 +140,7 @@
   @foreach ($important->states as $state)
   @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None']))
   @if ($state->name != "Expansion" || $important->system_id == $important->faction->system_id)
-  @if (($state->name != "War" && $state->name != "Election") || $important->faction->controlsAsset($important->system) || $important->faction->controlsInstallation($important->system))
+
   <li>
     @include($important->faction->government->icon)
     <a href='{{route('factions.show', $important->faction->id)}}'>
@@ -166,7 +166,7 @@
     </a>
     @endif
   </li>
-  @endif
+
   @endif
   @endif
   @endforeach
