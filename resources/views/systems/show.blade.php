@@ -248,6 +248,9 @@
 			'>
 		  <td><a href="{{route('factions.show', $faction->faction->id)}}">{{$faction->faction->name}}</a>
 			@include($faction->faction->government->icon)
+                    @if ($faction->faction->system_id == $system->id)
+		    @include('icons/misc/homesystem')
+		    @endif
 		  </td>
 		  <td>{{number_format($faction->influence, 1)}}</td>
 		  <td>

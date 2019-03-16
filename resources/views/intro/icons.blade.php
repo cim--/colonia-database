@@ -31,6 +31,10 @@ provided below.</p>
 			@include('icons.misc.strategic')
 			Strategic Asset
 		  </li>
+		  <li>
+			@include('icons.misc.homesystem')
+			Native Faction
+		  </li>
 		</ul>
 	  </div>
 	</div>

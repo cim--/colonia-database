@@ -70,7 +70,10 @@
 		  @endif
 			'>
 		  <td><a href="{{route('systems.show', $system->system->id)}}">{{$system->system->displayName()}}</a>
-			@include($system->system->economy->icon)
+		    @include($system->system->economy->icon)
+		    @if ($system->system_id == $faction->system_id)
+		    @include('icons/misc/homesystem')
+		    @endif
 		  </td>
 		  <td>{{number_format($system->influence,1)}}</td>
 		  <td>
