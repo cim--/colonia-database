@@ -80,18 +80,14 @@ class OutfittingController extends Controller
     }
 
 
-    public function moduletype(Moduletype $moduletype)
+    public function moduletype(Moduletype $moduletype, Request $request)
     {
         $modules = Module::where('moduletype_id', $moduletype->id)->with(['stations' => function($q) {
             $q->orderBy('name');
             }])->with('moduletype', 'moduletype.blueprints', 'moduletype.blueprints.engineer')->orderBy('size')->orderBy('type')->get();
 
         if ($modules->count() == 1) {
-            return view('outfitting/module', [
-                'moduletype' => $moduletype,
-                'module' => $modules->first(),
-                'singular' => true
-            ]);
+            return $this->module($moduletype, $modules->first(), $request);
         }  else {
             return view('outfitting/moduletype', [
                 'moduletype' => $moduletype,
@@ -121,7 +117,7 @@ class OutfittingController extends Controller
         return view('outfitting/module', [
             'moduletype' => $moduletype,
             'module' => $module,
-            'singular' => false,
+            'singular' => $modules->count() == 1,
             'reference' => $reference,
             'systems' => $systems
         ]);
