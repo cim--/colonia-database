@@ -10,7 +10,7 @@
 
 <table class='table table-bordered datatable' data-page-length='50' data-order='[[0,"desc"]]'>
   <thead>
-	<tr><th>Date</th><th>Faction</th><th>Event</th><th>Location</th></tr>
+	<tr><th>Date</th><th>Faction</th><th>Event</th><th>Location</th><th>Type</th></tr>
   </thead>
   <tbody>
 	@foreach ($historys as $history)
@@ -40,7 +40,16 @@
 		</a>
 		(<a href='{{route('systems.show', $history->location->system->id)}}'>{{$history->location->system->displayName()}}</a>)
 	  </td>
-	  @endif 
+	  @endif
+	  <td>
+	    @if (in_array($history->description, ["expanded to", "expanded by invasion to", "retreated from"]))
+	    Movement
+	    @elseif (in_array($history->description, ["lost control of", "took control of"]))
+	    Ownership
+	    @else
+	    Major
+	    @endif
+	  </td>
 	</tr>
 	@endforeach
   </tbody>
