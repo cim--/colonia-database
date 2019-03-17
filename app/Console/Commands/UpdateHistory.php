@@ -81,7 +81,7 @@ class UpdateHistory extends Command
             
         History::where('date', $tick->format("Y-m-d 00:00:00"))
             ->where('location_type', 'App\Models\System')
-            ->whereIn('description', ['expanded to', 'retreated from'])
+            ->whereIn('description', ['expanded to', 'retreated from', 'expanded by invasion to'])
             ->delete();
 
         $systems = System::where('population', '>', 0)->get();
