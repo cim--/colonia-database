@@ -532,7 +532,7 @@ class EDDNReader extends Command
                 $system->security = "Low";
                 $this->addBroker($system);
                 break;
-            case '$SYSTEM_SECURITY_anarchy;':
+            case '$GALAXY_MAP_INFO_state_anarchy;':
                 $system->security = "Anarchy";
                 $this->addBroker($system);
                 break;
