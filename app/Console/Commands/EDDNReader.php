@@ -532,6 +532,10 @@ class EDDNReader extends Command
                 $system->security = "Low";
                 $this->addBroker($system);
                 break;
+            case '$SYSTEM_SECURITY_anarchy;':
+                $system->security = "Anarchy";
+                $this->addBroker($system);
+                break;
             default:
                 $this->error("Unrecognised security level ".$message['SystemSecurity']);
             }
