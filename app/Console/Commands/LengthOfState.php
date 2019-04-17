@@ -43,57 +43,74 @@ class LengthOfState extends Command
      */
     public function handle()
     {
+        try {
         $states = State::get();
         $lengths = [];
         $details = [];
         $names = [];
-        foreach ($states as $state) {
-            $names[$state->id] = $state->name;
-            $lengths[$state->id] = 0;
-            $details[$state->id] = "";
+        foreach ($states as $ostate) {
+            $names[$ostate->id] = $ostate->name;
+            $lengths[$ostate->id] = 0;
+            $details[$ostate->id] = "";
         }
 
         $factions = Faction::notHidden()->notVirtual()->get();
         $systems = System::populated()->get();
 
-        foreach ($factions as $faction) {
-            foreach ($systems as $system) {
-                $influences = Influence::where('faction_id', $faction->id)->where('system_id', $system->id)->orderBy('date')->get();
-                $current = 0;
-                $start = 0;
-                $last = 0;
-                $lastsid = 0;
-                foreach ($influences as $influence) {
-                    $sid = $influence->state_id;
-//                    $this->line($influence->date->format("Ymd")." ".$names[$sid]);
-                    if ($sid != $current) {
-                        if ($current != 0) {
-                            $length = $last->diffInDays($start);
-                            if ($length > $lengths[$lastsid]) {
-                                $lengths[$lastsid] = $length;
-                                $details[$lastsid] = $faction->name." ".$system->name." ".$start->format("Ymd");
-                                $this->line($names[$lastsid]." = ".$length." (".$details[$lastsid].")");
+        foreach ($states as $ostate) {
+            $state = $ostate->id;
+            foreach ($factions as $faction) {
+                foreach ($systems as $system) {
+                    $influences = Influence::where('faction_id', $faction->id)->where('system_id', $system->id)->where('date', '>=', '2019-01-15')->orderBy('date')->with('states')->get();
+                    $current = 0;
+                    $start = 0;
+                    $last = 0;
+                    $lastsid = 0;
+                    $contains = false;
+                    foreach ($influences as $influence) {
+                        $contains = $influence->states->pluck('id')->contains($state);
+                        if (!$contains) {
+                            if ($current != 0) {
+                                $length = $last->diffInDays($start);
+                                if ($length > $lengths[$state]) {
+                                    $lengths[$state] = $length;
+                                    $details[$state] = $faction->name." ".$system->name." ".$start->format("Ymd");
+                                    $this->line($names[$state]." = ".$length." (".$details[$state].")");
+                                }
+                                $current = 0;
+                            }
+                            $start = $last = $influence->date;
+                        } else {
+                            if ($last === 0 || $influence->date->diffInDays($last) > 5) {
+                                // assume a retreat and re-expansion
+                                // reset the count
+                                $start = $last = $influence->date;
+                                $current = 1;
+                            } else {
+                                $last = $influence->date;
+                                $current = 1;
                             }
                         }
-                        $start = $last = $influence->date;
-                        $current = $lastsid = $sid;
-                    } else {
-                        if ($influence->date->diffInDays($last) > 5) {
-                            // assume a retreat and re-expansion
-                            // reset the count
-                            $start = $last = $influence->date;
-                            $current = $lastsid = $sid;
-                        } else {
-                            $last = $influence->date;
+                    }
+                    if ($contains) {
+                        $length = $last->diffInDays($start);
+                        if ($length > $lengths[$state]) {
+                            $lengths[$state] = $length;
+                            $details[$state] = $faction->name." ".$system->name." ".$start->format("Ymd");
+                            $this->line($names[$state]." = ".$length."+ (".$details[$state].")");
                         }
                     }
                 }
             }
         }
-
+        
         foreach ($states as $state) {
             $sid = $state->id;
             $this->info($names[$sid]." = ".$lengths[$sid]." (".$details[$sid].")");
+        }
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            $this->line($e->getTraceAsString());
         }
     }
     
