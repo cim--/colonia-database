@@ -20,7 +20,7 @@ class GoodsAnalysis extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:goodsanalysis {--balanceonly}';
+    protected $signature = 'cdb:goodsanalysis {--balanceonly} {--statesonly}';
 
     /**
      * The console command description.
@@ -48,8 +48,6 @@ class GoodsAnalysis extends Command
      */
     public function handle()
     {
-        $this->error("Not multistate compatible");
-        exit;
         
         try {
             \DB::transaction(function() {
@@ -58,7 +56,11 @@ class GoodsAnalysis extends Command
                 } else {
                     $this->info("Balance analysis only");
                 }
-                $this->runBalanceAnalysis();
+                if (!$this->option('statesonly')) {
+                    $this->runBalanceAnalysis();
+                } else {
+                    $this->info("State analysis only");
+                }
             });
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
@@ -81,17 +83,21 @@ class GoodsAnalysis extends Command
 
         $commodities = Commodity::all();
 
-        foreach ($commodities as $commodity) {
+        foreach ($commodities as $idx => $commodity) {
+            $this->info("Commodity: ".$commodity->name);
             $this->commodityinfo[$commodity->id] = [
                 'commodity' => $commodity,
                 'statechanges' => []
             ];
             foreach ($stations as $station) {
+                $this->line("Station: ".$station->name);
                 $this->analyseReserves($station, $commodity);
             }
             if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
+                $this->info("Analysing states");
                 $this->analyseStates($commodity);
             }
+
         }
     }
 
@@ -101,12 +107,13 @@ class GoodsAnalysis extends Command
         $lastsystemhistory = History::where('location_type', 'App\Models\System')
             ->where('location_id', $station->system->id)
             ->where('description', '!=', 'expanded to')
+            ->where('description', '!=', 'expanded by invasion to')
             ->where('description', '!=', 'retreated from')->max('date');
         
         $reservesquery = Reserve::where('price', '!=', null)
             ->where('station_id', $station->id)
             ->where('commodity_id', $commodity->id)
-            ->where('reserves', '!=', 0)->with('state');
+            ->where('reserves', '!=', 0)->with('states');
         if ($laststationhistory != null) {
             $reservesquery->where('date', '>', $laststationhistory);
         }
@@ -126,33 +133,17 @@ class GoodsAnalysis extends Command
         $pricedata = [];
         $states = [];
         foreach ($reserves as $reserve) {
-            if (!isset($stockdata[$reserve->state_id])) {
-                $stockdata[$reserve->state_id] = [];
-                $pricedata[$reserve->state_id] = [];
-                $states[$reserve->state_id] = $reserve->state;
+            if ($reserve->states->count() > 1) {
+                continue; // let's see if this is sufficient
             }
-            $stockdata[$reserve->state_id][] = $reserve->reserves;
-            $pricedata[$reserve->state_id][] = $reserve->price;
-        }
-        if (count($stockdata) > 0) {
-            // look for states with no demand or supply
-            $stateslist = State::whereHas('reserves', function($q) use ($laststationhistory, $lastsystemhistory, $station) {
-                if ($laststationhistory != null) {
-                    $q->where('date', '>', $laststationhistory);
-                }
-                if ($lastsystemhistory != null) {
-                    $q->where('date', '>', $lastsystemhistory);
-                }
-                $q->where('station_id', $station->id);
-            })->where('name', '!=', 'None')->get();
-            /* Putting zeroes in for None can have odd effects, so don't */
-            foreach ($stateslist as $state) {
-                if (!isset($stockdata[$state->id])) {
-                    $stockdata[$state->id] = [0];
-                    $pricedata[$state->id] = [0];
-                    $states[$state->id] = $state;
-                }
+            $stateid = $reserve->states[0]->id;
+            if (!isset($stockdata[$stateid])) {
+                $stockdata[$stateid] = [];
+                $pricedata[$stateid] = [];
+                $states[$stateid] = $reserve->states[0];
             }
+            $stockdata[$stateid][] = $reserve->reserves;
+            $pricedata[$stateid][] = $reserve->price;
         }
 
         if (count($stockdata) < 2) {
@@ -305,16 +296,24 @@ class GoodsAnalysis extends Command
 
     private function runBalanceAnalysis() {
         $economies = Economy::where('analyse', true)->get();
-        $states = State::where('name', '!=', 'Lockdown')->get();
+        $states = State::whereHas('reserves', function($q) {
+            $q->normalMarkets();
+        })->get();
 
+        $this->info("Balance analysis stage");
+        
         foreach ($economies as $economy) {
+            $this->line($economy->name);
             foreach ($states as $state) {
+                $this->line("... ".$state->name);
                 $balance = Tradebalance::firstOrNew([
                     'economy_id' => $economy->id,
                     'state_id' => $state->id,
                 ]);
                 $tr = $economy->tradeRatio($state);
+                $this->line("... ... tr = $tr");
                 $tpr = $economy->tradePriceRatio($state);
+                $this->line("... ... tpr = $tpr");
                 if ($tr !== null) {
                     $balance->volumebalance = 100*$tr;
                     $balance->creditbalance = 100*$tpr;

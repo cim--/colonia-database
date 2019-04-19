@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('components.unstableanalysis')
-    
 <ul class='compact'>
   @foreach ($economies as $economy)
   <li>

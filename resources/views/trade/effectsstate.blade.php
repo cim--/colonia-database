@@ -4,8 +4,6 @@
 
 @section('content')
 
-@include('components.unstableanalysis')
-    
 <table class='table table-bordered datatable' data-page-length='25'>
   <thead>
 	<tr>

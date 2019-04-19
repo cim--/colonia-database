@@ -13,7 +13,7 @@ class Economy extends Model
 {
 
     /* Date of last significant change to pricing structures */
-    private $lastglobal = "2018-03-01";
+    private $lastglobal = "2018-12-12";
     
     public function systems() {
         return $this->hasMany('App\Models\System');
@@ -44,11 +44,13 @@ class Economy extends Model
         
         $export = Commodity::whereHas('reserves', function ($q) use ($state) {
             $q->where('reserves', '>', 0)
-              ->where('state_id', $state->id)
+              ->whereHas('states', function ($q2) use ($state) {
+                  $q2->where('states.id', $state->id);
+              })
               ->where('date', '>', $this->lastglobal)
               ->whereHas('station', function($q2) {
                   $q2->where('economy_id', $this->id);
-                      });
+              });
         })->with('commoditystat')->with('effects')->get();
         foreach ($export as $com) {
             $effect = $com->effects->where('state_id', $state->id)->first();
@@ -61,11 +63,13 @@ class Economy extends Model
 
         $import = Commodity::whereHas('reserves', function ($q) use ($state) {
             $q->where('reserves', '<', 0)
-              ->where('state_id', $state->id)
+              ->whereHas('states', function ($q2) use ($state) {
+                  $q2->where('states.id', $state->id);
+                  })
               ->where('date', '>', $this->lastglobal)
               ->whereHas('station', function($q2) {
                   $q2->where('economy_id', $this->id);
-                      });
+              });
         })->with('commoditystat')->with('effects')->get();
         foreach ($import as $com) {
             $effect = $com->effects->where('state_id', $state->id)->first();
@@ -88,7 +92,9 @@ class Economy extends Model
         
         $export = Commodity::whereHas('reserves', function ($q) use ($state) {
             $q->where('reserves', '>', 0)
-              ->where('state_id', $state->id)
+              ->whereHas('states', function ($q2) use ($state) {
+                  $q2->where('states.id', $state->id);
+              })
               ->where('date', '>', $this->lastglobal)
               ->whereHas('station', function($q2) {
                   $q2->where('economy_id', $this->id);
@@ -105,7 +111,9 @@ class Economy extends Model
 
         $import = Commodity::whereHas('reserves', function ($q) use ($state) {
             $q->where('reserves', '<', 0)
-              ->where('state_id', $state->id)
+              ->whereHas('states', function ($q2) use ($state) {
+                  $q2->where('states.id', $state->id);
+              })
               ->where('date', '>', $this->lastglobal)
               ->whereHas('station', function($q2) {
                   $q2->where('economy_id', $this->id);

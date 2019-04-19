@@ -54,21 +54,20 @@ class GoodsAnalysis2 extends Command
      */
     public function handle()
     {
-        $this->error("Not multistate compatible");
-        exit;
-
         
         /* Derived by comparing hydrogen fuel baselines with CEI bases */
         $this->genericsizefactor = 1806.52032;
         $this->colonysizefactor = 0.18432;
         
         try {
-            \DB::transaction(function() {
-                if (!$this->option('sizeonly')) {
+            if (!$this->option('sizeonly')) {
+                \DB::transaction(function() {
                     $this->runGoodsAnalysis();
-                } else {
-                    $this->info("Size analysis only");
-                }
+                });
+            } else {
+                $this->info("Size analysis only");
+            }
+            \DB::transaction(function() {
                 $this->runEconomySizeAnalysis();
             });
         } catch (\Throwable $e) {
@@ -96,14 +95,14 @@ class GoodsAnalysis2 extends Command
         $commodities = Commodity::with('effects')
             ->orderBy('name')->get();
 
-        $states = State::where('name', '!=', 'Lockdown')->orderBy('name')->get();
+        $states = State::orderBy('name')->get();
 
         Baselinestock::where('station_id','>',0)->delete();
         
         foreach ($commodities as $commodity) {
             $demandregen = [];
             $supplyregen = [];
-//            $this->info("Commodity: ".trim($commodity->description));
+            $this->info("Commodity: ".trim($commodity->description));
             foreach ($stations as $station) {
                 $this->maxsupmultiplier = 0;
                 $this->maxdemmultiplier = 0;
@@ -151,7 +150,10 @@ class GoodsAnalysis2 extends Command
         $reservesquery = Reserve::where('price', '!=', null)
             ->where('station_id', $station->id)
             ->where('commodity_id', $commodity->id)
-            ->where('state_id', $state->id)
+            ->whereHas('states', function ($q) use ($state) {
+                $q->where('states.id', $state->id);
+            })
+            ->withCount('states')
             ->where('reserves', '!=', 0)
             ->normalMarkets();
         
@@ -172,6 +174,11 @@ class GoodsAnalysis2 extends Command
         $newmax = 0;
         $newstab = 0;
         foreach ($reserves as $reserve) {
+            if ($reserve->states_count != 1) {
+                // this is going to be messy if we use mixed states
+                // see if we have enough data to get it to work without
+                continue;
+            }
             if (abs($reserve->reserves) > $max) {
                 if ($stability > 5) {
                     /* It's possible that someone sold back to a
@@ -297,7 +304,7 @@ class GoodsAnalysis2 extends Command
 
     
     private function runEconomySizeAnalysis() {
-        /* Hydrogen Fuel appears to be a non-specialised good (with
+        /* Hydrogen Fuel appears to be a non-specialised good with
          * the exception of Colony, which we only have one of
          * anyway. Empirically, the size of the economy corresponds
          * roughly to baseline (HFuel/43)^2 - which for single-station
@@ -333,7 +340,10 @@ class GoodsAnalysis2 extends Command
                 continue;
             }
             $hfb = $hfuelbaseline->reserves;
-
+            if (!$hfb) {
+                continue;
+            }
+            
             if ($station->economy->name == "Colony") {
                 $esf = $this->colonysizefactor;
             } else {
