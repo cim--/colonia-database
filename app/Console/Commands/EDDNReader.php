@@ -17,6 +17,9 @@ use App\Models\Module;
 use App\Models\Eddnevent;
 use App\Models\Eddnblacklist;
 use App\Models\Ship;
+use App\Models\Installation;
+use App\Models\Installationclass;
+use App\Models\Conflict;
 
 class EDDNReader extends Command
 {
@@ -309,6 +312,10 @@ class EDDNReader extends Command
                 return $b['influence'] - $a['influence'];
             });
             $this->updateInfluences($system, $influences);
+
+            if (isset($event['message']['Conflicts'])) {
+                $this->updateConflicts($system, $event['message']['Conflicts']);
+            }
         }
         $this->updateSecurity($system, $event['message']);
 
@@ -732,4 +739,58 @@ class EDDNReader extends Command
 
     }
 
+    public function updateConflicts($system, $conflictsdata) {
+        // delete previous conflict records
+        Conflict::where('system_id', $system->id)->delete();
+        
+        foreach ($conflictsdata as $conflictdata) {
+            $type = $conflictdata['WarType'];
+            $status = $conflictdata['Status'];
+            
+            $f1 = Faction::where('name', $conflictdata['Faction1']['Name'])->first();
+            $f2 = Faction::where('name', $conflictdata['Faction2']['Name'])->first();
+            if (!$f1 || !$f2) {
+                Alert::alert("Conflict between ".$conflictdata['Faction1']['Name']." and ".$conflictdata['Faction2']['Name']." in ".$system->displayName()." could not be parsed.");
+                continue;
+            }
+            
+            $a1 = $this->assetSearch($system, $conflictdata['Faction1']['Stake']);
+            $a2 = $this->assetSearch($system, $conflictdata['Faction2']['Stake']);
+            $score = $conflictdata['Faction1']['WonDays']."-".$conflictdata['Faction2']['WonDays'];
+
+            $c = new Conflict;
+            $c->system_id = $system->id;
+            $c->type = $type;
+            $c->status = $status;
+            $c->faction1_id = $f1->id;
+            $c->faction2_id = $f2->id;
+            $c->score = $score;
+            if ($a1) {
+                $c->asset1()->associate($a1);
+            }
+            if ($a2) {
+                $c->asset2()->associate($a2);
+            }
+            $c->save();
+        }
+    }
+
+    public function assetSearch($system, $assetname) {
+        if ($assetname == "") { return null; }
+
+        $station = Station::where('system_id', $system->id)->where('name', $assetname)->first();
+        if ($station) { return $station; }
+
+        $installation = Installation::where('system_id', $system_id)->where('name', $assetname)->first();
+        if ($installation) { return $installation; }
+
+        $itype = Installationclass::where('name', $assetname)->first();
+        if ($itype) {
+            $installation = Installation::where('system_id', $system_id)->where('installationclass_id', $itype->id)->first();
+            if ($installation) { return $installation; }
+        }
+        Alert::alert("Unknown asset ".$assetname." in ".$system->displayName());
+        return null;
+    }
+    
 }

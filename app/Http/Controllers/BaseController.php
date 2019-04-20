@@ -23,6 +23,7 @@ use App\Models\Installation;
 use App\Models\Megaship;
 use App\Models\Engineer;
 use App\Models\Project;
+use App\Models\Conflict;
 
 class BaseController extends Controller
 {
@@ -50,12 +51,14 @@ class BaseController extends Controller
             }
             $use = false;
             foreach ($value->states as $state) {
-                $states = ['Boom', 'Investment', 'Civil Liberty', 'None'];
+                $states = ['Boom', 'Investment', 'Civil Liberty', 'None', 'War', 'Election'];
                 // ignore uninteresting and positive states
+                // conflicts are handled separately
                 if (in_array($state->name, $states)) {
                     continue;
                 }
-                $states = ['War', 'Election', 'Expansion'];
+
+                $states = ['Expansion'];
                 if (!in_array($state->name, $states)) {
                     if ($value->system->controllingFaction()->id != $value->faction->id) {
                         continue; // ignore most states for non-controlling factions
@@ -71,6 +74,8 @@ class BaseController extends Controller
             }
             return $use;
         });
+
+        $conflicts = Conflict::all();
         
         $lowinfluences = [];
         $sysid = 0;
@@ -291,6 +296,7 @@ class BaseController extends Controller
             'projects' => $projects,
             'historys' => $history,
             'importants' => $important,
+            'conflicts' => $conflicts,
             'lowinfluences' => $lowinfluences,
             'fakeglobals' => ['Retreat', 'Expansion'],
             'iconmap' => $iconmap,

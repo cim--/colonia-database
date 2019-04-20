@@ -26,4 +26,8 @@ class Installation extends Model
         }
         return $this->system->displayName()." ".$this->planet." ".$this->installationclass->name;
     }
+
+    public function displayRoute() {
+        return 'installations.show';
+    }
 }

@@ -266,6 +266,44 @@
 		@endforeach
 	  </tbody>
 	</table>
+
+	@if ($conflicts->count() > 0)
+	<h2>Conflicts</h2>
+	<table class='table table-bordered datatable' data-paging='false' data-order='[[1, "asc"]]' data-searching='false' data-info='false'>
+	  <thead>
+	    <tr>
+	      <th>State</th><th>Faction 1</th><th>Score</th><th>Faction 2</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    @foreach ($conflicts as $conflict)
+	    <tr>
+	      <td>{{$conflict->status}} {{$conflict->type}}</td>
+	      <td>
+		@include($conflict->faction1->government->icon)
+		<a href='{{route('factions.show', $conflict->faction1->id)}}'>
+		  {{$conflict->faction1->name}}
+		</a>
+		@if ($conflict->asset1)
+		(<a href='{{route($conflict->asset1->displayRoute(), $conflict->asset1->id)}}'>{{$conflict->asset1->displayName()}}</a>)
+		@endif
+	      </td>
+	      <td>{{$conflict->score}}</td>
+	      <td>
+		@include($conflict->faction2->government->icon)
+		<a href='{{route('factions.show', $conflict->faction2->id)}}'>
+		  {{$conflict->faction2->name}}
+		</a>
+		@if ($conflict->asset2)
+		(<a href='{{route($conflict->asset2->displayRoute(), $conflict->asset2->id)}}'>{{$conflict->asset2->displayName()}}</a>)
+		@endif
+	      </td>
+	    </tr>
+	    @endforeach
+	  </tbody>
+	</table>
+	@endif
+	
 	@else
 	<p>
 	  System administrated by <a href="{{route('factions.show', $controlling->id)}}">{{$controlling->name}}</a>

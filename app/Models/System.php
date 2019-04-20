@@ -23,6 +23,9 @@ class System extends Model
         return $this->hasMany('App\Models\Station');
     }
 
+    public function conflicts() {
+        return $this->hasMany('App\Models\Conflict');
+    }
 
     public function systemreports() {
         return $this->hasMany('App\Models\Systemreport');

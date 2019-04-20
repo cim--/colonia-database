@@ -198,6 +198,7 @@ class SystemController extends Controller
         
         return view('systems/show', [
             'system' => $system,
+            'conflicts' => $system->conflicts,
             'chart' => $chart,
             'colcoords' => $system->coloniaCoordinates(),
             'others' => $others,

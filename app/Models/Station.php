@@ -63,6 +63,11 @@ class Station extends Model
     public function displayName() {
         return $this->name;
     }
+
+    public function displayRoute() {
+        return 'stations.show';
+    }
+
 //
     public function displayEconomySize() {
         if (!$this->economysize) {

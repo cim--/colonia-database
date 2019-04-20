@@ -125,60 +125,96 @@
   </div>
 
   <div class='col-sm-6'>
-	@if ($projects->count() > 0)
-	<h2>Current Projects</h2>
-	<ul>
-	  @foreach ($projects as $project)
-	  <li><a href='{{route('projects.show', $project->id)}}'>{{$project->summary}}</a></li>
-	  @endforeach
-	</ul>
+    @if ($projects->count() > 0)
+    <h2>Current Projects</h2>
+    <ul>
+      @foreach ($projects as $project)
+      <li><a href='{{route('projects.show', $project->id)}}'>{{$project->summary}}</a></li>
+      @endforeach
+    </ul>
+    @endif
+
+    <h2>Current Conflicts</h2>
+    <table class='table table-bordered datatable' data-paging='false' data-order='[[1, "asc"],[2, "asc"]]' data-searching='false' data-info='false'>
+      <thead>
+	<tr>
+	  <th>State</th><th>System</th><th>Faction 1</th><th>Score</th><th>Faction 2</th>
+	</tr>
+      </thead>
+      <tbody>
+	@if ($conflicts->count() > 0)
+	@foreach ($conflicts as $conflict)
+	<tr>
+	  <td>{{$conflict->status}} {{$conflict->type}}</td>
+	  <td>
+	    <a href='{{route('systems.show', $conflict->system->id)}}'>
+	      {{$conflict->system->displayName()}}
+	    </a>
+	  </td>
+	  <td>
+	    @include($conflict->faction1->government->icon)
+	    <a href='{{route('factions.show', $conflict->faction1->id)}}'>
+	      {{$conflict->faction1->name}}
+	    </a>
+	    @if ($conflict->asset1)
+	    (<a href='{{route($conflict->asset1->displayRoute(), $conflict->asset1->id)}}'>{{$conflict->asset1->displayName()}}</a>)
+	    @endif
+	  </td>
+	  <td>{{$conflict->score}}</td>
+	  <td>
+	    @include($conflict->faction2->government->icon)
+	    <a href='{{route('factions.show', $conflict->faction2->id)}}'>
+	      {{$conflict->faction2->name}}
+	    </a>
+	    @if ($conflict->asset2)
+	    (<a href='{{route($conflict->asset2->displayRoute(), $conflict->asset2->id)}}'>{{$conflict->asset2->displayName()}}</a>)
+	    @endif
+	  </td>
+	</tr>
+	@endforeach
+	@else
+	<tr><td colspan='5'>No current conflicts</td></tr>
 	@endif
-	
-	<h2>Current Events</h2>
-<ul id='major-events'>
-  @foreach ($importants as $important)
-  @foreach ($important->states as $state)
-  @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None']))
-  @if ($state->name != "Expansion" || $important->system_id == $important->faction->system_id)
+      </tbody>
+    </table>
+    
+    
+    <h2>Current Events</h2>
+    <ul id='major-events'>
+      @foreach ($importants as $important)
+      @foreach ($important->states as $state)
+      @if (!in_array($state->name, ['Boom', 'Civil Liberty', 'Investment', 'None', 'War', 'Election']))
+      @if ($state->name != "Expansion" || $important->system_id == $important->faction->system_id)
 
-  <li>
-    @include($important->faction->government->icon)
-    <a href='{{route('factions.show', $important->faction->id)}}'>
-      {{$important->faction->name}}
-    </a>
-    in
-    @if ($state->name == "War" || $state->name == "Election")
-    @if ($important->system->controllingFaction()->id == $important->faction->id)
-    <strong>system control</strong>
-    @elseif ($important->faction->controlsAsset($important->system))
-    <em>station control</em>
-    @elseif ($important->faction->controlsInstallation($important->system))
-    installation control
-    @endif
-    @endif
-    @include($state->icon)
-    {{$state->name}}
-    @if ($state->name != "Expansion")
-    in
-    @include($important->system->economy->icon)
-    <a href='{{route('systems.show', $important->system->id)}}'>
-      {{$important->system->displayName()}}
-    </a>
-    @endif
-  </li>
+      <li>
+	@include($important->faction->government->icon)
+	<a href='{{route('factions.show', $important->faction->id)}}'>
+	  {{$important->faction->name}}
+	</a>
+	in
+	@include($state->icon)
+	{{$state->name}}
+	@if ($state->name != "Expansion")
+	in
+	@include($important->system->economy->icon)
+	<a href='{{route('systems.show', $important->system->id)}}'>
+	  {{$important->system->displayName()}}
+	</a>
+	@endif
+      </li>
 
-  @endif
-  @endif
-  @endforeach
-  @endforeach
-  @foreach ($historys as $history)
-  <li>
+      @endif
+      @endif
+      @endforeach
+      @endforeach
+      @foreach ($historys as $history)
+      <li>
 	@include($history->faction->government->icon)
 	<a href='{{route('factions.show', $history->faction->id)}}'>
 	  {{$history->faction->name}}
 	</a>
 	{{$history->description}}
-    @if ($history->location_type == 'App\Models\System')
+	@if ($history->location_type == 'App\Models\System')
 	@include($history->location->economy->icon)
 	<a href='{{route('systems.show', $history->location->id)}}'>
 	  {{$history->location->displayName()}}
@@ -190,10 +226,10 @@
 	</a>
 	@endif 
 	
-  </li>
-  @endforeach
-  @foreach ($lowinfluences as $lowinfluence)
-  <li>
+      </li>
+      @endforeach
+      @foreach ($lowinfluences as $lowinfluence)
+      <li>
 	@include($lowinfluence->controllingFaction()->government->icon)
 	<a href='{{route('factions.show', $lowinfluence->controllingFaction()->id)}}'>
 	  {{$lowinfluence->controllingFaction()->name}}
@@ -203,10 +239,12 @@
 	<a href='{{route('systems.show', $lowinfluence->id)}}'>
 	  {{$lowinfluence->displayName()}}
 	</a>
-  </li>
-  @endforeach
-</ul>
-</div>
+      </li>
+      @endforeach
+    </ul>
+
+
+  </div>
 </div>    
 
 @endsection
