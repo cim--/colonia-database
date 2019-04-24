@@ -772,8 +772,8 @@ class EDDNReader extends Command
         Conflict::where('system_id', $system->id)->delete();
         
         foreach ($conflictsdata as $conflictdata) {
-            $type = $conflictdata['WarType'];
-            $status = $conflictdata['Status'];
+            $type = ucwords($conflictdata['WarType']);
+            $status = ucwords($conflictdata['Status']);
             
             $f1 = Faction::where('name', $conflictdata['Faction1']['Name'])->first();
             $f2 = Faction::where('name', $conflictdata['Faction2']['Name'])->first();
