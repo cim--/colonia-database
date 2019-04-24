@@ -243,6 +243,8 @@ class EDDNReader extends Command
     
     private function processSystemData($event, $system) {
         if (!$system->virtualonly) {
+            $isconflicts = false;
+            
             $factions = $event['message']['Factions'];
             $influences = [];
             foreach ($factions as $faction) {
@@ -268,6 +270,9 @@ class EDDNReader extends Command
                 $active = [];
                 foreach ($states as $fstate) {
                     $fstate = $this->renameState($fstate['State']);
+                    if ($fstate == "War" || $fstate == "Election") {
+                        $isconflicts = true;
+                    }
                     $state = State::where('name', $fstate)->first();
                     if (!$state) {
                         $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
@@ -278,6 +283,23 @@ class EDDNReader extends Command
                     }
                     $active[] = $state;
                 }
+
+                /* Detect if there should be a Conflicts array */
+                $pstates = isset($faction['PendingStates']) ? $faction['PendingStates'] : [];
+                foreach ($pstates as $pstate) {
+                    $fstate = $this->renameState($pstate['State']);
+                    if ($fstate == "War" || $fstate == "Election") {
+                        $isconflicts = true;
+                    }
+                }
+                $rstates = isset($faction['RecoveringStates']) ? $faction['RecoveringStates'] : [];
+                foreach ($rstates as $rstate) {
+                    $fstate = $this->renameState($rstate['State']);
+                    if ($fstate == "War" || $fstate == "Election") {
+                        $isconflicts = true;
+                    }
+                }
+                
 
                 if (!in_array($hap, [1,2,3,4,5])) {
                     $error = "Happiness value ".$faction['Happiness']." unrecognised for ".$faction['Name']." in ".$system->displayName();
@@ -315,6 +337,11 @@ class EDDNReader extends Command
 
             if (isset($event['message']['Conflicts'])) {
                 $this->updateConflicts($system, $event['message']['Conflicts']);
+            } else if (!$isconflicts) {
+                // the field is missing because there aren't any
+                // sometimes it's missing because older software
+                // doesn't send it to EDDN
+                $this->updateConflicts($system, []);
             }
         }
         $this->updateSecurity($system, $event['message']);
