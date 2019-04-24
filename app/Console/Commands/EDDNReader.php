@@ -812,7 +812,7 @@ class EDDNReader extends Command
         $installation = Installation::where('system_id', $system->id)->where('name', $assetname)->first();
         if ($installation) { return $installation; }
 
-        $itype = Installationclass::where('name', $assetname)->first();
+        $itype = Installationclass::where('name', substr($assetname,0,strlen($assetname)-strlen(" Installation")))->first();
         if ($itype) {
             $installation = Installation::where('system_id', $system->id)->where('installationclass_id', $itype->id)->first();
             if ($installation) { return $installation; }
