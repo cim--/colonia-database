@@ -246,7 +246,7 @@ class EDDNReader extends Command
             $factions = $event['message']['Factions'];
             $influences = [];
             foreach ($factions as $faction) {
-                if ($faction['Name'] == "Pilots Federation Local Branch") {
+                if ($faction['Name'] == "Pilots' Federation Local Branch") {
                     // virtual faction, ignore
                     continue;
                 }
