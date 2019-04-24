@@ -145,7 +145,7 @@
 	@if ($conflicts->count() > 0)
 	@foreach ($conflicts as $conflict)
 	<tr>
-	  <td>{{$conflict->status}} {{$conflict->type}}</td>
+          <td>{{ucwords($conflict->status)}} {{ucwords($conflict->type)}}</td>
 	  <td>
 	    <a href='{{route('systems.show', $conflict->system->id)}}'>
 	      {{$conflict->system->displayName()}}

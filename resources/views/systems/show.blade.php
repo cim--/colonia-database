@@ -278,7 +278,7 @@
 	  <tbody>
 	    @foreach ($conflicts as $conflict)
 	    <tr>
-	      <td>{{$conflict->status}} {{$conflict->type}}</td>
+	      <td>{{ucwords($conflict->status)}} {{ucwords($conflict->type)}}</td>
 	      <td>
 		@include($conflict->faction1->government->icon)
 		<a href='{{route('factions.show', $conflict->faction1->id)}}'>
