@@ -809,12 +809,12 @@ class EDDNReader extends Command
         $station = Station::where('system_id', $system->id)->where('name', $assetname)->first();
         if ($station) { return $station; }
 
-        $installation = Installation::where('system_id', $system_id)->where('name', $assetname)->first();
+        $installation = Installation::where('system_id', $system->id)->where('name', $assetname)->first();
         if ($installation) { return $installation; }
 
         $itype = Installationclass::where('name', $assetname)->first();
         if ($itype) {
-            $installation = Installation::where('system_id', $system_id)->where('installationclass_id', $itype->id)->first();
+            $installation = Installation::where('system_id', $system->id)->where('installationclass_id', $itype->id)->first();
             if ($installation) { return $installation; }
         }
         Alert::alert("Unknown asset ".$assetname." in ".$system->displayName());
