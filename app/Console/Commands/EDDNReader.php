@@ -795,9 +795,15 @@ class EDDNReader extends Command
             $c->score = $score;
             if ($a1) {
                 $c->asset1()->associate($a1);
+                if ($a1->faction_id != $f1->id) {
+                    Alert::alert("Ownership mismatch in conflict for ".$a1->displayName()." in ".$system->displayName());
+                }
             }
             if ($a2) {
                 $c->asset2()->associate($a2);
+                if ($a2->faction_id != $f2->id) {
+                    Alert::alert("Ownership mismatch in conflict for ".$a2->displayName()." in ".$system->displayName());
+                }
             }
             $c->save();
         }
