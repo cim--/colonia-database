@@ -65,7 +65,9 @@ Engineers
 <div class="engbar" title="{{number_format($progress*100/$total)}}% complete" style="width:{{$progress*100/$total}}%">Estimated progress: {{number_format($progress)}}/{{number_format($total)}}</div>
 </div>
 
-<p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type. (Grade 5 is currently only estimated based on the pattern of the previous grades)</p>
+<p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type.</p>
+
+<p>The Census offers a <a href='{{route('projects.index')}}'>project management service</a> for people wishing to undertake coordinated work to upgrade blueprints - contact Ian Doncaster if the blueprint you are interested in is not yet registered.</p>
 <table class='table table-bordered'>
   <thead>
     <tr><td rowspan='2' colspan='2'></td><th scope="col" colspan='4'>Blueprints available</th></tr>
