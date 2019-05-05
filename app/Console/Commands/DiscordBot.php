@@ -698,10 +698,6 @@ class DiscordBot extends Command
                             $result .= " ⏩";
                             $investnote = true;
                         }
-                        if ($aggressivecandidates[$i]->latestFactions()->count() > 7) {
-                            $result .= " †";
-                            $eightnote = true;
-                        }
                         $result .= ")\n";
                     }
                 }
@@ -713,9 +709,6 @@ class DiscordBot extends Command
             }
             if ($investnote) {
                 $result .= "\n⏩ indicates increased range from a previous failed expansion is required to expand here.";
-            }
-            if ($eightnote) {
-                $result .= "\n† aggressive expansion here may not be possible as system already has 8 factions";
             }
             
             return $this->safe($result);

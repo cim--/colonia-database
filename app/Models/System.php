@@ -215,11 +215,13 @@ class System extends Model
             if (!$this->expansionCube($target, 40)) {
                 continue;
             }
-            if ($target->latestFactions()->count() >= 7) {
+            $tcount = $target->latestFactions()->count();
+            if ($tcount == 7) {
                 $aggressivecandidates[] = $target;
-            } else {
+            } else if ($tcount < 7) {
                 $peacefulcandidates[] = $target;
             }
+            // else no expansion possible if > 7
         }
         $sorter = function($a, $b) {
             return $this->sign($a->distanceTo($this)-$b->distanceTo($this));
