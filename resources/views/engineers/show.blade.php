@@ -42,4 +42,8 @@
   </li>
   @endforeach
 </ul>
+
+@if ($partials)
+@include('components.partialblueprint')    
+@endif
 @endsection

@@ -94,4 +94,6 @@ Engineers
 
 <p>It is believed that use of pinned blueprints and application of experimental effects do not contribute to research. You will need to log out and in to see an upgrade once the threshold is crossed.</p>
 
+<p>Note that it is possible for an Engineer to have a higher research level than there exist blueprints - Mel Brandon has G5 Shield Cell Bank knowledge, but the SCB blueprints only exist up to G4. Similarly, Petra Olmanova cannot produce G2 High Capacity Chaff, Heatsinks or Point Defence (and neither, of course, can Ram Tah), despite having sufficient research level.</p>
+
 @endsection

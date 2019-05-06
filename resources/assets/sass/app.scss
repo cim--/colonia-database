@@ -191,6 +191,8 @@ h2 {
 	color: #606;
 }
 
+
+
 #mapctrls {
 	p {
 		margin: 0.1em;
@@ -405,7 +407,12 @@ span.blueprint {
 	strong {
 		color: #902050;
 	}
+	.blueprint-partial {
+	    color: #900;
+	    font-weight: bold;
+	}
 }
+
 
 .logistics-recommendation-7,
 .logistics-recommendation-6,

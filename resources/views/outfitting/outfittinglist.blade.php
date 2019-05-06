@@ -49,3 +49,5 @@
   </li>
   @endforeach
 </ul>
+
+@include('components.partialblueprint')

@@ -109,7 +109,8 @@ class EngineerController extends Controller
     {
         $engineer->load('blueprints', 'blueprints.moduletype');
         return view('engineers.show', [
-            'engineer' => $engineer
+            'engineer' => $engineer,
+            'partials' => $engineer->blueprints->where('partial', 1)->count()
         ]);
     }
 

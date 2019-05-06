@@ -22,4 +22,8 @@
   @if (isset($fractional) && $fractional)
   ({{ ($blueprint->level - floor($blueprint->level))*100 }}%)
   @endif
+
+    @if ($blueprint->partial)
+    <span class='blueprint-partial' title='Only partial blueprints available'>&#x2762;</span>
+    @endif
 </span>
