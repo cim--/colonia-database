@@ -68,6 +68,11 @@ class Station extends Model
         return 'stations.show';
     }
 
+    public function isController() {
+        return $this->primary;
+    }
+       
+    
 //
     public function displayEconomySize() {
         if (!$this->economysize) {

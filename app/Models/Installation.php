@@ -30,4 +30,8 @@ class Installation extends Model
     public function displayRoute() {
         return 'installations.show';
     }
+
+    public function isController() {
+        return false;
+    }
 }

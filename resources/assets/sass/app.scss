@@ -456,3 +456,10 @@ span.blueprint {
 	text-align: center;
     }
 }
+
+tr.controlconflict {
+    font-weight: bold;
+    td {
+	background: #fff7f7;
+    }
+}

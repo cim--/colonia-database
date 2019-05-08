@@ -277,7 +277,11 @@
 	  </thead>
 	  <tbody>
 	    @foreach ($conflicts as $conflict)
-	    <tr>
+	    <tr
+	       @if (($conflict->asset1 && $conflict->asset1->isController()) || ($conflict->asset2 && $conflict->asset2->isController()))
+	      class='controlconflict'
+	      @endif
+	      >
 	      <td>{{ucwords($conflict->status)}} {{ucwords($conflict->type)}}</td>
 	      <td>
 		@include($conflict->faction1->government->icon)
