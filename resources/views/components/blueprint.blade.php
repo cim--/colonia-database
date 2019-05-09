@@ -19,7 +19,7 @@
   <strong>&#x2699;&#xFE0E;</strong><strong>&#x2699;&#xFE0E;</strong><strong>&#x2699;&#xFE0E;</strong><strong>&#x2699;&#xFE0E;</strong><strong>&#x2699;&#xFE0E;</strong>
 
 @endif
-  @if (isset($fractional) && $fractional)
+  @if (isset($fractional) && $fractional && $blueprint->level < 5)
   ({{ ($blueprint->level - floor($blueprint->level))*100 }}%)
   @endif
 
