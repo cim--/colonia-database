@@ -99,10 +99,10 @@ class RegionalComparison extends Command
     }
 
     private function retrieveFiles() {
-        system("wget -q -O/tmp/systems_populated.jsonl https://eddb.io/archive/v5/systems_populated.jsonl");
-        system("wget -q -O/tmp/stations.jsonl https://eddb.io/archive/v5/stations.jsonl");
-        system("wget -q -O/tmp/factions.jsonl https://eddb.io/archive/v5/factions.jsonl");
-        system("wget -q -O/tmp/listings.csv https://eddb.io/archive/v5/listings.csv");
+        system("wget -q -O/tmp/systems_populated.jsonl https://eddb.io/archive/v6/systems_populated.jsonl");
+        system("wget -q -O/tmp/stations.jsonl https://eddb.io/archive/v6/stations.jsonl");
+        system("wget -q -O/tmp/factions.jsonl https://eddb.io/archive/v6/factions.jsonl");
+        system("wget -q -O/tmp/listings.csv https://eddb.io/archive/v6/listings.csv");
     }
 
     private function initialiseData() {
