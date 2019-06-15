@@ -106,7 +106,7 @@
 	  
 	  <p>The briefness of human occupation of the region means that all mineral reserves are Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
 
-	  <p>System states are generally favourable to the selling of core-mined deposits.</p>
+	  <p>A Painite double hotspot has been found in the Randgnid 4 A-ring, and system states are generally favourable to the selling of core-mined deposits.</p>
 
 	</div>
 	
@@ -114,18 +114,10 @@
 	  <h2>Outfitting and Shipyards</h2>
 	  @include('intro.botbox', ['commands' => ["!locate facility high-quality"]])
 
-	  <p>Colonia has slightly limited options in this area, though they are improving over time. The following are currently available, generally in those stations containing <a href='{{route('stations.index')}}#high-qual'>High-Quality Outfitting</a>. Prices are often 20% higher than in the Sol bubble.</p>
-
-	  <ul>
-		<li>Mining-related equipment, all sizes, A-grade</li>
-		<li>Fuel scoops and AFMUs, A-grade</li>
-		<li>Other core and optional internals, most sizes, A-, B- or C-grade maximum depending on size (A-rated size 3 or below, B- or C- at size 4 or above)</li>
-		<li>All weapons, all sizes</li>
-		<li>All independent ship hulls (currently except the Mamba)</li>
-	  </ul>
+	  <p>With the construction of the Colonia Applied Research facility, the region is capable of producing almost all outfitting components, though availability will depend somewhat on economic state. A major exception is superpower-aligned ship hulls, and their corresponding armour, for while there is no local production license (Anarchy shipyards may provide some local production).</p>
 	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
 	  
-	  <p>Most large A-rated items must be obtained in the Sol bubble and either flown or transferred here. Transfer costs are approximately 130% of the base price, and the transfer will take a little over 60 hours.</p>
+	  <p>Transfer costs for items from the bubble are approximately 130% of the base price, and the transfer will take a little over 60 hours. In general it may be more efficient to buy and engineer locally.</p>
 
 	  <p>Colonia Hub is currently the only station providing most AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. The Shutdown Field Neutraliser is common enough to appear at several Military and High-Tech surface ports.</p>
 	  
@@ -134,7 +126,7 @@
     <div>
 	  <h2>Engineering</h2>
 
-	  <p>Colonia has <a href='{{route('engineers.index')}}'>improving engineering options</a> locally, and if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects.</p>
+	  <p>Colonia has <a href='{{route('engineers.index')}}'>improving engineering options</a> locally, and if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects. Exclusive blueprints are available for the Shield Cell Bank and Life Support modules.</p>
 
 	  <p>While the system populations at under 1 million would normally be insufficient to support Material and Tech Brokers, there is one of each present:</p>
 	  <ul>
