@@ -36,7 +36,13 @@ class Economy extends Model
         return $q->where('analyse', 1);
     }
 
-
+    public function scopeBaseline($q) {
+        return $q->where('analyse', true)
+                 ->orWhere('name', 'Industrial-Refinery')
+                 ->orWhere('name', 'Industrial-Extraction')
+                 ->orWhere('name', 'Tourism-High-Tech')
+                 ->orWhere('name', 'High-Tech-Industrial-Extraction');
+    }
     
     public function tradeRatio(State $state) {
         $supply = 0;

@@ -86,9 +86,7 @@ class GoodsAnalysis2 extends Command
         })->whereHas('economy', function($q) {
             // ignore stations with damaged economies
             // as they'll confuse the analysis
-            $q->where('analyse', true)
-              ->orWhere('name', 'Industrial-Refinery')
-              ->orWhere('name', 'Industrial-Extraction');
+            $q->baseline();
             // hybrids are fine for this, though
         })->with('economy')->get();
 
@@ -204,7 +202,7 @@ class GoodsAnalysis2 extends Command
                 $stability++;
             }
         }
-        if ($stability < 5 && $commodity->id != 1) {
+        if (($stability < 5 && $commodity->id != 1) || $max == 0) {
             // insufficient to confirm baseline
             // will use for HFuel *anyway* because a guess is better than nothing
             return null;
@@ -319,9 +317,7 @@ class GoodsAnalysis2 extends Command
         })->whereHas('economy', function($q) {
             // ignore stations with damaged economies
             // as they'll confuse the analysis
-            $q->where('analyse', true)
-              ->orWhere('name', 'Industrial-Refinery')
-              ->orWhere('name', 'Industrial-Extraction');
+            $q->baseline();
             // hybrids are fine for this, though
         })->with('economy')->with('baselinestocks')->get();
 
