@@ -382,24 +382,22 @@ class StationController extends Controller
         if ($entries->count() == 0) {
             $chart = null; 
         } else {
+            $last = $entries->last();
+            if ($last->reserves > 0) {
+                $reservelabel = $datasets['reserves']['label'] = "Supply";
+                $sign = 1;
+            } else {
+                $reservelabel = $datasets['reserves']['label'] = "Demand";
+                $sign = -1;
+            }
+            
+            
             foreach ($entries as $idx => $entry) {
-                if ($idx == 0) {
-                    if ($entry->reserves > 0) {
-                        $sign = 1;
-                        $reservelabel = $datasets['reserves']['label'] = "Supply";
-                    } else {
-                        $sign = -1;
-                        $reservelabel = $datasets['reserves']['label'] = "Demand";
-                    }
-                } else {
-                    if ($entry->reserves * $sign < 0) {
-                        continue;
-                    }
-                }
+                
                 foreach ($properties as $prop) {
                     $datasets[$prop]['data'][] = [
                         'x' => \App\Util::graphDisplayDateTime($entry->created_at),
-                        'y' => abs($entry->$prop),
+                        'y' => $prop == 'reserves' ? $sign * $entry->$prop : $entry->$prop,
                         'state' => $entry->states->implode('name', ', ')
                     ];
                 }
