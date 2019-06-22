@@ -154,6 +154,15 @@ class GoodsAnalysis2 extends Command
             ->withCount('states')
             ->where('reserves', '!=', 0)
             ->normalMarkets();
+
+        /* Where stations change economy, only look after the change */
+        if ($station->id == 1 || $station->id == 2) {
+            // Jaques, Hub conversion
+            $reservesquery->where('date', '>', '2019-06-12');
+        } else if ($station->id == 22) {
+            // Kremmens conversion
+            $reservesquery->where('date', '>', '2019-03-29');
+        }
         
         $reserves = $reservesquery->get();
 
