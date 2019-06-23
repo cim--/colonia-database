@@ -190,7 +190,8 @@ class Faction extends Model
         $in = Influence::where('system_id', $system->id)
             ->where('faction_id', $this->id)
             ->where('current', false)
-            ->whereDate('date', '>=', new Carbon('2017-10-01'))
+            // seems to have been reset in 3.3
+            ->whereDate('date', '>=', new Carbon('2018-12-08'))
             ->count();
         return ($in > 0);
     }
