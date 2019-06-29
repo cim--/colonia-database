@@ -46,6 +46,7 @@ class GoodsAnalysis2 extends Command
     private $maxdemmultiplier = 0;
     private $colonysizefactor = 0;
     private $genericsizefactor = 0;
+    private $stability = 0;
     
     /**
      * Execute the console command.
@@ -91,11 +92,14 @@ class GoodsAnalysis2 extends Command
         })->with('economy')->get();
 
         $commodities = Commodity::with('effects')
+            ->where('id', 1)
             ->orderBy('name')->get();
 
         $states = State::orderBy('name')->get();
 
-        Baselinestock::where('station_id','>',0)->delete();
+        Baselinestock::where('station_id','>',0)
+            ->where('commodity_id', 1)
+            ->delete();
         
         foreach ($commodities as $commodity) {
             $demandregen = [];
@@ -104,6 +108,8 @@ class GoodsAnalysis2 extends Command
             foreach ($stations as $station) {
                 $this->maxsupmultiplier = 0;
                 $this->maxdemmultiplier = 0;
+                $this->stability = 0;
+//                $this->line("Station: ".$station->name);
                 foreach ($states as $state) {
                     $regen = $this->analyseRegeneration($commodity, $station, $state);
                     if ($regen !== null) {
@@ -180,6 +186,7 @@ class GoodsAnalysis2 extends Command
 
         $newmax = 0;
         $newstab = 0;
+//        $this->line("State:" .$state->name);
         foreach ($reserves as $reserve) {
             if ($reserve->states_count != 1) {
                 // this is going to be messy if we use mixed states
@@ -187,15 +194,21 @@ class GoodsAnalysis2 extends Command
                 continue;
             }
             if (abs($reserve->reserves) > $max) {
-                if ($stability > 5) {
+//                $this->line("Seen: ".$reserve->reserves);
+                // for hfuel, be more cautious about newstab
+                if ($stability > 5 || ($commodity->id == 1 && $stability > 0)) {
                     /* It's possible that someone sold back to a
                      * max-supply market */
                     if (abs($reserve->reserves) != $newmax) {
-                        $newmax = abs($reserve->reserves);
-                        $newstab = 1;
+                        if (abs($reserve->reserves) > $newmax) {
+//                            $this->line("...potential");
+                            $newmax = abs($reserve->reserves);
+                            $newstab = 1;
+                        } // else ignore
                     } else {
                         $newstab++;
                         if ($newstab >= 5) {
+//                            $this->line("...confirmed");
                             // now there's been at least as many, so use it
                             $newmax = 0;
                             $newstab = 0;
@@ -204,6 +217,7 @@ class GoodsAnalysis2 extends Command
                         }
                     }
                 } else {
+//                    $this->line("...confirmed");
                     $max = abs($reserve->reserves);
                     $stability = 1;
                 }
@@ -214,6 +228,9 @@ class GoodsAnalysis2 extends Command
         if (($stability < 5 && $commodity->id != 1) || $max == 0) {
             // insufficient to confirm baseline
             // will use for HFuel *anyway* because a guess is better than nothing
+            return null;
+        } else if ($commodity->id == 1 && $stability < $this->stability) {
+            // for hfuel don't discard a stable value for a less stable one
             return null;
         }
 
@@ -228,12 +245,14 @@ class GoodsAnalysis2 extends Command
                 } else {
                     $this->maxdemmultiplier = $multiplier;
                 }
+                $this->stability = $stability;
                 /* Because of discrepancies between estimated tick,
                  * commodity tick and system state tick, it's best to use
                  * the highest multiplier state and then divide back down
                  * for the estimates of the baseline maximum, as 'max' for
                  * this is most likely to be accurate */
-            
+//                $this->line("Setting baseline: ".(($max*$sign) / $multiplier));
+                
                 Baselinestock::where('station_id', $station->id)
                     ->where('commodity_id', $commodity->id)->delete();
             
@@ -311,11 +330,12 @@ class GoodsAnalysis2 extends Command
 
     
     private function runEconomySizeAnalysis() {
-        /* Hydrogen Fuel appears to be a non-specialised good with
-         * the exception of Colony, which we only have one of
+        /* Hydrogen Fuel appears to be a non-specialised good with the
+         * exception of Colony, which we only have one of
          * anyway. Empirically, the size of the economy corresponds
          * roughly to baseline (HFuel/43)^2 - which for single-station
-         * systems is approximately the population, and for
+         * systems is usually approximately the population (but can be
+         * very different for hand-placed stations), and for
          * multi-station systems gets complicated especially for
          * secondary stations. */
         
