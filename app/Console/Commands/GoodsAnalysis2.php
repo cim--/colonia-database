@@ -444,7 +444,7 @@ class GoodsAnalysis2 extends Command
         return $this->percentile($arr, 0.25);
     }
     private function highq($arr) {
-        return $this->percentile($arr, 0.5);
+        return $this->percentile($arr, 0.75);
     }
 
 }

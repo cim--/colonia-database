@@ -33,7 +33,7 @@ Reserves at {{$station->name}}
 	  <th>Status</th>
 	  <th>Stock/Demand</th>
 	  <th>Baseline Stock/Demand</th>
-	  <th title='Allowing for the overall size of the station economy, how much does this produce/consume relative to other stations?'>Relative Production/Consumpion</th>
+	  <th title='Allowing for the overall size of the station economy, how much does this produce/consume relative to other stations?'>Relative Production/Consumption</th>
 	  <th>Price</th>
 	  <th>History</th>
 	</tr>
