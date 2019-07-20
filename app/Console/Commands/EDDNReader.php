@@ -305,7 +305,9 @@ class EDDNReader extends Command
                     $error = "Happiness value ".$faction['Happiness']." unrecognised for ".$faction['Name']." in ".$system->displayName();
                     \Log::error($error);
                     $this->error($error);
-                    return;
+                    // it seems to just be the happiness data, so set
+                    // default and use the rest
+                    $hap = 2;
                 }
 		/*
                 if ($faction['FactionState'] != "None") {
@@ -673,6 +675,11 @@ class EDDNReader extends Command
     }
 
     private function processOutfittingEvent($event) {
+        if ($event['header']['softwareName'] == "EDDI" && $event['header']['softwareVersion'] == "3.4.1") {
+            // EDDI 3.4.1 gives odd outfitting data at times
+            return;
+        }
+           
         $system = System::where('name', $event['message']['systemName'])
             ->orWhere('catalogue', $event['message']['systemName'])
             ->first();
@@ -720,6 +727,11 @@ class EDDNReader extends Command
     }
 
     private function processShipyardEvent($event) {
+        if ($event['header']['softwareName'] == "EDDI" && $event['header']['softwareVersion'] == "3.4.1") {
+            // EDDI 3.4.1 gives odd shipyard data at times
+            return;
+        }
+
         $system = System::where('name', $event['message']['systemName'])
             ->orWhere('catalogue', $event['message']['systemName'])
             ->first();
