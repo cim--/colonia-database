@@ -49,6 +49,10 @@ class RegionalComparison extends Command
             "sphere" => [-303,-236,-860,200], // HIP 18077
             "allegiance" => null
         ],
+        "Witch Head" => [
+            "sphere" => [360, -386, -718, 100], // HIP 23759
+            "allegiance" => null
+        ],
         /* This entry is ignored in the end, it's just to subtract
          * them from the Deep Space numbers */
         "Colonia" => [
