@@ -238,10 +238,23 @@
 	<a href='{{route('factions.show', $lowinfluence->controllingFaction()->id)}}'>
 	  {{$lowinfluence->controllingFaction()->name}}
 	</a>
-	<em>low influence</em> in
+	<strong>low influence</strong> in
 	@include($lowinfluence->economy->icon)
 	<a href='{{route('systems.show', $lowinfluence->id)}}'>
 	  {{$lowinfluence->displayName()}}
+	</a>
+      </li>
+      @endforeach
+      @foreach ($risks as $risk)
+      <li>
+	@include($risk->controllingFaction()->government->icon)
+	<a href='{{route('factions.show', $risk->controllingFaction()->id)}}'>
+	  {{$risk->controllingFaction()->name}}
+	</a>
+	<em>falling influence</em> in
+	@include($risk->economy->icon)
+	<a href='{{route('systems.show', $risk->id)}}'>
+	  {{$risk->displayName()}}
 	</a>
       </li>
       @endforeach

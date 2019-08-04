@@ -78,6 +78,7 @@ class BaseController extends Controller
         $conflicts = Conflict::all();
         
         $lowinfluences = [];
+        $risks = [];
         $sysid = 0;
         $happiness = 0;
         $happinesses = [1=>0,2=>0,3=>0,4=>0,5=>0];
@@ -90,7 +91,9 @@ class BaseController extends Controller
             if ($influence->system_id != $sysid) {
                 if ($influence->system->controllingFaction()->id != $influence->faction_id) {
                     $lowinfluences[] = $influence->system;
-                } 
+                } else if ($influence->system->risk > 0) {
+                    $risks[] = $influence->system;
+                }
                     
                 $sysid = $influence->system_id;
             }
@@ -298,6 +301,7 @@ class BaseController extends Controller
             'importants' => $important,
             'conflicts' => $conflicts,
             'lowinfluences' => $lowinfluences,
+            'risks' => $risks,
             'fakeglobals' => ['Retreat', 'Expansion'],
             'iconmap' => $iconmap,
             'maxdist' => $maxdist,

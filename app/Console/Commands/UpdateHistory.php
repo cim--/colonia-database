@@ -24,7 +24,7 @@ class UpdateHistory extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh the history table';
+    protected $description = 'Refresh the history table and other caches';
 
     /**
      * Create a new command instance.
@@ -51,6 +51,7 @@ class UpdateHistory extends Command
             }
             $this->updateExpansionCache();
             $this->clearEventData();
+            $this->calculateRisks();
         });
         //
     }
@@ -207,5 +208,40 @@ class UpdateHistory extends Command
             $factions[] = $inf->faction;
         }
         return collect($factions);
+    }
+
+    private function calculateRisks()
+    {
+        $systems = System::where('bgslock', 0)->where('population', '>', 0)->get();
+        foreach ($systems as $system) {
+            $risk = 0;
+            $is = $system->latestFactionsWithoutEagerLoad();
+            if ($is->count() > 1) {
+                $diff = $is[0]->influence - $is[1]->influence;
+                if ($diff == 0) {
+                    $risk = 5; // control conflict
+                } else if ($diff < 25) {
+                    $date = $is[0]->date->copy();
+                    $tmax = 0;
+                    for ($t=1;$t<=5;$t++) {
+                        $date->subDay();
+                        $prev = $system->factionsWithoutEagerLoad($date);
+                        $pdiff = $prev[0]->influence - $prev[1]->influence;
+                        $trend = ($pdiff-$diff)/$t;
+                        if ($trend > $tmax) {
+                            $tmax = $trend;
+                        }
+                    }
+                    if ($tmax > 0) {
+                        $margin = $diff / $tmax;
+                        if ($margin < 5) {
+                            $risk = floor(5 - $margin);
+                        }
+                    }
+                }
+            }
+            $system->risk = $risk;
+            $system->save();
+        }
     }
 }

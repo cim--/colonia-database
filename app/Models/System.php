@@ -145,6 +145,13 @@ class System extends Model
                     ->get();
     }
 
+    public function factionsWithoutEagerLoad($date) {
+        return $this->influences()->where('date', $date)
+                    ->orderBy('influence', 'desc')
+                    ->get();
+    }
+
+    
     public function factions(Carbon $date) {
         return $this->influences()->whereDate('date', $date->format("Y-m-d"))
                     ->with('faction', 'states')->orderBy('influence', 'desc')
