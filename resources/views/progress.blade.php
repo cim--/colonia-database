@@ -23,14 +23,14 @@ visible change.</p>
 
 <p>You can update this data without needing to log in by entering the system while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI). On consoles, <a href="https://www.edsm.net/en/settings/import/capi">EDSM provides a synchronisation tool</a>.</p>
 
-<p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update.</p>
+<p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update. Systems with unusual influence movements or control conflicts are <span class='systemrisk5'>highlighted</span> and may benefit from more frequent data collection.</p>
 
 {!! Form::open(['route' => 'progress', 'method' => 'GET']) !!}
 {!! Form::label('age', 'Age threshold') !!}
 {!! Form::number("age", 0, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
 {!! Form::submit('Filter') !!}
 {!! Form::close() !!}
-  
+
 <h2>Systems needing influence update ({{number_format($influencecomplete)}}%)</h2>
 @if (count($influenceupdate) > 0)
 @if($userrank > 0)
@@ -39,7 +39,7 @@ visible change.</p>
 
 <ul class='compact'>
   @foreach ($influenceupdate as $system)
-  <li>
+  <li class='systemrisk{{$system->risk}}'>
 	@if($userrank > 0)
 	<a href="{{route('systems.edit',$system->id)}}">{{$system->displayName()}}</a>
 	@else
@@ -86,7 +86,7 @@ visible change.</p>
 @endif
 <ul class='compact'>
   @foreach ($reportsupdate as $system)
-  <li>
+  <li class='systemrisk{{$system->risk}}'>
 	@if($userrank > 0)
 	<a href="{{route('systems.editreport',$system->id)}}">{{$system->displayName()}}</a>
 	@else
