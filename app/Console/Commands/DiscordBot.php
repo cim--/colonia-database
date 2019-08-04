@@ -71,6 +71,7 @@ class DiscordBot extends Command
         $this->registerStationCommand();
         $this->registerFactionCommand();
         $this->registerInfluenceCommand();
+        $this->registerRisksCommand();
         $this->registerMegashipCommand();
         $this->registerInstallationCommand();
         $this->registerReportCommand();
@@ -288,9 +289,11 @@ class DiscordBot extends Command
             } else {
                 $date = null;
             }
+            $showrisks = true;
             $sname = trim(join(" ", $params));
             $system = System::where('name', 'like', $sname."%")->orWhere('catalogue', 'like', $sname."%")->orderBy('name')->first();
             if (!$system) {
+                $showrisks = false;
                 $faction = Faction::where('name', 'like', $sname."%")->orderBy('name')->first();
                 if (!$faction) {
                     return $this->safe($sname." not known");
@@ -360,6 +363,9 @@ class DiscordBot extends Command
                     }
                     $result .= "\n";
                 }
+                if ($showrisks) {
+                    $result .= "Control risk level: ".$system->risk." / 5\n";
+                }
                 return $this->safe($result);
             }
         }, [
@@ -368,6 +374,23 @@ class DiscordBot extends Command
             'aliases' => ['politics']
         ]);
     }
+
+    private function registerRisksCommand() {
+        $this->discord->registerCommand('risks', function($message, $params) {
+            $systems = System::where('risk','>',0)->orderBy('risk','desc')->orderBy('name', 'asc')->get();
+            $result = "**Influence risk report**\n";
+            foreach ($systems as $system) {
+                $result .= '`'.$system->risk." / 5:` ".$system->name."\n";
+            }
+            $result .= "Risk 5 = conflict imminent or ongoing. Lower risks indicate trends to narrowing of influence gap which may lead to conflicts soon. Increased monitoring of systems at risk is desirable.";
+            return $this->safe($result);
+        }, [
+            'description' => 'Show systems with influence movements with risk of control change.',
+            'usage' => '',
+            'aliases' => ['risk']
+        ]);
+    }
+        
 
     private function registerReportCommand() {
         $this->discord->registerCommand('report', function($message, $params) {
