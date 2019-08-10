@@ -110,13 +110,13 @@ class EDDNReader extends Command
         
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
             if ($event['message']['event'] == "FSDJump") {
-                if ($event['message']['StarPos'][2] < 10000) {
+                if ($event['message']['StarPos'][2] > -600) {
                     // in case of duplicate names
                     return;
                 }
                 $this->processFSDJump($event);
             } else if ($event['message']['event'] == "Location") {
-                if ($event['message']['StarPos'][2] < 10000) {
+                if ($event['message']['StarPos'][2] > -600) {
                     // in case of duplicate names
                     return;
                 }
@@ -186,7 +186,7 @@ class EDDNReader extends Command
 
             $this->processSystemData($event, $system);
             
-        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
+        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] < -600) {
             $traditional = new \stdClass;
             $traditional->x = $event['message']['StarPos'][0];
             $traditional->y = $event['message']['StarPos'][1];
@@ -197,7 +197,7 @@ class EDDNReader extends Command
             $colonia->x = 0;
             $colonia->y = 0;
             $colonia->z = 0;
-            if (\App\Util::distance($coords, $colonia) < 1000) {
+            if (\App\Util::distance($coords, $colonia) < 250) {
                 Alert::alert("New inhabited system ".$event['message']['StarSystem']);
             }
         }
@@ -223,7 +223,7 @@ class EDDNReader extends Command
 
             $this->processSystemData($event, $system);
             
-        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] > 18000) {
+        } else if ($event['message']['Population'] > 0 && $event['message']['StarPos'][2] < -600) {
             $traditional = new \stdClass;
             $traditional->x = $event['message']['StarPos'][0];
             $traditional->y = $event['message']['StarPos'][1];
@@ -234,7 +234,7 @@ class EDDNReader extends Command
             $colonia->x = 0;
             $colonia->y = 0;
             $colonia->z = 0;
-            if (\App\Util::distance($coords, $colonia) < 1000) {
+            if (\App\Util::distance($coords, $colonia) < 250) {
                 Alert::alert("New inhabited system ".$event['message']['StarSystem']);
             }
         }
