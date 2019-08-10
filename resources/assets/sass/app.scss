@@ -24,7 +24,7 @@ table {
 }	
 
 footer {
-	border-top: 2px #005090 solid;
+	border-top: 2px #00a030 solid;
 	padding: 0.5em 15px;
 	p {
 		margin-top: 0.5em;
@@ -32,7 +32,7 @@ footer {
 }
 
 header {
-	border-bottom: 2px #005090 solid;
+	border-bottom: 2px #00a030 solid;
 	padding: 0 15px;
 	p {
 		margin-top: 0.5em;
@@ -50,7 +50,7 @@ nav {
 		> li {
 			@include make-sm-column(4);
 			@include make-lg-column(2);
-			border-right: 1px #005090 dotted;
+			border-right: 1px #00a030 dotted;
 			min-height: 6.5em;
 			div {
 				text-transform: uppercase;
@@ -228,12 +228,12 @@ div#newhere {
 	div.newbox {
 		@include make-sm-column(6);
 		h2 {
-			border-bottom: 1px #005090 dotted;
+			border-bottom: 1px #00a030 dotted;
 		}
 		> div {
 			margin: 0.5em 0;
 			padding: 0.5em;
-			border: thin #005090 solid;
+			border: thin #00a030 solid;
 			.botbox {
 				width: 50%;
 				float: right;
@@ -343,10 +343,10 @@ div#newhere {
 #historyboxes {
 	div.historybox {
 		h2 {
-			border-bottom: 1px #005090 dotted;
+			border-bottom: 1px #00a030 dotted;
 			padding: 0 -0.5em;
 		}
-		border: thin #005090 solid;
+		border: thin #00a030 solid;
 		margin: 1em;
 		padding: 0.5em;
 	}
@@ -359,12 +359,12 @@ div#iconlist {
 			@include make-sm-column(6);
 			@include make-lg-column(4);
 			h2 {
-				border-bottom: 1px #005090 dotted;
+				border-bottom: 1px #00a030 dotted;
 			}
 			> div {
 				margin: 0.5em;
 				padding: 0.5em;
-				border: thin #005090 solid;
+				border: thin #00a030 solid;
 			}
 		}
 	}
@@ -438,7 +438,7 @@ span.blueprint {
 		margin: 0.5em 0;
 		width: 35em;
 		padding: 0.5em;
-		border: thin #005090 solid;
+		border: thin #00a030 solid;
 		background: #000;
 		color: #fff;
 		.command {
