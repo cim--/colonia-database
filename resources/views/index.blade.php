@@ -1,6 +1,6 @@
 @extends('layout/layout')
 
-@section('title', 'Colonia Region System Database')
+@section('title', 'Witch Head Census Database')
 
 @section('content')
 
@@ -8,7 +8,7 @@
   <div class='col-sm-6'>
 	<h2>Key Figures</h2>
 	<ul>
-      <li>Inhabited region is {{number_format($maxdist)}} LY in radius, with Colonia {{number_format($coldist)}} LY from the centre</li>
+      <li>Inhabited region is {{number_format($maxdist)}} LY in radius</li>
 	  <li>{{$populated}} systems supporting {{number_format($population)}}
 		@if ($unpopulated)
 		people, with {{$unpopulated}} more currently planned
@@ -26,12 +26,12 @@
       </li>
 	  <li>Modern production facilities manufacture goods with {{number_format(100*$ecsize/$population)}}% of standard efficiency.</li>
 	  <li>{{$instcount}} installations and {{$megacount}} operational mobile megaships</li>
-	  <li>{{$factions->count()}} factions, including {{$players}} player factions</li>
+	  <li>{{$factions->count()}} factions</li>
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
 	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
 	  <li>The exploration value of the inhabited and planned systems is estimated at {{number_format($exploration)}} credits.</li>
 	  <li>The currently inhabited systems have {{$terraformable}} terraforming candidates which do not have any native life.</li>
-	  <li>Native life is being protected from invasion on {{$elwcount}} Earth-like Worlds, {{$wwcount}} terraformable Water Worlds and {{$awcount}} Ammonia Worlds.</li>
+	  <li>The inhabited systems contain {{$elwcount}} Earth-like Worlds, {{$wwcount}} terraformable Water Worlds and {{$awcount}} Ammonia Worlds.</li>
 	</ul>
 
 	<h2>Economies</h2>
@@ -103,11 +103,8 @@
 	<ul>
 	  <li><a href="{{route('stations.index')}}#cartographics">Where can I sell exploration data</a> or <a href="{{route('stations.index')}}#shipyard">buy a new ship?</a></li>
 	  <li><a href="{{route('systems.index')}}#&quot;metallic ring&quot;">Where are the pristine metallic rings?</a></li>
-	  <li><a href="{{route('factions.index')}}#Colonia">Which factions are named after Colonia?</a></li>
-	  <li><a href="{{route('missions.index')}}#lockdown">Which missions affect Lockdown?</a></li>
-      <li><a href="{{route('history')}}#founded">When were the systems founded?</a></li>
+{{--      <li><a href="{{route('history')}}#founded">When were the systems founded?</a></li> --}}
 	  <li><a href="{{route('reports')}}?type=traffic">Which are the busiest systems?</a></li>
-	  <li><a href="{{route('map')}}#XZ~F:Jaques~S:Colonia~P~1">Where are the best drinks?</a></li>
 	  <li><a href="{{route('outfitting')}}">What equipment is available</a> and <a href="{{route('stations.index')}}#high-quality">where should I look for it?</a></li>
 	  <li><a href="{{route('reserves')}}">Which commodities are available for trade?</a></li>
 	  <li><a href="{{route('map')}}#XZ~C:control~C:control~X~1~0~0">Where have groups expanded</a> and <a href="{{route('reports.control')}}">which are the largest?</a></li>
