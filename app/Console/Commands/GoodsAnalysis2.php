@@ -92,13 +92,11 @@ class GoodsAnalysis2 extends Command
         })->with('economy')->get();
 
         $commodities = Commodity::with('effects')
-            ->where('id', 1)
             ->orderBy('name')->get();
 
         $states = State::orderBy('name')->get();
 
         Baselinestock::where('station_id','>',0)
-            ->where('commodity_id', 1)
             ->delete();
         
         foreach ($commodities as $commodity) {
