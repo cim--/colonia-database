@@ -10,7 +10,7 @@ Factions
 <p><a class='edit' href='{{route('factions.create')}}'>New faction</a></p>
 @endif
 
-<p><a href='{{route('factions.ethos')}}'>Summary of faction governments</a></p>
+{{-- <p><a href='{{route('factions.ethos')}}'>Summary of faction governments</a></p> --}}
     
 <table class='table table-bordered datatable' data-page-length='25' data-order='[[0, "asc"]]'>
   <thead>

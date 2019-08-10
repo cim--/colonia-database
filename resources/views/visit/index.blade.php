@@ -4,7 +4,7 @@
 
 @section('content')
 
-<p>There are a lot of points of interest in the Colonia region and it can be hard to keep track of whether you've visited all of them. This tool allows you to keep track of which you have visited.</p>
+<p>There are a lot of points of interest in the Witch Head region and it can be hard to keep track of whether you've visited all of them. This tool allows you to keep track of which you have visited.</p>
 
 <p>If you turn the tracking tools on, a button to mark your visit will appear in the top right of the page for each point of interest in its respective catalogue. You can also click on the progress bars to mark visits here.</p>
 

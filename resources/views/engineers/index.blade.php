@@ -65,9 +65,8 @@ Engineers
 <div class="engbar" title="{{number_format($progress*100/$total)}}% complete" style="width:{{$progress*100/$total}}%">Estimated progress: {{number_format($progress)}}/{{number_format($total)}}</div>
 </div>
 
-<p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type.</p>
+<p>Witch Head's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type.</p>
 
-<p>The Census offers a <a href='{{route('projects.index')}}'>project management service</a> for people wishing to undertake coordinated work to upgrade blueprints - contact Ian Doncaster if the blueprint you are interested in is not yet registered.</p>
 <table class='table table-bordered'>
   <thead>
     <tr><td rowspan='2' colspan='2'></td><th scope="col" colspan='4'>Blueprints available</th></tr>
@@ -94,6 +93,6 @@ Engineers
 
 <p>It is believed that use of pinned blueprints and application of experimental effects do not contribute to research. You will need to log out and in to see an upgrade once the threshold is crossed.</p>
 
-<p>Note that it is possible for an Engineer to have a higher research level than there exist blueprints - Mel Brandon has G5 Shield Cell Bank knowledge, but the SCB blueprints only exist up to G4. Similarly, Petra Olmanova cannot produce G2 High Capacity Chaff, Heatsinks or Point Defence (and neither, of course, can Ram Tah), despite having sufficient research level.</p>
+{{-- <p>Note that it is possible for an Engineer to have a higher research level than there exist blueprints - Mel Brandon has G5 Shield Cell Bank knowledge, but the SCB blueprints only exist up to G4. Similarly, Petra Olmanova cannot produce G2 High Capacity Chaff, Heatsinks or Point Defence (and neither, of course, can Ram Tah), despite having sufficient research level.</p> --}}
 
 @endsection

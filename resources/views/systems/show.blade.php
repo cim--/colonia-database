@@ -96,7 +96,7 @@
 		<th>Z</th>
 	  </tr>
 	  <tr>
-		<td>Colonial</td>
+		<td>Witch Head</td>
 		<td>{{number_format($colcoords->x, 5)}}</td>
 		<td>{{number_format($colcoords->y, 5)}}</td>
 		<td>{{number_format($colcoords->z, 5)}}</td>

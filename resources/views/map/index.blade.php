@@ -6,9 +6,7 @@
 
 <div id='mapkeys'>
   <div id='mapkeysphase'>
-	<strong>Settlement phase</strong>: CEI systems green to purple
-    (older to newer); NPC systems red to yellow (older to newer);
-	other player systems grey-green
+	<strong>Settlement phase</strong>: red to yellow (older to newer);
   </div>
   <div id='mapkeyspresent'>
 	<strong>Factions present</strong>: grey empty; green to orange
@@ -19,7 +17,7 @@
   </div>
   <div id='mapkeysdepth'>
 	<strong>Depth</strong>: blue closer to viewer, green level with
-	Colonia, red further away
+	HIP 23759, red further away
   </div>
   <div id='mapkeysfaction'>
 	<strong>Specific faction</strong>: red controls; yellow present;

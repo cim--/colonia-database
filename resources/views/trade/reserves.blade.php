@@ -50,9 +50,9 @@
 	  <th>Current Reserves</th>
 	  <th>Current Demand</th>
 	  <th title='Current stocks/demand difference in tonnes'>Current Surplus</th>
-	  <th>Baseline Reserves</th>
+	 {{-- <th>Baseline Reserves</th>
 	  <th>Baseline Demand</th>
-      <th title='Baseline stocks/demand difference in tonnes'>Baseline Surplus</th>
+      <th title='Baseline stocks/demand difference in tonnes'>Baseline Surplus</th> --}}
 	  <th title='How long it takes an empty station to produce to full capacity'>Production Cycle</th>
       <th title='How long it takes a filled station to return to full demand'>Consumption Cycle</th>
 	  <th title='Current stocks/demand difference adjusting for differences in production and consumption cycles'>Daily Baseline Surplus</th>
@@ -82,13 +82,14 @@
 	  @else
 	  <td><span class='surplus'>{{$commodity['stock'] - $commodity['demand']}}</span></td>
 	  @endif
-	  <td>{{number_format($commodity['baselinestock'])}}</td>
+{{--	  <td>{{number_format($commodity['baselinestock'])}}</td>
 	  <td>{{number_format(-$commodity['baselinedemand'])}}</td>
 	  @if (-$commodity['baselinedemand'] > $commodity['baselinestock'])
 	  <td><span class='deficit'>{{$commodity['baselinestock'] + $commodity['baselinedemand']}}</span></td>
 	  @else
 	  <td><span class='surplus'>{{$commodity['baselinestock'] + $commodity['baselinedemand']}}</span></td>
 	  @endif
+	  --}}
 	  <td data-sort='{{number_format($commodity['supplycycle'])}}'>
 		@if (count($commodity['exported']) > 0 && $commodity['supplycycle'])
 		{{number_format($commodity['supplycycle'],1)}}
