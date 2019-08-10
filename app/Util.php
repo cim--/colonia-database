@@ -157,13 +157,13 @@ class Util {
 
     public static function coloniaCoordinates($traditional) {
         // translate
-        $x = $traditional->x + 9530.5;
-        $cy = $traditional->y + 910.28125;
-        $z = $traditional->z - 19808.125;
+        $cx = $traditional->x - 359.84375;
+        $cy = $traditional->y + 385.53125;
+        $cz = $traditional->z + 718.37500;
         // rotate
-        $theta = -1.0033;
+/*        $theta = -1.0033;
         $cx = ($x*cos($theta))+($z*sin($theta));
-        $cz = (-$x*sin($theta))+($z*cos($theta));
+        $cz = (-$x*sin($theta))+($z*cos($theta)); */
         $coords = new \StdClass;
         $coords->x = $cx;
         $coords->y = $cy;
