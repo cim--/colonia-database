@@ -18,7 +18,7 @@
 @endif
 
 @if ($station->strategic)
-<p>Due to its unique resources, this station is designated a strategic asset for the Colonia region.</p>
+<p>Due to its unique resources, this station is designated a strategic asset for the Witch Head region.</p>
 @endif
 
 @if ($station->stationclass->name == "Engineer Base" && $station->engineers->count() > 0)
