@@ -567,7 +567,7 @@ class SystemController extends Controller
         $valid = true;
         for($i=0;$i<=7;$i++) {
             if ($factions[$i] != 0) {
-                if ($influences[$i] < 1 || $influences[$i] > 99) {
+                if ($influences[$i] < 1 || $influences[$i] > 100) {
                     $valid = false;
                 }
                 $total += $influences[$i];
@@ -579,7 +579,7 @@ class SystemController extends Controller
         if (!$valid) {
             return redirect()->route('systems.edit', $system->id)->with('status',
             [
-                'warning' => 'Faction influences must add up to 100 and be between 1 and 99 each'
+                'warning' => 'Faction influences must add up to 100 and be between 1 and 100 each'
             ]);
         }
         
