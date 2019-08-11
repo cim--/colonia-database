@@ -18,7 +18,7 @@ Availability of {{$ship->name}}
 @endforeach
 </ul>
 @else
-<p>The {{$ship->name}} is not currently available in the Colonia region.</p>
+<p>The {{$ship->name}} is not currently available in the Witch Head region.</p>
 @endif
 
 @endsection

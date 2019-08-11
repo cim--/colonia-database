@@ -86,7 +86,7 @@ return !$s->stationclass->hasLarge;
 
 
 @else
-<p>This module is not available in the Colonia region</p>
+<p>This module is not available in the Witch Head region</p>
 
 @if ($module->restricted)
 <p>This module has pre-requisites (e.g. Horizons, Tech Broker, ranks) and will only be available to pilots who meet the pre-requisites.</p>

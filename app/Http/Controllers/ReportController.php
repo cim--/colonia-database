@@ -114,7 +114,7 @@ class ReportController extends Controller
                 ]
             ]);
 
-        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>. The (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.</p><p>Alternative measures <a href='".route('reports.reach.log')."'>using logarithmic population</a> or <a href='".route('reports.reach.happy')."'>including happiness</a> are also available.";
+        $desc = "Reach is the number of people supporting a faction. It is calculated as the sum of system population multiplied by influence percentage for each system a faction is in. For example, a faction present in a system with 100,000 population at 70% influence, and a system with 30,000 population at 20% influence, would have a total reach of <code>(100,000 * 0.7) + (30,000 * 0.2) = 76,000</code>.</p><p>Alternative measures <a href='".route('reports.reach.log')."'>using logarithmic population</a> or <a href='".route('reports.reach.happy')."'>including happiness</a> are also available.";
         
         return view('reports/report', [
             'report' => "Reach",
@@ -161,7 +161,7 @@ class ReportController extends Controller
                 ]
             ]);
 
-        $desc = "Logarithmic Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for many system properties being proportional to the logarithm of the population, multiplying influence in each system by <code>log<sub>10</sub>(population)</code>. As with the normal Reach measure, the (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.";
+        $desc = "Logarithmic Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for many system properties being proportional to the logarithm of the population, multiplying influence in each system by <code>log<sub>10</sub>(population)</code>.";
         
         return view('reports/report', [
             'report' => "Reach",
@@ -207,7 +207,7 @@ class ReportController extends Controller
                 ]
             ]);
 
-        $desc = "Happiness Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for happiness, multiplying influence in each system by the happiness of the population (Elated=1, Despondent=0). As with the normal Reach measure, the (small) additional reach that Colonia Council and People of Colonia have due to systems on the highway is not included.";
+        $desc = "Happiness Reach adjusts the original <a href='".route('reports.reach')."'>Reach</a> measure to account for happiness, multiplying influence in each system by the happiness of the population (Elated=1, Despondent=0).";
         
         return view('reports/report', [
             'report' => "Reach",
