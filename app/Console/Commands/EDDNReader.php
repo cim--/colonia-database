@@ -643,7 +643,12 @@ class EDDNReader extends Command
         }
         $this->line("[".date("YmdHis")."] Commodity event for ".$system->displayName().": ".$station->name);
 
-        $states = $station->faction->currentStateList($station->system)->pluck('id');
+        if ($station->faction->virtual) {
+            // virtual factions don't have states, so assume None
+            $states = collect([1]);
+        } else {
+            $states = $station->faction->currentStateList($station->system)->pluck('id');
+        }
         
         Reserve::where('station_id', $station->id)->update(['current' => false]);
 
