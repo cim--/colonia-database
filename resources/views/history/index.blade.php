@@ -1,6 +1,6 @@
 @extends('layout/layout')
 
-@section('title', 'Colonia Region History Log')
+@section('title', 'Witch Head Nebula History Log')
 
 @section('content')
 
