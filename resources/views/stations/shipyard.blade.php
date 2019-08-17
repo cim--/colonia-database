@@ -2,7 +2,9 @@
 
 @section('title')
 Shipyard at <a href="{{route('stations.show', $station->id)}}">{{$station->name}}</a>
-@include($station->currentState()->icon)
+@foreach ($station->currentStateList() as $state)
+@include($state->icon)
+@endforeach
 @endsection
 @section('headtitle')
 Shipyard at {{$station->name}}

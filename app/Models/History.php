@@ -21,4 +21,11 @@ class History extends Model
     public function faction() {
         return $this->belongsTo('App\Models\Faction');
     }
+
+    public function scopeMajor($q) {
+        return $q->whereNotIn('description', [
+            "expanded to", "expanded by invasion to", "retreated from",
+            "lost control of", "took control of"
+        ]);
+    }
 }

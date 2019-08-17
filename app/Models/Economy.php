@@ -41,6 +41,8 @@ class Economy extends Model
                  ->orWhere('name', 'Industrial-Refinery')
                  ->orWhere('name', 'Industrial-Extraction')
                  ->orWhere('name', 'Tourism-High-Tech')
+                 ->orWhere('name', 'High-Tech-Industrial')
+                 ->orWhere('name', 'Refinery-High-Tech')
                  ->orWhere('name', 'High-Tech-Industrial-Extraction');
     }
     
