@@ -220,7 +220,7 @@ class UpdateHistory extends Command
                 $diff = $is[0]->influence - $is[1]->influence;
                 if ($diff == 0) {
                     $risk = 5; // control conflict
-                } else if ($diff < 25) {
+                } else if ($diff < 40) {
                     $date = $is[0]->date->copy();
                     $tmax = 0;
                     for ($t=1;$t<=5;$t++) {
