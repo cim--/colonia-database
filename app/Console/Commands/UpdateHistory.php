@@ -226,10 +226,12 @@ class UpdateHistory extends Command
                     for ($t=1;$t<=5;$t++) {
                         $date->subDay();
                         $prev = $system->factionsWithoutEagerLoad($date);
-                        $pdiff = $prev[0]->influence - $prev[1]->influence;
-                        $trend = ($pdiff-$diff)/$t;
-                        if ($trend > $tmax) {
-                            $tmax = $trend;
+                        if (isset($prev[0]) && isset($prev[1])) {
+                            $pdiff = $prev[0]->influence - $prev[1]->influence;
+                            $trend = ($pdiff-$diff)/$t;
+                            if ($trend > $tmax) {
+                                $tmax = $trend;
+                            }
                         }
                     }
                     if ($tmax > 0) {
