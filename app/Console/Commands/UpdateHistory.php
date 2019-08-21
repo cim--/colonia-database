@@ -220,16 +220,18 @@ class UpdateHistory extends Command
                 $diff = $is[0]->influence - $is[1]->influence;
                 if ($diff == 0) {
                     $risk = 5; // control conflict
-                } else if ($diff < 25) {
+                } else if ($diff < 40) {
                     $date = $is[0]->date->copy();
                     $tmax = 0;
                     for ($t=1;$t<=5;$t++) {
                         $date->subDay();
                         $prev = $system->factionsWithoutEagerLoad($date);
-                        $pdiff = $prev[0]->influence - $prev[1]->influence;
-                        $trend = ($pdiff-$diff)/$t;
-                        if ($trend > $tmax) {
-                            $tmax = $trend;
+                        if (isset($prev[0]) && isset($prev[1])) {
+                            $pdiff = $prev[0]->influence - $prev[1]->influence;
+                            $trend = ($pdiff-$diff)/$t;
+                            if ($trend > $tmax) {
+                                $tmax = $trend;
+                            }
                         }
                     }
                     if ($tmax > 0) {

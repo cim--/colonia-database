@@ -49,7 +49,7 @@ Engineers
 		{{$engineer->blueprints()->unduplicated()->count()}}
 	  </td>
 	  <td>
-		{{$engineer->blueprints()->unduplicated()->where('level', 5)->count()}}
+	    {{$engineer->blueprints()->unduplicated()->whereColumn('level', 'maxlevel')->count()}}
 	  </td>
 	  <td>
 		{{number_format($engineer->blueprints()->unduplicated()->avg('level'),1)}}
