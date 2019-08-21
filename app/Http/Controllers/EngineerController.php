@@ -22,12 +22,17 @@ class EngineerController extends Controller
 
         $progress = \DB::select("SELECT SUM(IF(level<2,(level-1)*3000,IF(level<3,3000+((level-2)*4500),IF(level<4,7500+((level-3)*12500),19000+((level-4)*29000))))) points FROM blueprints WHERE moduletype_id NOT IN (2,3,4,5,44,51,52,56)");
 
-        $total = \DB::select("SELECT COUNT(*) items FROM blueprints WHERE moduletype_id NOT IN (2,3,4,5,44,51,52,56)");
+        $gettotal = \DB::select("SELECT maxlevel, COUNT(*) as ct FROM blueprints WHERE moduletype_id NOT IN (2,3,4,5,44,51,52,56) GROUP BY maxlevel");
+        $total = 0;
+        $thresholds = [0,0,3000,7500,19000,48000];
+        foreach ($gettotal as $entry) {
+            $total += $entry->ct * $thresholds[$entry->maxlevel];
+        }
         
         return view('engineers/index', [
             'engineers' => $engineers,
             'progress' => $progress[0]->points,
-            'total' => $total[0]->items * 48000
+            'total' => $total
         ]);
     }
 
@@ -89,15 +94,20 @@ class EngineerController extends Controller
         $moduletypes = Moduletype::orderBy('type')->orderBy('description')->get();
         foreach ($moduletypes as $mtype) {
             $level = $request->input('blueprint'.$mtype->id);
+            $maxlevel = $request->input('blueprintmax'.$mtype->id);
             if ($level < 1.0) {
                 Blueprint::where('engineer_id', $engineer->id)->where('moduletype_id', $mtype->id)->delete();
             } else {
                 $blueprint = Blueprint::firstOrNew(['engineer_id'=>$engineer->id,'moduletype_id'=> $mtype->id]);
                 $blueprint->level = $level;
+                $blueprint->maxlevel = $maxlevel;
                 $blueprint->save();
             }
         }
-        return redirect()->route('engineers.edit', $engineer->id);
+        return redirect()->route('engineers.edit', $engineer->id)->with('status',
+        [
+            'success' => 'Engineer updated'
+        ]);;
     }
         
     

@@ -35,6 +35,8 @@
   <div class='form-field'>
     {!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
     {!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>0.05]) !!}
+    of
+    {!! Form::input('number', 'blueprintmax'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->maxlevel : 5, ['min'=>1, 'max'=>5, 'step'=>1]) !!}
   </div>
   @endif
   @endforeach
@@ -44,6 +46,8 @@
   <div class='form-field'>
     {!! Form::label('blueprint'.$mtype->id, $mtype->type.": ".$mtype->description) !!}
     {!! Form::input('number', 'blueprint'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->level : 0, ['min'=>0, 'max'=>5, 'step'=>0.05]) !!}
+    of
+    {!! Form::input('number', 'blueprintmax'.$mtype->id, $blueprints->where('moduletype_id', $mtype->id)->first() ? $blueprints->where('moduletype_id', $mtype->id)->first()->maxlevel : 5, ['min'=>1, 'max'=>5, 'step'=>1]) !!}
   </div>
   @endif
   @endforeach
