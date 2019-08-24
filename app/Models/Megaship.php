@@ -37,6 +37,9 @@ class Megaship extends Model
         if ($this->megashiproutes->count() == 0) {
             return null;
         }
+        if ($this->megashiproutes->count() == 1) {
+            return $this->megashiproutes->first();
+        }
         if ($this->megashipclass->operational) {
             $max = $this->megashiproutes->max('sequence');
             $weeks = $this->commissioned->diffInWeeks();
