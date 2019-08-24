@@ -35,8 +35,8 @@
 
 @if ($megaship->megashipclass->operational)
 @if (!$megaship->decommissioned)
+@if ($megaship->megashiproutes->count() > 1)
 <h2>Itinerary</h2>
-@if ($megaship->megashiproutes->count() > 0)
 <table class='table table-bordered datatable' data-paging='0' data-searching='0' data-info='0' data-order='[[2, "asc"]]'>
   <thead>
 	<tr><th>System</th><th>Next arrival</th><th>Next departure</th></tr>
@@ -72,8 +72,18 @@
 	@endforeach
   </tbody>
 </table>
-@else
-<p>Itinerary not known.</p>
+@elseif ($megaship->megashiproutes->count() == 1)
+<p>
+  <strong>Location:</strong>
+  @if ($megaship->megashiproutes[0]->system)
+  <a href="{{route('systems.show', $megaship->megashiproutes[0]->system->id)}}">
+	@include($megaship->megashiproutes[0]->system->economy->icon)
+	{{$megaship->megashiproutes[0]->system->displayName()}}
+  </a>
+  @else
+  {{$megaship->megashiproutes[0]->systemdesc}}
+  @endif
+</p>
 @endif
 @endif
 @else

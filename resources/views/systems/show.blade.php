@@ -162,11 +162,15 @@
 			@endif
 		  </td>
 		  <td data-sort='{{$route->nextDeparture()->format("Y-m-d")}}'>
-			@if ($route->megaship->megashipclass->operational)
-			{{App\Util::displayDate($route->nextDeparture())}}
-			@else
-			<strong>Not operational</strong>
-			@endif
+		    @if ($route->megaship->megashipclass->operational)
+                    @if ($route->megaship->megashiproutes->count() > 1)
+		    {{App\Util::displayDate($route->nextDeparture())}}
+		    @else
+		    Not applicable
+		    @endif
+		    @else
+		    <strong>Not operational</strong>
+		    @endif
 		  </td>
 		@endforeach
 	  </tbody>
