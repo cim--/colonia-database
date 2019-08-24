@@ -52,6 +52,8 @@
 </table>
 {!! Form::submit("Update reports") !!}
 {!! Form::token() !!}
+
+<div>Backdate: {!! Form::text("backdate", '') !!} (Y-m-d, e.g. 2019-08-01)</div>
 {!! Form::close() !!}
 
 

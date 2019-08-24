@@ -20,7 +20,7 @@ class Systemreport extends Model
         return $this->belongsTo('App\Models\System');
     }
 
-    public static function file($system, $traffic, $bounties, $crime, $username, $estimated=false) {
+    public static function file($system, $traffic, $bounties, $crime, $username, $estimated=false, $today=null) {
         $limit1 = Carbon::now();
         $limit2 = Carbon::now();
         $limit1->subDay();
@@ -28,15 +28,18 @@ class Systemreport extends Model
         $limit1->second = 0;
         $limit2->minute = 0;
         $limit2->second = 0;
-
-        if (!$estimated) {
-            $today = Carbon::now();
-
-            Systemreport::where('system_id', $system->id)
-                ->where('current', true)
-                ->update(['current' => false]);
-        } else {
-            $today = new Carbon('yesterday');
+        $current = false;
+        
+        if ($today === null) {
+            if (!$estimated) {
+                $today = Carbon::now();
+                $current = true;
+                Systemreport::where('system_id', $system->id)
+                    ->where('current', true)
+                    ->update(['current' => false]);
+            } else {
+                $today = new Carbon('yesterday');
+            }
         }
        
         $report = Systemreport::firstOrNew([
@@ -50,7 +53,7 @@ class Systemreport extends Model
         if ($estimated) {
             $report->estimated = true;
             $report->current = 0;
-        } else {
+        } else if ($current) {
             /* The in-game traffic report is updated hourly, so match the
              * eddnevent querying to hour-aligned windows. This will
              * probably give slightly skewed results over timezone
@@ -63,6 +66,9 @@ class Systemreport extends Model
             $report->estimated = false;
             $report->eddncount = $eddncount;
             $report->current = 1;
+        } else {
+            $report->estimated = false;
+            $report->current = 0;
         }
         
         $report->save();

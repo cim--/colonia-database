@@ -666,10 +666,13 @@ class SystemController extends Controller
                 'warning' => 'All reports must be non-negative integers'
             ]);
         }
-        
-        $today = Carbon::now();
 
-        Systemreport::file($system, $traffic, $bounties, $crime, $user->name, false);
+        if ($backdate = $request->input('backdate')) {
+            $date = Carbon::parse($backdate);
+            Systemreport::file($system, $traffic, $bounties, $crime, $user->name, false, $date);   
+        } else {
+            Systemreport::file($system, $traffic, $bounties, $crime, $user->name, false);
+        }
         
         return redirect()->route('systems.show', $system->id)->with('status',
         [
