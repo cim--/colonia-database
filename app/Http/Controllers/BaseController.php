@@ -89,12 +89,13 @@ class BaseController extends Controller
             $happinesses[$influence->happiness] += $influence->influence * $influence->system->population / 100;
             
             if ($influence->system_id != $sysid) {
-                if ($influence->system->controllingFaction()->id != $influence->faction_id) {
-                    $lowinfluences[] = $influence->system;
-                } else if ($influence->system->risk > 0) {
-                    $risks[] = $influence->system;
+                if ($influence->system->bgslock == 0) {
+                    if ($influence->system->controllingFaction()->id != $influence->faction_id) {
+                        $lowinfluences[] = $influence->system;
+                    } else if ($influence->system->risk > 0) {
+                        $risks[] = $influence->system;
+                    }
                 }
-                    
                 $sysid = $influence->system_id;
             }
             // don't need to consider the others
