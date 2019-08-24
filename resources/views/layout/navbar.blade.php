@@ -15,7 +15,7 @@
 	    <li><a href="{{route('map')}}">Map</a></li>
 	    <li><a href="{{route('distances')}}">Distances</a></li>
             <li><a href="{{route('history')}}">History</a></li>
-          {{-- <li><a href="{{route('history.trends')}}">Activity</a></li> --}}
+           <li><a href="{{route('history.trends')}}">Activity</a></li> 
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>
@@ -30,9 +30,9 @@
 	</li>
 	<li><div>Reports</div>
 	  <ul >
-		{{-- <li><a href="{{route('reports.traffic')}}">Traffic</a></li>
+		 <li><a href="{{route('reports.traffic')}}">Traffic</a></li>
 		<li><a href="{{route('reports.crimes')}}">Crime</a></li>
-		<li><a href="{{route('reports.bounties')}}">Bounties</a></li> --}}
+		<li><a href="{{route('reports.bounties')}}">Bounties</a></li> 
         <li><a href="{{route('reports.control')}}">Control</a></li>
      	<li><a href="{{route('reports.reach')}}">Reach</a></li>
 {{--		<li><a href="{{route('reports.states')}}">States</a></li> --}}
