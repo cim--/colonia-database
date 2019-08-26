@@ -680,8 +680,8 @@ class EDDNReader extends Command
     }
 
     private function processOutfittingEvent($event) {
-        if ($event['header']['softwareName'] == "EDDI" && $event['header']['softwareVersion'] == "3.4.1") {
-            // EDDI 3.4.1 gives odd outfitting data at times
+        if ($event['header']['softwareName'] == "EDDI" && ($event['header']['softwareVersion'] == "3.4.1" || $event['header']['softwareVersion'] == "3.4.2")) {
+            // EDDI 3.4.1/3.4.2 gives odd outfitting data at times
             return;
         }
            
@@ -732,8 +732,8 @@ class EDDNReader extends Command
     }
 
     private function processShipyardEvent($event) {
-        if ($event['header']['softwareName'] == "EDDI" && $event['header']['softwareVersion'] == "3.4.1") {
-            // EDDI 3.4.1 gives odd shipyard data at times
+        if ($event['header']['softwareName'] == "EDDI" && ($event['header']['softwareVersion'] == "3.4.1" || $event['header']['softwareVersion'] == "3.4.2")) {
+            // EDDI 3.4.1/3.4.2 gives odd outfitting data at times
             return;
         }
 
