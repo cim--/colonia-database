@@ -380,7 +380,7 @@ class DiscordBot extends Command
             $systems = System::where('risk','>',0)->orderBy('risk','desc')->orderBy('name', 'asc')->get();
             $result = "**Influence risk report**\n";
             foreach ($systems as $system) {
-                $result .= '`'.$system->risk." / 5:` ".$system->name."\n";
+                $result .= '**'.$system->risk." / 5:** ".$system->name."\n";
             }
             $result .= "Risk 5 = conflict imminent or ongoing. Lower risks indicate trends to narrowing of influence gap which may lead to conflicts soon. Increased monitoring of systems at risk is desirable.";
             return $this->safe($result);
