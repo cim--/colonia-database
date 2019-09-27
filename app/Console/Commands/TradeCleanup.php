@@ -44,8 +44,8 @@ class TradeCleanup extends Command
         // get all because they might have had commodity markets
         $stations = Station::all();
         $commodities = Commodity::all();
-//            $stations = Station::where('id', 1)->get();
-//            $commodities = Commodity::where('id', 1)->get();
+        $stations = Station::where('id', 1)->get();
+        $commodities = Commodity::where('id', 1)->get();
         foreach ($stations as $station) {
             $this->info($station->name);
             foreach ($commodities as $commodity) {
@@ -53,6 +53,10 @@ class TradeCleanup extends Command
                 $this->compactReserves($station, $commodity);
             }
         }
+
+        // compact tables
+        \DB::query("OPTIMIZE TABLE reserves");
+        \DB::query("OPTIMIZE TABLE reserve_state");
     }
 
     private function compactReserves(Station $station, Commodity $commodity)
@@ -85,6 +89,7 @@ class TradeCleanup extends Command
                 if ($last->reserves == $curr->reserves && $curr->reserves == $next->reserves && $last->stateString() == $curr->stateString() && $curr->stateString() == $next->stateString() && $last->price == $curr->price && $curr->price == $next->price) {
                     // all three are materially the same
                     // delete the middle one
+                    $curr->states()->detach(); //clean up reserve_state
                     $curr->delete();
                     $del++;
                     // and slide the others up
