@@ -50,12 +50,12 @@ class GoodsAnalysis extends Command
     {
         
         try {
+            if (!$this->option('balanceonly')) {
+                $this->runGoodsAnalysis();
+            } else {
+                $this->info("Balance analysis only");
+            }
             \DB::transaction(function() {
-                if (!$this->option('balanceonly')) {
-                    $this->runGoodsAnalysis();
-                } else {
-                    $this->info("Balance analysis only");
-                }
                 if (!$this->option('statesonly')) {
                     $this->runBalanceAnalysis();
                 } else {
@@ -69,8 +69,6 @@ class GoodsAnalysis extends Command
     }
 
     private function runGoodsAnalysis() {
-        Effect::where('id', '>', 0)->delete();
-        
         $stations = Station::whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
@@ -84,20 +82,23 @@ class GoodsAnalysis extends Command
         $commodities = Commodity::all();
 
         foreach ($commodities as $idx => $commodity) {
-            $this->info("Commodity: ".$commodity->name);
-            $this->commodityinfo[$commodity->id] = [
-                'commodity' => $commodity,
-                'statechanges' => []
-            ];
-            foreach ($stations as $station) {
-                $this->line("Station: ".$station->name);
-                $this->analyseReserves($station, $commodity);
-            }
-            if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
-                $this->info("Analysing states");
-                $this->analyseStates($commodity);
-            }
 
+            \DB::transaction(function() use ($commodity, $stations, $idx) {
+                Effect::where('commodity_id', $commodity->id)->delete();
+                $this->info("Commodity: ".$commodity->name);
+                $this->commodityinfo[$commodity->id] = [
+                    'commodity' => $commodity,
+                    'statechanges' => []
+                ];
+                foreach ($stations as $station) {
+                    $this->line("Station: ".$station->name);
+                    $this->analyseReserves($station, $commodity);
+                }
+                if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
+                    $this->info("Analysing states");
+                    $this->analyseStates($commodity);
+                }
+            });
         }
     }
 
