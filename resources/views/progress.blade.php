@@ -27,7 +27,7 @@ visible change.</p>
 
 {!! Form::open(['route' => 'progress', 'method' => 'GET']) !!}
 {!! Form::label('age', 'Age threshold') !!}
-{!! Form::number("age", 0, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
+{!! Form::number("age", $age, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
 {!! Form::submit('Filter') !!}
 {!! Form::close() !!}
 
@@ -39,18 +39,16 @@ visible change.</p>
 
 <ul class='compact'>
   @foreach ($influenceupdate as $system)
+  @if ($system->influences[0]->created_at->lt($target))
   <li class='systemrisk{{$system->risk}}'>
-	@if($userrank > 0)
-	<a href="{{route('systems.edit',$system->id)}}">{{$system->displayName()}}</a>
-	@else
-	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
-	@endif
-    @if ($target !== $today)
-	@include('progressage', ['date' => \App\Util::age($system->influences()->max('date'))-1])
-	@else
-	@include('progressage', ['date' => \App\Util::age($system->influences()->max('date'))])
-	@endif
+    @if($userrank > 0)
+    <a href="{{route('systems.edit',$system->id)}}">{{$system->displayName()}}</a>
+    @else
+    <a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
+    @endif
+    @include('progressage', ['date' => \App\Util::age($system->influences[0]->created_at, $target)])
   </li>
+  @endif
   @endforeach
 </ul>
 @else
@@ -64,13 +62,12 @@ visible change.</p>
 <p>To send an update without needing to open the market, outfitting or shipyard screens, you can for now use <a href="https://www.edsm.net/en_GB/settings/import/capi">EDSM's CAPI tool</a>.</p>
 <ul class='compact'>
   @foreach ($marketsupdate as $station)
+  @if ($station->reserves[0]->created_at->lt($today))
   <li>
 	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
-	@include('progressage', ['date' => \App\Util::age($station->reserves()->where('current', true)->max('date'))])
-	@if ($station->currentStateList()->where('name','Lockdown')->count() > 0)
-    @include('icons/states/lockdown')
-	@endif
+	@include('progressage', ['date' => \App\Util::age($station->reserves[0]->created_at, $today)])
   </li>
+  @endif
   @endforeach
 </ul>
 @else
@@ -86,14 +83,16 @@ visible change.</p>
 @endif
 <ul class='compact'>
   @foreach ($reportsupdate as $system)
+  @if ($system->systemreports[0]->created_at->lt($today))
   <li class='systemrisk{{$system->risk}}'>
 	@if($userrank > 0)
 	<a href="{{route('systems.editreport',$system->id)}}">{{$system->displayName()}}</a>
 	@else
 	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
-    @include('progressage', ['date' => \App\Util::age($system->systemreports()->where('estimated', false)->max('date'))])
+    @include('progressage', ['date' => \App\Util::age($system->systemreports[0]->created_at, $today)])
   </li>
+  @endif
   @endforeach
 </ul>
 @else

@@ -347,26 +347,28 @@ class BaseController extends Controller
 
         $today = Carbon::now();
         $target = \App\Util::tick();
-        if ($age = $request->input('age', false)) {
+        if ($age = $request->input('age', 0)) {
             $target->subDays($age);
             $today->subDays($age);
         }
+        $today->hour = 0; $today->minute = 0; $today->second = 0;
+        $target->hour = env("TICK_TIME"); $target->minute = 0; $target->second = 0;
+
         $influenceupdate = System::where('population', '>', 0)
-            ->where('virtualonly', 0)
-            ->whereDoesntHave('influences', function($q) use ($target) {
-                $q->where('date', '>=', $target->format("Y-m-d 00:00:00"));
-            })->orderBy('catalogue')->get();
+                         ->where('virtualonly', 0)
+                         ->with(['influences' => function($q) {
+                             $q->where('current', 1);
+                         }])->orderBy('catalogue')->get();
 
         $reportsupdate = System::where('population', '>', 0)
             ->where('virtualonly', 0)
-            ->whereDoesntHave('systemreports', function($q) use ($today) {
-                $q->where('date', '>=', $today->format("Y-m-d 00:00:00"))
-                  ->where('estimated', false);
-            })->orderBy('catalogue')->get();
+            ->with(['systemreports' => function($q) {
+                $q->where('current', 1);
+            }])->orderBy('catalogue')->get();
 
-        $marketsupdate = Station::whereDoesntHave('reserves', function($q) use ($today) {
-            $q->where('date', '>=', $today->format("Y-m-d 00:00:00"));
-        })->whereHas('stationclass', function($q) {
+        $marketsupdate = Station::with(['reserves' => function($q) use ($today) {
+            $q->where('current', 1)->where('commodity_id', 1); // h-fuel
+        }])->whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
               ->orWhere('hasLarge', true);
@@ -379,17 +381,37 @@ class BaseController extends Controller
 
         $alerts = Alert::where('processed', false)->orderBy('created_at')->get();
         $lockdown = State::where('name', 'Lockdown')->first();
+
+        $influencecomplete = 0;
+        foreach ($influenceupdate as $entry) {
+            if ($entry->influences[0]->created_at->gt($target)) {
+                $influencecomplete++;
+            }
+        }
+        $reportscomplete = 0;
+        foreach ($reportsupdate as $entry) {
+            if ($entry->systemreports[0]->created_at->gt($today)) {
+                $reportscomplete++;
+            }
+        }
+        $marketscomplete = 0;
+        foreach ($marketsupdate as $entry) {
+            if ($entry->reserves[0]->created_at->gt($today)) {
+                $marketscomplete++;
+            }
+        }
         
         return view('progress', [
             'target' => $target,
             'today' => $today,
+            'age' => $age,
             'userrank' => $user ? $user->rank : 0, // TODO: Composer
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),
             'marketsupdate' => $marketsupdate,
-            'influencecomplete' => 100*(1-($influenceupdate->count() / System::populated()->where('virtualonly', 0)->count())),
-            'reportscomplete' => 100*(1-($reportsupdate->count() / System::populated()->where('virtualonly', 0)->count())),
-            'marketscomplete' => 100*(1-($marketsupdate->count() / Station::dockable()->count())),
+            'influencecomplete' => 100*($influencecomplete / System::populated()->where('virtualonly', 0)->count()),
+            'reportscomplete' => 100*($reportscomplete / System::populated()->where('virtualonly', 0)->count()),
+            'marketscomplete' => 100*($marketscomplete / Station::dockable()->count()),
             'reader' => $reader,
             'alerts' => $alerts,
             'lockdown' => $lockdown
