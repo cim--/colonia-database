@@ -347,7 +347,7 @@ class BaseController extends Controller
 
         $today = Carbon::now();
         $target = \App\Util::tick();
-        if ($age = $request->input('age', false)) {
+        if ($age = $request->input('age', 0)) {
             $target->subDays($age);
             $today->subDays($age);
         }
@@ -404,6 +404,7 @@ class BaseController extends Controller
         return view('progress', [
             'target' => $target,
             'today' => $today,
+            'age' => $age,
             'userrank' => $user ? $user->rank : 0, // TODO: Composer
             'influenceupdate' => $influenceupdate->sort('\App\Util::systemSort'),
             'reportsupdate' => $reportsupdate->sort('\App\Util::systemSort'),

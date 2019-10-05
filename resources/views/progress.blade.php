@@ -27,7 +27,7 @@ visible change.</p>
 
 {!! Form::open(['route' => 'progress', 'method' => 'GET']) !!}
 {!! Form::label('age', 'Age threshold') !!}
-{!! Form::number("age", 0, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
+{!! Form::number("age", $age, ['min' => 0, 'max' => 14, 'step' => 1]) !!}
 {!! Form::submit('Filter') !!}
 {!! Form::close() !!}
 
