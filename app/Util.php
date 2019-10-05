@@ -55,8 +55,9 @@ class Util {
     }
 
     
-    public static function age($date) {
-        return (new Carbon($date))->diffInDays(Carbon::now());
+    public static function age($date, $target) {
+        //dd($date, $target, $date->diffInHours($target));
+        return ceil($date->diffInHours($target)/24);
     }
     
     public static function displayDate($date) {
