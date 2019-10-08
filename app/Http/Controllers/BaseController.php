@@ -367,7 +367,7 @@ class BaseController extends Controller
             }])->orderBy('catalogue')->get();
 
         $marketsupdate = Station::with(['reserves' => function($q) use ($today) {
-            $q->where('current', 1)->where('commodity_id', 1); // h-fuel
+            $q->where('current', 1);
         }])->whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
               ->orWhere('hasMedium', true)
