@@ -90,11 +90,43 @@ class HistoryController extends Controller
                 'data' => [],
                 'yAxisID' => 'credits',
             ],
+            'avgtraffic' => [
+                'label' => "Traffic (28 day average)",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#6060c0',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'ships',
+                'pointStyle' => 'cross',
+            ],
+            'avgcrime' => [
+                'label' => "Crime (28 day average)",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#c06060',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'credits',
+                'pointStyle' => 'cross',
+            ],
+            'avgbounties' => [
+                'label' => "Bounties (28 day average)",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#60c060',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'credits',
+                'pointStyle' => 'cross',
+            ],
         ];
         $latest = [];
         $date = null;
 
-        $finalisedate = function(&$datasets, $date, $latest) {
+        $averages = [
+            'traffic' => [],
+            'crimes' => [],
+            'bounties' => [],
+        ];
+        $finalisedate = function(&$datasets, &$averages, $date, $latest) {
             $traffic = 0; $crime = 0; $bounties = 0;
             foreach ($latest as $entry) {
                 $traffic += $entry->traffic;
@@ -106,19 +138,27 @@ class HistoryController extends Controller
                     'x' => \App\Util::graphDisplayDate($date),
                     'y' => $$prop
                 ];
+                $averages[$prop][] = $$prop;
+                if (count($averages[$prop]) == 28) {
+                    $datasets['avg'.$prop]['data'][] = [
+                        'x' => \App\Util::graphDisplayDate($date),
+                        'y' => floor(array_sum($averages[$prop])/28)
+                    ];
+                    array_shift($averages[$prop]);
+                }
             }
         };
         
         foreach ($reports->cursor() as $report) {
             if ($report->date != $date) {
                 if ($date != null) {
-                    $finalisedate($datasets, $date, $latest);
+                    $finalisedate($datasets, $averages, $date, $latest);
                 }
                 $date = $report->date;
             }
             $latest[$report->system_id] = $report;
         }
-        $finalisedate($datasets, $date, $latest); // do the last one
+        $finalisedate($datasets, $averages, $date, $latest); // do the last one
         rsort($datasets);
         $chart = app()->chartjs
             ->name("reporthistory")
