@@ -94,7 +94,8 @@ class Util {
             "Famine" => "#600060",
             "Outbreak" => "#200050",
             "Pirate Attack" => "#666666",
-            "Civil Liberty" => "#004070"
+            "Civil Liberty" => "#004070",
+            "Drought" => "#802000",
         ];
         if (isset($colours[$state])) {
             return $colours[$state];
