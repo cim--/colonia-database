@@ -138,6 +138,12 @@ class GoodsAnalysis extends Command
                 continue; // let's see if this is sufficient
             }
             $stateid = $reserve->states[0]->id;
+            if ($reserve->states[0]->name == "Drought" && $reserve->created_at->lt('2019-10-16')) {
+                // Blight data only changed here
+                // TODO: take this out the next time there's a global change
+                continue;
+            }
+
             if (!isset($stockdata[$stateid])) {
                 $stockdata[$stateid] = [];
                 $pricedata[$stateid] = [];
