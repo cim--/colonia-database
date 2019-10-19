@@ -44,8 +44,8 @@ class TradeCleanup extends Command
         // get all because they might have had commodity markets
         $stations = Station::all();
         $commodities = Commodity::all();
-        $stations = Station::where('id', 1)->get();
-        $commodities = Commodity::where('id', 1)->get();
+        //        $stations = Station::where('id', 1)->get();
+        //        $commodities = Commodity::where('id', 1)->get();
         foreach ($stations as $station) {
             $this->info($station->name);
             foreach ($commodities as $commodity) {

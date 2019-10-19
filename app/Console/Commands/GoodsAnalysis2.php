@@ -167,6 +167,11 @@ class GoodsAnalysis2 extends Command
         if ($laststationhistory) {
             $reservesquery->where('date', '>', $laststationhistory);
         }
+        if ($state->name == "Drought") {
+            $reservesquery->where('date', '>', '2019-10-16');
+            // Blight data only changed here
+            // TODO: take this out the next time there's a global change
+        }
         
         $reserves = $reservesquery->get();
 
