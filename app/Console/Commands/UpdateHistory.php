@@ -181,7 +181,7 @@ class UpdateHistory extends Command
                     $ec->target_id = $ats[$atsp]->id;
                     $ec->priority = $found;
                     $ec->hostile = true;
-                    $ec->investment = !$pts[$i]->expansionCube($system, $invdist);
+                    $ec->investment = !$ats[$atsp]->expansionCube($system, $invdist);
                     $ec->previousretreat = $faction->previouslyIn($ats[$atsp]);
                     $ec->save();
                     $atsp++;
