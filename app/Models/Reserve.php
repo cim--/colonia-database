@@ -26,9 +26,8 @@ class Reserve extends Model
     /* Restrict market analysis to normal market types */
     public function scopeNormalMarkets($q)
     {
-        // significant market changes in 3.3 due to state updates so
-        // before then will be inaccurate
-        $q->where('date', '>', '2018-12-12');
+        // significant market changes in 3.6 for mined goods
+        $q->where('date', '>', '2020-01-14');
          // ignore high CG demands
         $q->where('reserves', '>', -100000);
     }
