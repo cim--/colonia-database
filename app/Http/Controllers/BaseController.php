@@ -374,7 +374,7 @@ class BaseController extends Controller
               ->orWhere('hasLarge', true);
         })->whereHas('facilities', function($q) {
             $q->where('name', 'Commodities');
-        })->with('faction', 'system')->orderBy('name')->get();
+        })->present()->with('faction', 'system')->orderBy('name')->get();
 
 
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
@@ -411,7 +411,7 @@ class BaseController extends Controller
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*($influencecomplete / System::populated()->where('virtualonly', 0)->count()),
             'reportscomplete' => 100*($reportscomplete / System::populated()->where('virtualonly', 0)->count()),
-            'marketscomplete' => 100*($marketscomplete / Station::dockable()->count()),
+            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->count()),
             'reader' => $reader,
             'alerts' => $alerts,
             'lockdown' => $lockdown
@@ -455,7 +455,7 @@ class BaseController extends Controller
     public function regions() {
         return view('intro/regions', [
             'systemcount' => System::where('population', '>', 0)->count(),
-            'stationcount' => Station::count(),
+            'stationcount' => Station::present()->count(),
             'factioncount' => Faction::notHidden()->count(),
             'totalPopulation' => System::sum('population'),
             'commodityReserves' => Reserve::where('current', 1)->where('reserves', '>', 0)->sum('reserves'),

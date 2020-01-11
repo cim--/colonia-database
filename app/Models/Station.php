@@ -84,6 +84,9 @@ class Station extends Model
         return round($this->economysize/$power)*$power;
     }
     
+    public function scopePresent($q) {
+        return $q->where('removed', 0);
+    }
     
     public function scopeDockable($q) {
         return $q->whereHas('stationclass', function($s) {

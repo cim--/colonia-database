@@ -29,7 +29,15 @@ class Reserve extends Model
         // significant market changes in 3.6 for mined goods
         $q->where('date', '>', '2020-01-14');
          // ignore high CG demands
-        $q->where('reserves', '>', -100000);
+        return $q->where('reserves', '>', -100000);
+    }
+
+    public function scopeCurrent($q)
+    {
+        return $q->where('current', 1)
+            ->whereHas('station', function($q2) {
+                $q2->present()->tradable();
+            });
     }
 
     public function stateString()

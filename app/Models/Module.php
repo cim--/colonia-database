@@ -24,6 +24,7 @@ class Module extends Model
     public function scopeIsAvailable($q, $current=false) {
         return $q->where(function($smq) use ($current) {
             $smq->whereHas('stations', function ($ssq) use ($current) {
+                $ssq->present();
                 if ($current) {
                     $ssq->where('current', true);
                 }
@@ -31,6 +32,7 @@ class Module extends Model
                 ->where('largeship', 0);
         })->orWhere(function($lq) use ($current) {
             $lq->whereHas('stations', function($ssq) use ($current) {
+                $ssq->present();
                 $ssq->whereHas('stationclass', function ($scq) {
                     $scq->where('hasLarge', 1);
                 });
