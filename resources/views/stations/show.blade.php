@@ -17,6 +17,10 @@
 <a class='edit' href='{{route('stations.edit', $station->id)}}'>Update</a>
 @endif
 
+@if ($station->removed)
+<p>This station is no longer operational.</p>
+@endif
+    
 @if ($station->strategic)
 <p>Due to its unique resources, this station is designated a strategic asset for the Witch Head region.</p>
 @endif
@@ -56,6 +60,7 @@
 	  @if ($station->stationclass->hasLarge) Large @endif
 	</td>
   </tr>
+  @if (!$station->removed)
   <tr>
 	<th>Facilities</th>
 	<td>
@@ -88,6 +93,7 @@
 	  @endforeach
 	</td>
   </tr>
+  @endif
   <tr>
 	<th>Economy</th>
 	<td>

@@ -12,6 +12,10 @@ Shipyard at {{$station->name}}
 
 @section('content')
 
+@if ($station->removed)
+<p><strong>This station no longer exists - last known outfitting shown</strong></p>
+@endif
+    
 @if ($ships->count())
 <p>The following ships are available at this shipyard:</p>
 <ul>

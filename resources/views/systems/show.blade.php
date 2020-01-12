@@ -120,7 +120,7 @@
 		<tr><th>Name</th><th>Planet</th><th>Type</th><th>Controller</th></tr>
 	  </thead>
 	  <tbody>
-		@foreach ($system->stations as $station)
+            @foreach ($system->stations->where('removed', 0) as $station)
 		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
 		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
 			@include($station->economy->icon)

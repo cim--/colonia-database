@@ -10,6 +10,10 @@ Reserves at {{$station->name}}
 
 @section('content')
 
+@if ($station->removed)
+<p><strong>This station no longer exists - last known outfitting shown</strong></p>
+@endif
+    
 <p>Economy size:
   @if ($station->economysize)
   {{number_format($station->displayEconomysize())}}

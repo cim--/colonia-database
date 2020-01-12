@@ -10,6 +10,10 @@ Outfitting at {{$station->name}}
 
 @section('content')
 
+@if ($station->removed)
+<p><strong>This station no longer exists - last known outfitting shown</strong></p>
+@endif
+    
 @if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
 <p><strong>Station is currently in Lockdown - outfitting unavailable.</strong> Showing last known state.</p>
 @endif

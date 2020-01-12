@@ -17,11 +17,7 @@ class TradeController extends Controller
 {
     
     public function index(Request $request) {
-        $stations = Station::with('system', 'economy', 'faction')->whereHas('stationclass', function($q) {
-            $q->where('hasSmall', 1)
-              ->orWhere('hasMedium', 1)
-              ->orWhere('hasLarge', 1);
-        })->orderBy('name')->get();
+        $stations = Station::with('system', 'economy', 'faction')->dockable()->present()->orderBy('name')->get();
 
         $economies = Economy::orderBy('name')->get();
         $states = State::orderBy('name')->get();
@@ -83,11 +79,11 @@ class TradeController extends Controller
 
     public function reserves() {
         $commodities = Commodity::whereHas('reserves', function($q) {
-                $q->where('current', true);
-            })->with(['reserves' => function($q) {
-                $q->where('current', true);
-                }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
-               ->orderBy('name')->get();
+            $q->current();
+        })->with(['reserves' => function($q) {
+            $q->where('current', true);
+        }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
+                     ->orderBy('name')->get();
 
         $cdata = [];
         $total = 0;
@@ -210,7 +206,7 @@ class TradeController extends Controller
     }
 
     public function commodity(Commodity $commodity) {
-        $reserves = $commodity->reserves()->where('current', true)->with('station', 'station.system', 'station.economy')->get();
+        $reserves = $commodity->reserves()->current()->with('station', 'station.system', 'station.economy')->get();
         $commodity->load('baselinestocks');
         return view('trade/commodity', [
             'commodity' => $commodity,
@@ -221,7 +217,7 @@ class TradeController extends Controller
     }
 
     public function commodityWithReference(Commodity $commodity, Station $station) {
-        $reserves = $commodity->reserves()->where('current', true)->with('station', 'station.system', 'station.economy')->get();
+        $reserves = $commodity->reserves()->current()->with('station', 'station.system', 'station.economy')->get();
 
         return view('trade/commodity', [
             'commodity' => $commodity,
@@ -452,7 +448,7 @@ class TradeController extends Controller
     }
 
     public function specialisationEconomy(Economy $economy) {
-        $stations = Station::where('economy_id', $economy->id)->whereHas('baselinestocks')->with('baselinestocks', 'baselinestocks.commodity', 'baselinestocks.commodity.commoditystat')->orderBy('name', 'desc')->get();
+        $stations = Station::present()->where('economy_id', $economy->id)->whereHas('baselinestocks')->with('baselinestocks', 'baselinestocks.commodity', 'baselinestocks.commodity.commoditystat')->orderBy('name', 'desc')->get();
 
         $sys = [];
         foreach ($stations as $idx => $station) {

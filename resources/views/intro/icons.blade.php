@@ -13,16 +13,17 @@ provided below.</p>
   <div class='iconrow'>
 
 	@include('intro.iconbox', ['title'=>'Economies', 'entries' => $economies])
+        @include('intro.iconbox', ['title'=>'States', 'entries' => $states])
+                                      
 	@include('intro.iconbox', ['title'=>'Station Facilities', 'entries' => $facilities->where('type', 'Station')])
-	@include('intro.iconbox', ['title'=>'System Facilities', 'entries' => $facilities->where('type', 'System'), 'extras' => ['Terraforming Candidate' => 'icons/facilities/systems/terraformable']])
   </div>
   <div class='iconrow'>
 	@include('intro.iconbox', ['title'=>'Governments', 'entries' => $governments])
-	@include('intro.iconbox', ['title'=>'Installations', 'entries' => $installations])
+	@include('intro.iconbox', ['title'=>'System Facilities', 'entries' => $facilities->where('type', 'System'), 'extras' => ['Terraforming Candidate' => 'icons/facilities/systems/terraformable']])
 	@include('intro.iconbox', ['title'=>'Megaships', 'entries' => $megaships])
   </div>
   <div class='iconrow'>
-    @include('intro.iconbox', ['title'=>'States', 'entries' => $states])
+	@include('intro.iconbox', ['title'=>'Installations', 'entries' => $installations])
 	<div class='iconbox'>
 	  <div>
 		<h2>Miscellaneous</h2>

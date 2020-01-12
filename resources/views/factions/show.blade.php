@@ -99,7 +99,7 @@
 		<tr><th>Name</th><th>Control?</th></tr>
 	  </thead>
 	  <tbody>
-		@foreach ($faction->stations as $station)
+            @foreach ($faction->stations->where('removed', 0) as $station)
 		<tr class='
 			@if ($station->system->controllingFaction()->id == $faction->id)
 		  controlled-system
@@ -130,7 +130,7 @@
 		<tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
 	  <tbody>
-		@foreach ($faction->stations as $station)
+		@foreach ($faction->stations->where('removed',0) as $station)
 		<tr>
 		  <td>
 			<a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>

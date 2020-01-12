@@ -126,7 +126,7 @@ class OutfittingController extends Controller
 
     public function shipyard()
     {
-        $ships = Ship::withCount(["stations" => function($q) { $q->where('current', 1);}])->orderBy('name')->get();
+        $ships = Ship::withCount(["stations" => function($q) { $q->where('current', 1)->present();}])->orderBy('name')->get();
         return view('outfitting/shipyard', [
             'ships' => $ships
         ]);
