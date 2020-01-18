@@ -355,6 +355,18 @@ class EDDNReader extends Command
             // to our name
             return "Civil Liberty";
         }
+        if ($state == "InfrastructureFailure") {
+            // to our name
+            return "Infrastructure Failure";
+        }
+        if ($state == "NaturalDisaster") {
+            // to our name
+            return "Natural Disaster";
+        }
+        if ($state == "PublicHoliday") {
+            // to our name
+            return "Public Holiday";
+        }
         if ($state == "CivilUnrest") {
             // to our name
             return "Civil Unrest";
