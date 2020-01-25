@@ -83,7 +83,7 @@ class TradeController extends Controller
         })->with(['reserves' => function($q) {
             $q->where('current', true);
         }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
-                     ->orderBy('name')->get();
+                     ->orderBy('description')->get();
 
         $cdata = [];
         $total = 0;
@@ -232,7 +232,7 @@ class TradeController extends Controller
         
         $commodities = Commodity::whereHas('reserves', function($q) {
                 $q->where('current', true);
-        })->orderBy('name')->get();
+        })->orderBy('description')->get();
 
         $economies = Economy::where('analyse', true)->orderBy('name')->get();
 
