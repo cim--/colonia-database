@@ -13,7 +13,16 @@
 <td></td>
 <td></td>
 @endif
+<td>
+  @if ($effect->supplysize !== null)
+  Supply: {{$effect->spass}}
+  @endif
+  @if ($effect->demandsize !== null)
+  Demand: {{$effect->dpass}}
+  @endif
+</td>
 @else
+<td></td>
 <td></td>
 <td></td>
 <td></td>

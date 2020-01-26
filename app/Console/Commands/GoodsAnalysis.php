@@ -100,12 +100,13 @@ class GoodsAnalysis extends Command
                     $this->line("Station, single mode: ".$station->name);
                     $this->analyseReserves($station, $commodity);
                 }
+                $improved = false;
                 if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
                     $this->info("Analysing states, pass 1");
-                    $this->analyseStates($commodity, $pass);
+                    $improved = $this->analyseStates($commodity, 1);
                 }
                 $pass = 1;
-                if (!$this->option('singlepass')) {
+                if ($improved && !$this->option('singlepass')) {
                     do {
                         $improved = false;
                         $pass++;
@@ -117,7 +118,7 @@ class GoodsAnalysis extends Command
                         }
                         if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
                             $this->info("Analysing states, pass ".$pass);
-                            $this->analyseStates($commodity, $pass);
+                            $improved = $this->analyseStates($commodity, $pass);
                         }
                     } while ($improved);
                 }
