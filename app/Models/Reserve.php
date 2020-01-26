@@ -27,9 +27,10 @@ class Reserve extends Model
     public function scopeNormalMarkets($q)
     {
         // significant market changes in 3.6 for mined goods
-        $q->where('date', '>', '2020-01-14');
+        // new states stabilised 23 Jan?
+        $q->where('date', '>', '2020-01-23');
          // ignore high CG demands
-        return $q->where('reserves', '>', -100000);
+        return $q->where('reserves', '>', -500000);
     }
 
     public function scopeCurrent($q)

@@ -5,10 +5,6 @@ Logistics Planner - Report
 @endsection
 
 @section('content')
-
-<div class='alert alert-danger'>
-  Warning: due to recent economic changes there is insufficient data to consider faction states properly in this planner. Recommendations will be incomplete for now.
-</div>
     
 <h2>Shipping to {{$destination->name}}, {{$destination->system->displayName()}}</h2>
 <p><strong>Target</strong>: {{number_format($volume)}} tonnes in {{$duration}} days.</p>
@@ -18,7 +14,7 @@ Logistics Planner - Report
   @endforeach
 </ul>
 
-<p>Current stock is {{number_format($total)}} tonnes and current restock rates are {{number_format($restock)}} tonnes per day. Optimally, a total of {{number_format($bestcase)}} tonnes can therefore be gathered, which
+<p>Current stock is {{number_format($total)}} tonnes and current known restock rates are {{number_format($restock)}} tonnes per day. Optimally, a total of {{number_format($bestcase)}} tonnes can therefore be gathered, which
   @if ($bestcase > $volume)
   <strong>exceeds the target</strong>
   @else
@@ -66,9 +62,15 @@ Logistics Planner - Report
 		@endif
 	  </td>
 	  <td>{{number_format($option['reserves']->reserves)}}</td>
+	  @if (isset($option['sbaseline']))
 	  <td>{{number_format($option['sbaseline'])}}</td>
 	  <td>{{number_format($option['fullness']*100)}}%</td>
 	  <td>{{number_format($option['regen'])}}</td>
+	  @else
+	  <td>-</td>
+	  <td>-</td>
+	  <td>-</td>
+	  @endif
 	  <td data-sort='{{$option['score']}}' class='logistics-recommendation-{{$option['score']}}'>{{$option['recommendation']}}</td>
 	</tr>
 	@endforeach

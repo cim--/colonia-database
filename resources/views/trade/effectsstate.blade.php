@@ -4,6 +4,7 @@
 
 @section('content')
 
+<p>Calculation quality is the number of calculation steps required to estimate the effect. Lower numbers are better.</p>
 <table class='table table-bordered datatable' data-page-length='25'>
   <thead>
 	<tr>
@@ -12,6 +13,7 @@
 	  <th>Supply Price</th>
 	  <th>Demand Quantity</th>
 	  <th>Demand Price</th>
+          <th>Calculation Quality</th>
 	</tr>
   </thead>
   <tbody>

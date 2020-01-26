@@ -46,7 +46,7 @@ visible change.</p>
     @else
     <a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
     @endif
-    @include('progressage', ['date' => \App\Util::age($system->influences[0]->created_at, $target)])
+    @include('progressage', ['date' => \App\Util::age($system->influences[0]->created_at, $target)+$age])
   </li>
   @endif
   @endforeach
@@ -65,7 +65,7 @@ visible change.</p>
   @if ($station->reserves[0]->created_at->lt($today))
   <li>
 	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
-	@include('progressage', ['date' => \App\Util::age($station->reserves[0]->created_at, $today)])
+	@include('progressage', ['date' => \App\Util::age($station->reserves[0]->created_at, $today)+$age])
   </li>
   @endif
   @endforeach
@@ -90,7 +90,7 @@ visible change.</p>
 	@else
 	<a href="{{route('systems.show',$system->id)}}">{{$system->displayName()}}</a>
 	@endif
-    @include('progressage', ['date' => \App\Util::age($system->systemreports[0]->created_at, $today)])
+    @include('progressage', ['date' => \App\Util::age($system->systemreports[0]->created_at, $today)+$age])
   </li>
   @endif
   @endforeach

@@ -20,7 +20,7 @@ class GoodsAnalysis extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:goodsanalysis {--balanceonly} {--statesonly}';
+    protected $signature = 'cdb:goodsanalysis {--balanceonly} {--statesonly} {--testmode} {--singlepass}';
 
     /**
      * The console command description.
@@ -40,6 +40,8 @@ class GoodsAnalysis extends Command
     }
 
     protected $commodityinfo = [];
+    protected $calculated = [];
+    protected $statenone = 0;
     
     /**
      * Execute the console command.
@@ -48,7 +50,7 @@ class GoodsAnalysis extends Command
      */
     public function handle()
     {
-        
+        $this->statenone = State::where('name', 'None')->first()->id;
         try {
             if (!$this->option('balanceonly')) {
                 $this->runGoodsAnalysis();
@@ -79,7 +81,11 @@ class GoodsAnalysis extends Command
             $q->where('analyse', true);
         })->with('economy')->get();
 
-        $commodities = Commodity::all();
+        if ($this->option('testmode')) {
+            $commodities = Commodity::where('id', 23)->get();
+        } else {
+            $commodities = Commodity::all();
+        }
 
         foreach ($commodities as $idx => $commodity) {
 
@@ -91,18 +97,36 @@ class GoodsAnalysis extends Command
                     'statechanges' => []
                 ];
                 foreach ($stations as $station) {
-                    $this->line("Station: ".$station->name);
+                    $this->line("Station, single mode: ".$station->name);
                     $this->analyseReserves($station, $commodity);
                 }
+                $improved = false;
                 if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
-                    $this->info("Analysing states");
-                    $this->analyseStates($commodity);
+                    $this->info("Analysing states, pass 1");
+                    $improved = $this->analyseStates($commodity, 1);
+                }
+                $pass = 1;
+                if ($improved && !$this->option('singlepass')) {
+                    do {
+                        $improved = false;
+                        $pass++;
+                        // reset data
+                        $this->commodityinfo[$commodity->id]['statechanges'] = [];
+                        foreach ($stations as $station) {
+                            $this->line("Station, multiple mode: ".$station->name);
+                            $this->analyseReserves2($station, $commodity);
+                        }
+                        if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
+                            $this->info("Analysing states, pass ".$pass);
+                            $improved = $this->analyseStates($commodity, $pass);
+                        }
+                    } while ($improved);
                 }
             });
         }
     }
 
-    public function analyseReserves(Station $station, Commodity $commodity) {
+    public function getReserves(Station $station, Commodity $commodity) {
         $laststationhistory = History::where('location_type', 'App\Models\Station')
             ->where('location_id', $station->id)->max('date');
         $lastsystemhistory = History::where('location_type', 'App\Models\System')
@@ -110,7 +134,10 @@ class GoodsAnalysis extends Command
             ->where('description', '!=', 'expanded to')
             ->where('description', '!=', 'expanded by invasion to')
             ->where('description', '!=', 'retreated from')->max('date');
-        
+        /* Any history event affecting either the station or the
+         * system it is in is likely to invalidate the comparison, so
+         * should only track back to the most recent one. */
+
         $reservesquery = Reserve::where('price', '!=', null)
             ->where('station_id', $station->id)
             ->where('commodity_id', $commodity->id)
@@ -125,24 +152,21 @@ class GoodsAnalysis extends Command
         $reservesquery->normalMarkets();
         
         $reserves = $reservesquery->get();
-        
-        /* Any history event affecting either the station or the
-         * system it is in is likely to invalidate the comparison, so
-         * should only track back to the most recent one. */
+        return $reserves;
+    }
+
+    /* The first pass will check for single-state market entries only. */
+    public function analyseReserves(Station $station, Commodity $commodity) {
+        $reserves = $this->getReserves($station, $commodity);
 
         $stockdata = [];
         $pricedata = [];
         $states = [];
         foreach ($reserves as $reserve) {
             if ($reserve->states->count() > 1) {
-                continue; // let's see if this is sufficient
+                continue; // do the easy ones first
             }
             $stateid = $reserve->states[0]->id;
-            if ($reserve->states[0]->name == "Drought" && $reserve->created_at->lt('2019-10-16')) {
-                // Blight data only changed here
-                // TODO: take this out the next time there's a global change
-                continue;
-            }
 
             if (!isset($stockdata[$stateid])) {
                 $stockdata[$stateid] = [];
@@ -173,6 +197,117 @@ class GoodsAnalysis extends Command
         $this->commodityinfo[$commodity->id]['statechanges'][] = $entries;
     }
 
+    public function reduceStates(Reserve $reserve) {
+        $states = $reserve->states;
+
+        // supply demand price tonnes factors
+        $sp = 1; $st = 1; $dp = 1; $dt = 1;
+
+        $unknowns = [];
+
+        $supply = ($reserve->reserve > 0);
+        // true/false
+        
+        foreach ($states as $state) {
+            if (isset($this->calculated[$reserve->commodity_id][$state->id])) {
+                $effect = $this->calculated[$reserve->commodity_id][$state->id];
+                if ($supply) {
+                    if ($effect->supplysize !== null) {
+                        $st *= $effect->supplysize;
+                        $sp *= $effect->supplyprice;
+                        continue;
+                    }
+                } else {
+                    if ($effect->demandsize !== null) {
+                        $st *= $effect->demandsize;
+                        $sp *= $effect->demandprice;
+                        continue;
+                    }
+                }
+            }
+            // if haven't already continued, then there's no valid
+            // effect for this state
+            $unknowns[] = $state;
+        }
+
+        if (count($unknowns) > 2) {
+            // can't use this
+            return null;
+        }
+        // adjust the reserve to be what it would have been with just
+        // this state
+        if ($supply) {
+            if ($st == 0) {
+                return null; // can't use this one
+            }
+            $reserve->reserve = round($reserve->reserve / $st);
+            $reserve->price = round($reserve->price / $sp);
+        } else {
+            if ($dt == 0) {
+                return null; // can't use this one
+            }
+            $reserve->reserve = round($reserve->reserve / $dt);
+            $reserve->price = round($reserve->price / $dp);
+        }
+        if (count($unknowns) == 1) {
+            // reduces to this state
+            return $unknowns[0]->id;
+        }
+        // else reduces to 'none'
+        return $this->statenone;
+    }
+    
+    /* The second pass will use the first pass to try to reduce
+     * multi-state entries to single-state ones */
+    public function analyseReserves2(Station $station, Commodity $commodity) {
+        $reserves = $this->getReserves($station, $commodity);
+
+        $stockdata = [];
+        $pricedata = [];
+        $states = [];
+        foreach ($reserves as $reserve) {
+            if ($reserve->states->count() == 1) {
+                $stateid = $reserve->states[0]->id;
+            } else {
+                // try to simplify
+                $stateid = $this->reduceStates($reserve);
+                if ($stateid === null) {
+                    continue;
+                }
+            }
+            // add more data
+            if (!isset($stockdata[$stateid])) {
+                $stockdata[$stateid] = [];
+                $pricedata[$stateid] = [];
+                $states[$stateid] = $reserve->states[0];
+            }
+            $stockdata[$stateid][] = $reserve->reserves;
+            $pricedata[$stateid][] = $reserve->price;
+        }
+
+        if (count($stockdata) < 2) {
+            // no state changes over comparison period
+            return;
+        }
+////        $this->info($station->name." - ".$station->economy->name." - ".$commodity->displayName());
+        $entries = [];
+        ksort($stockdata); // always process in same order
+        foreach ($stockdata as $sid => $rdata) {
+            $stockavg = $this->median($rdata);
+            $priceavg = $this->median($pricedata[$sid]);
+////            $this->line($sid." ".$states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
+            $entries[] = [
+                'state' => $states[$sid],
+                'stock' => $stockavg,
+                'price' => $priceavg
+            ];
+        }
+        $this->commodityinfo[$commodity->id]['statechanges'][] = $entries;
+    }
+    
+
+    
+
     private function median($arr) {
         sort($arr);
         $mid = (count($arr)-1)/2;
@@ -200,7 +335,8 @@ class GoodsAnalysis extends Command
     }
 
 
-    private function analyseStates(Commodity $commodity) {
+    private function analyseStates(Commodity $commodity, $pass) {
+        $improved = false;
         $states = State::all();
         $statedata = [];
         foreach ($states as $state) {
@@ -270,7 +406,8 @@ class GoodsAnalysis extends Command
                         break; // only need to do one
                         // if none match to the existing baseline we
                         // can't use it, but we put the biggest arrays
-                        // first so shouldn't lose too much
+                        // first so shouldn't lose too much and might get them
+                        // on the next pass anyway
                     }
                 }
 
@@ -279,25 +416,46 @@ class GoodsAnalysis extends Command
 
 ////        $this->info("Commodity: ".$commodity->displayName());
         foreach ($statedata as $stateinfo) {
+
+            /* If this is the second pass, ignore any effects already
+             * calculated on the first pass */
+
             if (count($stateinfo['supplyfactor']) > 0 || count($stateinfo['demandfactor']) > 0) {
-////                $this->info("  State: ".$stateinfo['state']->name);
-                $effect = new Effect;
-                $effect->commodity_id = $commodity->id;
-                $effect->state_id = $stateinfo['state']->id;
-                if (count($stateinfo['supplyfactor']) > 0) {
-////                    $this->line("    Exports: ".number_format($this->median($stateinfo['supplyfactor']),2)."x @ ".number_format($this->median($stateinfo['supplypricefactor']),2)."x Cr");
+
+                if (isset($this->calculated[$commodity->id]) && isset($this->calculated[$commodity->id][$stateinfo['state']->id])) {
+                    /* If already calculated on earlier pass, just
+                     * retrieve it */
+                    $effect = $this->calculated[$commodity->id][$stateinfo['state']->id];
+                } else {
+                    $effect = new Effect;
+                    $effect->commodity_id = $commodity->id;
+                    $effect->state_id = $stateinfo['state']->id;
+                }
+                // don't recalculate if already known
+                if (count($stateinfo['supplyfactor']) > 0 && $effect->supplysize === null) {
+                    ////                    $this->line("    Exports: ".number_format($this->median($stateinfo['supplyfactor']),2)."x @ ".number_format($this->median($stateinfo['supplypricefactor']),2)."x Cr");
                     $effect->supplysize = $this->median($stateinfo['supplyfactor']);
                     $effect->supplyprice = $this->median($stateinfo['supplypricefactor']);
+                    $improved = true;
+                    $effect->spass = $pass;
                 }
-                if (count($stateinfo['demandfactor']) > 0) {
-////                    $this->line("    Imports: ".number_format($this->median($stateinfo['demandfactor']),2)."x @ ".number_format($this->median($stateinfo['demandpricefactor']),2)."x Cr");
+                if (count($stateinfo['demandfactor']) > 0 && $effect->demandsize === null) {
+                    ////                    $this->line("    Imports: ".number_format($this->median($stateinfo['demandfactor']),2)."x @ ".number_format($this->median($stateinfo['demandpricefactor']),2)."x Cr");
                     $effect->demandsize = $this->median($stateinfo['demandfactor']);
                     $effect->demandprice = $this->median($stateinfo['demandpricefactor']);
+                    $improved = true;
+                    $effect->dpass = $pass;
                 }
                 $effect->save();
+                if (!isset($this->calculated[$commodity->id])) {
+                    $this->calculated[$commodity->id] = [];
+                }
+                // save for later
+                $this->calculated[$commodity->id][$effect->state_id] = $effect;
+                
             }
         }
-
+        return $improved;
     }
 
 

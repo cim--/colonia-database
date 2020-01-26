@@ -80,53 +80,48 @@ class LogisticsController extends Controller
             $distance = $station->system->distanceTo($system);
             foreach ($commodities as $commodity) {
                 $cbaseline = $station->baselinestocks->where('commodity_id', $commodity->id)->first();
-                if ($cbaseline && $cbaseline->reserves > 0) {
-                    $current = $station->reserves()->where('current', true)->where('commodity_id', $commodity->id)->first();
-                    if ($current) {
+                $current = $station->reserves()->where('current', true)->where('commodity_id', $commodity->id)->first();
+                if (($cbaseline && $cbaseline->reserves > 0) || ($current && $current->reserves > 0)) {
 
-                        $option = [
-                            'station' => $station,
-                            'commodity' => $commodity,
-                            'distance' => $distance,
-                            'baseline' => $cbaseline,
-                            'reserves' => $current,
-                            'faction' => $station->faction,
-                            'state' => current($station->faction->currentStates()),
-                            'pending' => $station->faction->states,
-                            'pendinglockdown' => false,
-                            'pendingbetter' => false,
-                            'pendingworse' => false,
-                            'fullness' => 0.5,
-                            'regen' => 0
-                        ];
+                    $option = [
+                        'station' => $station,
+                        'commodity' => $commodity,
+                        'distance' => $distance,
+                        'baseline' => $cbaseline,
+                        'reserves' => $current,
+                        'faction' => $station->faction,
+                        'states' => $station->faction->currentStates(),
+                        'fullness' => 0.5,
+                        'regen' => 0
+                    ];
 
-                        $total += $current->reserves;
-                        
-                        // $supplyeffect = $effects[$commodity->id]->where('state_id', $option['state']->id)->first();
-                        $supplyeffect = null;
-                        if ($supplyeffect) {
-/*
-                            $option['sbaseline'] = $supplyeffect->supplysize * $option['baseline']->reserves;
+                    $total += $current->reserves;
 
-                        
-                            $option['supplysize'] = $supplyeffect->supplysize;
+                    $knowneffects = true;
+                    $supplyeffects = 1;
+                    $haslockdown = false;
+                    $hasinffail = false;
+                    foreach ($option['states'] as $state) {
+                        $supplyeffect = $effects[$commodity->id]->where('state_id', $state->id)->first();
+                        if (!$supplyeffect) {
+                            $knowneffects = false;
+                        } else {
+                            $supplyeffects *= $supplyeffect->supplysize;
+                        }
+                        if ($state->name == "Lockdown") {
+                            $haslockdown = true;
+                        }
+                        if ($state->name == "Infrastructure Failure") {
+                            $hasinffail = true;
+                        }
+                    }
+                    if ($cbaseline) {
+                        if ($knowneffects) {
+
+                            $option['sbaseline'] = $supplyeffects * $option['baseline']->reserves;
+                            $option['supplysize'] = $supplyeffects;
                             $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
-                            foreach ($option['pending'] as $state) {
-                                if ($state->name == "Lockdown") {
-                                    $option['pendinglockdown'] = true;
-                                } else {
-                                    $pendingeffect = $effects[$commodity->id]->where('state_id', $state->id)->first();
-                                    if ($pendingeffect) {
-                                        if ($pendingeffect->supplysize > $supplyeffect->supplysize) {
-                                            $option['pendingbetter'] = true;
-                                        }
-                                        else if ($pendingeffect->supplysize < $supplyeffect->supplysize) {
-                                            $option['pendingworse'] = true;
-                                        }
-                                    }
-                                }
-                            }
-*/
+
                         } else {
                             $option['sbaseline'] = $option['baseline']->reserves;
                             $option['supplysize'] = 1;
@@ -137,37 +132,33 @@ class LogisticsController extends Controller
                             $option['regen'] = $option['sbaseline']/($commodity->supplycycle/86400);
                             $restock += $option['regen'];
                         }
-
-
-                        // recommendations
-                        if ($option['reserves']->created_at->diffInDays() > 1) {
-                            $option['recommendation'] = "Data is old - recheck";
-                            $option['score'] = 7;
-                        } else if ($option['state']->name == "Lockdown") {
-                            $option['recommendation'] = "Lockdown - no hauling possible";
-                            $option['score'] = 0;
-                        } else if ($option['pendinglockdown']) {
-                            $option['recommendation'] = "Pending lockdown - hauling urgent";
-                            $option['score'] = 6;
-                        } else if ($commodity->supplycycle > 0 && $option['fullness'] > 1-(1/$commodity->supplycycle)) {
-                            $option['recommendation'] = "Stock is full - haul to avoid wasting production";
-                            $option['score'] = 5;
-                        } else if ($option['pendingbetter']) {
-                            $option['recommendation'] = "Better BGS state pending - wait to allow it to take effect";
-                            $option['score'] = 1;
-                        } else if ($option['pendingworse']) {
-                            $option['recommendation'] = "Worse BGS state pending - haul before it takes effect";
-                            $option['score'] = 4;
-                        } else if ($option['supplysize'] >= 1) {
-                            $option['recommendation'] = "Good BGS state - haul if practical";
-                            $option['score'] = 3;
-                        } else {
-                            $option['recommendation'] = "Bad BGS state - wait if practical";
-                            $option['score'] = 2;
-                        }
-
-                        $options[] = $option;
                     }
+
+                    // recommendations
+                    if ($option['reserves']->created_at->diffInDays() > 1) {
+                        $option['recommendation'] = "Data is old - recheck";
+                        $option['score'] = 7;
+                    } else if ($haslockdown) {
+                        $option['recommendation'] = "Lockdown - no hauling possible";
+                        $option['score'] = 0;
+                    } else if ($hasinffail) {
+                        $option['recommendation'] = "Infrastructure Failure - market sales offline";
+                        $option['score'] = 0;
+                    } else if ($cbaseline && ($commodity->supplycycle > 0 && $option['fullness'] > 1-(1/$commodity->supplycycle))) {
+                        $option['recommendation'] = "Stock is full - haul to avoid wasting production";
+                        $option['score'] = 5;
+                    } else if ($knowneffects && $supplysize >= 1) {
+                        $option['recommendation'] = "Good BGS state - haul if practical";
+                        $option['score'] = 4;
+                    } else if (!$knowneffects) {
+                        $option['recommendation'] = "Insufficient data";
+                        $option['score'] = 3;
+                    } else {
+                        $option['recommendation'] = "Bad BGS state - improve if practical";
+                        $option['score'] = 2;
+                    }
+
+                    $options[] = $option;
                 }
             }
         }
