@@ -377,33 +377,33 @@ class StationController extends Controller
             ->whereDate('date', '<=', $maxrange->copy()->addDay())
             ->where('price', '!=', 0)
             ->with('states')
-            ->orderBy('created_at')
-            ->get();
-        if ($entries->count() == 0) {
-            $chart = null; 
-        } else {
-            $last = $entries->last();
-            if ($last->reserves > 0) {
-                $reservelabel = $datasets['reserves']['label'] = "Supply";
-                $sign = 1;
-            } else {
-                $reservelabel = $datasets['reserves']['label'] = "Demand";
-                $sign = -1;
-            }
-            
-            
-            foreach ($entries as $idx => $entry) {
-                
-                foreach ($properties as $prop) {
-                    $datasets[$prop]['data'][] = [
-                        'x' => \App\Util::graphDisplayDateTime($entry->created_at),
-                        'y' => $prop == 'reserves' ? $sign * $entry->$prop : $entry->$prop,
-                        'state' => $entry->states->implode('name', ', ')
-                    ];
+            ->orderBy('created_at');
+
+        $found = false;
+        foreach ($entries->cursor() as $idx => $entry) {
+            if ($idx == 0) {
+                $found = true;
+                if ($entry->reserves > 0) {
+                    $reservelabel = $datasets['reserves']['label'] = "Supply";
+                    $sign = 1;
+                } else {
+                    $reservelabel = $datasets['reserves']['label'] = "Demand";
+                    $sign = -1;
                 }
             }
-            sort($datasets); // compact
 
+                
+            foreach ($properties as $prop) {
+                $datasets[$prop]['data'][] = [
+                    'x' => \App\Util::graphDisplayDateTime($entry->created_at),
+                    'y' => $prop == 'reserves' ? $sign * $entry->$prop : $entry->$prop,
+                    'state' => $entry->states->implode('name', ', ')
+                ];
+            }
+        }
+        sort($datasets); // compact
+
+        if ($found) {
             $chart = app()->chartjs
                 ->name("tradehistory")
                 ->type("line")
@@ -450,6 +450,8 @@ class StationController extends Controller
                     ]
                 ] 
                 ]); 
+        } else {
+            $chart = null;
         }
         
         return view('stations/tradehistory', [
