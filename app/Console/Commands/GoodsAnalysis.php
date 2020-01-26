@@ -102,7 +102,7 @@ class GoodsAnalysis extends Command
                 }
                 if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
                     $this->info("Analysing states, pass 1");
-                    $this->analyseStates($commodity);
+                    $this->analyseStates($commodity, $pass);
                 }
                 $pass = 1;
                 if (!$this->option('singlepass')) {
@@ -117,7 +117,7 @@ class GoodsAnalysis extends Command
                         }
                         if (count($this->commodityinfo[$commodity->id]['statechanges']) > 0) {
                             $this->info("Analysing states, pass ".$pass);
-                            $this->analyseStates($commodity);
+                            $this->analyseStates($commodity, $pass);
                         }
                     } while ($improved);
                 }
@@ -236,9 +236,15 @@ class GoodsAnalysis extends Command
         // adjust the reserve to be what it would have been with just
         // this state
         if ($supply) {
+            if ($st == 0) {
+                return null; // can't use this one
+            }
             $reserve->reserve = round($reserve->reserve / $st);
             $reserve->price = round($reserve->price / $sp);
         } else {
+            if ($dt == 0) {
+                return null; // can't use this one
+            }
             $reserve->reserve = round($reserve->reserve / $dt);
             $reserve->price = round($reserve->price / $dp);
         }
@@ -328,7 +334,7 @@ class GoodsAnalysis extends Command
     }
 
 
-    private function analyseStates(Commodity $commodity) {
+    private function analyseStates(Commodity $commodity, $pass) {
         $improved = false;
         $states = State::all();
         $statedata = [];
@@ -399,7 +405,8 @@ class GoodsAnalysis extends Command
                         break; // only need to do one
                         // if none match to the existing baseline we
                         // can't use it, but we put the biggest arrays
-                        // first so shouldn't lose too much
+                        // first so shouldn't lose too much and might get them
+                        // on the next pass anyway
                     }
                 }
 
@@ -429,12 +436,14 @@ class GoodsAnalysis extends Command
                     $effect->supplysize = $this->median($stateinfo['supplyfactor']);
                     $effect->supplyprice = $this->median($stateinfo['supplypricefactor']);
                     $improved = true;
+                    $effect->spass = $pass;
                 }
                 if (count($stateinfo['demandfactor']) > 0 && $effect->demandsize === null) {
                     ////                    $this->line("    Imports: ".number_format($this->median($stateinfo['demandfactor']),2)."x @ ".number_format($this->median($stateinfo['demandpricefactor']),2)."x Cr");
                     $effect->demandsize = $this->median($stateinfo['demandfactor']);
                     $effect->demandprice = $this->median($stateinfo['demandpricefactor']);
                     $improved = true;
+                    $effect->dpass = $pass;
                 }
                 $effect->save();
                 if (!isset($this->calculated[$commodity->id])) {
