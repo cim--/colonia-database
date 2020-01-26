@@ -147,7 +147,7 @@ class LogisticsController extends Controller
                     } else if ($cbaseline && ($commodity->supplycycle > 0 && $option['fullness'] > 1-(1/$commodity->supplycycle))) {
                         $option['recommendation'] = "Stock is full - haul to avoid wasting production";
                         $option['score'] = 5;
-                    } else if ($knowneffects && $supplysize >= 1) {
+                    } else if ($knowneffects && $supplyeffects >= 1) {
                         $option['recommendation'] = "Good BGS state - haul if practical";
                         $option['score'] = 4;
                     } else if (!$knowneffects) {
