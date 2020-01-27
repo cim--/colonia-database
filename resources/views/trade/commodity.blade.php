@@ -25,7 +25,8 @@
 </div>
 
 <ul class='commoditynav'>
-  <li><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History</a></li>
+  <li><a href='{{route('reserves.commodity.history', $commodity->id)}}'>Reserves History (volume)</a></li>
+  <li><a href='{{route('reserves.commodity.pricehistory', $commodity->id)}}'>Reserves History (price)</a></li>
   <li><a href='{{route('effects.commodity', $commodity->id)}}'>State effects</a></li>
 </ul>
 </div>

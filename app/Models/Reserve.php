@@ -33,6 +33,25 @@ class Reserve extends Model
         return $q->where('reserves', '>', -500000);
     }
 
+    public static function epochs() {
+        // times of major changes in market behaviour
+        // first full day after the change generally best to use
+        return [
+            '2018-02-28', // 3.0
+            '2018-12-12', // 3.3
+            '2020-01-15', // 3.6
+        ];
+    }
+
+    public static function epochs2() {
+        // times of market data refreshes after major changes
+        return [
+            '2018-03-03', // 3.0
+            '2018-12-16', // 3.3
+            '2020-01-17', // 3.6
+        ];
+    }
+    
     public function scopeCurrent($q)
     {
         return $q->where('current', 1)

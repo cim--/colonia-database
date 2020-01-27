@@ -167,6 +167,10 @@ Route::get('/reserves/{commodity}/history', [
     'as' => 'reserves.commodity.history',
     'uses' => 'TradeController@commodityHistory'
 ]);
+Route::get('/reserves/{commodity}/pricehistory', [
+    'as' => 'reserves.commodity.pricehistory',
+    'uses' => 'TradeController@commodityPriceHistory'
+]);
 
 Route::get('/reserves/{commodity}/{station}', [
     'as' => 'reserves.commodity.reference',
