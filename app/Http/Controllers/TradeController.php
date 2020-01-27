@@ -285,13 +285,42 @@ class TradeController extends Controller
         $supply = [];
         $demand = [];
         $stations = [];
+        $laststations = [];
         $lastsupply = 0;
         $lastdemand = 0;
+        $lastepoch = 0;
+        $epochs = Reserve::epochs();
+        $epochs2 = Reserve::epochs2();
         /* Roll up commodity reserves */
         foreach ($reserves->cursor() as $reserve) {
             $station = $reserve->station_id;
             $amount = $reserve->reserves;
             $timestamp = $reserve->created_at->toIso8601String();
+            $date = $reserve->created_at->format('Y-m-d');
+            $laststations[$station] = $reserve->created_at;
+            $epochindex = array_search($date, $epochs2);
+            if ($epochindex !== false) {
+                if ($date != $lastepoch) {
+                    // reset tracking
+                    $lastepoch = $date;
+                    $epochstart = Carbon::parse($epochs[$epochindex]);
+                    $unsets = [];
+                    foreach ($stations as $idx => $discard) {
+                        if ($laststations[$idx]->lt($epochstart)) {
+                            if ($stations[$idx] > 0) {
+                                $lastsupply -= $stations[$idx];
+                            } else {
+                                $lastdemand += $stations[$idx];
+                            }
+                            $unsets[] = $idx;
+                        }
+                    }
+                    foreach ($unsets as $idx) {
+                        unset($stations[$idx]);
+                        unset($laststations[$idx]);
+                    }
+                }
+            }
             if (!isset($stations[$station])) {
                 $stations[$station] = $amount;
                 if ($amount > 0) {
@@ -434,7 +463,199 @@ class TradeController extends Controller
             'commodity' => $commodity,
             'chart' => $chart,
             'minrange' => $minrange,
-            'maxrange' => $maxrange
+            'maxrange' => $maxrange,
+            'mode' => 'volume'
+        ]);
+    }
+
+    private function priceBands($imports, $exports) {
+        if (count($exports) == 0) {
+            return [
+                'el' => null,
+                'eh' => null,
+                'il' => min($imports),
+                'ih' => max($imports)
+            ];
+        } else if (count($imports) == 0) {
+            return [
+                'el' => min($exports),
+                'eh' => max($exports),
+                'il' => null,
+                'ih' => null
+            ];
+        } else {
+            return [
+                'el' => min($exports),
+                'eh' => max($exports),
+                'il' => min($imports),
+                'ih' => max($imports)
+            ];
+        }
+    }
+    
+    public function commodityPriceHistory(Request $request, Commodity $commodity) {
+        $reserves = Reserve::where('commodity_id', $commodity->id)->orderBy('created_at');
+
+        $dates = [];
+        $exports = [];
+        $imports = [];
+        $lasttime = 0;
+        $epochs = Reserve::epochs2();
+        /* Roll up commodity reserves */
+        foreach ($reserves->cursor() as $reserve) {
+            if ($reserve->price == 0) {
+                continue;
+                // can't really tell if this is actually a zero or
+                // just an untraded good
+            }
+            $station = $reserve->station_id;
+            $price = $reserve->price;
+            $supply = ($reserve->reserves > 0);
+            $timestamp = $reserve->created_at->format("Y-m-d");
+
+            if ($lasttime != $timestamp) {
+                if ($lasttime != 0) {
+                    $dates[$lasttime] = $this->priceBands($imports, $exports);
+                    if (in_array($timestamp, $epochs)) {
+                        // major change in behaviour, reset old data
+                        $imports = [];
+                        $exports = [];
+                    }
+                }
+                $lasttime = $timestamp;
+            }
+
+            
+            if ($supply) {
+                $list = 'exports';
+                $other = 'imports';
+            } else {
+                $list = 'imports';
+                $other = 'exports';
+            }
+            if (!isset($$list[$station])) {
+                $$list[$station] = $price;
+                unset($$other[$station]);
+            } else {
+                $$list[$station] = $price;
+            }
+        }
+        // and finally
+        if ($lasttime != 0) {
+            $dates[$lasttime] = $this->priceBands($imports, $exports);
+        }
+
+        
+        $datasets = [
+            'il' => [
+                'label' => "Minimum Import Price",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#009000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'price',
+            ],
+            'ih' => [
+                'label' => "Maximum Import Price",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#006000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'price',
+            ],
+            'el' => [
+                'label' => "Minimum Export Price",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#600000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'price',
+            ],
+            'eh' => [
+                'label' => "Maximum Export Price",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#900000',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'price',
+            ],
+        ];
+
+        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+
+        foreach ($dates as $date => $info) {
+            $datestamp = Carbon::parse($date);
+            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+                foreach (['il','ih','el','eh'] as $series) {
+                    if ($info[$series] != null) {
+                        $datasets[$series]['data'][] = [
+                            'x' => \App\Util::graphDisplayDateTime($datestamp),
+                            'y' => (int)$info[$series]
+                        ];
+                    }
+                }
+            }
+        }
+        
+        sort($datasets); // compact
+
+        $chart = app()->chartjs
+                ->name("reservehistory")
+                ->type("line")
+                ->size(["height" => 400, "width"=>1000])
+                ->datasets($datasets)
+                ->options(['scales' => [
+                    'xAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'bottom',
+                            'ticks' => [
+                                'callback' => "@@chart_xaxis_callback_datetime@@"
+                            ]
+                        ]
+                    ],
+                    'yAxes' => [
+                        [
+                            'type' => 'linear',
+                            'position' => 'left',
+                            'scaleLabel' => [
+                                'labelString' => "Price",
+                                'display' => true
+                            ],
+                            'ticks' => [
+                                'min' => 0
+                            ],
+                            'id' => 'price'
+                        ]
+                    ]
+                ],
+                'tooltips' => [
+                    'callbacks' => [
+                        'title' => "@@tooltip_label_datetime_title@@",
+                        'label' => "@@tooltip_label_datetime@@"
+                    ]
+                ] 
+                ]
+                ); 
+        
+        return view('trade/reservehistory', [
+            'commodity' => $commodity,
+            'chart' => $chart,
+            'minrange' => $minrange,
+            'maxrange' => $maxrange,
+            'mode' => 'price'
         ]);
     }
 
