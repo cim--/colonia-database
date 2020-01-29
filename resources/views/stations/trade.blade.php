@@ -24,7 +24,11 @@ Reserves at {{$station->name}}
 <p>Total estimated reserves: {{number_format($supply)}}</p>
 <p>Total estimated demand: {{number_format($demand)}}</p>
 
+@if (!$station->marketStateChange())
 <p>Last update: {{\App\Util::displayDate($reserves->first()->reserves->first()->created_at)}}</p>
+@else
+<p>Last update: <span class='marketstatechange'>{{\App\Util::displayDate($reserves->first()->reserves->first()->created_at)}}</span> (market has changed state since last survey)</p>
+@endif
 
 @if ($station->currentStateList()->where('name', "Lockdown")->count() > 0)
 <p><strong>Station is currently in Lockdown - commodity market unavailable.</strong> Table shows last known market state.</p>
