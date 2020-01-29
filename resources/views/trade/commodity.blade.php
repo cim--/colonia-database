@@ -22,6 +22,7 @@
   @endif
 </p>
 <p>Use the &#x21c4; icons to sort the table by distance to this station, or the &#x23f0; icons to show history at that station.</p>
+<p>Updated at time will be <span class='marketstatechange'>highlighted</span> if the station state has changed since the last survey.</p>
 </div>
 
 <ul class='commoditynav'>
@@ -118,7 +119,11 @@
 	  </td>
 	  @endif
 	  <td data-sort="{{$reserve->created_at->timestamp}}">
-		{{$reserve->created_at->diffForHumans()}}
+	    @if ($reserve->station->marketStateChange())
+	    <span class='marketstatechange'>{{$reserve->created_at->diffForHumans()}}</span>
+	    @else
+	    {{$reserve->created_at->diffForHumans()}}
+	    @endif
 	  </td>
 	</tr>
 	@endforeach

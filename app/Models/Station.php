@@ -121,4 +121,27 @@ class Station extends Model
         }
     }
 
+    public function marketStateChange()
+    {
+        $reserve = $this->reserves()->where('current', 1)->first();
+        if (!$reserve) {
+            return true; // no market data yet, so must be different
+        }
+        $fstates = $this->currentStateList();
+        $rstates = $reserve->states;
+
+        if ($fstates->count() != $rstates->count()) {
+            return true; // different number of states
+        }
+        foreach ($fstates as $fstate) {
+            foreach ($rstates as $rstate) {
+                if ($fstate->id == $rstate->id) {
+                    // matched, next fstate
+                    continue 2;
+                }
+            }
+            return true; // this fstate didn't match
+        }
+        return false; // all states match
+    }
 }

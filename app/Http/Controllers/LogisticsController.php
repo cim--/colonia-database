@@ -78,6 +78,7 @@ class LogisticsController extends Controller
         $stations = Station::orderBy('name')->tradable()->with('system', 'baselinestocks', 'faction', 'stationclass')->get();
         foreach ($stations as $station) {
             $distance = $station->system->distanceTo($system);
+            $outdated = $station->marketStateChange();
             foreach ($commodities as $commodity) {
                 $cbaseline = $station->baselinestocks->where('commodity_id', $commodity->id)->first();
                 $current = $station->reserves()->where('current', true)->where('commodity_id', $commodity->id)->first();
@@ -135,7 +136,7 @@ class LogisticsController extends Controller
                     }
 
                     // recommendations
-                    if ($option['reserves']->created_at->diffInDays() > 1) {
+                    if ($outdated) {
                         $option['recommendation'] = "Data is old - recheck";
                         $option['score'] = 7;
                     } else if ($haslockdown) {
