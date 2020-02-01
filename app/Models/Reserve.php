@@ -24,11 +24,25 @@ class Reserve extends Model
     }
 
     /* Restrict market analysis to normal market types */
-    public function scopeNormalMarkets($q)
+    public function scopeNormalMarkets($q, Commodity $c = null)
     {
         // significant market changes in 3.6 for mined goods
         // new states stabilised 23 Jan?
-        $q->where('date', '>', '2020-01-23');
+        if ($c === null) {
+            $q->where('date', '>', '2020-01-23');
+        } else {
+            switch ($c->name) {
+            case "LowTemperatureDiamond":
+                // demand/cap changes
+                $q->where('date', '>', '2020-02-01');
+                break;
+            default:
+                $q->where('date', '>', '2020-01-23');
+            }
+        }
+
+        // rare, but occasional glitch
+        $q->where('price', '!=', 0);
          // ignore high CG demands
         return $q->where('reserves', '>', -500000);
     }

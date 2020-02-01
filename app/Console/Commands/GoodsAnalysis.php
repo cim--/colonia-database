@@ -149,7 +149,7 @@ class GoodsAnalysis extends Command
             $reservesquery->where('date', '>', $lastsystemhistory);
         }
         // significant changes to some goods in 3.0, so don't look before
-        $reservesquery->normalMarkets();
+        $reservesquery->normalMarkets($commodity);
         
         $reserves = $reservesquery->get();
         return $reserves;

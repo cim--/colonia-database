@@ -157,7 +157,7 @@ class GoodsAnalysis2 extends Command
             })
             ->withCount('states')
             ->where('reserves', '!=', 0)
-            ->normalMarkets();
+            ->normalMarkets($commodity);
 
         /* Where stations change economy or have other significant
          * events, only look after the change */
