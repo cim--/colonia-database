@@ -218,8 +218,8 @@ class UpdateHistory extends Command
             $is = $system->latestFactionsWithoutEagerLoad();
             if ($is->count() > 1) {
                 $diff = $is[0]->influence - $is[1]->influence;
-                if ($diff == 0) {
-                    $risk = 5; // control conflict
+                if ($diff == 0 || $system->controllingFaction()->id != $is[0]->faction_id) {
+                    $risk = 5; // control conflict or controller not first
                 } else if ($diff < 40) {
                     $date = $is[0]->date->copy();
                     $tmax = 0;
