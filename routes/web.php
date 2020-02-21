@@ -23,6 +23,8 @@ Route::get('/new', 'BaseController@newToColonia')->name('intro.new');
 Route::get('/regions', 'BaseController@regions')->name('intro.regions');
 Route::get('/story', 'BaseController@story')->name('intro.story');
 Route::get('/icons', 'BaseController@icons')->name('intro.icons');
+Route::get('/radio', 'ArticleController@index')->name('radio');
+Route::get('/radio/{sequence}', 'ArticleController@show')->name('radio.sequence');
 
 Route::get('/distances', 'DistancesController@index')->name('distances');
 
