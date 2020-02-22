@@ -20,7 +20,7 @@ class ArticleController extends Controller
         return view('radio.index', [
             'template' => $am->template,
             'parameters' => $am->parameters,
-            // 'picker' => $am->picker,
+            'picker' => $am->picker,
             'sequence' => $sequence
         ]);
     }
@@ -32,7 +32,7 @@ class ArticleController extends Controller
         
         return view($am->template, [
             'parameters' => $am->parameters,
-            // 'picker' => $am->picker,
+            'picker' => $am->picker,
             'sequence' => $article
         ]);
     }

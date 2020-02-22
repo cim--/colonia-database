@@ -64,6 +64,11 @@ class Station extends Model
         return $this->name;
     }
 
+    public function displayType() {
+        return "station";
+    }
+
+    
     public function displayRoute() {
         return 'stations.show';
     }
