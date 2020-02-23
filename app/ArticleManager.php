@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Conflict;
+use App\Models\Commodity;
 
 class ArticleManager {
 
@@ -19,7 +20,7 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 1; $entry = $article;
+        $type = 2; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
@@ -62,7 +63,48 @@ class ArticleManager {
 
     /* Information on market data */
     private function loadMarket($entry) {
+        $commodities = Commodity::whereHas('reserves', function($q) {
+            $q->where('reserves', '>', 0); // avoid mining-only, foreign imports, for now
+            $q->where('current', 1);
+        })->whereNotNull('description')->whereNotNull('category')->orderBy('id')->get();
+        $commodity = $this->picker->pickFrom($commodities);
 
+        $reserves = $commodity->reserves()->where('current', 1)->get();
+        
+        $minsell = 1e9;
+        $maxsell = 0;
+        $minbuy = 1e9;
+        $maxbuy = 0;
+        $supply = 0;
+        $demand = 0;
+
+        foreach ($reserves as $reserve) {
+            if ($reserve->reserves > 0) {
+                $supply += $reserve->reserves;
+                if ($reserve->price < $minsell) { $minsell = $reserve->price; }
+                if ($reserve->price > $maxsell) { $maxsell = $reserve->price; }
+            } else {
+                $demand -= $reserve->reserves;
+                if ($reserve->price < $minbuy) { $minbuy = $reserve->price; }
+                if ($reserve->price > $maxbuy) { $maxbuy = $reserve->price; }
+            }
+        }
+
+        $this->template = 'radio.templates.markets.commodity'; // TODO: variety
+
+        //dd($supply, $commodity->supplycycle/86400, $demand, $commodity->demandcycle/86400);
+        
+        $this->parameters = [
+            'commodity' => $commodity,
+            'minsell' => Util::sigFig($minsell),
+            'maxsell' => Util::sigFig($maxsell),
+            'minbuy' => Util::sigFig($minbuy),
+            'maxbuy' => Util::sigFig($maxbuy),
+            'supply' => Util::sigFig($supply),
+            'demand' => Util::sigFig($demand),
+            'surplus' => Util::sigFig(($supply * 86400 / $commodity->supplycycle) + ($demand * 86400 / $commodity->demandcycle))
+        ];
+        
     }
 
     /* Information on event states (pirate attack, etc) */

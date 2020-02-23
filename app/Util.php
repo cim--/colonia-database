@@ -211,4 +211,16 @@ class Util {
         }
         return $datasets;
     }
+
+    public static function sigFig($number, $figures=3) {
+        $l = log(abs($number), 10);
+        $dig = floor($l)+1;
+        $factor = $dig-$figures;
+        //        dd($l, $dig, $figures, $number, $factor);
+        if ($factor <= 0) {
+            return round($number, $figures-$dig);
+        } else {
+            return (10**$factor)*round($number/(10**$factor));
+        }
+    }
 }

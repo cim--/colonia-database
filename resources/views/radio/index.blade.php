@@ -8,6 +8,7 @@
   var RadioSequenceNumber = {{$sequence}};
 </script>
 
+<p>Note: due to a bug in some browsers, the pause button may only stop the radio at the end of the current segment.</p>
 <div id='radiocontrols'>
   <span id='pausebutton'>&#x23f8;</span>
   <span id='playbutton'>&#x23f4;</span>
