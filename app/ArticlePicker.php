@@ -19,7 +19,7 @@ class ArticlePicker {
 
     public function pick($size) {
         $this->step();
-        return floor($this->state * $size / 1024);
+        return (int)floor($this->state * $size / 1024);
     }
 
     public function pickFrom($list) {

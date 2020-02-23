@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Conflict;
 use App\Models\Commodity;
+use App\Models\System;
 
 class ArticleManager {
 
@@ -20,7 +21,7 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 2; $entry = $article;
+        $type = 3; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
@@ -109,7 +110,47 @@ class ArticleManager {
 
     /* Information on event states (pirate attack, etc) */
     private function loadEvents($entry) {
+        $systems = System::populated()->orderBy('id')->get();
+        $types = ['Outbreak', 'Pirate Attack', 'Blight', 'Drought', 'Terrorism', 'Infrastructure Failure', 'Natural Disaster', 'Public Holiday'];
+        $consequences = ['Lockdown', 'Civil Unrest', 'Bust', 'Famine'];
+        
+        $affected = $systems->filter(function($v) use ($types) {
+            $f = $v->controllingFaction();
+            $states = $f->currentStateList($v);
+            if (!$states) {
+                return false;
+            }
+            foreach ($states as $state) {
+                if (in_array($state->name, $types)) {
+                    return true;
+                }
+            }
+            return false;
+        })->values();
 
+        $system = $this->picker->pickFrom($affected);
+        $faction = $system->controllingFaction();
+        $states = $faction->currentStateList($system);
+        $eventstate = $states->filter(function($v) use ($types) {
+            if (in_array($v->name, $types)) {
+                return true;
+            }
+            return false;
+        })->first();
+        $constates = $states->filter(function($v) use ($consequences) {
+            if (in_array($v->name, $consequences)) {
+                return true;
+            }
+            return false;
+        }); 
+
+        $this->template = 'radio.templates.events.'.strtolower(str_replace(" ", "", $eventstate->name));
+        $this->parameters = [
+            'system' => $system,
+            'faction' => $faction,
+            'event' => $eventstate,
+            'outcomes' => $constates
+        ];
     }
 
     /* System spotlight articles */
