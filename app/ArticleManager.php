@@ -21,7 +21,7 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 3; $entry = $article;
+        $type = 4; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
@@ -155,7 +155,18 @@ class ArticleManager {
 
     /* System spotlight articles */
     private function loadSpotlight($entry) {
+        $systems = System::populated()->whereNotNull('name')->orderBy('id')->get();
+        $system = $this->picker->pickFrom($systems);
 
+        $this->template = 'radio.templates.spotlight.intro';
+        $this->parameters = [
+            'population' => $system->population,
+            'name' => $system->name,
+            'station' => $system->mainStation()->name,
+            'faction' => $system->controllingFaction()->name,
+            'detail' => 'radio.templates.spotlight.systems.'.strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $system->name))
+        ];
+        
     }
 
     /* Expansions and retreats */

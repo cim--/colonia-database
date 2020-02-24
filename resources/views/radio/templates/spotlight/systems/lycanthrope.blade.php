@@ -1,0 +1,2 @@
+<p>The Carpe Noctem group constructed The Crypt mining installation as part of the Colonia Expansion Initiative. Unusually, with just two other inhabited systems, it is on the opposite side of the nebula from Colonia itself, giving a different view of it to that normally seen.</p>
+<p>Like many of Colonia's extraction systems, the facility is based on a hot world with spectacular rings, which in this case are broken into several distinct bands. The surface is mineral-rich and an excellent producer of many common ores.</p>

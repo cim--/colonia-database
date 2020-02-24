@@ -1,0 +1,2 @@
+<p>The Cubil Del Lobo refinery base is on an icy moon in the Carlota system, surrounded by deep canyons occasionally used by racers. Founded by the Lobos de Loki as part of the Colonia Expansion Initiative, it completes the cluster of refineries in this part of the region.</p>
+<p>The refining plants are of particularly high capacity, and heavily automated, allowing the production of large quantities of most commonly-traded metals, as well as other composite materials.</p>

@@ -1,0 +1,2 @@
+<p>Colonia's third gravitic refinery, Rock was established by the GVC Flying Tigers on a 2.29G world, where its facilities are ideal for production of Beryllium, Lanthanum and Thorium, as well as a relatively large amount of CMM Composite. The system has a large number of ring systems, including the spectacular one visible from Rock itself, so there are plenty of raw materials available.</p>
+<p>Since the second regional conflict, security in this system has been managed by INO Research, who also bring their gravitic refining expertise to local operations. </p>

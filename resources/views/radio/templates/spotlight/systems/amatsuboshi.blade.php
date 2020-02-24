@@ -1,0 +1,2 @@
+<p>Established by the Tenjin Pioneers Colonia as part of the Colonia Expansion Initiative, the Hayabusa Landing planetary base provides a range of facilities for visiting tourists with clear views of the nebula.</p>
+<p>The 1.09G surface gravity is one of the closest to standard of all surface settlements in the region, which makes it a popular early stop for travellers who have often spent days or weeks in microgravity before arriving in Colonia. Tourist demands for luxuries such as jewellery and tobacco make these common cargoes for regional traders.</p>
