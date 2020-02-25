@@ -23,7 +23,7 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 3; $entry = $article;
+        $type = 6; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
@@ -204,7 +204,25 @@ class ArticleManager {
 
     /* Help articles */
     private function loadHelp($entry) {
-
+        $this->template = 'radio.templates.help.intro';
+        $article = $this->picker->pickFrom([
+            'location',
+            'trading',
+            'exploration',
+            'combat',
+            'piracy',
+            'missions',
+            'mining',
+            'outfitting',
+            'engineering',
+            'tourism'
+        ]);
+        
+        $this->parameters = [
+            'article' => 'intro.new.'.$article,
+            'systemcount' => System::where('population', '>', 0)->count(),
+            'totalPopulation' => System::sum('population')
+        ];
     }
 
     /* Misc broadcasts - lower frequency content with its own subdivisions */
