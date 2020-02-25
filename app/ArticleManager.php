@@ -5,6 +5,8 @@ namespace App;
 use App\Models\Conflict;
 use App\Models\Commodity;
 use App\Models\System;
+use App\Models\Influence;
+use App\Models\State;
 
 class ArticleManager {
 
@@ -21,14 +23,14 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 4; $entry = $article;
+        $type = 3; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
-        case 2: return $this->loadMarket($entry);
-        case 3: return $this->loadEvents($entry);
-        case 4: return $this->loadSpotlight($entry);
-        case 5: return $this->loadMovements($entry);
+        case 2: return $this->loadEvents($entry);
+        case 3: return $this->loadMovements($entry);
+        case 4: return $this->loadMarket($entry);
+        case 5: return $this->loadSpotlight($entry);
         case 6: return $this->loadHelp($entry);
         case 7: return $this->loadMisc($entry);
         }
@@ -171,7 +173,33 @@ class ArticleManager {
 
     /* Expansions and retreats */
     private function loadMovements($entry) {
+        $expansion = State::where('name', 'Expansion')->first();
+        $retreat = State::where('name', 'Retreat')->first();
+        
+        $expansions = Influence::where('current', 1)->whereHas('states', function($q) use ($expansion) {
+            $q->where('states.id', $expansion->id);
+        })->get();
+        if ($expansions->count() > 0) {
+            $expanding = $this->picker->pickFrom($expansions);
+        } else {
+            $expanding = null; // unlikely but possible
+        }
+        
+        $retreats = Influence::where('current', 1)->whereHas('states', function($q) use ($retreat) {
+            $q->where('states.id', $retreat->id);
+        })->get();
+        
+        if ($retreats->count() > 0) {
+            $retreating = $this->picker->pickFrom($retreats);
+        } else {
+            $retreating = null; // unlikely but possible
+        }
 
+        $this->template = 'radio.templates.movement.report';
+        $this->parameters = [
+            'expanding' => $expanding,
+            'retreating' => $retreating
+        ];
     }
 
     /* Help articles */
