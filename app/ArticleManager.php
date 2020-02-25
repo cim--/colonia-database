@@ -23,7 +23,7 @@ class ArticleManager {
         $type = $article % 8;
         $entry = floor($article / 8);
 
-        $type = 6; $entry = $article;
+        //        $type = 7; $entry = $article;
         switch ($type) {
         case 0: return $this->loadHeadline($entry);
         case 1: return $this->loadConflicts($entry);
@@ -227,6 +227,7 @@ class ArticleManager {
 
     /* Misc broadcasts - lower frequency content with its own subdivisions */
     private function loadMisc($entry) {
-
+        // TODO: more misc types
+        $this->template = "radio.templates.adverts.intro";
     }
 }
