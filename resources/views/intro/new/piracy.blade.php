@@ -6,6 +6,6 @@
 
 <p>There are also a very large number of <a href='{{route('installations.index')}}'>installations</a>, used by the Council to provide facilities separate to the primary orbital stations. The cargo holds and data transmitters of these are also vulnerable to pirates.</p>
 
-<p>The usual opportunities for pirates to intercept courier ships are also available.</p>
+<p>The usual opportunities for pirates to intercept courier ships are also available, and traders should provide for suitable escorts.</p>
 
-<p>Obviously, the Council does not condone this activity, and interference with these facilities is strictly illegal.</p>
+<p>Obviously, the Council does not condone this activity, and interference with these facilities is strictly prohibited.</p>
