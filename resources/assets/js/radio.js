@@ -11,7 +11,7 @@ if ( 'speechSynthesis' in window ) {
 
 	ctrl.RadioQueue = function RadioQueue() {
 	    var text = $('#speechbox').text();
-	    var words = text.split(/\./);
+	    var words = text.replace(/\s+/, " ").split(/\./);
 	    for (var i=0;i<words.length;i++) {
 		var speech = new SpeechSynthesisUtterance(words[i]);
 		console.log("Queueing: "+words[i]);
@@ -43,9 +43,9 @@ if ( 'speechSynthesis' in window ) {
 		    // replace contents
 		    console.log("Loading "+sequence);
 		    $('#speechbox').html(data);
-		    ctrl.RadioQueue();
+		    setTimeout(ctrl.RadioQueue(),3000); // breathe between articles
 		    sequence++;
-		    setTimeout(ctrl.Monitor, 1000);
+		    setTimeout(ctrl.Monitor, 10000);
 		});
 
 	    } else {
