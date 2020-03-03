@@ -8,7 +8,9 @@
   @else
   {{$parameters['conflict']->faction2->name}}
   @endif
-  on a turnout of {{30+$picker->pick(60)}}%.</p>
+  @endif
+  on a turnout of {{30+$picker->pick(60)}}%.
+</p>
 
 @if (count($parameters['assets']) == 0)
 <p>
@@ -20,7 +22,9 @@
   @else
   {{$parameters['conflict']->faction1->name}}
   @endif
-  has conceded defeat and is closing its offices in the system.</p>
+  has conceded defeat and is closing its offices in the system.
+  @endif
+</p>
 @else
 <p>
   @if ($parameters['direction'] == 0)
