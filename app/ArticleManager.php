@@ -7,6 +7,7 @@ use App\Models\Commodity;
 use App\Models\System;
 use App\Models\Influence;
 use App\Models\State;
+use App\Models\History;
 
 class ArticleManager {
 
@@ -195,10 +196,19 @@ class ArticleManager {
             $retreating = null; // unlikely but possible
         }
 
+        $histories = History::movement()->recent()->get();
+        if ($histories->count() > 0) {
+            $history = $this->picker->pickFrom($histories);
+        } else {
+            $history = null; // sometimes
+        }
+
+        
         $this->template = 'radio.templates.movement.report';
         $this->parameters = [
             'expanding' => $expanding,
-            'retreating' => $retreating
+            'retreating' => $retreating,
+            'history' => $history
         ];
     }
 
