@@ -101,6 +101,12 @@ class Station extends Model
         });
     }
 
+    public function scopeLargeDockable($q) {
+        return $q->whereHas('stationclass', function($s) {
+            $s->where('hasLarge', 1);
+        });
+    }
+
     public function scopeTradable($tq) {
         return $tq->whereHas('facilities', function($q) {
             $q->where('name', 'Commodities');

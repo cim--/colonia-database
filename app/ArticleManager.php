@@ -8,6 +8,9 @@ use App\Models\System;
 use App\Models\Influence;
 use App\Models\State;
 use App\Models\History;
+use App\Models\Engineer;
+
+use Carbon\Carbon;
 
 class ArticleManager {
 
@@ -20,20 +23,31 @@ class ArticleManager {
         $article = $sequence+$offset;
 
         $this->picker = new ArticlePicker($article);
+
+        $cycle = 11;
         
-        $type = $article % 8;
-        $entry = floor($article / 8);
+        $type = $article % $cycle;
+        $entry = floor($article / $cycle);
 
         //        $type = 7; $entry = $article;
         switch ($type) {
+            // intro
         case 0: return $this->loadHeadline($entry);
+            // news headlines
         case 1: return $this->loadConflicts($entry);
         case 2: return $this->loadEvents($entry);
         case 3: return $this->loadMovements($entry);
         case 4: return $this->loadMarket($entry);
-        case 5: return $this->loadSpotlight($entry);
+            // advert
+        case 5: return $this->loadAdvert($entry,0);
+            // articles
         case 6: return $this->loadHelp($entry);
-        case 7: return $this->loadMisc($entry);
+        case 7: return $this->loadTraffic($entry);
+            // advert
+        case 8: return $this->loadAdvert($entry,1);
+            // articles
+        case 9: return $this->loadSpotlight($entry);
+        case 10: return $this->loadMisc($entry);
         }
     }
 
@@ -235,9 +249,62 @@ class ArticleManager {
         ];
     }
 
+    /* Sponsorship pieces */
+    private function loadAdvert($entry, $updates) {
+        while ($updates > 0) {
+            // shift the picker to ensure the adverts cycle a bit
+            $this->picker->pick(10);
+            $updates--;
+        }
+        $this->template = "radio.templates.adverts.intro";
+    }
+
+    /* Traffic reports */
+    private function loadTraffic($entry) {
+        $this->template = "radio.templates.traffic.report";
+        $systems = System::populated()->orderBy('id')->get();
+        $system = $this->picker->pickFrom($systems);
+
+        $report = $system->systemreports()->orderBy('date', 'desc')->first();
+        $average = $system->systemreports()->where('estimated', 0)->where('date', '>', Carbon::parse("-1 year"))->avg('traffic');
+        $haslarge = $system->stations()->largeDockable()->count();
+        $this->parameters = [
+            'system' => $system,
+            'report' => $report->traffic,
+            'law' => ($report->crimes + $report->bounties)/2,
+            'average' => $average,
+            'haslarge' => $haslarge
+        ];
+    }
+    
     /* Misc broadcasts - lower frequency content with its own subdivisions */
     private function loadMisc($entry) {
-        // TODO: more misc types
-        $this->template = "radio.templates.adverts.intro";
+        switch ($this->picker->pick(1)) {
+        case 0: return $this->loadEngineers($entry);
+        case 1: return $this->loadOutfitting($entry);
+        }
+    }
+
+    private function loadEngineers($entry) {
+        $engineers = Engineer::whereHas('blueprints', function($q) {
+            $q->where('level', '<', 5);
+        })->orderBy('id')->get();
+
+        $engineer = $this->picker->pickFrom($engineers);
+
+        $blueprints = $engineer->blueprints()->where('level', '<', 5)->orderBy('id')->get();
+        $blueprint = $this->picker->pickFrom($blueprints);
+
+        $finished = $engineer->blueprints()->where('level', '=', 5)->orderBy('id')->get();
+        $finish = $this->picker->pickFrom($finished);
+
+        $this->template = "radio.templates.misc.engineer";
+        $this->parameters = [
+            'engineer' => $engineer,
+            'blueprint' => $blueprint,
+            'system' => $engineer->station->system,
+            'station' => $engineer->station,
+            'finished' => $finish->moduletype->description
+        ];
     }
 }
