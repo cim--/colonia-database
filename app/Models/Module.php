@@ -63,6 +63,22 @@ class Module extends Model
     
     public function displayName()
     {
-        return $this->moduletype->description." ".$this->size.$this->type;
+        if ($this->moduletype->type == "hardpoint") {
+            $name = $this->moduletype->description." ";
+            switch ($this->size) {
+            case 1: $name .= "Small"; break;
+            case 2: $name .= "Medium"; break;
+            case 3: $name .= "Large"; break;
+            case 4: $name .= "Huge"; break;
+            }
+            $name .= " ".$this->type;
+            return $name;
+        } else if ($this->moduletype->type == "optionalns") {
+            return $this->moduletype->description;
+        } else if ($this->moduletype->type == "utility") {
+            return $this->moduletype->description." ".$this->type;
+        } else {
+            return $this->moduletype->description." ".$this->size.$this->type;
+        }
     }
 }

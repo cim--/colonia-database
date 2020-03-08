@@ -1,3 +1,3 @@
 <p>And now, a word from our sponsors.</p>
 
-@include ('radio.templates.adverts.'.$picker->pick(7))
+@include ('radio.templates.adverts.'.$picker->pick(10))

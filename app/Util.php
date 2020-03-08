@@ -213,6 +213,9 @@ class Util {
     }
 
     public static function sigFig($number, $figures=3) {
+        if ($number == 0) {
+            return 0;
+        }
         $l = log(abs($number), 10);
         $dig = floor($l)+1;
         $factor = $dig-$figures;

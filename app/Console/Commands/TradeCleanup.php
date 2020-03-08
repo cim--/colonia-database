@@ -53,6 +53,7 @@ class TradeCleanup extends Command
                 $this->compactReserves($station, $commodity);
             }
         }
+        $this->cleanOutfitting();
 
         // compact tables
         \DB::query("OPTIMIZE TABLE reserves");
@@ -100,5 +101,11 @@ class TradeCleanup extends Command
             $this->line("Deleted ".$del." / ".$reserves->count());
         });
 
+    }
+
+    private function cleanOutfitting() {
+        // remove outfitting entries over 3 months old, as probably
+        // not actually on production list (and may have been data glitches).
+        \DB::delete("DELETE FROM module_station WHERE current = 0 AND updated_at < '".Carbon::parse("-3 months")->format("Y-m-d")."'");
     }
 }

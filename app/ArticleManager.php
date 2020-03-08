@@ -9,6 +9,7 @@ use App\Models\Influence;
 use App\Models\State;
 use App\Models\History;
 use App\Models\Engineer;
+use App\Models\Module;
 
 use Carbon\Carbon;
 
@@ -20,46 +21,46 @@ class ArticleManager {
 
     public function load($sequence) {
         $offset = date("z")*443;
-        $article = $sequence+$offset;
+        $article = $sequence + $offset;
+        $seed = $article*229;
 
-        $this->picker = new ArticlePicker($article);
+        $this->picker = new ArticlePicker($seed);
 
         $cycle = 11;
         
         $type = $article % $cycle;
-        $entry = floor($article / $cycle);
 
         //        $type = 7; $entry = $article;
         switch ($type) {
             // intro
-        case 0: return $this->loadHeadline($entry);
+        case 0: return $this->loadHeadline();
             // news headlines
-        case 1: return $this->loadConflicts($entry);
-        case 2: return $this->loadEvents($entry);
-        case 3: return $this->loadMovements($entry);
-        case 4: return $this->loadMarket($entry);
+        case 1: return $this->loadConflicts();
+        case 2: return $this->loadEvents();
+        case 3: return $this->loadMovements();
+        case 4: return $this->loadMarket();
             // advert
-        case 5: return $this->loadAdvert($entry,0);
+        case 5: return $this->loadAdvert();
             // articles
-        case 6: return $this->loadHelp($entry);
-        case 7: return $this->loadTraffic($entry);
+        case 6: return $this->loadHelp();
+        case 7: return $this->loadTraffic();
             // advert
-        case 8: return $this->loadAdvert($entry,1);
+        case 8: return $this->loadAdvert();
             // articles
-        case 9: return $this->loadSpotlight($entry);
-        case 10: return $this->loadMisc($entry);
+        case 9: return $this->loadSpotlight();
+        case 10: return $this->loadMisc();
         }
     }
 
     /* Special bulletins, if available, general welcome if not */
-    private function loadHeadline($entry) {
+    private function loadHeadline() {
         // TODO: actual special bulletins
         $this->template = 'radio.templates.intro';
         $this->parameters = [];
     }
 
     /* Information on current conflicts */
-    private function loadConflicts($entry) {
+    private function loadConflicts() {
         $conflicts = Conflict::orderBy('system_id')->get();
         $conflict = $this->picker->pickFrom($conflicts);
 
@@ -80,7 +81,7 @@ class ArticleManager {
     }
 
     /* Information on market data */
-    private function loadMarket($entry) {
+    private function loadMarket() {
         $commodities = Commodity::whereHas('reserves', function($q) {
             $q->where('reserves', '>', 0); // avoid mining-only, foreign imports, for now
             $q->where('current', 1);
@@ -126,7 +127,7 @@ class ArticleManager {
     }
 
     /* Information on event states (pirate attack, etc) */
-    private function loadEvents($entry) {
+    private function loadEvents() {
         $systems = System::populated()->orderBy('id')->get();
         $types = ['Outbreak', 'Pirate Attack', 'Blight', 'Drought', 'Terrorism', 'Infrastructure Failure', 'Natural Disaster', 'Public Holiday'];
         $consequences = ['Lockdown', 'Civil Unrest', 'Bust', 'Famine'];
@@ -171,7 +172,7 @@ class ArticleManager {
     }
 
     /* System spotlight articles */
-    private function loadSpotlight($entry) {
+    private function loadSpotlight() {
         $systems = System::populated()->whereNotNull('name')->orderBy('id')->get();
         $system = $this->picker->pickFrom($systems);
 
@@ -187,7 +188,7 @@ class ArticleManager {
     }
 
     /* Expansions and retreats */
-    private function loadMovements($entry) {
+    private function loadMovements() {
         $expansion = State::where('name', 'Expansion')->first();
         $retreat = State::where('name', 'Retreat')->first();
         
@@ -227,7 +228,7 @@ class ArticleManager {
     }
 
     /* Help articles */
-    private function loadHelp($entry) {
+    private function loadHelp() {
         $this->template = 'radio.templates.help.intro';
         $article = $this->picker->pickFrom([
             'location',
@@ -250,17 +251,12 @@ class ArticleManager {
     }
 
     /* Sponsorship pieces */
-    private function loadAdvert($entry, $updates) {
-        while ($updates > 0) {
-            // shift the picker to ensure the adverts cycle a bit
-            $this->picker->pick(10);
-            $updates--;
-        }
+    private function loadAdvert() {
         $this->template = "radio.templates.adverts.intro";
     }
 
     /* Traffic reports */
-    private function loadTraffic($entry) {
+    private function loadTraffic() {
         $this->template = "radio.templates.traffic.report";
         $systems = System::populated()->orderBy('id')->get();
         $system = $this->picker->pickFrom($systems);
@@ -278,14 +274,14 @@ class ArticleManager {
     }
     
     /* Misc broadcasts - lower frequency content with its own subdivisions */
-    private function loadMisc($entry) {
-        switch ($this->picker->pick(1)) {
-        case 0: return $this->loadEngineers($entry);
-        case 1: return $this->loadOutfitting($entry);
+    private function loadMisc() {
+        switch ($this->picker->pick(2)) {
+        case 0: return $this->loadEngineers();
+        case 1: return $this->loadOutfitting();
         }
     }
 
-    private function loadEngineers($entry) {
+    private function loadEngineers() {
         $engineers = Engineer::whereHas('blueprints', function($q) {
             $q->where('level', '<', 5);
         })->orderBy('id')->get();
@@ -305,6 +301,26 @@ class ArticleManager {
             'system' => $engineer->station->system,
             'station' => $engineer->station,
             'finished' => $finish->moduletype->description
+        ];
+    }
+
+    private function loadOutfitting() {
+        $modules = Module::isAvailable()->orderBy('id')->get();
+        $module = $this->picker->pickFrom($modules);
+
+        $this->template = "radio.templates.misc.module";
+
+        $stations = $module->stations;
+        if ($stations->count() <= 5) {
+            $dstations = $stations;
+        } else {
+            $dstations = $stations->slice($this->picker->pick($stations->count()-5), 5);
+        }
+        
+        $this->parameters = [
+            'module' => $module,
+            'stations' => $stations,
+            'dstations' => $dstations
         ];
     }
 }
