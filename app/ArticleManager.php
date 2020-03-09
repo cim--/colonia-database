@@ -43,7 +43,7 @@ class ArticleManager {
         case 5: return $this->loadAdvert();
             // articles
         case 6: return $this->loadHelp();
-        case 7: return $this->loadTraffic();
+        case 7: return $this->loadMisc();
             // advert
         case 8: return $this->loadAdvert();
             // articles
@@ -240,7 +240,11 @@ class ArticleManager {
             'mining',
             'outfitting',
             'engineering',
-            'tourism'
+            'tourism',
+            'politics',
+            'economics',
+            'research',
+            'highway'
         ]);
         
         $this->parameters = [
@@ -275,9 +279,10 @@ class ArticleManager {
     
     /* Misc broadcasts - lower frequency content with its own subdivisions */
     private function loadMisc() {
-        switch ($this->picker->pick(2)) {
+        switch ($this->picker->pick(3)) {
         case 0: return $this->loadEngineers();
         case 1: return $this->loadOutfitting();
+        case 2: return $this->loadTraffic();
         }
     }
 
