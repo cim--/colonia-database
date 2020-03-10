@@ -1,13 +1,14 @@
 <nav>
   <ul>
 	<li><div>Introduction</div>
-	  <ul >
+	  <ul class='compactnav'>
 		<li><a href="{{route('index')}}">Home</a></li>
 		<li><a title='About the Census' href="{{route('intro.about')}}">Census</a></li>
 		<li><a title='The story of Colonia' href="{{route('intro.story')}}">Story</a></li>
 		<li><a title='Differences between Colonia and Sol' href="{{route('intro.new')}}">Differences</a></li>
 		<li><a title='Comparing Colonia to other settlements' href="{{route('intro.regions')}}">Regions</a></li>
-     	<li><a href="{{route('intro.icons')}}">Icon Key</a></li>
+                <li><a title='Colonia Radio' href='{{route('radio')}}'>Radio</a></li>
+     	<li><a title='Key for icons' href="{{route('intro.icons')}}">Icons</a></li>
 	  </ul>
 	</li>
 	<li><div>Overview</div>
