@@ -2,4 +2,6 @@
 
 <p>{{10+$picker->pick(30)}} billion credits of aid has been granted by the Council for the purchase of emergency supplies, with commodity markets otherwise virtually shut down to prevent contamination.</p>
 
+<p>The Asura medical facility is now treating the most seriously-affected patients and working on a cure.</p>
+
 @include('radio.templates.events.outcomes', ['outcomes' => $parameters['outcomes']])

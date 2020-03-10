@@ -10,6 +10,7 @@ use App\Models\State;
 use App\Models\History;
 use App\Models\Engineer;
 use App\Models\Module;
+use App\Models\Faction;
 
 use Carbon\Carbon;
 
@@ -30,6 +31,7 @@ class ArticleManager {
         
         $type = $article % $cycle;
 
+        
         //        $type = 7; $entry = $article;
         switch ($type) {
             // intro
@@ -279,10 +281,11 @@ class ArticleManager {
     
     /* Misc broadcasts - lower frequency content with its own subdivisions */
     private function loadMisc() {
-        switch ($this->picker->pick(3)) {
+        switch ($this->picker->pick(4)) {
         case 0: return $this->loadEngineers();
         case 1: return $this->loadOutfitting();
         case 2: return $this->loadTraffic();
+        case 3: return $this->loadRankings();
         }
     }
 
@@ -326,6 +329,55 @@ class ArticleManager {
             'module' => $module,
             'stations' => $stations,
             'dstations' => $dstations
+        ];
+    }
+
+    private function loadRankings() {
+        $factions = Faction::with(['influences' => function ($q) {
+            $q->where('current', 1);
+        }])->with('stations')->with('installations')
+                  ->notHidden()->notVirtual()->get();
+
+        switch ($this->picker->pick(5)) {
+        case 0:
+            $sorted = $factions->sortByDesc(function($f) {
+                return $f->influences->count();
+            });
+            $this->template = "radio.templates.rankings.presence";
+            break;
+        case 1:
+            $sorted = $factions->sortByDesc(function($f) {
+                return $f->stations->where('primary', 1)->count();
+            });
+            $this->template = "radio.templates.rankings.syscon";
+            break;
+        case 2:
+            $sorted = $factions->sortByDesc(function($f) {
+                return $f->stations->count() + $f->installations->count();
+            });
+            $this->template = "radio.templates.rankings.asset";
+            break;
+        case 3:
+            $sorted = $factions->sortByDesc(function($f) {
+                $avg = $f->influences->avg('happiness');
+                return 125-(25*$avg);
+            });
+            $this->template = "radio.templates.rankings.happy";
+            break;
+        case 4:
+            $sorted = $factions->sortByDesc(function($f) {
+                $reach = 0;
+                foreach ($f->influences as $i) {
+                    $reach += $i->influence * $i->system->population / 100;
+                }
+                return $reach;
+            });
+            $this->template = "radio.templates.rankings.reach";
+            break;
+        }
+
+        $this->parameters = [
+            'top' => $sorted->slice(0,5)->values()
         ];
     }
 }
