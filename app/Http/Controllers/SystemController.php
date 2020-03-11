@@ -85,7 +85,7 @@ class SystemController extends Controller
      * @param  \App\Models\System  $system
      * @return \Illuminate\Http\Response
      */
-    public function show(System $system)
+    public function show(System $system, Request $request)
     {
         if (!$system->x) {
             $system->refreshCoordinates();
@@ -97,10 +97,29 @@ class SystemController extends Controller
         $user = \Auth::user();
         /* Hide individual system estimates - too unreliable */
         if (!$user || $user->rank < 2) {
-            $reports = Systemreport::where('system_id', $system->id)->where('estimated', false)->orderBy('date')->get();
+            $reportbuilder = Systemreport::where('system_id', $system->id)->where('estimated', false)->orderBy('date');
         } else {
-            $reports = Systemreport::where('system_id', $system->id)->orderBy('date')->get();
+            $reportbuilder = Systemreport::where('system_id', $system->id)->orderBy('date');
         }
+        
+        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+        
+        $reportbuilder->whereDate('date', '>=', $minrange)
+            ->whereDate('date', '<', $maxrangecomp);
+        
+        $reports = $reportbuilder->get();
         $datasets = [
             'traffic' => [
                 'label' => "Traffic",
@@ -204,7 +223,9 @@ class SystemController extends Controller
             'others' => $others,
             'controlling' => $system->controllingFaction(),
             'factions' => $system->latestFactions(),
-            'report' => $system->latestReport()
+            'report' => $system->latestReport(),
+            'minrange' => $minrange,
+            'maxrange' => $maxrange,
         ]);
     }
 

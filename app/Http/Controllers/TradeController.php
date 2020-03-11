@@ -390,7 +390,7 @@ class TradeController extends Controller
 
         foreach ($supply as $date => $amount) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 $datasets['supply']['data'][] = [
                     'x' => \App\Util::graphDisplayDateTime($datestamp),
                     'y' => (int)$amount
@@ -399,7 +399,7 @@ class TradeController extends Controller
         }
         foreach ($demand as $date => $amount) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 $datasets['demand']['data'][] = [
                     'x' => \App\Util::graphDisplayDateTime($datestamp),
                     'y' => (int)$amount
@@ -597,7 +597,7 @@ class TradeController extends Controller
 
         foreach ($dates as $date => $info) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 foreach (['il','ih','el','eh'] as $series) {
                     if ($info[$series] != null) {
                         $datasets[$series]['data'][] = [

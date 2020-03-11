@@ -374,7 +374,7 @@ class StationController extends Controller
         $entries = Reserve::where('station_id', $station->id)
             ->where('commodity_id', $commodity->id)
             ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<=', $maxrange->copy()->addDay())
+            ->whereDate('date', '<', $maxrange->copy()->addDay())
             ->where('price', '!=', 0)
             ->with('states')
             ->orderBy('created_at');
