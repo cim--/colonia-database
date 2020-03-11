@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class History extends Model
 {
     protected $table = 'historys';
@@ -27,5 +29,21 @@ class History extends Model
             "expanded to", "expanded by invasion to", "retreated from",
             "lost control of", "took control of"
         ]);
+    }
+
+    public function scopeMovement($q) {
+        return $q->whereIn('description', [
+            "expanded to", "expanded by invasion to", "retreated from",
+        ]);
+    }
+
+    public function scopeOwnership($q) {
+        return $q->whereIn('description', [
+            "lost control of", "took control of"
+        ]);
+    }
+
+    public function scopeRecent($q) {
+        return $q->whereDate('date', '>=', Carbon::parse("-2 days"));
     }
 }

@@ -1,0 +1,4 @@
+<p>Ed's 38, an exploration group supporting the eponymous Ed on the original Distant Worlds expedition and his subsequent adventures, founded this system in early 3303 to extend the region's industrial production.</p>
+<p>The starport Dunker's Rest and the gas giant Garibaldi have both been named in honour of the group's traditions, which involve the import of substantial quantities of Tea. The security and quality of the tea supply is of particular importance to the group, which may explain the high levels of production of Water Purifiers, Medicines and Marine Equipment by its factories.</p>
+<p>Burnham’s Beacon, a residential settlement to provide quieter living space away from the factories and spaceport, is near Garibaldi.</p>
+<p>Security in the system is currently provided by the Nu Simbad group, who took control in February 3306 as part of their prisoner control programme.</p>

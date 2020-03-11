@@ -1,0 +1,3 @@
+<p>Looking for the ultimate adventure? Why not visit Monde de la Morte in Spoihaae XE-X d2-9? This metal-rich world's eccentric orbit takes it up closer to a white dwarf than you've ever seen them before. In a two hour trip, you'll see the glow of radiation bathe the horizon, spectacular gravitational lensing, and go from sunrise to sunset in a single minute.</p>
+
+<p>Please note that this trip may not be covered by some travel insurance policies, and is not suitable for those with an allergy to hard gamma radiation. Consult with your doctor before travel, and dress sensibly for the environment.</p>

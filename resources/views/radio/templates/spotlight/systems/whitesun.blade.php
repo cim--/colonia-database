@@ -1,0 +1,1 @@
+<p>The appropriately named F-class star lights up the high-tech facilities of Eavesdown Docks. Constructed in the late stages of the Colonia Expansion Initiative by the Browncoats, this system on the fringes of the region is a substantial producer of a wide range of commodities for the nearby industries.</p>

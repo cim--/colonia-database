@@ -149,8 +149,8 @@ class TradeController extends Controller
             }
             $crow['stock'] = $stock;
             $crow['demand'] = $demand;
-            $crow['supplycycle'] = $commodity->supplycycle ? round($commodity->supplycycle/86400,1) : null;
-            $crow['demandcycle'] = $commodity->demandcycle ? round(-$commodity->demandcycle/86400,1) : null;
+            $crow['supplycycle'] = $commodity->supplycycle ? max(round($commodity->supplycycle/86400,3),0.001) : null;
+            $crow['demandcycle'] = $commodity->demandcycle ? max(round(-$commodity->demandcycle/86400,3),0.001) : null;
             if ($crow['supplycycle'] !== null && count($exported) > 0) {
                 $crow['cycstock'] = floor($crow['baselinestock']/$crow['supplycycle']);
                 $nominaldailystocktotal += $crow['cycstock'];
@@ -390,7 +390,7 @@ class TradeController extends Controller
 
         foreach ($supply as $date => $amount) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 $datasets['supply']['data'][] = [
                     'x' => \App\Util::graphDisplayDateTime($datestamp),
                     'y' => (int)$amount
@@ -399,7 +399,7 @@ class TradeController extends Controller
         }
         foreach ($demand as $date => $amount) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 $datasets['demand']['data'][] = [
                     'x' => \App\Util::graphDisplayDateTime($datestamp),
                     'y' => (int)$amount
@@ -597,7 +597,7 @@ class TradeController extends Controller
 
         foreach ($dates as $date => $info) {
             $datestamp = Carbon::parse($date);
-            if ($datestamp->gte($minrange) && $datestamp->lte($maxrangecomp)) {
+            if ($datestamp->gte($minrange) && $datestamp->lt($maxrangecomp)) {
                 foreach (['il','ih','el','eh'] as $series) {
                     if ($info[$series] != null) {
                         $datasets[$series]['data'][] = [

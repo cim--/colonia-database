@@ -11,133 +11,51 @@
 <div id='newhere'>
   <div class='newbox'>
 	<div>
-	  <h2>Location and Travel</h2>
-
 	  @include('intro.botbox', ['commands' => ["!help", "!summary systems"]])
-	  
-	  <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol, near the border of the Inner Scutum-Centaurus Arm with the Odin's Hold region of the galactic core. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
-	  
-	  <p>A set of 6 surface resupply outposts and a newer set of 3 orbital stations break the journey from Sol into easier and shorter stages, and the neutron highways are well mapped.</p>
-	  
-	  <p>The populated region now consists of {{$systemcount}} systems and is approximately 100 LY in diameter.</p>
-	</div>
+          @include('intro.new.location')
+        </div>
 
 	<div>
-	  <h2>Trading</h2>
 	  @include('intro.botbox', ['commands' => ["!report system", "!locate economy name", "!summary economy"]])
-
-	  <p>High-Tech and Service economies are much more common. On the other hand, there are not yet any Terraforming economies - the colony is small enough not to need the extra living space yet. Colony economies are also very rare - in general, Tourism economies have taken their place.</p>
-
-	  <p>None of the systems have a high population so supply and demand levels for goods are generally low - however, many of the outlying systems also have low traffic levels, so surpluses and deficits can build up.</p>
-
-    <p>Decent profits can be made on relatively short journeys for those who know where to look - use the <a href="{{route('trade')}}">trade helper</a> and <a href="{{route('reserves')}}">commodity reserves</a> pages to help find routes, and the <a href="{{route('reports.traffic')}}">traffic report</a> to prioritise less serviced markets. The additional profits enabled in the Sol bubble through the policies of particular Powers are of course not available.</p>
-
-	  <p>There is only one rare good - Jaques Quinentian Stills - and the radius of the Colonia region is too small for sales to be profitable anywhere locally.</p>
-
+          @include('intro.new.trading')
 	</div>
 
 	<div>
-	  <h2>Exploration</h2>
-
 	  @include('intro.botbox', ['commands' => ["!cartographics grav pad dist"]])
-	  
-	  <p>In the early days of Colonia cartographics services were rare. Nowadays, a wide range of stations provide these services - for historical reasons, the <a href="{{route('stations.show', 2)}}">Colonia Hub</a> surface base in Colonia and the <a href="{{route('stations.show', 7)}}">Colonia Dream</a> Coriolis in Ratraii do not.</p>
-
-	  <p>The Colonia region is near to numerous larger and planetary nebula in the Festival Grounds area, and is just above a large neutron field. As a well-equipped settlement with a reasonably central position, it makes an excellent base for expeditions to most of the galaxy.</p>
-
-	  <p>Lagrange clouds are common around the nebula, including species of umbrella mollusc.</p>
+	  @include('intro.new.exploration')
 	</div>
 
 	<div>
-	  <h2>Combat</h2>
-
 	  @include('intro.botbox', ['commands' => ["!locate feature High RES", "!locate state War", "!locate facility broker"]])
-	  
-	  <p>The usual range of combat hotspots are available - nav beacons, resource extraction sites and combat zones. There are also many <a href='{{route('installations.index')}}'>installations</a> and <a href='{{route('megaships.index')}}'>megaships</a> in the region, including some Unauthorised Installations</p>
-
-	  <p>As there are no local superpower-aligned factions, superpower bounties must be sold using an Interstellar Factors (aka Broker) service. The locations of IF services vary depending on political states, but there are usually several about.</p>
+	  @include('intro.new.combat')
 	</div>
 
 	<div>
-	  <h2>Piracy and Espionage</h2>
-
 	  @include('intro.botbox', ['commands' => ["!megaship serial", "!installations system"]])
-	  
-	  <p>A large number of <a href='{{route('megaships.index')}}'>megaships</a> are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
-
-	  <p>These ships carry rare cargoes and localised cargoes which are sometimes in great demand in the region either on the conventional markets or for tech brokers.</p>
-
-	  <p>There are also a very large number of <a href='{{route('installations.index')}}'>installations</a>, used by the Council to provide facilities separate to the primary orbital stations. The cargo holds and data transmitters of these are also vulnerable to pirates.</p>
-
-	  <p>The usual opportunities for pirates to intercept courier ships are also available.</p>
-
-	  <p>In defence of the region, the Council and its allies take significant measures to prevent Anarchy factions taking control of stations or systems. This can make it more difficult for pirates to operate with impunity.</p>
+	  @include('intro.new.piracy')
 	  
 	</div>
 	
 	<div>
-	  <h2>Missions</h2>
 	  @include('intro.botbox', ['commands' => ["!mission system"]])
-
-	  <p>Most mission types are available somewhere in Colonia, but the variety and quantity of missions differs a lot from system to system. The following major differences apply:</p>
-
-	  <ul>
-		<li>"Tour" VIP passenger missions are not available, as all local tourist beacons are currently in a single system</li>
-		<li>"Famous explorer" passenger missions are very common, but due to the distribution of distant tourist beacons, mostly go to systems within 500 LY of Sol. Missions to Sag A*, Beagle Point or other deep space destinations do exist but may require visiting several passenger boards to find.</li>
-	  </ul>
-
-	  <p>The <a href="{{route('map')}}">map</a> is able to show which systems are within 20 LY of other systems - systems with more of these links usually (though not always) have more varied mission availability.</p>
-
-	  <p>In addition to these short range links:</p>
-	  <ul>
-		<li>All systems may generate mid-range missions to the centre of the region (currently those systems within 11 LY of Colonia).</li>
-		<li>Tourism economies may sometimes generate long-range data courier and one-way passenger missions to systems in the Sol bubble.</li>
-	  </ul>
-	  
+	  @include('intro.new.missions')
 	</div>
 	
   </div>
   <div class='newbox'>
 
 	<div>
-	  <h2>Mining</h2>
-
 	  @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
-	  
-	  <p>The briefness of human occupation of the region means that all mineral reserves are Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
-
-	  <p>A Painite double hotspot has been found in the Randgnid 4 A-ring, and system states are generally favourable to the selling of core-mined deposits.</p>
-
+	  @include('intro.new.mining')
 	</div>
 	
 	<div>
-	  <h2>Outfitting and Shipyards</h2>
 	  @include('intro.botbox', ['commands' => ["!locate facility high-quality"]])
-
-	  <p>With the construction of the Colonia Applied Research facility, the region is capable of producing almost all outfitting components, though availability will depend somewhat on economic state. A major exception is superpower-aligned ship hulls, and their corresponding armour, for while there is no local production license (Anarchy shipyards may provide some local production).</p>
-	  <p><a href='{{route('outfitting')}}'>A full list of local availability</a> is provided.</p>
-	  
-	  <p>Transfer costs for items from the bubble are approximately 130% of the base price, and the transfer will take a little over 60 hours. In general it may be more efficient to buy and engineer locally.</p>
-
-	  <p>Colonia Hub is currently the only station providing most AX anti-Thargoid weapons, though at present there is no sign of a Thargoid presence. The Shutdown Field Neutraliser is common enough to appear at several Military and High-Tech surface ports.</p>
-	  
+	  @include('intro.new.outfitting')
 	</div>
 
-    <div>
-	  <h2>Engineering</h2>
-
-	  <p>Colonia has <a href='{{route('engineers.index')}}'>improving engineering options</a> locally, and if blueprints have been pinned, remote workshops are available and can be used to engineer locally-bought modules to grade 5, with local engineers adding the experimental effects. Exclusive blueprints are available for the Shield Cell Bank and Life Support modules.</p>
-
-	  <p>While the system populations at under 1 million would normally be insufficient to support Material and Tech Brokers, there is one of each present:</p>
-	  <ul>
-		<li>Data: Colonia Dream, Ratraii</li>
-		<li>Raw: TolaGarf's Junkyard, Kojeara</li>
-		<li>Manufactured: Foster Terminal, Coeus</li>
-		<li>Human Tech: Bolden's Enterprise, Tir</li>
-		<li>Guardian Tech: Jaques Station, Colonia</li>
-	  </ul>
-
-	  <p>In addition to normal sources of engineering materials, some <a href='{{route('installations.index')}}'>installations</a> have satellites which can be scanned for data, and miscellaneous manufactured materials (as well as some cargoes required by the Tech Brokers) can be found in the debris around the <a href='{{route('megaships.show',9)}}'>wrecked bulk carrier</a> in Luchtaine or in its cargo holds.</p>
+	<div>
+	  	  @include('intro.new.engineering')
     </div>
     
 	<div>
@@ -160,17 +78,7 @@
 	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127. This also covers the Kashyapa highway system, with Polo Harbour marking the start of the Gandharvi jurisdiction.</p>
 	</div>
 	<div>
-	  <h2>Other points of interest</h2>
-
-	  <p>There are several <a href='{{route('stations.index')}}#cruiser'>dockable megaships</a>, <a href='{{route('stations.index')}}#asteroid'>asteroid bases</a> and <a href='{{route('stations.index')}}#asteroid'>ring-embedded stations</a>.</p>
-
-	  <p><a href="{{route('systems.show', 13)}}">Magellan</a> is one of the few inhabited systems with a neutron star primary.</p>
-
-      <p>A large number of <a href='{{route('installations.index')'>installations</a>, <a href='{{route('megaships.index')'>mobile megaships</a> and <a href='{{route(sites.index')'>other sites</a> are present.</p>
-
-      <p>A rare glowing green gas giant can be found in Eol Prou KW-L c8-32.</p>
-
-      <p>The infamous <a href="https://forums.frontier.co.uk/showthread.php/357172-Challenge-to-land-on-the-world-of-death">World of Death</a> (Spoihaae XE-X d2-9), a landable body which passes through the cone of a white dwarf, is around 600 LY away.</p>
+	  @include('intro.new.tourism')
 	</div>
   </div>
 </div>

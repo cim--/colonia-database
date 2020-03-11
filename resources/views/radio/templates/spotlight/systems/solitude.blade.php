@@ -1,0 +1,2 @@
+<p>This system was settled by the Knights of Colonial Karma, an egalitarian feudal organisation based on providing mutual assistance and protection to its members, as part of the Colonia Expansion Initiative.</p>
+<p>Primarily intended as a place for rest and meditation away from the chaos of the bubble, and situated on the edge of the Colonia region, this system is generally quiet. A small amount of industrial production takes place around the starport to provide a more diverse economy on this side of the region.</p>

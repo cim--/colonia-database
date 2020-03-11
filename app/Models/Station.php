@@ -64,6 +64,11 @@ class Station extends Model
         return $this->name;
     }
 
+    public function displayType() {
+        return "station";
+    }
+
+    
     public function displayRoute() {
         return 'stations.show';
     }
@@ -93,6 +98,12 @@ class Station extends Model
             $s->where('hasSmall', 1)
               ->orWhere('hasMedium', 1)
               ->orWhere('hasLarge', 1);
+        });
+    }
+
+    public function scopeLargeDockable($q) {
+        return $q->whereHas('stationclass', function($s) {
+            $s->where('hasLarge', 1);
         });
     }
 

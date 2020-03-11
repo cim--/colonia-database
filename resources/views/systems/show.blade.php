@@ -380,6 +380,18 @@
 @if ($system->inhabited() && !$system->virtualonly)
 <h2>Report history</h2>
 @include('layout/chart')
+
+
+{!! Form::open(['route' => ['systems.show', 'system' =>$system->id], 'method' => 'GET']) !!}
+{!! Form::label('minrange', 'Start date') !!}
+{!! Form::text('minrange', App\Util::formDisplayDate($minrange)) !!}
+{!! Form::label('maxrange', 'End date') !!}
+{!! Form::text('maxrange', App\Util::formDisplayDate($maxrange)) !!}
+{!! Form::submit('Set date range') !!}
+<a href='{{route('systems.show', ['system' =>$system->id])}}'>(Show all data)</a>
+{!! Form::close() !!}
+
+
 @endif
 
 @endsection

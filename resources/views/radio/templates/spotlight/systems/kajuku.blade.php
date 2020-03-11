@@ -1,0 +1,2 @@
+<p>The military base of Prince Kajuku's Paradise, constructed by the Simple Elite Corps during the Colonia Expansion Initiative, guards the underside of the nebula. Despite the royalist traditions hinted at by the base's name, the SEC are a democratic organisation - although one with processes and governance structured along corporate lines.</p>
+<p>The system's security was temporarily destabilised as the Simple Elite Corps challenged the Colonia Citizen's Network for control of the Tir system, though returned to normal quickly once that conflict was resolved.</p>

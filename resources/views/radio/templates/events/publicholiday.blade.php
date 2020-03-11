@@ -1,0 +1,3 @@
+<p>Celebrations are underway in {{$parameters['system']->name}} today {{$picker->pickFrom(["for Worker's Day", "for Founder's Day", "at the opening of a festival of culture", "at the final of the zero-g cricket championships", "as economic conditions continue to improve"])}}, with numerous parades, parties, and other events planned to go on well into the night.</p>
+
+<p>{{$parameters['faction']->name}}, which is sponsoring the event, has requested luxury foods, drinks, and jewellery for the revellers, who are sure to be {{$picker->pickFrom(['happy on this splendid occasion', 'glad to get away from the recent stresses', 'impressed by the latest cuisines'])}}.</p>

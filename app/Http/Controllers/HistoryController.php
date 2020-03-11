@@ -63,8 +63,26 @@ class HistoryController extends Controller
     }
 
 
-    public function trends() {
+    public function trends(Request $request) {
         $reports = Systemreport::orderBy('date');
+
+        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+        
+        $reports->whereDate('date', '>=', $minrange)
+            ->whereDate('date', '<', $maxrangecomp);
+        
         $datasets = [
             'traffic' => [
                 'label' => "Traffic",
@@ -215,7 +233,9 @@ class HistoryController extends Controller
             ]);
 
         return view('history/trends', [
-            'chart' => $chart
+            'chart' => $chart,
+            'minrange' => $minrange,
+            'maxrange' => $maxrange,
         ]);
     }
     
