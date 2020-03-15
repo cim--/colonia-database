@@ -70,6 +70,19 @@ class Megaship extends Model
         }
     }
 
+    public function currentLocationName()
+    {
+        $sequence = $this->currentSequence();
+        if ($sequence == null) {
+            return "Unknown";
+        }
+        if ($sequence->system_id) {
+            return $sequence->system->displayName();
+        } else {
+            return $sequence->systemdesc;
+        }
+    }
+    
     public function displayName()
     {
         return $this->megashipclass->name." ".$this->serial;

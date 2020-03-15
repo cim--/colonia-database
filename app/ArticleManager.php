@@ -11,6 +11,7 @@ use App\Models\History;
 use App\Models\Engineer;
 use App\Models\Module;
 use App\Models\Faction;
+use App\Models\Megaship;
 
 use Carbon\Carbon;
 
@@ -31,7 +32,6 @@ class ArticleManager {
         
         $type = $article % $cycle;
 
-        return $this->loadMovements();
         //        $type = 7; $entry = $article;
         switch ($type) {
             // intro
@@ -114,6 +114,11 @@ class ArticleManager {
         $this->template = 'radio.templates.markets.commodity'; // TODO: variety
 
         //dd($supply, $commodity->supplycycle/86400, $demand, $commodity->demandcycle/86400);
+        $megaships = Megaship::whereNull('decommissioned')->whereHas('megashiprole', function($q) {
+            $q->where('name', 'Trade');
+        })->get();
+        $megaship = $this->picker->pickFrom($megaships);
+        
         
         $this->parameters = [
             'commodity' => $commodity,
@@ -123,7 +128,8 @@ class ArticleManager {
             'maxbuy' => Util::sigFig($maxbuy),
             'supply' => Util::sigFig($supply),
             'demand' => Util::sigFig($demand),
-            'surplus' => Util::sigFig(($supply * 86400 / $commodity->supplycycle) + ($demand * 86400 / $commodity->demandcycle))
+            'surplus' => Util::sigFig(($supply * 86400 / $commodity->supplycycle) + ($demand * 86400 / $commodity->demandcycle)),
+            'megaship' => $megaship
         ];
         
     }
