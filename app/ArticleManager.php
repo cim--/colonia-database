@@ -31,7 +31,7 @@ class ArticleManager {
         
         $type = $article % $cycle;
 
-        
+        return $this->loadMovements();
         //        $type = 7; $entry = $article;
         switch ($type) {
             // intro
