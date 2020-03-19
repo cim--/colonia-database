@@ -1,4 +1,4 @@
-<h2>Piracy and Espionage</h2>
+<h2>Piracy and Espionage.</h2>
 
 <p>A large number of <a href='{{route('megaships.index')}}'>megaships</a> are maintained by the Council for logistics purposes, both to transport cargo within Colonia, and to maintain the Highway stations towards Sol.</p>
 

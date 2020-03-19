@@ -1,4 +1,4 @@
-<h2>Exploration</h2>
+<h2>Exploration.</h2>
 	  
 <p>In the early days of Colonia cartographics services were rare. Nowadays, a wide range of stations provide these services - for historical reasons, the <a href="{{route('stations.show', 2)}}">Colonia Hub</a> surface base in Colonia and the <a href="{{route('stations.show', 7)}}">Colonia Dream</a> Coriolis in Ratraii do not, and nor do most stations in the specialist hydroponics hub of Kinesi.</p>
 

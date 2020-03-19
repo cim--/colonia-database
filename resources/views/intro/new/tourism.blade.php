@@ -1,4 +1,4 @@
-<h2>Tourism points of interest</h2>
+<h2>Tourism points of interest.</h2>
 
 <p>There are several <a href='{{route('stations.index')}}#cruiser'>dockable megaships</a>, <a href='{{route('stations.index')}}#asteroid'>asteroid bases</a> and ring-embedded stations.</p>
 

@@ -1,4 +1,4 @@
-	  <h2>Combat</h2>
+	  <h2>Combat.</h2>
 	  
 <p>Bounty hunters are always required in the region, as pirates look for easy pickings around navigation beacons and at resource extraction sites, while mercenaries can find regular work in the minor conflicts between partner organisations. There are also many <a href='{{route('installations.index')}}'>installations</a> and <a href='{{route('megaships.index')}}'>megaships</a> in the region, including some Unauthorised Installations, which occasionally require defending.</p>
 

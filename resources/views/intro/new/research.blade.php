@@ -1,4 +1,4 @@
-<h2>Colonial Research and Science</h2>
+<h2>Colonial Research and Science.</h2>
 <p>Colonia's position in the galaxy and local vacuum life-forms led to it being a centre of exploration research from the early days, while its isolation and independence has made it attractive to any researcher concerned about their results offending a superpower. There are several major research facilities in the region, with a range of specialities:</p>
 <ul>
 <li>Balakor's Research Post: local astrography and biology.</li>

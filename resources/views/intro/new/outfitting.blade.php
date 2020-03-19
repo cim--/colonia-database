@@ -1,4 +1,4 @@
-<h2>Outfitting and Shipyards</h2>
+<h2>Outfitting and Shipyards.</h2>
 
 <p>With the construction of the Colonia Applied Research facility, the region is capable of producing <a href='{{route('outfitting')}}'>almost all outfitting components</a>, though availability will depend somewhat on local stock levels and economic situations. Ships designed by the Federation, Empire and Alliance may be harder to come by, though certain criminal organisations have been known to obtain mostly-legitimate second-hand hulls.</p>
 	  
