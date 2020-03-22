@@ -6,7 +6,7 @@
   @elseif ($parameters['blueprint']->level - floor($parameters['blueprint']->level) > 0.5)
   believes that a breakthrough is very close. There is a high need for additional research materials to be brought to the facility.
   @elseif ($parameters['blueprint']->level - floor($parameters['blueprint']->level) > 0.25)
-  claims early results are promising and with extra materials it is likely that a more advanced {{$parameters['blueprint']->moduletype->description}} can be constructed
+  claims early results are promising and with extra materials it is likely that a more advanced {{$parameters['blueprint']->moduletype->description}} can be constructed.
   @elseif ($parameters['blueprint']->level - floor($parameters['blueprint']->level) > 0.1)
   is investigating potential lines of enquiry for further improvements, and needs large amounts of research materials and data to support this.
   @else

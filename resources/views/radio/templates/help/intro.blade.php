@@ -5,3 +5,9 @@
   ])}}</p>
 
 @include($parameters['article'], $parameters)
+
+<p>{{$picker->pickFrom([
+  "We'll have more from the Introduction to Colonia series later, but for now, back to the news.",
+  "More on this later, after the news.",
+  "Stay tuned for more in the Introduction to Colonia series later."
+  ])}}</p>

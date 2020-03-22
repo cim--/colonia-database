@@ -1,4 +1,4 @@
-<p>Now, the {{$parameters['commodity']->category}} market update, looking at {{$parameters['commodity']->name}}</p>
+<p>Now, the {{$parameters['commodity']->category}} market update, looking at {{$parameters['commodity']->name}}.</p>
 
 <p>For sale at the moment on the open market are {{number_format($parameters['supply'])}} tonnes at prices between {{number_format($parameters['minsell'])}} and {{number_format($parameters['maxsell'])}} credits.</p>
 
