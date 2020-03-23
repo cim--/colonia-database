@@ -184,13 +184,21 @@ class ArticleManager {
         $systems = System::populated()->whereNotNull('name')->orderBy('id')->get();
         $system = $this->picker->pickFrom($systems);
 
+        $outros = [
+            "Our Systems of Colonia series will continue after the news.",
+            "For more Systems of Colonia later, stay tuned.",
+            "If you think there's anything else about this system or its inhabitants we should mention, please call in and let us know.",
+            "More in this series later, after the latest headlines.",
+        ];
+        
         $this->template = 'radio.templates.spotlight.intro';
         $this->parameters = [
             'population' => $system->population,
             'name' => $system->name,
             'station' => $system->mainStation()->name,
             'faction' => $system->controllingFaction()->name,
-            'detail' => 'radio.templates.spotlight.systems.'.strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $system->name))
+            'detail' => 'radio.templates.spotlight.systems.'.strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $system->name)),
+            'outros' => $outros
         ];
         
     }
