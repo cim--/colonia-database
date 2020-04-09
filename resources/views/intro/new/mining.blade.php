@@ -1,4 +1,4 @@
-<h2>Mining</h2>
+<h2>Mining.</h2>
 	  
 <p>The briefness of human occupation of the region means that all mineral reserves are classified as Pristine in quality. The majority of inhabited systems have some mining opportunities, though relatively few have metallic asteroids. Mining options are shown for inhabited systems in the system catalogue, though experienced miners may find better opportunities in nearby uninhabited systems.</p>
 

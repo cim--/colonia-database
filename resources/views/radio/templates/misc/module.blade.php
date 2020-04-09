@@ -13,12 +13,12 @@
   <li>{{$station->displayName()}}:
     @if ($station->pivot->current)
     @if ($station->pivot->unreliable)
-    limited stock
+    limited stock.
     @else
-    full stock
+    full stock.
     @endif
     @else
-    out of stock
+    out of stock.
     @endif
   </li>
   @endforeach

@@ -10,13 +10,13 @@
 @if (count($parameters['assets']) > 1)
 <p>Both sides claim that both structures should be run by them, and with neither willing to back down, the fighting will continue.</p>
 @else
-<p>The 
+<p> 
   @if ($parameters['conflict']->asset1)
   {{$parameters['conflict']->faction1->name}}
   @else
   {{$parameters['conflict']->faction2->name}}
   @endif
-  are hoping for a quick victory over the enemies to retain control.
+  are hoping for a quick victory over their enemies to retain control.
 </p>
 @endif
 

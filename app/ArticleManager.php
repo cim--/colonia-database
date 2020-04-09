@@ -11,6 +11,7 @@ use App\Models\History;
 use App\Models\Engineer;
 use App\Models\Module;
 use App\Models\Faction;
+use App\Models\Megaship;
 
 use Carbon\Carbon;
 
@@ -31,7 +32,6 @@ class ArticleManager {
         
         $type = $article % $cycle;
 
-        
         //        $type = 7; $entry = $article;
         switch ($type) {
             // intro
@@ -114,6 +114,11 @@ class ArticleManager {
         $this->template = 'radio.templates.markets.commodity'; // TODO: variety
 
         //dd($supply, $commodity->supplycycle/86400, $demand, $commodity->demandcycle/86400);
+        $megaships = Megaship::whereNull('decommissioned')->whereHas('megashiprole', function($q) {
+            $q->where('name', 'Trade');
+        })->get();
+        $megaship = $this->picker->pickFrom($megaships);
+        
         
         $this->parameters = [
             'commodity' => $commodity,
@@ -123,7 +128,8 @@ class ArticleManager {
             'maxbuy' => Util::sigFig($maxbuy),
             'supply' => Util::sigFig($supply),
             'demand' => Util::sigFig($demand),
-            'surplus' => Util::sigFig(($supply * 86400 / $commodity->supplycycle) + ($demand * 86400 / $commodity->demandcycle))
+            'surplus' => Util::sigFig(($supply * 86400 / $commodity->supplycycle) + ($demand * 86400 / $commodity->demandcycle)),
+            'megaship' => $megaship
         ];
         
     }
@@ -178,13 +184,21 @@ class ArticleManager {
         $systems = System::populated()->whereNotNull('name')->orderBy('id')->get();
         $system = $this->picker->pickFrom($systems);
 
+        $outros = [
+            "Our Systems of Colonia series will continue after the news.",
+            "For more Systems of Colonia later, stay tuned.",
+            "If you think there's anything else about this system or its inhabitants we should mention, please call in and let us know.",
+            "More in this series later, after the latest headlines.",
+        ];
+        
         $this->template = 'radio.templates.spotlight.intro';
         $this->parameters = [
             'population' => $system->population,
             'name' => $system->name,
             'station' => $system->mainStation()->name,
             'faction' => $system->controllingFaction()->name,
-            'detail' => 'radio.templates.spotlight.systems.'.strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $system->name))
+            'detail' => 'radio.templates.spotlight.systems.'.strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $system->name)),
+            'outros' => $outros
         ];
         
     }

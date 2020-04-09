@@ -1,4 +1,4 @@
-<h2>The Colonia Highway</h2>
+<h2>The Colonia Highway.</h2>
 <p>To provide resupply facilities for ships travelling between Colonia and Sol, two sets of stations have been set up. A large fleet of support ships travels between Colonia and these stations on a 12-week cycle, to ensure that they remain well-stocked and to rotate crew.</p>
 <p>The first set, consisting of six mostly-automated surface bases, was constructed in late 3302 with the assistance of Latugara PLC to provide accommodation and rest for freighter crews supplying the early settlement.</p>
 <p>These facilities - Polo Harbour, Gagarin Gate, Sacaqawea Space Port, Eagle's Landing, Amundsen Terminal and Hillary Depot - are generally positioned in or near nebulae on the route between the two regions, and have very basic facilities. They are directly administered by the Colonia Council.</p>

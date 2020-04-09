@@ -1,4 +1,4 @@
-<h2>Trading</h2>
+<h2>Trading.</h2>
 
 <p>Compared with the Sol region, High-Tech and Service economies are much more common. On the other hand, there are not yet any Terraforming economies - the settlement is small enough not to need the extra living space yet. Colony economies are also very rare - in general, Tourism economies have taken their place.</p>
 

@@ -44,9 +44,9 @@ if ( 'speechSynthesis' in window ) {
 		    // replace contents
 		    console.log("Loading "+sequence);
 		    $('#speechbox').html(data);
-		    setTimeout(ctrl.RadioQueue(),3000); // breathe between articles
+		    setTimeout(ctrl.RadioQueue,1000); // breathe between articles
 		    sequence++;
-		    setTimeout(ctrl.Monitor, 10000);
+		    setTimeout(ctrl.Monitor, 5000);
 		});
 
 	    } else {

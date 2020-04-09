@@ -1,5 +1,5 @@
 	  
-<h2>Location and Travel</h2>
+<h2>Location and Travel.</h2>
 
 <p>The Colonia region is within the Eol Prou sector approximately 22,000 LY from Sol, near the border of the Inner Scutum-Centaurus Arm with the Odin's Hold region of the galactic core. The most prominent feature is the nebula, which is over 50 LY across, and sits within a dense cluster of B-class stars.</p>
 	  

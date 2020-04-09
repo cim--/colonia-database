@@ -10,7 +10,7 @@
 @if (count($parameters['assets']) > 1)
 <p>Both candidates have experience governing one of the assets in question already, and make strong cases that the two should be governed together - of course, they disagree on who should do that.</p>
 @else
-<p>The 
+<p> 
   @if ($parameters['conflict']->asset1)
   {{$parameters['conflict']->faction1->name}}
   @else

@@ -1,4 +1,4 @@
-	  <h2>Engineering</h2>
+	  <h2>Engineering.</h2>
 
 <p>Colonia has <a href='{{route('engineers.index')}}'>rapidly improving engineering options</a> locally, and with the permission of a Sol region engineer, remote workshops are available and can be used to supplement local provision. Exclusive blueprints are available for the Shield Cell Bank, Interdictor, Life Support and Fuel Scoop modules.</p>
 
