@@ -9,3 +9,13 @@
 <li>Colonia Applied Research: engineering.</li>
 <li>Holloway Bioscience Institute: vacuum life-forms.</li>
 </ul>
+<p>While the research programmes are at an early stage, there have
+been some notable successes. In technology, Colonia has managed
+to develop improvements to shield cell banks, fuel scoops,
+interdictors, refineries and life support systems which have
+exceeded those publicly available in the Sol region. The Tir
+Research Labs supported the development of crucial hydroponics
+infrastructure which has minimised food shortages in the region.
+Many expeditions have used Colonia as a base for their operations,
+providing valuable data on previously lightly-explored regions, and
+benefiting from the easier logistics.</p>
