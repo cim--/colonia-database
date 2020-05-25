@@ -623,10 +623,12 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
-        if ($event['message']['stationType'] == "FleetCarrier") {
+        /* Ignore carriers. As stations already need to be known to
+         * accept C/O/S events for them, this will also keep them away
+         * from that. */
+        if ($event['message']['StationType'] == "FleetCarrier") {
             return;
         }
-        // ignore carriers
         
         $station = Station::where('name', $event['message']['StationName'])
             ->where('system_id', $system->id)->first();
@@ -651,10 +653,7 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
-        if ($event['message']['stationType'] == "FleetCarrier") {
-            return;
-        }
-        
+ 
         $station = Station::where('name', $event['message']['stationName'])
             ->where('system_id', $system->id)->first();
         if (!$station) {
@@ -711,10 +710,6 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
-        if ($event['message']['stationType'] == "FleetCarrier") {
-            return;
-        }
-
         
         $station = Station::where('name', $event['message']['stationName'])
             ->where('system_id', $system->id)->first();
@@ -765,9 +760,6 @@ class EDDNReader extends Command
             ->orWhere('catalogue', $event['message']['systemName'])
             ->first();
         if (!$system) {
-            return;
-        }
-        if ($event['message']['stationType'] == "FleetCarrier") {
             return;
         }
 
