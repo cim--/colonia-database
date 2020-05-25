@@ -115,7 +115,7 @@ class EDDNReader extends Command
                     return;
                 }
                 $this->processFSDJump($event);
-            } else if ($event['message']['event'] == "Location") {
+            } else if ($event['message']['event'] == "Location" || $event['message']['event'] == "CarrierJump") {
                 if ($event['message']['StarPos'][2] > -600) {
                     // in case of duplicate names
                     return;
@@ -217,7 +217,8 @@ class EDDNReader extends Command
             \Log::info("Incoming data", [
                 'system' => $system->displayName()
             ]);
-            // no eddn event count for Location as that doesn't imply a jump
+            // no eddn event count for Location or CarrierJump as that
+            // doesn't imply a traffic report entry
             
             $this->line("[".date("YmdHis")."] Location event for ".$system->displayName());
 
@@ -622,6 +623,12 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
+        /* Ignore carriers. As stations already need to be known to
+         * accept C/O/S events for them, this will also keep them away
+         * from that. */
+        if ($event['message']['StationType'] == "FleetCarrier") {
+            return;
+        }
         
         $station = Station::where('name', $event['message']['StationName'])
             ->where('system_id', $system->id)->first();
@@ -646,7 +653,7 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
-        
+ 
         $station = Station::where('name', $event['message']['stationName'])
             ->where('system_id', $system->id)->first();
         if (!$station) {
@@ -755,7 +762,7 @@ class EDDNReader extends Command
         if (!$system) {
             return;
         }
-        
+
         $station = Station::where('name', $event['message']['stationName'])
             ->where('system_id', $system->id)->first();
         if (!$station) {
