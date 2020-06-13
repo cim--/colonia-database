@@ -33,8 +33,24 @@ class Reserve extends Model
         } else {
             switch ($c->name) {
             case "LowTemperatureDiamond":
-                // demand/cap changes
-                $q->where('date', '>', '2020-02-01');
+            case "rhodplumsite":
+            case "serendibite":
+            case "monazite":
+            case "musgravite":
+            case "benitoite":
+            case "grandidierite":
+            case "alexandrite":
+            case "opal":
+                // regeneration rate changes
+                $q->where('date', '>', '2020-06-09');
+                break;
+            case "tritium":
+                // effect changes
+                $q->where('date', '>', '2020-06-12');
+                break;
+            case "agronomictreatment":
+                // effect changes
+                $q->where('date', '>', '2020-06-09');
                 break;
             default:
                 $q->where('date', '>', '2020-01-23');
