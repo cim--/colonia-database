@@ -156,7 +156,10 @@ class RegionalComparison extends Command
                 $this->data[$key]['systems'][$sysinfo->id] = true;
                 $this->data[$key]['population'] += $sysinfo->population;
                 if ($sysinfo->primary_economy && $sysinfo->primary_economy != "None") {
-                    $this->data[$key]['economies'][$this->ecoName($sysinfo->primary_economy)]++;
+                    $econ = $this->ecoName($sysinfo->primary_economy);
+                    if (isset($this->data[$key]['economies'][$econ])) {
+                        $this->data[$key]['economies'][$econ]++;
+                    }
                 }
                 foreach ($sysinfo->minor_faction_presences as $faction) {
                     $this->data[$key]['factions'][$faction->minor_faction_id] = true;
@@ -168,7 +171,11 @@ class RegionalComparison extends Command
                 $this->data[$key2]['systems'][$sysinfo->id] = true;
                 $this->data[$key2]['population'] += $sysinfo->population;
                 if ($sysinfo->primary_economy && $sysinfo->primary_economy != "None") {
-                    $this->data[$key2]['economies'][$this->ecoName($sysinfo->primary_economy)]++;
+                    $econ = $this->ecoName($sysinfo->primary_economy);
+                    if (isset($this->data[$key]['economies'][$econ])) {
+
+                        $this->data[$key2]['economies'][$econ]++;
+                    }
                 }
                 // count factions later
             }
