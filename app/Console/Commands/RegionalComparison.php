@@ -146,6 +146,10 @@ class RegionalComparison extends Command
         $file = fopen("/tmp/systems_populated.jsonl","r");
         while ($line = fgets($file, 16384)) {
             $sysinfo = json_decode($line);
+
+            if ($sysinfo->population == 0) {
+                continue;
+            }
             
             $key = $this->getRegion($sysinfo);
             if ($key) {
@@ -177,6 +181,9 @@ class RegionalComparison extends Command
         $file = fopen("/tmp/stations.jsonl","r");
         while ($line = fgets($file, 16384)) {
             $statinfo = json_decode($line);
+            if ($statinfo->economies == ["Private Enterprise"]) {
+                continue;
+            }
             
             foreach ($this->data as $key => $region) {
                 if ($region['sphere'] && isset($region['systems'][$statinfo->system_id])) {
@@ -186,7 +193,10 @@ class RegionalComparison extends Command
                         $secos = count($statinfo->economies);
                         foreach ($statinfo->economies as $seco) {
                             if ($seco != "None") {
-                                $this->data[$key]['stationeconomies'][$this->ecoName($seco)] += 1/$secos;
+                                $econ = $this->ecoName($seco);
+                                if (isset($this->data[$key]['stationeconomies'][$econ])) {
+                                    $this->data[$key]['stationeconomies'][$econ] += 1/$secos;
+                                }
                             }
                         }
                     }
@@ -196,8 +206,9 @@ class RegionalComparison extends Command
                     if ($statinfo->economies) {
                         $secos = count($statinfo->economies);
                         foreach ($statinfo->economies as $seco) {
-                            if ($seco != "None") {
-                                $this->data[$key]['stationeconomies'][$this->ecoName($seco)] += 1/$secos;
+                            $econ = $this->ecoName($seco);
+                            if (isset($this->data[$key]['stationeconomies'][$econ])) {
+                                $this->data[$key]['stationeconomies'][$econ] += 1/$secos;
                             }
                         }
                     }
