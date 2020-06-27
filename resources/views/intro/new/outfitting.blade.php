@@ -4,3 +4,4 @@
 	  
 <p>Long-range shipping of items from the Sol region is possible, but due to the low demand, high distance, and excessive insurance requirements, this is exceedingly expensive - generally over 30% more than the items cost themselves! In general it's better to buy locally wherever possible, even if this may occasionally mean using a slightly less effective component.</p>
 
+<p>Drake-class Carriers can be purchased from the capital shipyards at Jaques station, and auxiliary shipyards capable of refits are in the Asura, Deriso, Luchtaine, Ratraii and Tir systems.</p>
