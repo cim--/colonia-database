@@ -212,6 +212,8 @@ class UpdateHistory extends Command
 
     private function calculateRisks()
     {
+        $debug = $this->option('debug');
+
         $systems = System::where('bgslock', 0)->where('population', '>', 0)->get();
         foreach ($systems as $system) {
             $risk = 0;
@@ -221,21 +223,53 @@ class UpdateHistory extends Command
                 if ($diff == 0 || $system->controllingFaction()->id != $is[0]->faction_id) {
                     $risk = 5; // control conflict or controller not first
                 } else if ($diff < 40) {
+                    $expansion = 0;
+                    if ($is[0]->states()->where('name', 'Expansion')->count() == 0) {
+                        $expansion = 1;
+                        if ($debug) {
+                            $this->line("No expansion in ".$system->name);
+                        }
+                    }
                     $date = $is[0]->date->copy();
                     $tmax = 0;
+                    $ldiff = $diff;
                     for ($t=1;$t<=5;$t++) {
                         $date->subDay();
                         $prev = $system->factionsWithoutEagerLoad($date);
                         if (isset($prev[0]) && isset($prev[1])) {
                             $pdiff = $prev[0]->influence - $prev[1]->influence;
+                            if ($expansion == 1) {
+                                if ($prev[0]->states()->where('name', 'Expansion')->count() > 0) {
+                                    $expansion = 2;
+                                    if ($debug) {
+                                        $this->line("Expansion previously in ".$system->name);
+                                    }
+                                    // expansion occurred, tax paid
+                                }
+                            }
+
+                            // if expansion = 2, more complex pdiff
+                            if (($expansion == 2 && $pdiff > 10+$ldiff) || $expansion == 3) {
+                                // likely has expansion contribution
+                                $pdiff -= 10; // conservative estimate
+                                $expansion = 3;
+                                $this->line("-> Accounting for expansion tax");
+                                // don't want to miss changes stacking with it
+                            }
+
+                            /* Difference in the difference N days ago
+                             * and the difference today, divided by N,
+                             * is the rate of closure per day */
                             $trend = ($pdiff-$diff)/$t;
                             if ($trend > $tmax) {
                                 $tmax = $trend;
                             }
+                            $ldiff = $pdiff;
                         }
                     }
                     if ($tmax > 0) {
                         $margin = $diff / $tmax;
+                        
                         if ($margin < 5) {
                             $risk = floor(5 - $margin);
                         }
