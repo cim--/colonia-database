@@ -10,12 +10,13 @@
      	<li><a title='Key for icons' href="{{route('intro.icons')}}">Icons</a></li>
 	  </ul>
 	</li>
-	<li><div>Overview</div>
+	<li><div>Overview and History</div>
 	  <ul>
 		<li><a href="{{route('map')}}">Map</a></li>
 		<li><a href="{{route('distances')}}">Distances</a></li>
-		<li><a href="{{route('history')}}">History</a></li>
-     	<li><a href="{{route('history.trends')}}">Activity</a></li>
+		<li><a href="{{route('history')}}">Events</a></li>
+                <li><a href="{{route('history.trends')}}">Activity</a></li>
+                <li><a href="{{route('history.spacetrends')}}">Movement</a></li>
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>

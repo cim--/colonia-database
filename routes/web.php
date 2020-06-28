@@ -33,6 +33,7 @@ Route::get('/history/create', 'HistoryController@create')->name('history.create'
 Route::post('/history', 'HistoryController@store')->name('history.store');
 
 Route::get('/history/trends', 'HistoryController@trends')->name('history.trends');
+Route::get('/history/space', 'HistoryController@spaceTrends')->name('history.spacetrends');
 
 Route::get('/systems/eddb/{eddb}', 'SystemController@eddb');
 Route::resource('systems', 'SystemController');

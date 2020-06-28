@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\History;
+use App\Models\Influence;
 use App\Models\System;
 use App\Models\Systemreport;
 use App\Models\Station;
@@ -238,5 +239,131 @@ class HistoryController extends Controller
             'maxrange' => $maxrange,
         ]);
     }
-    
+
+
+    public function spaceTrends(Request $request) {
+
+        $start = Carbon::parse(Influence::min('date'));
+
+        $datasets = [
+            'average' => [
+                'label' => "Average Factions/System",
+                'backgroundColor' => 'transparent',
+                'borderColor' => '#000060',
+                'fill' => false,
+                'data' => [],
+                'yAxisID' => 'presence',
+            ],
+            'expansions' => [
+                'label' => "Expansions/week",
+                'backgroundColor' => '#90f090',
+                'borderColor' => '#009000',
+                'fill' => 'origin',
+                'data' => [],
+                'yAxisID' => 'movements',
+                'pointRadius' => 0,
+                'pointHitRadius' => 3,
+            ],
+            'retreats' => [
+                'label' => "Retreats/week",
+                'backgroundColor' => '#f09090',
+                'borderColor' => '#900000',
+                'data' => [],
+                'yAxisID' => 'movements',
+                'fill' => 'origin',
+                'pointRadius' => 0,
+                'pointHitRadius' => 3,
+            ],
+        ];        
+
+        while ($start->isPast()) {
+            $end = $start->copy()->addWeek();
+            $ddate = \App\Util::graphDisplayDate($start);
+            
+            $infs = Influence::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->count();
+            $sys = Influence::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->count(\DB::raw('DISTINCT system_id, date'));
+            if ($sys == 0) {
+                break;
+            }
+            $datasets['average']['data'][] = [
+                'x' => $ddate,
+                'y' => round($infs/$sys, 2)
+            ];
+
+            $exp = History::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->where('description', 'LIKE', '%expanded to%')->count();
+            $ret = History::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->where('description', 'LIKE', '%retreated from%')->count();
+
+            $datasets['expansions']['data'][] = [
+                'x' => $ddate,
+                'y' => $exp
+            ];
+            $datasets['retreats']['data'][] = [
+                'x' => $ddate,
+                'y' => -$ret
+            ];
+
+            $start->addWeek();
+        }
+        sort($datasets);
+
+        
+        $chart = app()->chartjs
+               ->name("spacehistory")
+               ->type("line")
+               ->size(["height" => 400, "width"=>1000])
+               ->datasets($datasets)
+               ->options([
+                   'scales' => [
+                       'xAxes' => [
+                           [
+                               'type' => 'linear',
+                               'position' => 'bottom',
+                               'ticks' => [
+                                   'callback' => "@@chart_xaxis_callback@@"
+                               ]
+                           ]
+                       ],
+                       'yAxes' => [
+                           [
+                               'id' => 'presence',
+                               'gridLines' => [
+                                   'display' => false
+                               ],
+                               'scaleLabel' => [
+                                   'labelString' => "Presence",
+                                   'display' => true
+                               ],
+                               'ticks' => [
+                                   'min' => 0,
+                                   'max' => 8
+                               ]
+                           ],
+                           [
+                               'id' => 'movements',
+                               'gridLines' => [
+                                   'display' => false
+                               ],
+                               'scaleLabel' => [
+                                   'labelString' => "Movement",
+                                   'display' => true
+                               ],
+                               'position' => 'right',
+                           ]
+                       ]
+                   ],
+                   'tooltips' => [
+                       'callbacks' => [
+                           'title' => "@@tooltip_label_title@@",
+                           'label' => "@@tooltip_label_number@@"
+                       ]
+                   ],
+               ]);
+
+        return view('history/space', [
+            'chart' => $chart,
+            //            'minrange' => $minrange,
+            //            'maxrange' => $maxrange,
+        ]);
+            
+    }
 }
