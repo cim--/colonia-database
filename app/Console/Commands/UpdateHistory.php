@@ -253,7 +253,9 @@ class UpdateHistory extends Command
                                 // likely has expansion contribution
                                 $pdiff -= 10; // conservative estimate
                                 $expansion = 3;
-                                $this->line("-> Accounting for expansion tax");
+                                if ($debug) {
+                                    $this->line("-> Accounting for expansion tax");
+                                }
                                 // don't want to miss changes stacking with it
                             }
 
