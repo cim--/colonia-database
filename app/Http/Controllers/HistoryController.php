@@ -276,12 +276,15 @@ class HistoryController extends Controller
             ],
         ];        
 
+        $start->hour = 0;
+        $start->minute = 0;
+        $start->second = 0;
         while ($start->isPast()) {
             $end = $start->copy()->addWeek();
             $ddate = \App\Util::graphDisplayDate($start);
             
-            $infs = Influence::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->count();
-            $sys = Influence::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->count(\DB::raw('DISTINCT system_id, date'));
+            $infs = Influence::where('date', '>=', $start)->where('date', '<', $end)->count();
+            $sys = Influence::where('date', '>=', $start)->where('date', '<', $end)->count(\DB::raw('DISTINCT system_id, date'));
             if ($sys == 0) {
                 break;
             }
@@ -289,21 +292,34 @@ class HistoryController extends Controller
                 'x' => $ddate,
                 'y' => round($infs/$sys, 2)
             ];
-
-            $exp = History::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->where('description', 'LIKE', '%expanded to%')->count();
-            $ret = History::whereDate('date', '>=', $start)->whereDate('date', '<', $end)->where('description', 'LIKE', '%retreated from%')->count();
-
-            $datasets['expansions']['data'][] = [
-                'x' => $ddate,
-                'y' => $exp
-            ];
-            $datasets['retreats']['data'][] = [
-                'x' => $ddate,
-                'y' => -$ret
-            ];
-
             $start->addWeek();
         }
+
+        $start = Carbon::parse(Influence::min('date'));
+
+        $exp = \DB::select("SELECT COUNT(*) num, 7*FLOOR(DATEDIFF(date,'".$start->format("Y-m-d")."')/7) AS week FROM historys WHERE description LIKE '%expanded to%' GROUP BY week");
+        foreach ($exp as $edata) {
+
+            $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($edata->week));
+            
+            $datasets['expansions']['data'][] = [
+                'x' => $ddate,
+                'y' => $edata->num
+            ];
+        }
+
+        $ret = \DB::select("SELECT COUNT(*) num, 7*FLOOR(DATEDIFF(date,'".$start->format("Y-m-d")."')/7) AS week FROM historys WHERE description LIKE '%retreated from%' GROUP BY week");
+        foreach ($ret as $rdata) {
+
+            $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($rdata->week));
+            
+            $datasets['retreats']['data'][] = [
+                'x' => $ddate,
+                'y' => -$rdata->num
+            ];
+        }
+
+        
         sort($datasets);
 
         
