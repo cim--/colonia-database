@@ -298,25 +298,51 @@ class HistoryController extends Controller
         $start = Carbon::parse(Influence::min('date'));
 
         $exp = \DB::select("SELECT COUNT(*) num, 7*FLOOR(DATEDIFF(date,'".$start->format("Y-m-d")."')/7) AS week FROM historys WHERE description LIKE '%expanded to%' GROUP BY week");
+        $lastweek = -7;
         foreach ($exp as $edata) {
 
+            if ($lastweek+7 < $edata->week) {
+                for ($i=$lastweek+7; $i<$edata->week; $i+=7) {
+                    $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($i));
+
+                    $datasets['expansions']['data'][] = [
+                        'x' => $ddate,
+                        'y' => 0
+                    ];
+                }
+            }
             $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($edata->week));
-            
             $datasets['expansions']['data'][] = [
                 'x' => $ddate,
                 'y' => $edata->num
             ];
+                 $lastweek = $edata->week;
         }
+
+        $lastweek = -7;
 
         $ret = \DB::select("SELECT COUNT(*) num, 7*FLOOR(DATEDIFF(date,'".$start->format("Y-m-d")."')/7) AS week FROM historys WHERE description LIKE '%retreated from%' GROUP BY week");
         foreach ($ret as $rdata) {
 
+            if ($lastweek+7 < $rdata->week) {
+                for ($i=$lastweek+7; $i<$rdata->week; $i+=7) {
+                    $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($i));
+
+                    $datasets['retreats']['data'][] = [
+                        'x' => $ddate,
+                        'y' => 0
+                    ];
+                }
+            }
+            
             $ddate = \App\Util::graphDisplayDate($start->copy()->addDays($rdata->week));
             
             $datasets['retreats']['data'][] = [
                 'x' => $ddate,
                 'y' => -$rdata->num
             ];
+
+            $lastweek = $rdata->week;
         }
 
         
