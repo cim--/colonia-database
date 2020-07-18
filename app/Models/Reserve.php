@@ -40,6 +40,7 @@ class Reserve extends Model
             case "benitoite":
             case "grandidierite":
             case "alexandrite":
+            case "painite":
             case "opal":
                 // regeneration rate changes
                 $q->where('date', '>', '2020-06-09');
@@ -63,6 +64,14 @@ class Reserve extends Model
         return $q->where('reserves', '>', -500000);
     }
 
+    /* 3.7 to 3.7.3 had very strange regeneration behaviours for a lot
+     * of goods, so ignore those for regen calcs. */
+    public function scopeRegenerationMarkets($q) {
+        return $q->where('date', '>', '2020-07-14')
+            ->orWhere('date', '<', '2020-06-09');
+    }
+
+    
     public static function epochs() {
         // times of major changes in market behaviour
         // first full day after the change generally best to use
