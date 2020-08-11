@@ -1038,7 +1038,7 @@ class DiscordBot extends Command
                     $result .= "\n⏪ indicates a previous retreat - the faction may skip this system.";
                 }
                 if ($investnote) {
-                    $result .= "\n⭲ indicates investment is required to expand here.";
+                    $result .= "\n⭲ indicates extra range is required to expand here.";
                 }
 
                 return $this->safe($result);
