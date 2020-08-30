@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\TrafficEstimates::class,
         Commands\RegionalComparison::class,
         Commands\LengthOfState::class,
+        Commands\EventGaps::class,
         Commands\TradeCleanup::class,
         //
     ];
