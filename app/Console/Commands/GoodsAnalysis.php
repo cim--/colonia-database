@@ -82,7 +82,7 @@ class GoodsAnalysis extends Command
         })->with('economy')->get();
 
         if ($this->option('testmode')) {
-            $commodities = Commodity::where('id', 23)->get();
+            $commodities = Commodity::where('id', 40)->get();
         } else {
             $commodities = Commodity::all();
         }
@@ -185,8 +185,8 @@ class GoodsAnalysis extends Command
         $entries = [];
         ksort($stockdata); // always process in same order
         foreach ($stockdata as $sid => $rdata) {
-            $stockavg = $this->median($rdata);
-            $priceavg = $this->median($pricedata[$sid]);
+            $stockavg = $this->modal($rdata);
+            $priceavg = $this->modal($pricedata[$sid]);
 ////            $this->line($sid." ".$states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
             $entries[] = [
                 'state' => $states[$sid],
@@ -207,8 +207,17 @@ class GoodsAnalysis extends Command
 
         $supply = ($reserve->reserve > 0);
         // true/false
+
+        $hasboom = false;
+        $hascl = false;
         
         foreach ($states as $state) {
+            if ($state->name == "Boom") {
+                $hasboom = true;
+            }
+            if ($state->name == "Civil Liberty") {
+                $hascl = true;
+            }
             if (isset($this->calculated[$reserve->commodity_id][$state->id])) {
                 $effect = $this->calculated[$reserve->commodity_id][$state->id];
                 if ($supply) {
@@ -230,6 +239,11 @@ class GoodsAnalysis extends Command
             $unknowns[] = $state;
         }
 
+        if ($hasboom && $hascl) {
+            // this state combination has very strange effects, do not use
+            return null;
+        }
+        
         if (count($unknowns) > 2) {
             // can't use this
             return null;
@@ -293,8 +307,8 @@ class GoodsAnalysis extends Command
         $entries = [];
         ksort($stockdata); // always process in same order
         foreach ($stockdata as $sid => $rdata) {
-            $stockavg = $this->median($rdata);
-            $priceavg = $this->median($pricedata[$sid]);
+            $stockavg = $this->modal($rdata);
+            $priceavg = $this->modal($pricedata[$sid]);
 ////            $this->line($sid." ".$states[$sid]->name." ".$stockavg." @ ".$priceavg." Cr. (".count($rdata)." samples).");
             $entries[] = [
                 'state' => $states[$sid],
@@ -306,7 +320,26 @@ class GoodsAnalysis extends Command
     }
     
 
-    
+    private function max($arr) {
+        // actually looking for "most extreme"
+        if ($this->median($arr) < 0) {
+            return min($arr);
+        }
+        return max($arr);
+    }
+
+    private function modal($arr) {
+        $modes = [];
+        foreach ($arr as $val) {
+            if (!isset($modes[$val])) {
+                $modes[$val] = 1;
+            } else {
+                $modes[$val]++;
+            }
+        }
+        asort($modes);
+        return array_key_last($modes);
+    }
 
     private function median($arr) {
         sort($arr);
@@ -446,13 +479,18 @@ class GoodsAnalysis extends Command
                     $improved = true;
                     $effect->dpass = $pass;
                 }
-                $effect->save();
-                if (!isset($this->calculated[$commodity->id])) {
-                    $this->calculated[$commodity->id] = [];
-                }
+                if ($effect->supplysize < 0 || $effect->demandsize < 0) {
+                    //dd($stateinfo['supplyfactor'], $stateinfo['demandfactor']);
+                    // data bad, skip
+                } else {
+                    $effect->save();
+                    if (!isset($this->calculated[$commodity->id])) {
+                        $this->calculated[$commodity->id] = [];
+                    }
                 // save for later
-                $this->calculated[$commodity->id][$effect->state_id] = $effect;
-                
+                    $this->calculated[$commodity->id][$effect->state_id] = $effect;
+                    
+                }
             }
         }
         return $improved;

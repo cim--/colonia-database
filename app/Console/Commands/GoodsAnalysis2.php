@@ -22,7 +22,7 @@ class GoodsAnalysis2 extends Command
      *
      * @var string
      */
-    protected $signature = 'cdb:goodsanalysis2 {--sizeonly}';
+    protected $signature = 'cdb:goodsanalysis2 {--sizeonly} {--goodsonly} {--testmode}';
 
     /**
      * The console command description.
@@ -68,9 +68,11 @@ class GoodsAnalysis2 extends Command
             } else {
                 $this->info("Size analysis only");
             }
-            \DB::transaction(function() {
-                $this->runEconomySizeAnalysis();
-            });
+            if (!$this->option('goodsonly')) {
+                \DB::transaction(function() {
+                    $this->runEconomySizeAnalysis();
+                });
+            }
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
             throw($e);
@@ -91,8 +93,15 @@ class GoodsAnalysis2 extends Command
             // hybrids are fine for this, though
         })->with('economy')->get();
 
-        $commodities = Commodity::with('effects')
-            ->orderBy('name')->get();
+        if ($this->option('testmode')) {
+            $commodities = Commodity::with('effects')
+                         ->where('id', 108)
+                         ->orderBy('name')->get();
+        } else {
+            $commodities = Commodity::with('effects')
+                         ->orderBy('name')->get();
+
+        }
 
         $states = State::orderBy('name')->get();
 
@@ -160,7 +169,9 @@ class GoodsAnalysis2 extends Command
             })
             ->withCount('states')
             ->where('reserves', '!=', 0)
+            ->regenerationMarkets()
             ->normalMarkets($commodity);
+
 
         /* Where stations change economy or have other significant
          * events, only look after the change */
@@ -278,11 +289,13 @@ class GoodsAnalysis2 extends Command
             if ($last !== null) {
                 $lastamount = abs($last->reserves);
             }
-            if ($amount == $max) {
+            if ($amount == $max || $amount == 0) {
                 $last = null; // can't use
+                // 0 might be pinned zero demand
             } else if ($last == null) {
                 $last = $reserve; // start again
             } else if ($amount < $lastamount) {
+                // someone bought something
                 $last = $reserve; // can't use, try again
             } else if ($amount == $lastamount) {
                 // no change since last check
@@ -291,7 +304,7 @@ class GoodsAnalysis2 extends Command
                 $diff = $amount-$lastamount;
                 $timediff = $reserve->created_at->diffInSeconds($last->created_at);
                 if ($timediff < 86400) {
-                    $slopes[] = (int)($timediff/$diff); // seconds per tonne
+                    $slopes[] = [$timediff, $diff]; // seconds per tonne
                 }
                 // else too far apart, might be intervening states
                 $last = $reserve; // continue checking
@@ -301,8 +314,15 @@ class GoodsAnalysis2 extends Command
             // insufficient data
             return null;
         }
+        $tdtotal = 0; $dtotal = 0;
+        foreach ($slopes as $slope) {
+            $tdtotal += $slope[0];
+            $dtotal += $slope[1];
+        }
+        
 //        $this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
-        $avgrate = floor($this->median($slopes));
+        //        $avgrate = floor($this->median($slopes));
+        $avgrate = floor($tdtotal/$dtotal);
         $regentime = $avgrate * $max;
 //        $this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days");
         return $regentime * $sign;
