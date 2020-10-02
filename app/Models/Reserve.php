@@ -53,6 +53,15 @@ class Reserve extends Model
                 // effect changes
                 $q->where('date', '>', '2020-06-09');
                 break;
+            case "Bauxite":
+            case "Gallite":
+            case "Rutile":
+            case "PowerGenerators":
+            case "ThermalCoolingUnits":
+            case "BuildingFabricators":
+                // shortages from CG aftermath
+                $q->where('date', '>', '2020-10-02');
+                break;
             default:
                 $q->where('date', '>', '2020-01-23');
             }
