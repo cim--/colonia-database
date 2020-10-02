@@ -507,6 +507,9 @@ class TradeController extends Controller
                 continue;
                 // can't really tell if this is actually a zero or
                 // just an untraded good
+            } else if ($reserve->reserves == -1 || $reserve->reserves == 0) {
+                // may be an untraded good
+                continue;
             }
             $station = $reserve->station_id;
             $price = $reserve->price;
