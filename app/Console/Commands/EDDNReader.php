@@ -674,6 +674,11 @@ class EDDNReader extends Command
         foreach ($event['message']['commodities'] as $cdata) {
             $commodity = Commodity::firstOrCreate(['name' => $cdata['name']]);
             if ($commodity->averageprice != $cdata['meanPrice']) {
+                if ($commodity->averageprice) {
+                    Alert::alert("Commodity ".$commodity->name." average price change ".$commodity->averageprice." to ".$cdata['meanPrice']);
+                } else {
+                    Alert::alert("New commodity ".$commodity->name." detected");
+                }
                 $commodity->averageprice = $cdata['meanPrice'];
                 $commodity->save();
             }
