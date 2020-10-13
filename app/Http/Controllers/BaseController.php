@@ -414,6 +414,10 @@ class BaseController extends Controller
         return view('intro/about');
     }
 
+    public function nebula() {
+        return view('intro/colonia');
+    }
+
     public function story() {
         return view('intro/story');
     }

@@ -120,6 +120,7 @@
 
   <p>As the engineering research continued, with the funding of the Council and the support of many independent pilots, they grew to match and in some cases surpass the technology developed in the bubble. As well as experimental modifications, this research also led to the construction of the <a href='{{route('installations.show', 37)}}'>Colonia Applied Research</a> laboratories, transitioning Colonia itself to a high-tech economy and further equipping its fleets.</p>
 
+  <p>At the end of 3305, the Holloway Biology Centre was also constructed in Colonia, further enhancing the resources and reputation of the region in scientific research.</p>
 </div>
 
 
