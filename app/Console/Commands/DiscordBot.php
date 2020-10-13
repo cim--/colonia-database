@@ -85,6 +85,7 @@ class DiscordBot extends Command
         $this->registerAddReportCommand();
         $this->registerProjectCommand();
         $this->registerContributionCommand();
+        $this->registerProgressCommand();
         
         $this->discord->on('ready', function() {
             $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
@@ -1256,6 +1257,82 @@ class DiscordBot extends Command
             'description' => 'Record a contribution to a project objective.',
             'usage' => '<project code> <objective code> <amount>',
             'aliases' => ['contribution']
+        ]);
+    }
+
+    private function registerProgressCommand() {
+        $this->discord->registerCommand('progress', function($message, $params) {
+            $this->syntaxCheck($params);
+            if (count($params) < 1 || !in_array($params[0], ["influence", "market", "traffic"])) {
+                return $this->safe("Usage: !progress <dataset> [age]\nDatasets: influence, market, traffic");
+            } else {
+                $dataset = $params[0];
+                if (isset($params[1])) {
+                    $age = abs((int)$params[1]);
+                } else {
+                    $age = 0;
+                }
+
+                switch ($dataset) {
+                case "influence":
+                    $target = \App\Util::tick();
+                    $target->subDays($age);
+                    $target->setTime(0,0,0);
+                    $target->hour = env("TICK_TIME");
+                    $entries = System::influenceUpdateData()->sort('\App\Util::systemSort');
+                    break;
+                case "market":
+                    $target = Carbon::now()->setTime(0,0,0)->subDays($age);
+                    $entries = Station::marketUpdateData();
+                    break;
+                case "traffic":
+                    $target = Carbon::now()->setTime(0,0,0)->subDays($age);
+                    $entries = System::reportUpdateData()->sort('\App\Util::systemSort');
+                    break;
+                }
+                $result = "Progress report for ".ucwords($dataset)."\n";
+                $any = false;
+                foreach ($entries as $entry) {
+                    switch ($dataset) {
+                    case "influence":
+                        $time = $entry->influences[0]->created_at;
+                        break;
+                    case "market":
+                        $time = $entry->reserves[0]->created_at;
+                        break;
+                    case "traffic":
+                        $time = $entry->systemreports[0]->created_at;
+                        break;
+                    }
+                    if ($time->lte($target)) {
+                        $any = true;
+                        $eage = \App\Util::age($time, $target)+$age;
+                        $highlight = "";
+                        switch ($dataset) {
+                        case "influence":
+                        case "traffic":
+                            if ($entry->risk > 0) {
+                                $highlight = "**";
+                            }
+                            break;
+                        case "market":
+                            if ($entry->marketStateChange()) {
+                                $highlight = "**";
+                            }
+                            break;
+                        }
+                        $result .= $highlight.$entry->displayName().$highlight." (".$eage.")\n";
+                    }
+                }
+                if (!$any) {
+                    $result .= "All data up to date for target ".$age;
+                }
+
+                return $this->safe($result);
+            }
+        }, [
+            'description' => 'Get list of data still to be collected',
+            'usage' => '[dataset] [age]'
         ]);
     }
 }

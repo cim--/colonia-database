@@ -155,4 +155,17 @@ class Station extends Model
         }
         return false; // all states match
     }
+
+    public static function marketUpdateData()
+    {
+        return Station::with(['reserves' => function($q) {
+            $q->where('current', 1);
+        }])->whereHas('stationclass', function($q) {
+            $q->where('hasSmall', true)
+              ->orWhere('hasMedium', true)
+              ->orWhere('hasLarge', true);
+        })->whereHas('facilities', function($q) {
+            $q->where('name', 'Commodities');
+        })->present()->with('faction', 'system')->orderBy('name')->get();
+    }
 }
