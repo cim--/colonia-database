@@ -120,7 +120,7 @@ class GoodsAnalysis extends Command
                             $this->info("Analysing states, pass ".$pass);
                             $improved = $this->analyseStates($commodity, $pass);
                         }
-                    } while ($improved);
+                    } while ($improved && $pass < 4);
                 }
             });
         }

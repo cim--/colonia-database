@@ -66,7 +66,7 @@ class TradeCleanup extends Command
 
             // keep full data for current month
             $threshold = date("Y-m-01");
-            $reserves = Reserve::where('station_id', $station->id)->where('commodity_id', $commodity->id)->where('created_at', '<', $threshold)->with('states')->orderBy('created_at')->get();
+            $reserves = Reserve::where('station_id', $station->id)->where('commodity_id', $commodity->id)->where('created_at', '<', $threshold)->with('states')->orderBy('created_at')->cursor();
             $last = null;
             $curr = null;
             $next = null;
