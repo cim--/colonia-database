@@ -27,6 +27,15 @@ class Commodity extends Model
     {
         return $this->hasMany('App\Models\Effect');
     }
+
+    public function scopeNormalTrade($q)
+    {
+        // unusual goods which shouldn't have conventional trade analysis done
+        return $q->where('category', '!=', '')
+            ->whereNotNull('category')
+            ->where('category', '!=', 'Rares')
+            ->where('category', '!=', 'Salvage');
+    }
     
     public function displayName()
     {

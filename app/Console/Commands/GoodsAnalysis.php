@@ -84,7 +84,7 @@ class GoodsAnalysis extends Command
         if ($this->option('testmode')) {
             $commodities = Commodity::where('id', 40)->get();
         } else {
-            $commodities = Commodity::all();
+            $commodities = Commodity::normalTrade()->get();
         }
 
         foreach ($commodities as $idx => $commodity) {

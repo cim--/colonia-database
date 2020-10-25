@@ -99,6 +99,7 @@ class GoodsAnalysis2 extends Command
                          ->orderBy('name')->get();
         } else {
             $commodities = Commodity::with('effects')
+                         ->normalTrade()
                          ->orderBy('name')->get();
 
         }
