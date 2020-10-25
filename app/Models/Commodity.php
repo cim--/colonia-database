@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Commodity extends Model
 {
     protected $fillable = ['name'];
+
+    protected $dates = ['created_at', 'updated_at', 'behaviourepoch'];
     
     public function reserves()
     {

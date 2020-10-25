@@ -11,16 +11,19 @@
 <div class='commodityhead'>
 
 <div>
-<p>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}
+  <ul>
+<li>Total estimated reserves: {{number_format($reserves->filter(function($v) { return $v->reserves > 0; })->sum('reserves')) }}
   @if ($commodity->supplycycle)
   (restock cycle: {{number_format($commodity->supplycycle/86400, 1)}} days)
   @endif
-</p>
-<p>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}
+</li>
+<li>Total estimated demand: {{number_format(-$reserves->filter(function($v) { return $v->reserves < 0; })->sum('reserves')) }}
   @if ($commodity->demandcycle)
   (usage cycle: {{number_format(-$commodity->demandcycle/86400, 1)}} days)
   @endif
-</p>
+</li>
+<li>Last major economic event: {{App\Util::displayDate($commodity->behaviourepoch)}}</li>
+</ul>
 <p>Use the &#x21c4; icons to sort the table by distance to this station, or the &#x23f0; icons to show history at that station.</p>
 <p>Updated at time will be <span class='marketstatechange'>highlighted</span> if the station state has changed since the last survey.</p>
 </div>
