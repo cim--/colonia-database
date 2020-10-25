@@ -91,7 +91,7 @@ class LogisticsController extends Controller
                         'baseline' => $cbaseline,
                         'reserves' => $current,
                         'faction' => $station->faction,
-                        'states' => $station->faction->currentStates(),
+                        'states' => $station->faction->currentStateList($station->system),
                         'fullness' => 0.5,
                         'regen' => 0
                     ];
@@ -120,11 +120,17 @@ class LogisticsController extends Controller
                         if ($knowneffects) {
 
                             $option['sbaseline'] = $supplyeffects * $option['baseline']->reserves;
+                            if ($option['sbaseline'] == 0) {
+                                $option['sbaseline'] = 1;
+                            }
                             $option['supplysize'] = $supplyeffects;
                             $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
 
                         } else {
                             $option['sbaseline'] = $option['baseline']->reserves;
+                            if ($option['sbaseline'] == 0) {
+                                $option['sbaseline'] = 1;
+                            }
                             $option['supplysize'] = 1;
                             $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
                         }
