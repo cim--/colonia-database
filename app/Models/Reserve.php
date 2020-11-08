@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserve extends Model
 {
-    protected $dates = ['date'];
+    protected $dates = ['date', 'created_at', 'updated_at'];
     
     public function commodity()
     {

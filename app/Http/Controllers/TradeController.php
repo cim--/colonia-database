@@ -295,6 +295,10 @@ class TradeController extends Controller
         foreach ($reserves->cursor() as $reserve) {
             $station = $reserve->station_id;
             $amount = $reserve->reserves;
+            if (abs($amount) < 2) {
+                // very low amounts can be signs of non-accepting economies
+                continue;
+            }
             $timestamp = $reserve->created_at->toIso8601String();
             $date = $reserve->created_at->format('Y-m-d');
             $laststations[$station] = $reserve->created_at;
@@ -468,30 +472,48 @@ class TradeController extends Controller
         ]);
     }
 
-    private function priceBands($imports, $exports) {
+    private function priceBands($imports, $exports, $lasttime) {
+        $threshold = Carbon::parse($lasttime)->subDays(14);
+
         if (count($exports) == 0) {
             return [
                 'el' => null,
                 'eh' => null,
-                'il' => min($imports),
-                'ih' => max($imports)
+                'il' => $this->minPrice($imports, $threshold),
+                'ih' => $this->maxPrice($imports, $threshold)
             ];
         } else if (count($imports) == 0) {
             return [
-                'el' => min($exports),
-                'eh' => max($exports),
+                'el' => $this->minPrice($exports, $threshold),
+                'eh' => $this->maxPrice($exports, $threshold),
                 'il' => null,
                 'ih' => null
             ];
         } else {
             return [
-                'el' => min($exports),
-                'eh' => max($exports),
-                'il' => min($imports),
-                'ih' => max($imports)
+                'el' => $this->minPrice($exports, $threshold),
+                'eh' => $this->maxPrice($exports, $threshold),
+                'il' => $this->minPrice($imports, $threshold),
+                'ih' => $this->maxPrice($imports, $threshold)
             ];
         }
     }
+
+    public function minPrice($list, $threshold)
+    {
+        //        dd($list);
+        return collect($list)->filter(function($v) use ($threshold) {
+            return $threshold->lt($v->created_at);
+        })->min('price');
+    }
+
+    public function maxPrice($list, $threshold)
+    {
+        return collect($list)->filter(function($v) use ($threshold) {
+            return $threshold->lt($v->created_at);
+        })->max('price');
+    }
+
     
     public function commodityPriceHistory(Request $request, Commodity $commodity) {
         $reserves = Reserve::where('commodity_id', $commodity->id)->orderBy('created_at');
@@ -518,7 +540,7 @@ class TradeController extends Controller
 
             if ($lasttime != $timestamp) {
                 if ($lasttime != 0) {
-                    $dates[$lasttime] = $this->priceBands($imports, $exports);
+                    $dates[$lasttime] = $this->priceBands($imports, $exports, $lasttime);
                     if (in_array($timestamp, $epochs)) {
                         // major change in behaviour, reset old data
                         $imports = [];
@@ -537,15 +559,15 @@ class TradeController extends Controller
                 $other = 'exports';
             }
             if (!isset($$list[$station])) {
-                $$list[$station] = $price;
+                $$list[$station] = $reserve;
                 unset($$other[$station]);
             } else {
-                $$list[$station] = $price;
+                $$list[$station] = $reserve;
             }
         }
         // and finally
         if ($lasttime != 0) {
-            $dates[$lasttime] = $this->priceBands($imports, $exports);
+            $dates[$lasttime] = $this->priceBands($imports, $exports, $lasttime);
         }
 
         
