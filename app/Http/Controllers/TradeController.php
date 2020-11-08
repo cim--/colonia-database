@@ -292,13 +292,11 @@ class TradeController extends Controller
         $epochs = Reserve::epochs();
         $epochs2 = Reserve::epochs2();
         /* Roll up commodity reserves */
+        $cidx = 0;
         foreach ($reserves->cursor() as $reserve) {
+            $cidx++;
             $station = $reserve->station_id;
             $amount = $reserve->reserves;
-            if (abs($amount) < 2) {
-                // very low amounts can be signs of non-accepting economies
-                continue;
-            }
             $timestamp = $reserve->created_at->toIso8601String();
             $date = $reserve->created_at->format('Y-m-d');
             $laststations[$station] = $reserve->created_at;
@@ -324,13 +322,32 @@ class TradeController extends Controller
                         unset($laststations[$idx]);
                     }
                 }
+            } else if ($cidx % 1000 == 0) {
+                // throw out old data every so often
+                $epochstart = $reserve->created_at->copy()->subDays(14);
+                $unsets = [];
+                foreach ($stations as $idx => $discard) {
+                    if ($laststations[$idx]->lt($epochstart)) {
+                        if ($stations[$idx] > 0) {
+                            $lastsupply -= $stations[$idx];
+                        } else {
+                            $lastdemand += $stations[$idx];
+                        }
+                        $unsets[] = $idx;
+                    }
+                }
+                foreach ($unsets as $idx) {
+                    unset($stations[$idx]);
+                    unset($laststations[$idx]);
+                }
+                
             }
             if (!isset($stations[$station])) {
                 $stations[$station] = $amount;
                 if ($amount > 0) {
                     $supply[$timestamp] = $lastsupply + $amount;
                     $lastsupply = $supply[$timestamp];
-                } else {
+                } else if ($amount < 0) {
                     $demand[$timestamp] = $lastdemand - $amount;
                     $lastdemand = $demand[$timestamp];
                 }
@@ -352,7 +369,7 @@ class TradeController extends Controller
                     $supply[$timestamp] = $lastsupply - $last + $amount;
                     $lastsupply = $supply[$timestamp];
                 } else {
-                    $demand[$timestamp] = $lastdemand + $last - $amount;                    
+                    $demand[$timestamp] = $lastdemand + $last - $amount;
                     $lastdemand = $demand[$timestamp];
                 }
                 $stations[$station] = $amount;
