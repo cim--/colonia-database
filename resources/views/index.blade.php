@@ -1,6 +1,6 @@
 @extends('layout/layout')
 
-@section('title', 'Witch Head Census Database')
+@section('title', 'Thargoid Nebulae Census Database')
 
 @section('content')
 

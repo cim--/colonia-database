@@ -83,7 +83,7 @@ var CDBMap = function() {
 		'#ff3333', // 8 = overfull
 	];
 
-	var scaleFactor = 12;
+	var scaleFactor = 5;
 	var mapXSize = 600; // half-size
 	var mapYSize = 600; // radiuses
 

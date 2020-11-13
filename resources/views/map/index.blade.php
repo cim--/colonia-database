@@ -4,6 +4,8 @@
 
 @section('content')
 
+<p><strong>Nebulae shown to scale but the distance between them has been compressed to fit them on the same map.</strong></p>
+    
 <div id='mapkeys'>
   <div id='mapkeysphase'>
 	<strong>Settlement phase</strong>: red to yellow (older to newer);

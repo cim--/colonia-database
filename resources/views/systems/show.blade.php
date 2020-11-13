@@ -90,19 +90,11 @@
   <div class='col-sm-6'>
 	<table class='table'>
 	  <tr>
-		<td></td>
 		<th>X</th>
 		<th>Y</th>
 		<th>Z</th>
 	  </tr>
 	  <tr>
-		<td>Witch Head</td>
-		<td>{{number_format($colcoords->x, 5)}}</td>
-		<td>{{number_format($colcoords->y, 5)}}</td>
-		<td>{{number_format($colcoords->z, 5)}}</td>
-	  </tr>
-	  <tr>
-		<td>Traditional</td>
 		<td>{{number_format($system->x, 5)}}</td>
 		<td>{{number_format($system->y, 5)}}</td>
 		<td>{{number_format($system->z, 5)}}</td>

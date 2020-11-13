@@ -110,13 +110,13 @@ class EDDNReader extends Command
         
         if ($event['$schemaRef'] == "http://schemas.elite-markets.net/eddn/journal/1" || $event['$schemaRef'] == "https://eddn.edcd.io/schemas/journal/1") {
             if ($event['message']['event'] == "FSDJump") {
-                if ($event['message']['StarPos'][2] > -600) {
+                if ($event['message']['StarPos'][2] > 6000) {
                     // in case of duplicate names
                     return;
                 }
                 $this->processFSDJump($event);
             } else if ($event['message']['event'] == "Location" || $event['message']['event'] == "CarrierJump") {
-                if ($event['message']['StarPos'][2] > -600) {
+                if ($event['message']['StarPos'][2] > 6000) {
                     // in case of duplicate names
                     return;
                 }

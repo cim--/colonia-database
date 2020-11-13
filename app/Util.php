@@ -158,19 +158,12 @@ class Util {
     }
 
     public static function coloniaCoordinates($traditional) {
-        // translate
-        $cx = $traditional->x - 359.84375;
-        $cy = $traditional->y + 385.53125;
-        $cz = $traditional->z + 718.37500;
-        // rotate
-/*        $theta = -1.0033;
-        $cx = ($x*cos($theta))+($z*sin($theta));
-        $cz = (-$x*sin($theta))+($z*cos($theta)); */
         $coords = new \StdClass;
-        $coords->x = $cx;
-        $coords->y = $cy;
-        $coords->z = $cz;
+        $coords->x = $traditional->x-400;
+        $coords->y = $traditional->y < -200 ? $traditional->y + 350 : $traditional->y + 50;
+        $coords->z = $traditional->z < 0 ? $traditional->z + 650 : $traditional->z - 225;
         return $coords;
+
     }
 
     public static function distance($a, $b) {

@@ -26,8 +26,8 @@ $(document).ready(function() {
 			.size([700, 700])
 			.words(wordmapdata)
 			.fontSize(function(d) {
-				if (d.size == 1) { return 8; }
-				return Math.min((0.5+d.size)*9, 120);
+				if (d.size == 1) { return 12; }
+				return Math.min((0.5+d.size)*24, 120);
 			})
 			.font("sans-serif")
 			.rotate(function() { return (~~(Math.random() * 4) - 2) * 30; })
