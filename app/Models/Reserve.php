@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserve extends Model
 {
-    protected $dates = ['date'];
+    protected $dates = ['date', 'created_at', 'updated_at'];
     
     public function commodity()
     {
@@ -31,40 +31,7 @@ class Reserve extends Model
         if ($c === null) {
             $q->where('date', '>', '2020-01-23');
         } else {
-            switch ($c->name) {
-            case "LowTemperatureDiamond":
-            case "rhodplumsite":
-            case "serendibite":
-            case "monazite":
-            case "musgravite":
-            case "benitoite":
-            case "grandidierite":
-            case "alexandrite":
-            case "painite":
-            case "opal":
-                // regeneration rate changes
-                $q->where('date', '>', '2020-06-09');
-                break;
-            case "tritium":
-                // effect changes
-                $q->where('date', '>', '2020-06-12');
-                break;
-            case "agronomictreatment":
-                // effect changes
-                $q->where('date', '>', '2020-06-09');
-                break;
-            case "Bauxite":
-            case "Gallite":
-            case "Rutile":
-            case "PowerGenerators":
-            case "ThermalCoolingUnits":
-            case "BuildingFabricators":
-                // shortages from CG aftermath
-                $q->where('date', '>', '2020-10-02');
-                break;
-            default:
-                $q->where('date', '>', '2020-01-23');
-            }
+            $q->where('date', '>', $c->behaviourepoch->format("Y-m-d"));
         }
 
         // rare, but occasional glitch

@@ -336,14 +336,6 @@ class BaseController extends Controller
     
     public function progress(Request $request) {
         $user = \Auth::user();
-        /*          // now allows anonymous read-only access
-        if (!$user) {
-            \App::abort(403);
-        }
-
-        if ($user->rank == 0) {
-            return view('progressno');
-            } */
 
         $today = Carbon::now();
         $target = \App\Util::tick();
@@ -354,28 +346,11 @@ class BaseController extends Controller
         $today->hour = 0; $today->minute = 0; $today->second = 0;
         $target->hour = env("TICK_TIME"); $target->minute = 0; $target->second = 0;
 
-        $influenceupdate = System::where('population', '>', 0)
-                         ->where('virtualonly', 0)
-                         ->with(['influences' => function($q) {
-                             $q->where('current', 1);
-                         }])->orderBy('catalogue')->get();
+        $influenceupdate = System::influenceUpdateData();
 
-        $reportsupdate = System::where('population', '>', 0)
-            ->where('virtualonly', 0)
-            ->with(['systemreports' => function($q) {
-                $q->where('current', 1);
-            }])->orderBy('catalogue')->get();
+        $reportsupdate = System::reportUpdateData();
 
-        $marketsupdate = Station::with(['reserves' => function($q) use ($today) {
-            $q->where('current', 1);
-        }])->whereHas('stationclass', function($q) {
-            $q->where('hasSmall', true)
-              ->orWhere('hasMedium', true)
-              ->orWhere('hasLarge', true);
-        })->whereHas('facilities', function($q) {
-            $q->where('name', 'Commodities');
-        })->present()->with('faction', 'system')->orderBy('name')->get();
-
+        $marketsupdate = Station::marketUpdateData();
 
         $reader = strpos(`pgrep -af cdb:ed[d]nreader`, 'cdb:eddnreader');
 
@@ -437,6 +412,10 @@ class BaseController extends Controller
     
     public function about() {
         return view('intro/about');
+    }
+
+    public function nebula() {
+        return view('intro/colonia');
     }
 
     public function story() {

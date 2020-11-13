@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Commodity extends Model
 {
     protected $fillable = ['name'];
+
+    protected $dates = ['created_at', 'updated_at', 'behaviourepoch'];
     
     public function reserves()
     {
@@ -26,6 +28,15 @@ class Commodity extends Model
     public function effects()
     {
         return $this->hasMany('App\Models\Effect');
+    }
+
+    public function scopeNormalTrade($q)
+    {
+        // unusual goods which shouldn't have conventional trade analysis done
+        return $q->where('category', '!=', '')
+            ->whereNotNull('category')
+            ->where('category', '!=', 'Rares')
+            ->where('category', '!=', 'Salvage');
     }
     
     public function displayName()

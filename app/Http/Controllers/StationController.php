@@ -380,26 +380,38 @@ class StationController extends Controller
             ->orderBy('created_at');
 
         $found = false;
+        $sign = 0;
         foreach ($entries->cursor() as $idx => $entry) {
             if ($idx == 0) {
                 $found = true;
+            }
+            if ($sign == 0) {
                 if ($entry->reserves > 0) {
                     $reservelabel = $datasets['reserves']['label'] = "Supply";
                     $sign = 1;
-                } else {
+                } else if ($entry->reserves < 0) {
                     $reservelabel = $datasets['reserves']['label'] = "Demand";
                     $sign = -1;
                 }
             }
 
-                
-            foreach ($properties as $prop) {
-                $datasets[$prop]['data'][] = [
-                    'x' => \App\Util::graphDisplayDateTime($entry->created_at),
-                    'y' => $prop == 'reserves' ? $sign * $entry->$prop : $entry->$prop,
-                    'state' => $entry->states->implode('name', ', ')
-                ];
+            $reservenum = $sign * $entry->reserves;
+            if ($reservenum == -1) {
+                // fix supply-zero reporting issue
+                $reservenum = 0;
             }
+                
+            $datasets['price']['data'][] = [
+                'x' => \App\Util::graphDisplayDateTime($entry->created_at),
+                'y' => $entry->price,
+                'state' => $entry->states->implode('name', ', ')
+            ];
+            $datasets['reserves']['data'][] = [
+                'x' => \App\Util::graphDisplayDateTime($entry->created_at),
+                'y' => $reservenum,
+                'state' => $entry->states->implode('name', ', ')
+            ];
+            
         }
         sort($datasets); // compact
 

@@ -42,6 +42,7 @@
   <li><kbd>!project</kbd> <samp>code</samp>: returns information on the specified project, or a list of projects if the code is omitted.</li>
   <li><kbd>!contribute</kbd> <samp>project-code</samp> <samp>objective-code</samp> <samp>amount</samp>: adds your contribution to the project record. <strong>Read the privacy policy before using this command!</strong>.</li>
   <li><kbd>!addreport</kbd> <samp>system</samp> ; <samp>traffic</samp> ; <samp>crimes</samp> ; <samp>bounties</samp>: adds a traffic report to the database. <strong>Read the privacy policy before using this command!</strong>.</li>
+<li><kbd>!progress</kbd> <samp>dataset</samp> <samp>age</samp>: Returns <a href="{{route('progress')}}">progress data</a> for datasets 'influence', 'market' or 'traffic'.
 </ul>
 
 <p>If you would like to add CensusBot to your server, you can use the

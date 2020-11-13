@@ -252,4 +252,21 @@ class System extends Model
         $power = 10**$places;
         return round($size/$power)*$power;
     }
+
+    public static function influenceUpdateData() {
+        return System::where('population', '>', 0)
+                         ->where('virtualonly', 0)
+                         ->with(['influences' => function($q) {
+                             $q->where('current', 1);
+                         }])->orderBy('catalogue')->get();
+    }
+
+    public static function reportUpdateData() {
+        return System::where('population', '>', 0)
+            ->where('virtualonly', 0)
+            ->with(['systemreports' => function($q) {
+                $q->where('current', 1);
+            }])->orderBy('catalogue')->get();
+    }
+
 }

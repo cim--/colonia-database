@@ -19,6 +19,7 @@ Route::get('/progress', 'BaseController@progress')->name('progress');
 Route::delete('/alert/{alert}', 'BaseController@acknowledgeAlert')->name('acknowledge');
 
 Route::get('/about', 'BaseController@about')->name('intro.about');
+Route::get('/nebula', 'BaseController@nebula')->name('intro.nebula');
 Route::get('/new', 'BaseController@newToColonia')->name('intro.new');
 Route::get('/regions', 'BaseController@regions')->name('intro.regions');
 Route::get('/story', 'BaseController@story')->name('intro.story');
