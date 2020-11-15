@@ -53,6 +53,10 @@ class RegionalComparison extends Command
             "sphere" => [360, -386, -718, 100], // HIP 23759
             "allegiance" => null
         ],
+        "Coalsack" => [
+            "sphere" => [432, 2, 288, 100], // Musca Dark Region PJ-P b6-1
+            "allegiance" => null
+        ],
         /* This entry is ignored in the end, it's just to subtract
          * them from the Deep Space numbers */
         "Colonia" => [
@@ -232,7 +236,7 @@ class RegionalComparison extends Command
             $facinfo = json_decode($line);
             
             foreach ($this->data as $key => $region) {
-                if ($region['allegiance'] == $facinfo->allegiance) {
+                if ($region['allegiance'] == $facinfo->allegiance && $region['allegiance'] !== null) {
                     $this->data[$key]['factions'][$facinfo->id] = true;
                 }
 
