@@ -95,7 +95,7 @@ class GoodsAnalysis2 extends Command
 
         if ($this->option('testmode')) {
             $commodities = Commodity::with('effects')
-                         ->where('id', 108)
+                         ->where('id', 19)
                          ->orderBy('name')->get();
         } else {
             $commodities = Commodity::with('effects')
@@ -119,12 +119,16 @@ class GoodsAnalysis2 extends Command
                 $this->stability = 0;
 //                $this->line("Station: ".$station->name);
                 foreach ($states as $state) {
-                    $regen = $this->analyseRegeneration($commodity, $station, $state);
+                    list ($regen, $rcount) = $this->analyseRegeneration($commodity, $station, $state);
                     if ($regen !== null) {
-                        if ($regen > 0) {
-                            $supplyregen[] = $regen;
-                        } else if ($regen < 0) {
-                            $demandregen[] = $regen;
+                        $weight = sqrt($rcount);
+                        for ($i=0;$i<$weight;$i++) {
+                            // weight stations according to the number of slopes
+                            if ($regen > 0) {
+                                $supplyregen[] = $regen;
+                            } else if ($regen < 0) {
+                                $demandregen[] = $regen;
+                            }
                         }
                     }
                 }
@@ -156,6 +160,7 @@ class GoodsAnalysis2 extends Command
             }
             $commodity->cycleestimate = $estimate;
             $commodity->save();
+            //$this->line([$commodity->supplycycle/86400, $commodity->demandcycle/86400]);
         }
         
     }
@@ -186,7 +191,7 @@ class GoodsAnalysis2 extends Command
         $reserves = $reservesquery->get();
 
         if ($reserves->count() == 0) {
-            return null;
+            return [null,null];
         }
 
         $effect = Effect::where('commodity_id', $commodity->id)
@@ -241,10 +246,10 @@ class GoodsAnalysis2 extends Command
         if (($stability < 5 && $commodity->id != 1) || $max == 0) {
             // insufficient to confirm baseline
             // will use for HFuel *anyway* because a guess is better than nothing
-            return null;
+            return [null,null];
         } else if ($commodity->id == 1 && $stability < $this->stability) {
             // for hfuel don't discard a stable value for a less stable one
-            return null;
+            return [null,null];
         }
 
         if ($effect) {
@@ -279,7 +284,7 @@ class GoodsAnalysis2 extends Command
         
         if ($stability < 25) {
             // unlikely to be good enough for slope estimation
-            return null;
+            return [null,null];
         }
 
         
@@ -305,15 +310,20 @@ class GoodsAnalysis2 extends Command
                 $diff = $amount-$lastamount;
                 $timediff = $reserve->created_at->diffInSeconds($last->created_at);
                 if ($timediff < 86400) {
-                    $slopes[] = [$timediff, $diff]; // seconds per tonne
+                    // else too far apart, might be intervening states
+                    if ($timediff > 900) {
+                        // else too close, might be caching issues or similar
+                        // ignore this step
+                        $slopes[] = [$timediff, $diff]; // seconds per tonne
+                    }
                 }
-                // else too far apart, might be intervening states
+
                 $last = $reserve; // continue checking
             }
         }
         if (count($slopes) < 10) {
             // insufficient data
-            return null;
+            return [null, null];
         }
         $tdtotal = 0; $dtotal = 0;
         foreach ($slopes as $slope) {
@@ -321,12 +331,12 @@ class GoodsAnalysis2 extends Command
             $dtotal += $slope[1];
         }
         
-//        $this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
+        //$this->line("Checking: ".$commodity->name." at ".$station->name." in ".$state->name);
         //        $avgrate = floor($this->median($slopes));
-        $avgrate = floor($tdtotal/$dtotal);
+        $avgrate = $tdtotal/$dtotal;
         $regentime = $avgrate * $max;
-//        $this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days");
-        return $regentime * $sign;
+        //$this->line(($sign>0?"Supply":"Demand")." Regen time: $regentime (".round($regentime/86400, 1).") days from ".count($slopes)." points using baseline ".$max);
+        return [$regentime * $sign, count($slopes)];
     }
 
 
