@@ -88,11 +88,11 @@ class DiscordBot extends Command
         $this->registerProgressCommand();
         
         $this->discord->on('ready', function() {
-            $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
-                'name' => route('index'),
-            ]);
+            //            $game = $this->discord->factory(\Discord\Parts\User\Game::class, [
+            //  'name' => route('index'),
+            //]);
             
-            $this->discord->updatePresence($game);
+            //$this->discord->updatePresence($game);
         });
         
         $this->discord->run();

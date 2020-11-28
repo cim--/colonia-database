@@ -6,7 +6,7 @@ class DiscordClient extends \Discord\DiscordCommandClient {
 
     protected $commandoptions = [];
     
-    public function registerCommand($command, $callable, array $options = [])
+    public function registerCommand(string $command, $callable, array $options = []): \Discord\CommandClient\Command
     {
         if (array_key_exists($command, $this->commands)) {
             throw new \Exception("A command with the name {$command} already exists.");
