@@ -51,6 +51,9 @@ visible change.</p>
   @endif
   @endforeach
 </ul>
+
+<p>Within four hours of the expected tick time (~{{env("TICK_TIME")}}00 hours) EDDN updates which do not change the influence of the highest faction will be ignored, to allow for tick fluctuation. This is mostly likely to affect very quiet systems or systems with a control conflict running.</p>
+
 @else
 <p><strong>All systems updated!</strong></p>
 @endif
@@ -62,7 +65,7 @@ visible change.</p>
 <p>To send an update without needing to open the market, outfitting or shipyard screens, you can for now use <a href="https://www.edsm.net/en_GB/settings/import/capi">EDSM's CAPI tool</a>.</p>
 <ul class='compact'>
   @foreach ($marketsupdate as $station)
-  @if ($station->reserves[0]->created_at->lt($today))
+  @if (isset($station->reserves[0]) && $station->reserves[0]->created_at->lt($today))
   <li
     @if ($station->marketStateChange())
     class='marketstatechange'
@@ -81,13 +84,13 @@ visible change.</p>
 
 <h2>Systems needing report updates ({{number_format($reportscomplete)}}%)</h2>
 @if (count($reportsupdate) > 0)
-<p>The following systems do not have report updates today. You will need to dock at a station in the system to view traffic, crime and bounty reports in the local Galnet. This does not need daily updates for everywhere!</p>
+<p>The following systems do not have report updates today. You will need to dock at a station in the system to view traffic, crime and bounty reports in the local Galnet, then manually submit an update with CensusBot. This does not need daily updates for everywhere!</p>
 @if($userrank == 0)
 <p>This data can only be updated by logging in and entering it manually, or by using the <code>!addreport</code> command.</p>
 @endif
 <ul class='compact'>
   @foreach ($reportsupdate as $system)
-  @if ($system->systemreports[0]->created_at->lt($today))
+  @if (isset($system->systemreports[0]) && $system->systemreports[0]->created_at->lt($today))
   <li class='systemrisk{{$system->risk}}'>
 	@if($userrank > 0)
 	<a href="{{route('systems.editreport',$system->id)}}">{{$system->displayName()}}</a>
