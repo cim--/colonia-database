@@ -280,8 +280,27 @@ class TradeController extends Controller
     }
 
     public function commodityHistory(Request $request, Commodity $commodity) {
-        $reserves = Reserve::where('commodity_id', $commodity->id)->orderBy('created_at');
+        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
 
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+
+        // don't need to start more than 2 weeks back
+        $mincheck = $minrange->copy()->subWeeks(2);
+
+        $reserves = Reserve::where('commodity_id', $commodity->id)
+                  ->whereDate('created_at', '>=', $mincheck)
+                  ->orderBy('created_at');
+        
         $supply = [];
         $demand = [];
         $stations = [];
@@ -395,19 +414,7 @@ class TradeController extends Controller
             ]
         ];
 
-        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        
 
         foreach ($supply as $date => $amount) {
             $datestamp = Carbon::parse($date);
@@ -533,7 +540,26 @@ class TradeController extends Controller
 
     
     public function commodityPriceHistory(Request $request, Commodity $commodity) {
-        $reserves = Reserve::where('commodity_id', $commodity->id)->orderBy('created_at');
+        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        $minrange->year -= 1286;
+        $maxrange->year -= 1286;
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+
+        // don't need to start more than 2 weeks back
+        $mincheck = $minrange->copy()->subWeeks(2);
+        
+        $reserves = Reserve::where('commodity_id', $commodity->id)
+                  ->whereDate('created_at', '>=', $mincheck)
+                  ->orderBy('created_at');
 
         $dates = [];
         $exports = [];
@@ -623,19 +649,7 @@ class TradeController extends Controller
             ],
         ];
 
-        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
 
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
 
         foreach ($dates as $date => $info) {
             $datestamp = Carbon::parse($date);
