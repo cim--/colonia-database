@@ -1,1 +1,2 @@
 <p>The Bloodhounds organisation constructed the Marigold City industrial port in this system as part of the Colonia Expansion Initiative. Their governance structure is an unusual mix of participatory and hierarchical approaches, which has been classified somewhat incorrectly by Universal Cartographics as dictatorial.</p>
+<p>Its position on the fringes of the region has led to it being relativelycalm and outside most political disputes, though security in the system was controversially run by the nearby Galcop group for a while.</p>

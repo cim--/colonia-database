@@ -359,19 +359,19 @@ class BaseController extends Controller
 
         $influencecomplete = 0;
         foreach ($influenceupdate as $entry) {
-            if ($entry->influences[0]->created_at->gt($target)) {
+            if (isset($entry->influences[0]) && $entry->influences[0]->created_at->gt($target)) {
                 $influencecomplete++;
             }
         }
         $reportscomplete = 0;
         foreach ($reportsupdate as $entry) {
-            if ($entry->systemreports[0]->created_at->gt($today)) {
+            if (isset($entry->systemreports[0]) && $entry->systemreports[0]->created_at->gt($today)) {
                 $reportscomplete++;
             }
         }
         $marketscomplete = 0;
         foreach ($marketsupdate as $entry) {
-            if ($entry->reserves[0]->created_at->gt($today)) {
+            if (isset($entry->reserves[0]) && $entry->reserves[0]->created_at->gt($today)) {
                 $marketscomplete++;
             }
         }
@@ -386,7 +386,7 @@ class BaseController extends Controller
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*($influencecomplete / System::populated()->where('virtualonly', 0)->count()),
             'reportscomplete' => 100*($reportscomplete / System::populated()->where('virtualonly', 0)->count()),
-            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->count()),
+            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->tradable()->count()),
             'reader' => $reader,
             'alerts' => $alerts,
             'lockdown' => $lockdown

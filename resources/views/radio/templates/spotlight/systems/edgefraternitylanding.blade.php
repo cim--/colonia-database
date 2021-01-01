@@ -2,4 +2,4 @@
 
 <p>As the A 10 gas giant has orbited the star, the port itself has been locked in permanent night for several months - however, there are many other sites on the planet where the ice peaks can be observed at twilight, and sightseeing continues.</p>
 <p>The Edge Fraternity are one of Colonia's many exploration-focused groups, and the system formed part of the routes of the Summer Great Expedition in mid-3303.</p>
-<p>The system is currently under the direct administrative control of Colonia Council following the victory of traditionalist candidates in elections during November 3305, though this is not expected to affect tourist travel to the system.</p>
+<p>The system is currently under the control of the Last Phoenix Vault, securing the region in the aftermath of the Third Regional Conflict. As this followed a period of direct administrative control by ColoniaCouncil following the victory of traditionalist candidates in elections during November 3305, and a brief attempted takeover by the Likedeeler of Colonia, the system’s political position remainsslightly unstable, though this is not expected to affect tourist travel to the system.</p>

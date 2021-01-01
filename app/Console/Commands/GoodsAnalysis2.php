@@ -62,16 +62,12 @@ class GoodsAnalysis2 extends Command
         
         try {
             if (!$this->option('sizeonly')) {
-                \DB::transaction(function() {
-                    $this->runGoodsAnalysis();
-                });
+                $this->runGoodsAnalysis();
             } else {
                 $this->info("Size analysis only");
             }
             if (!$this->option('goodsonly')) {
-                \DB::transaction(function() {
-                    $this->runEconomySizeAnalysis();
-                });
+                $this->runEconomySizeAnalysis();
             }
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
@@ -271,10 +267,11 @@ class GoodsAnalysis2 extends Command
                  * this is most likely to be accurate */
 //                $this->line("Setting baseline: ".(($max*$sign) / $multiplier));
                 
-                Baselinestock::where('station_id', $station->id)
-                    ->where('commodity_id', $commodity->id)->delete();
-            
-                $baseline = new Baselinestock;
+                $baseline = Baselinestock::where('station_id', $station->id)
+                    ->where('commodity_id', $commodity->id)->first();
+                if (!$baseline) {
+                    $baseline = new Baselinestock;
+                }
                 $baseline->station_id = $station->id;
                 $baseline->commodity_id = $commodity->id;
                 $baseline->reserves = ($max*$sign) / $multiplier;
