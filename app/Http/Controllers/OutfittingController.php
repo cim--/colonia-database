@@ -111,7 +111,7 @@ class OutfittingController extends Controller
         }
         if ($reference === null) {
             // no or bad reference
-            $reference = System::where('name', 'Colonia')->first();
+            $reference = System::first();
         }
         $systems = System::orderBy('name')->orderBy('catalogue')->populated()->get();
         return view('outfitting/module', [

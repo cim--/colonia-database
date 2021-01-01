@@ -386,7 +386,7 @@ class BaseController extends Controller
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*($influencecomplete / System::populated()->where('virtualonly', 0)->count()),
             'reportscomplete' => 100*($reportscomplete / System::populated()->where('virtualonly', 0)->count()),
-            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->count()),
+            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->tradable()->count()),
             'reader' => $reader,
             'alerts' => $alerts,
             'lockdown' => $lockdown
