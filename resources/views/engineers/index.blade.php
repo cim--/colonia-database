@@ -65,9 +65,9 @@ Engineers
 <div class="engbar" title="{{number_format($progress*100/$total)}}% complete" style="width:{{$progress*100/$total}}%">Estimated progress: {{number_format($progress)}}/{{number_format($total)}}</div>
 </div>
 
+@if ($progress < $total)
 <p>Colonia's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type.</p>
 
-@if ($progress < $total)
 <p>The Census offers a <a href='{{route('projects.index')}}'>project management service</a> for people wishing to undertake coordinated work to upgrade blueprints - contact Ian Doncaster if the blueprint you are interested in is not yet registered.</p>
 <table class='table table-bordered'>
   <thead>
