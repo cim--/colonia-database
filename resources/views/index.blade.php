@@ -11,7 +11,7 @@
       <li>Inhabited region is {{number_format($maxdist)}} LY in radius, with Colonia {{number_format($coldist)}} LY from the centre</li>
 	  <li>{{$populated}} systems supporting {{number_format($population)}}
 		@if ($unpopulated)
-		people, with {{$unpopulated}} more currently planned
+		people, with {{$unpopulated}} more also managed
 		@else
 		people
 		@endif</li>
@@ -30,7 +30,7 @@
 	  <li>The busiest system saw {{$maxtraffic}} ships in 24 hours, the quietest only {{$mintraffic}}</li>
 	  <li>Approximately {{number_format($bounties)}} million credits of bounties are collected daily in the region</li>
 	  <li>The exploration value of the inhabited and planned systems is estimated at {{number_format($exploration)}} credits.</li>
-	  <li>The currently inhabited systems have {{$terraformable}} terraforming candidates which do not have any native life.</li>
+	  <li>The currently managed systems have {{$terraformable}} terraforming candidates which do not have any native life.</li>
 	  <li>Native life is being protected from invasion on {{$elwcount}} Earth-like Worlds, {{$wwcount}} terraformable Water Worlds and {{$awcount}} Ammonia Worlds.</li>
 	</ul>
 
@@ -219,7 +219,9 @@
 	</a>
 	{{$history->description}}
 	@if ($history->location_type == 'App\Models\System')
+	@if ($history->location->economy)
 	@include($history->location->economy->icon)
+	@endif
 	<a href='{{route('systems.show', $history->location->id)}}'>
 	  {{$history->location->displayName()}}
 	</a>
