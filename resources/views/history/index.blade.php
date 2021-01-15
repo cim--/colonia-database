@@ -27,14 +27,18 @@
 	  </td>
 	  @if ($history->location_type == 'App\Models\System')
 	  <td>
-		@include($history->location->economy->icon)
-		<a href='{{route('systems.show', $history->location->id)}}'>
-		  {{$history->location->displayName()}}
-		</a>
+	    @if ($history->location->economy)
+	    @include($history->location->economy->icon)
+	    @endif
+	    <a href='{{route('systems.show', $history->location->id)}}'>
+	      {{$history->location->displayName()}}
+	    </a>
 	  </td>
 	  @elseif ($history->location_type == 'App\Models\Station')
 	  <td>
-		@include($history->location->economy->icon)
+	    @if ($history->location->economy)
+	    @include($history->location->economy->icon)
+	    @endif
 		<a href='{{route('stations.show', $history->location->id)}}'>
 		  {{$history->location->name}}
 		</a>
