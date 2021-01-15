@@ -51,7 +51,9 @@
 	  <td>
 		@if ($route->system)
 		<a href="{{route('systems.show', $route->system->id)}}">
+		  @if ($route->system->economy)
 		  @include($route->system->economy->icon)
+		  @endif
 		  {{$route->system->displayName()}}
 		</a>
 		@else

@@ -26,7 +26,9 @@ Sites
 	@foreach ($sites as $site)
 	<tr>
 	  <td data-sort='{{$site->system->displayName()}}'>
-		@include($site->system->economy->icon)
+            @if ($site->system->economy)
+	    @include($site->system->economy->icon)
+	    @endif
 		<a href='{{route('systems.show', $site->system_id)}}'>
 		  {{$site->system->displayName()}}
 		</a>

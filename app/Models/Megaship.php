@@ -45,8 +45,10 @@ class Megaship extends Model
             $weeks = $this->commissioned->diffInWeeks();
             $phase = $this->commissioned->diffInWeeks(Carbon::parse($this->firstmove));
 
-            /* 11, 18, 25 June and 2, 9 July 2020 were skipped without affecting phase */
-            $weeks -= 4;
+            if ($this->commissioned->lt('2020-07-10')) {
+                /* 11, 18, 25 June and 2, 9 July 2020 were skipped without affecting phase */
+                $weeks -= 4;
+            }
 
             if ($phase % 2 == 1) {
                 $moves = floor(($weeks+1)/2);
