@@ -34,9 +34,11 @@
   @elseif ($site->sitecategory->name == "Tourist Beacon")
   Beacons for passengers and other visitors marking sites of scientific, historical or cultural interest.
   @elseif ($site->sitecategory->name == "Attacked Ship")
-  The wreckage of an attacked ship or other space construct
+  The wreckage of an attacked ship or other space construct.
   @elseif ($site->sitecategory->name == "Alien")
-  Xenobiological life forms or other xenological artifacts outside of lagrange clouds
+  Xenobiological life forms or other xenological artifacts outside of lagrange clouds.
+  @elseif ($site->sitecategory->name == "Experimental Habitat")
+  A controlled environment for studying vacuum lifeforms.
   @elseif ($site->sitecategory->name == "Named Body")
   A planet or other body which has a name instead of a standard catalogue designation.
   @elseif ($site->sitecategory->name == "Lagrange Cloud")
