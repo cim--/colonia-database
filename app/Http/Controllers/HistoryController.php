@@ -159,7 +159,7 @@ class HistoryController extends Controller
                 ];
                 $averages[$prop][] = $$prop;
                 if (count($averages[$prop]) == 28) {
-                    $datasets['avg'.$prop]['data'][] = [
+                     $datasets['avg'.$prop]['data'][] = [
                         'x' => \App\Util::graphDisplayDate($date),
                         'y' => floor(array_sum($averages[$prop])/28)
                     ];
@@ -178,6 +178,14 @@ class HistoryController extends Controller
             $latest[$report->system_id] = $report;
         }
         $finalisedate($datasets, $averages, $date, $latest); // do the last one
+
+        $traffic = $datasets['traffic']['data'][count($datasets['traffic']['data'])-1]['y'];
+        $crimes = $datasets['crime']['data'][count($datasets['crime']['data'])-1]['y'];
+        $bounties = $datasets['bounties']['data'][count($datasets['bounties']['data'])-1]['y'];
+        $avgtraffic = $datasets['avgtraffic']['data'][count($datasets['avgtraffic']['data'])-1]['y'];
+        $avgcrimes = $datasets['avgcrime']['data'][count($datasets['avgcrime']['data'])-1]['y'];
+        $avgbounties = $datasets['avgbounties']['data'][count($datasets['avgbounties']['data'])-1]['y'];
+        
         rsort($datasets);
         $chart = app()->chartjs
             ->name("reporthistory")
@@ -233,10 +241,18 @@ class HistoryController extends Controller
                 ],
             ]);
 
+      
+        
         return view('history/trends', [
             'chart' => $chart,
             'minrange' => $minrange,
             'maxrange' => $maxrange,
+            'traffic' => $traffic,
+            'crimes' => $crimes,
+            'bounties' => $bounties,
+            'avgtraffic' => $avgtraffic,
+            'avgcrimes' => $avgcrimes,
+            'avgbounties' => $avgbounties,
         ]);
     }
 
