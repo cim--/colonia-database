@@ -11,7 +11,7 @@
       <li>Inhabited region is {{number_format($maxdist)}} LY in radius</li>
 	  <li>{{$populated}} systems supporting {{number_format($population)}}
 		@if ($unpopulated)
-		people, with {{$unpopulated}} more currently planned
+		people, with {{$unpopulated}} more also managed
 		@else
 		people
 		@endif</li>
@@ -216,7 +216,9 @@
 	</a>
 	{{$history->description}}
 	@if ($history->location_type == 'App\Models\System')
+	@if ($history->location->economy)
 	@include($history->location->economy->icon)
+	@endif
 	<a href='{{route('systems.show', $history->location->id)}}'>
 	  {{$history->location->displayName()}}
 	</a>

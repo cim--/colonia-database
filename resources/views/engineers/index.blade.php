@@ -65,7 +65,9 @@ Engineers
 <div class="engbar" title="{{number_format($progress*100/$total)}}% complete" style="width:{{$progress*100/$total}}%">Estimated progress: {{number_format($progress)}}/{{number_format($total)}}</div>
 </div>
 
+@if ($progress < $total)
 <p>Witch Head's engineers are researching higher grades of blueprints. Higher grades become available after approximately the following numbers of (cumulative) upgrades have been carried out on a particular module type.</p>
+
 
 <table class='table table-bordered'>
   <thead>
@@ -92,6 +94,7 @@ Engineers
 </table>
 
 <p>It is believed that use of pinned blueprints and application of experimental effects do not contribute to research. You will need to log out and in to see an upgrade once the threshold is crossed.</p>
+@endif
 
 {{-- <p>Note that it is possible for an Engineer to have a higher research level than there exist blueprints - Mel Brandon has G5 Shield Cell Bank knowledge, but the SCB blueprints only exist up to G4. Similarly, Petra Olmanova cannot produce G2 High Capacity Chaff, Heatsinks or Point Defence (and neither, of course, can Ram Tah), despite having sufficient research level.</p> --}}
 

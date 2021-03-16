@@ -82,7 +82,7 @@ class GoodsAnalysis extends Command
         })->with('economy')->get();
 
         if ($this->option('testmode')) {
-            $commodities = Commodity::where('id', 40)->get();
+            $commodities = Commodity::where('id', 87)->get();
         } else {
             $commodities = Commodity::normalTrade()->get();
         }
@@ -163,7 +163,7 @@ class GoodsAnalysis extends Command
         $pricedata = [];
         $states = [];
         foreach ($reserves as $reserve) {
-            if ($reserve->states->count() > 1) {
+            if ($reserve->states->count() != 1) {
                 continue; // do the easy ones first
             }
             $stateid = $reserve->states[0]->id;
