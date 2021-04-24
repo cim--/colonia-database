@@ -104,7 +104,7 @@ class BaseController extends Controller
         
         $systems = System::with('phase', 'economy', 'facilities')->orderBy('name')->get();
         $factions = Faction::with('government', 'ethos')->notHidden()->orderBy('name')->get();
-        $stations = Station::with('economy', 'stationclass')->orderBy('name')->get();
+        $stations = Station::with('economy', 'stationclass')->notFactory()->orderBy('name')->get();
 
         
         $statescalc = [];
@@ -288,6 +288,7 @@ class BaseController extends Controller
             'populated' => $systems->filter(function($v) { return $v->population > 0; })->count(),
             'unpopulated' => $systems->filter(function($v) { return $v->population == 0; })->count(),
             'dockables' => $stations->filter(function($v) { return $v->stationclass->hasSmall; })->count(),
+            'factories' => Station::factory()->count(),
             'players' => $factions->filter(function($v) { return $v->player; })->count(),
             'economies' => $economies,
             'governments' => $governments,
@@ -386,7 +387,7 @@ class BaseController extends Controller
             'marketsupdate' => $marketsupdate,
             'influencecomplete' => 100*($influencecomplete / System::populated()->where('virtualonly', 0)->count()),
             'reportscomplete' => 100*($reportscomplete / System::populated()->where('virtualonly', 0)->count()),
-            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->tradable()->count()),
+            'marketscomplete' => 100*($marketscomplete / Station::dockable()->present()->tradable()->notFactory()->count()),
             'reader' => $reader,
             'alerts' => $alerts,
             'lockdown' => $lockdown
