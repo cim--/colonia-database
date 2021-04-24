@@ -113,6 +113,18 @@ class Station extends Model
         })->dockable();
     }
 
+    public function scopeNotFactory($q) {
+        return $q->whereHas('stationclass', function($cq) {
+            $cq->where('name', 'NOT LIKE', '%Factory');
+        });
+    }
+
+    public function scopeFactory($q) {
+        return $q->whereHas('stationclass', function($cq) {
+            $cq->where('name', 'LIKE', '%Factory');
+        });
+    }
+
     
     public function currentStateList()
     {
@@ -166,6 +178,6 @@ class Station extends Model
               ->orWhere('hasLarge', true);
         })->whereHas('facilities', function($q) {
             $q->where('name', 'Commodities');
-        })->present()->with('faction', 'system')->orderBy('name')->get();
+        })->notFactory()->present()->with('faction', 'system')->orderBy('name')->get();
     }
 }

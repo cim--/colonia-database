@@ -73,13 +73,16 @@ class GoodsAnalysis extends Command
     private function runGoodsAnalysis() {
         $stations = Station::whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
-              ->orWhere('hasMedium', true)
-              ->orWhere('hasLarge', true);
+                ->orWhere('hasMedium', true)
+                ->orWhere('hasLarge', true);
         })->whereHas('economy', function($q) {
             // ignore stations with hybrid or damaged economies
             // as they'll confuse the analysis
             $q->where('analyse', true);
-        })->with('economy')->get();
+        })
+                  ->notFactory()
+                  // exclude the Odyssey tiny factory economies
+                  ->with('economy')->get();
 
         if ($this->option('testmode')) {
             $commodities = Commodity::where('id', 87)->get();

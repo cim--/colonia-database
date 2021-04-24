@@ -87,7 +87,10 @@ class GoodsAnalysis2 extends Command
             // as they'll confuse the analysis
             $q->baseline();
             // hybrids are fine for this, though
-        })->with('economy')->get();
+        })
+                  ->notFactory()
+                  // exclude the Odyssey tiny factory economies
+                  ->with('economy')->get();
 
         if ($this->option('testmode')) {
             $commodities = Commodity::with('effects')
@@ -377,7 +380,10 @@ class GoodsAnalysis2 extends Command
             // as they'll confuse the analysis
             $q->baseline();
             // hybrids are fine for this, though
-        })->with('economy')->with('baselinestocks')->get();
+        })
+                  ->notFactory()
+                  // exclude the Odyssey tiny factory economies
+                  ->with('economy')->with('baselinestocks')->get();
 
         $hydrogen = Commodity::where('name', 'HydrogenFuel')->first();
 

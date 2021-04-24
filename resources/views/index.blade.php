@@ -15,7 +15,7 @@
 		@else
 		people
 		@endif</li>
-	  <li>{{$dockables}} surface and orbital stations (and {{$stations->count()-$dockables}} settlements) including {{$engineers}} engineers</li>
+      <li>{{$dockables}} surface and orbital stations, {{$stations->count()-$dockables}} settlements and {{$factories}} factories - including {{$engineers}} engineers</li>
       <li>Current happiness is {{number_format($happiness/$population)}}%:
 	@foreach ($happinesses as $idx => $pop)
 	@if ($pop > 0)
