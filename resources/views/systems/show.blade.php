@@ -120,7 +120,7 @@
 		<tr><th>Name</th><th>Planet</th><th>Type</th><th>Controller</th></tr>
 	  </thead>
 	  <tbody>
-            @foreach ($system->stations->where('removed', 0) as $station)
+            @foreach ($system->stations()->present()->notFactory()->get() as $station)
 		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
 		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
 			@include($station->economy->icon)
@@ -212,7 +212,31 @@
 	  </tbody>
 	</table>
 	@endif
+
+	<h2>Factories</h2>
+	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false'>
+	  <thead>
+		<tr><th>Name</th><th>Planet</th><th>Type</th><th>Controller</th></tr>
+	  </thead>
+	  <tbody>
+            @foreach ($system->stations()->present()->factory()->get() as $station)
+		<tr class="{{$station->primary ? 'primary-station' : 'secondary-station'}}">
+		  <td><a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
+			@include($station->economy->icon)
+		  </td>
+		  <td>{{$station->planet}}</td>
+		  <td>{{$station->stationclass->name}}</td>
+		  <td>
+			@include($station->faction->government->icon)
+			<a href='{{route('factions.show', $station->faction_id)}}'>{{$station->faction->name}}</a>
+		  </td>
+		</tr>
+		@endforeach
+	  </tbody>
+	</table>
 	
+  </div>
+  <div class='col-sm-6'>
 	<h2>Factions</h2>
 	@if (!$system->virtualonly)
 	@if ($system->bgslock)
@@ -321,10 +345,10 @@
 	<a class='edit' href='{{route('systems.edit', $system->id)}}'>Update</a>
 	@endif
 	@endif
-  </div>
-@endif
 
-  <div class='col-sm-6'>
+	@else
+  <div class='col-sm-6'>	
+@endif
 
 	@if ($system->sites->count() > 0)
 	<h2>Sites</h2>
