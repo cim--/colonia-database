@@ -122,6 +122,12 @@
 	  </tbody>
 	</table>
 	@endif
+
+	@if (!$faction->virtual)
+	<h2>State History</h2>
+	@include('layout/chart')
+	@endif
+
   </div>
   <div class='col-sm-6'>
 	<h2>Stations</h2>
@@ -130,7 +136,7 @@
 		<tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
 	  <tbody>
-		@foreach ($faction->stations->where('removed',0) as $station)
+		@foreach ($faction->stations()->present()->notFactory() as $station)
 		<tr>
 		  <td>
 			<a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
@@ -170,10 +176,27 @@
 	  </tbody>
 	</table>
 
-	@if (!$faction->virtual)
-	<h2>State History</h2>
-	@include('layout/chart')
-	@endif
+	<h2>Factories</h2>
+	<table class='table table-bordered datatable'>
+	  <thead>
+	    <tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
+	  </thead>
+	  <tbody>
+	    @foreach ($faction->stations()->present()->factory() as $station)
+	    <tr>
+	      <td>
+		<a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
+		@include($station->economy->icon)
+	      </td>
+	      <td><a href="{{route('systems.show', $station->system->id)}}">{{$station->system->displayName()}}</a>
+	      </td>
+	      <td>{{$station->planet}}</td>
+	      <td>{{$station->stationclass->name}}</td>
+	    </tr>
+	    @endforeach
+	  </tbody>
+	</table>
+	
   </div>
 </div>
 
