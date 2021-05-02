@@ -13,6 +13,7 @@
 	  <th>Systems Controlled</th>
 	  <th>Stations Controlled</th>
 	  <th>Installations Controlled</th>
+          <th>Factories Controlled</th>
 	  <th>Orbitals</th>
 	  <th>Planet Bases</th>
 	  <th>Settlements</th>
@@ -43,8 +44,9 @@
 	  </td>
 	  <td>{{$faction->influences->count()}}</td>
 	  <td>{{$faction->stations->where('primary', 1)->count()}}</td>
-	  <td>{{$faction->stations->count()}}</td>
+	  <td>{{$faction->stations()->present()->notFactory()->count()}}</td>
 	  <td>{{$faction->installations->count()}}</td>
+	  <td>{{$faction->stations()->present()->factory()->count()}}</td>
 	  <td>{{$faction->stations->where('gravity', null)->count()}}</td>
 	  <td>
 		{{$faction->stations->where('gravity', '>', 0)
