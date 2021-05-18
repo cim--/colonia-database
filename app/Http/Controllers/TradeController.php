@@ -280,19 +280,7 @@ class TradeController extends Controller
     }
 
     public function commodityHistory(Request $request, Commodity $commodity) {
-        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         // don't need to start more than 2 weeks back
         $mincheck = $minrange->copy()->subWeeks(2);
@@ -540,19 +528,7 @@ class TradeController extends Controller
 
     
     public function commodityPriceHistory(Request $request, Commodity $commodity) {
-        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         // don't need to start more than 2 weeks back
         $mincheck = $minrange->copy()->subWeeks(2);
