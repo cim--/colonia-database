@@ -102,19 +102,7 @@ class SystemController extends Controller
             $reportbuilder = Systemreport::where('system_id', $system->id)->orderBy('date');
         }
         
-        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
         
         $reportbuilder->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<', $maxrangecomp);
@@ -231,19 +219,7 @@ class SystemController extends Controller
 
     public function showHistory(Request $request, System $system)
     {
-        $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         
         $influences = Influence::where('system_id', $system->id)
@@ -354,19 +330,7 @@ class SystemController extends Controller
 
     public function showHappiness(Request $request, System $system)
     {
-        $minrange = Carbon::parse($request->input('minrange', '3304-12-01'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
         
         $influences = Influence::where('system_id', $system->id)
             ->whereDate('date', '>=', $minrange)

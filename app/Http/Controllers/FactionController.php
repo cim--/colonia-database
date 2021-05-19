@@ -132,20 +132,8 @@ class FactionController extends Controller
     public function showHistory(Request $request, Faction $faction)
     {
         $mindefault = (date("Y", strtotime("-99 days"))+1286).date("-m-d", strtotime("-99 days"));
-        
-        $minrange = Carbon::parse($request->input('minrange', $mindefault));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
 
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges($mindefault);
         
         $influences = Influence::where('faction_id', $faction->id)
             ->whereDate('date', '>=', $minrange)
@@ -276,19 +264,7 @@ class FactionController extends Controller
 
     public function showHappiness(Request $request, Faction $faction)
     {
-        $minrange = Carbon::parse($request->input('minrange', '3304-12-01'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
-
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        $maxrangecomp = $maxrange->copy()->addDay();
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         $influences = Influence::where('faction_id', $faction->id)
             ->whereDate('date', '>=', $minrange)

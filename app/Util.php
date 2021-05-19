@@ -219,4 +219,32 @@ class Util {
             return (10**$factor)*round($number/(10**$factor));
         }
     }
+
+    public static function graphRanges($mindefault=false)
+    {
+        $request = request();
+        
+        if ($mindefault) {
+            $minrange = Carbon::parse($request->input('minrange', $mindefault));
+        } else {
+            $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
+        }
+        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+
+        if ($minrange->year > 3000) {
+            $minrange->year -= 1286;
+        }
+        if ($maxrange->year > 3000) {
+            $maxrange->year -= 1286;
+        }
+
+        if ($maxrange->isFuture()) {
+            $maxrange = Carbon::now();
+        }
+        if ($minrange->gt($maxrange)) {
+            $minrange = $maxrange->copy()->subDay();
+        }
+        $maxrangecomp = $maxrange->copy()->addDay();
+        return [$minrange, $maxrange, $maxrangecomp];
+    }
 }

@@ -358,19 +358,8 @@ class StationController extends Controller
         ];
         $properties = ['price', 'reserves'];
 
-        $minrange = Carbon::parse($request->input('minrange', '3303-12-24'));
-        $maxrange = Carbon::parse($request->input('maxrange', '3400-01-01'));
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
-        $minrange->year -= 1286;
-        $maxrange->year -= 1286;
-
-        if ($maxrange->isFuture()) {
-            $maxrange = Carbon::now();
-        }
-        if ($minrange->gt($maxrange)) {
-            $minrange = $maxrange->copy()->subDay();
-        }
-        
         $entries = Reserve::where('station_id', $station->id)
             ->where('commodity_id', $commodity->id)
             ->whereDate('date', '>=', $minrange)
