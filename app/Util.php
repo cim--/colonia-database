@@ -38,18 +38,21 @@ class Util {
         return (date("H") == env("TICK_TIME",15));
     }
 
-    public static function fairlyNearTick() {
-        // was the expected tick less than four hours ago?
+    public static function fairlyNearTick($ts=null) {
+        if (!$ts) {
+            $ts = time();
+        }
+        // was the expected tick less than six hours ago?
         $tick = env("TICK_TIME",15);
-        if ($tick <= 20) {
+        if ($tick <= 18) {
             return (
-                date("H") >= $tick &&
-                date("H") < $tick + 4
+                date("H", $ts) >= $tick &&
+                date("H", $ts) < $tick + 6
             );
         } else {
             return (
-                date("H") >= $tick ||
-                date("H") < $tick - 20
+                date("H", $ts) >= $tick ||
+                date("H", $ts) < $tick - 18
             );
         }
     }

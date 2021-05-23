@@ -405,7 +405,7 @@ class EDDNReader extends Command
                 }
                 $this->info("Updated pending states");
                 }); */
-
+            $overwrite = false;
             if ($latest) {
                 // we have data for this tick but the influence values
                 // don't match this - double-tick? missed tick? other
@@ -419,12 +419,32 @@ class EDDNReader extends Command
                         ->first();
                     if ($last && abs($last->influence - $influences[0]['influence']) > 0.1) {
                         // also different to previous day's figure
-                        Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                        
+
+                        /* If the original data came from fairly near
+                         * the expected tick time, then this is
+                         * probably data obtained between the state
+                         * and influence ticks, and should be
+                         * overwritten. Otherwise, flag for manual
+                         * attention. */
+                        if (!\App\Util::fairlyNearTick($latest->created_at->timestamp)) {
+                        
+                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                            $this->error("Data discrepancy - verify manually");
+                        } else {
+                            $overwrite = true;
+                            /* Pilot phase: flag that we're doing
+                             * this: expect we'll be able to remove
+                             * this later. */
+                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
+                            $this->error("Data discrepancy - overwriting");
+                        }
                     }
                 }
             }
-            
-            return;
+            if (!$overwrite) {
+                return;
+            }
         }
 
 
@@ -438,7 +458,7 @@ class EDDNReader extends Command
                     $this->error("Data looks stale - skipping");
                     return;
                 } else {
-                    $this->info("Data unchanged - processing after 4 hours");
+                    $this->info("Data unchanged - processing after 6 hours");
                 }
             }
         }
