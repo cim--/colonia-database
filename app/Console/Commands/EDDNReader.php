@@ -702,6 +702,11 @@ class EDDNReader extends Command
                 $commodity->averageprice = $cdata['meanPrice'];
                 $commodity->save();
             }
+
+            if ($cdata['stockBracket'] == 0 && $cdata['demandBracket'] == 0) {
+                // ignore zero lines
+                continue;
+            }
             
             $reserve = new Reserve;
             $reserve->current = true;
