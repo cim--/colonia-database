@@ -41,20 +41,20 @@ class RegionalComparison extends Command
             "sphere" => [-81,-149,-343,100], // Maia
             "allegiance" => null
         ],
-        "Sol" => [
-            "sphere" => [0,0,0,500], // Sol
-            "allegiance" => null
-        ],
-        "California Nebula" => [
-            "sphere" => [-303,-236,-860,200], // HIP 18077
+        "Coalsack" => [
+            "sphere" => [432, 2, 288, 100], // Musca Dark Region PJ-P b6-1
             "allegiance" => null
         ],
         "Witch Head" => [
             "sphere" => [360, -386, -718, 100], // HIP 23759
             "allegiance" => null
         ],
-        "Coalsack" => [
-            "sphere" => [432, 2, 288, 100], // Musca Dark Region PJ-P b6-1
+        "California Nebula" => [
+            "sphere" => [-303,-236,-860,200], // HIP 18077
+            "allegiance" => null
+        ],
+        "Sol" => [
+            "sphere" => [0,0,0,500], // Sol
             "allegiance" => null
         ],
         /* This entry is ignored in the end, it's just to subtract
