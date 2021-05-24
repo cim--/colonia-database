@@ -786,6 +786,13 @@ class EDDNReader extends Command
             return;
         }
 
+        if (!isset($event['message']['odyssey']) || $event['message']['odyssey'] === false || $event['message']['odyssey'] === "false") {
+            // ignore Odyssey shipyard events for now
+            //            $this->line("Ignoring Odyssey".($event['message']['odyssey']??'ns'));
+            return;
+        }
+        //        $this->line("Using Horizons");
+        
         $system = System::where('name', $event['message']['systemName'])
             ->orWhere('catalogue', $event['message']['systemName'])
             ->first();
