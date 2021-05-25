@@ -393,6 +393,8 @@ class EDDNReader extends Command
         $exists = Influence::where('system_id', $system->id)
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->count();
+        $overwrite = false;
+
         if ($exists > 0) {
             // already have data for this tick
 
@@ -405,7 +407,6 @@ class EDDNReader extends Command
                 }
                 $this->info("Updated pending states");
                 }); */
-            $overwrite = false;
             if ($latest) {
                 // we have data for this tick but the influence values
                 // don't match this - double-tick? missed tick? other
@@ -438,6 +439,12 @@ class EDDNReader extends Command
                              * this later. */
                             Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
                             $this->error("Data discrepancy - overwriting");
+                            if (!$this->monitoronly) {
+                                $reset = Influence::where('system_id', $system->id)
+                                       ->where('date', $target->format("Y-m-d 00:00:00"))
+                                       ->where('current', 1)
+                                       ->delete();
+                            }
                         }
                     }
                 }
@@ -448,7 +455,7 @@ class EDDNReader extends Command
         }
 
 
-        if ($latest) {
+        if ($latest && !$overwrite) {
             // if not, then new system being read
             if(abs($latest->influence - $influences[0]['influence']) < 0.1) {
                 // data is too close to existing data, may be stale
@@ -458,7 +465,7 @@ class EDDNReader extends Command
                     $this->error("Data looks stale - skipping");
                     return;
                 } else {
-                    $this->info("Data unchanged - processing after 6 hours");
+                    $this->info("Data unchanged - processing after 10 hours");
                 }
             }
         }
@@ -786,12 +793,12 @@ class EDDNReader extends Command
             return;
         }
 
-        if (!isset($event['message']['odyssey']) || $event['message']['odyssey'] === false || $event['message']['odyssey'] === "false") {
+        if (!isset($event['message']['odyssey']) || ($event['message']['odyssey'] !== false && $event['message']['odyssey'] !== "false")) {
             // ignore Odyssey shipyard events for now
             //            $this->line("Ignoring Odyssey".($event['message']['odyssey']??'ns'));
             return;
         }
-        //        $this->line("Using Horizons");
+        //        $this->line("Using Horizons".($event['message']['odyssey']??'ns'));
         
         $system = System::where('name', $event['message']['systemName'])
             ->orWhere('catalogue', $event['message']['systemName'])

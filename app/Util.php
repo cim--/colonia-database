@@ -42,17 +42,17 @@ class Util {
         if (!$ts) {
             $ts = time();
         }
-        // was the expected tick less than six hours ago?
+        // was the expected tick less than ten!! hours ago?
         $tick = env("TICK_TIME",15);
-        if ($tick <= 18) {
+        if ($tick <= 14) {
             return (
                 date("H", $ts) >= $tick &&
-                date("H", $ts) < $tick + 6
+                date("H", $ts) < $tick + 10
             );
         } else {
             return (
                 date("H", $ts) >= $tick ||
-                date("H", $ts) < $tick - 18
+                date("H", $ts) < $tick - 14
             );
         }
     }
