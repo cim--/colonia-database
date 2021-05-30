@@ -18,7 +18,7 @@ class LogisticsController extends Controller
     public function form()
     {
         $commodities = Commodity::orderBy('description')->whereHas('reserves', function($q) {
-            $q->where('reserves', '>', 0);
+            $q->where('reserves', '>', 0)->where('current', true);
         })->get();
         $stations = Station::orderBy('name')->tradable()->get();
         

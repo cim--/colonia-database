@@ -132,7 +132,7 @@
     @endif
 
     <h2>Current Conflicts</h2>
-    <table class='table table-bordered datatable' data-paging='false' data-order='[[1, "asc"],[2, "asc"]]' data-searching='false' data-info='false'>
+    <table class='table table-bordered datatable' data-paging='false' data-order='[[0, "asc"],[1, "asc"],[2, "asc"]]' data-searching='false' data-info='false'>
       <thead>
 	<tr>
 	  <th>State</th><th>System</th><th>Faction 1</th><th>Score</th><th>Faction 2</th>
@@ -146,7 +146,16 @@
 	  class='controlconflict'
 	  @endif
 	  >
-          <td>{{ucwords($conflict->status)}} {{ucwords($conflict->type)}}</td>
+          <td data-sort="{{
+((($conflict->asset1 && $conflict->asset1->isController()) || ($conflict->asset2 && $conflict->asset2->isController())) ? 100 : 200) + 
+(ucwords($conflict->status) == "Pending" ? 30 : (ucwords($conflict->status) == "Active" ? 20 : 10)) +
+(ucwords($conflict->type) == "Election" ? 2: 1)
+}}">
+	    @if (($conflict->asset1 && $conflict->asset1->isController()) || ($conflict->asset2 && $conflict->asset2->isController()))
+	    Control
+	    @endif
+	    {{ucwords($conflict->status)}} {{ucwords($conflict->type)}}
+	  </td>
 	  <td>
 	    <a href='{{route('systems.show', $conflict->system->id)}}'>
 	      {{$conflict->system->displayName()}}

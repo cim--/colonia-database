@@ -205,6 +205,7 @@
 	</table>
 	@endif
 
+        @if ($system->stations()->present()->factory()->count() > 0)
 	<h2>Factories</h2>
 	<table class='table table-bordered datatable' data-paging='false' data-searching='false' data-info='false'>
 	  <thead>
@@ -226,7 +227,7 @@
 		@endforeach
 	  </tbody>
 	</table>
-	
+	@endif
   </div>
   <div class='col-sm-6'>
 	<h2>Factions</h2>

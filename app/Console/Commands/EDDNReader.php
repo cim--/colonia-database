@@ -393,6 +393,8 @@ class EDDNReader extends Command
         $exists = Influence::where('system_id', $system->id)
             ->where('date', $target->format("Y-m-d 00:00:00"))
             ->count();
+        $overwrite = false;
+
         if ($exists > 0) {
             // already have data for this tick
 
@@ -405,7 +407,6 @@ class EDDNReader extends Command
                 }
                 $this->info("Updated pending states");
                 }); */
-
             if ($latest) {
                 // we have data for this tick but the influence values
                 // don't match this - double-tick? missed tick? other
@@ -419,16 +420,42 @@ class EDDNReader extends Command
                         ->first();
                     if ($last && abs($last->influence - $influences[0]['influence']) > 0.1) {
                         // also different to previous day's figure
-                        Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                        
+
+                        /* If the original data came from fairly near
+                         * the expected tick time, then this is
+                         * probably data obtained between the state
+                         * and influence ticks, and should be
+                         * overwritten. Otherwise, flag for manual
+                         * attention. */
+                        if (!\App\Util::fairlyNearTick($latest->created_at->timestamp)) {
+                        
+                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
+                            $this->error("Data discrepancy - verify manually");
+                        } else {
+                            $overwrite = true;
+                            /* Pilot phase: flag that we're doing
+                             * this: expect we'll be able to remove
+                             * this later. */
+                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
+                            $this->error("Data discrepancy - overwriting");
+                            if (!$this->monitoronly) {
+                                $reset = Influence::where('system_id', $system->id)
+                                       ->where('date', $target->format("Y-m-d 00:00:00"))
+                                       ->where('current', 1)
+                                       ->delete();
+                            }
+                        }
                     }
                 }
             }
-            
-            return;
+            if (!$overwrite) {
+                return;
+            }
         }
 
 
-        if ($latest) {
+        if ($latest && !$overwrite) {
             // if not, then new system being read
             if(abs($latest->influence - $influences[0]['influence']) < 0.1) {
                 // data is too close to existing data, may be stale
@@ -438,7 +465,7 @@ class EDDNReader extends Command
                     $this->error("Data looks stale - skipping");
                     return;
                 } else {
-                    $this->info("Data unchanged - processing after 4 hours");
+                    $this->info("Data unchanged - processing after 10 hours");
                 }
             }
         }
@@ -608,7 +635,7 @@ class EDDNReader extends Command
         $broker = Facility::where('name', 'Broker')->first();
 
         foreach ($system->stations as $station) {
-            if ($station->stationclass->hasSmall) {
+            if ($station->stationclass->hasSmall || $station->stationclass->hasMedium || $station->stationclass->hasLarge) {
                 /* detach than reattach in case it's already there */
                 $station->facilities()->detach($broker->id);
                 $station->facilities()->attach($broker->id);
@@ -681,6 +708,11 @@ class EDDNReader extends Command
                 }
                 $commodity->averageprice = $cdata['meanPrice'];
                 $commodity->save();
+            }
+
+            if ($cdata['stockBracket'] == 0 && $cdata['demandBracket'] == 0) {
+                // ignore zero lines
+                continue;
             }
             
             $reserve = new Reserve;
@@ -761,6 +793,13 @@ class EDDNReader extends Command
             return;
         }
 
+        if (!isset($event['message']['odyssey']) || ($event['message']['odyssey'] !== false && $event['message']['odyssey'] !== "false")) {
+            // ignore Odyssey shipyard events for now
+            //            $this->line("Ignoring Odyssey".($event['message']['odyssey']??'ns'));
+            return;
+        }
+        //        $this->line("Using Horizons".($event['message']['odyssey']??'ns'));
+        
         $system = System::where('name', $event['message']['systemName'])
             ->orWhere('catalogue', $event['message']['systemName'])
             ->first();

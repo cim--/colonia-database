@@ -182,7 +182,7 @@
 	    <tr><th>Name</th><th>System</th><th>Planet</th><th>Type</th></tr>
 	  </thead>
 	  <tbody>
-	    @foreach ($faction->stations()->present()->factory() as $station)
+            @foreach ($faction->stations()->present()->factory()->get() as $station)
 	    <tr>
 	      <td>
 		<a href='{{route('stations.show', $station->id)}}'>{{$station->name}}</a>
