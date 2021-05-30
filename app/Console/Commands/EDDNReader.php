@@ -635,7 +635,7 @@ class EDDNReader extends Command
         $broker = Facility::where('name', 'Broker')->first();
 
         foreach ($system->stations as $station) {
-            if ($station->stationclass->hasSmall) {
+            if ($station->stationclass->hasSmall || $station->stationclass->hasMedium || $station->stationclass->hasLarge) {
                 /* detach than reattach in case it's already there */
                 $station->facilities()->detach($broker->id);
                 $station->facilities()->attach($broker->id);
