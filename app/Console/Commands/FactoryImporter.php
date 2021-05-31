@@ -65,6 +65,9 @@ class FactoryImporter extends Command
             $distance = $fields[2];
             $gravity = $fields[3];
             $name = $fields[4];
+            if ($fields[5] == "Agriculture") {
+                $fields[5] = "Agricultural";
+            }
             $economy = Economy::where('name', $fields[5])->first();
             if (!$economy) {
                 $errors = true;
@@ -136,11 +139,14 @@ class FactoryImporter extends Command
         case "UCA":
             $name = "Ukraine Colonist Alliance";
             break;
+        case "MCRN":
+            $name = "Mobius Colonial Republic Navy";
+            break;
         case "LGC":
             $name = "LGC - Colonia Cartographers' Guild";
             break;
         case "Col Coop":
-            $name = "Colonia Cooperative";
+            $name = "Colonia Co-operative";
             break;
         case "TFRC":
             $name = "The Fuel Rat Colony";
