@@ -65,6 +65,13 @@ class FactoryImporter extends Command
             $distance = $fields[2];
             $gravity = $fields[3];
             $name = $fields[4];
+
+            $exists = Station::where('name', $name)->where('system_id', $system->id)->first();
+            if ($exists) {
+                $errors = true;
+                $this->error("Station ".$fields[4]." already imported at line ".$idx);
+            }
+            
             if ($fields[5] == "Agriculture") {
                 $fields[5] = "Agricultural";
             }
