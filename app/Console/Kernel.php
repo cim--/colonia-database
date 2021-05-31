@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\RegionalComparison::class,
         Commands\LengthOfState::class,
         Commands\EventGaps::class,
+        Commands\FactoryImporter::class,
         Commands\TradeCleanup::class,
         //
     ];
