@@ -671,6 +671,10 @@ class EDDNReader extends Command
                 // for now, don't automatically update
             }
         }
+
+        // update distance
+        $station->distance = (int)$event['message']['DistFromStarLS'];
+        $station->save();
     }
 
     private function processCommodityReserveEvent($event) {
