@@ -161,6 +161,12 @@ class FactoryImporter extends Command
         case "INO":
             $name = "INO Research";
             break;
+        case "PAEX":
+            $name = "Privateer's Alliance Expeditionary Force";
+            break;
+        case "CCN":
+            $name = "Colonia Citizens Network";
+            break;
         default:
             $name = $oname;
         }
