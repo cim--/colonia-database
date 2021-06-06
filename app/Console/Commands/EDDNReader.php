@@ -437,7 +437,8 @@ class EDDNReader extends Command
                             /* Pilot phase: flag that we're doing
                              * this: expect we'll be able to remove
                              * this later. */
-                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
+                            // commented out for now
+                            //                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
                             $this->error("Data discrepancy - overwriting");
                             if (!$this->monitoronly) {
                                 $reset = Influence::where('system_id', $system->id)
