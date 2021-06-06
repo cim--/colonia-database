@@ -167,6 +167,9 @@ class FactoryImporter extends Command
         case "CCN":
             $name = "Colonia Citizens Network";
             break;
+        case "GCDC":
+            $name = "Galcop Colonial Defence Commission";
+            break;
         default:
             $name = $oname;
         }
