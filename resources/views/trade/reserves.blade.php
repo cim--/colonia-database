@@ -35,9 +35,11 @@
   Total reserves: {{number_format($stocktotal)}} tonnes (baseline {{number_format($nominalstocktotal)}} tonnes, daily production {{number_format($cyclicstocktotal)}} tonnes)
 </p>
 
+  {{--
 @if ($totalstations > $stations)
 <p class='alert alert-danger'>Warning: based on data from {{$stations}} / {{$totalstations}} stations only</p>
 @endif
+    --}}
 
 <p>Oldest data: {{App\Util::displayDate($oldest)}}</p>
 
@@ -66,6 +68,7 @@
   </thead>
   <tbody>
 	@foreach ($commodities as $commodity)
+        @if ($commodity['stock'] > 0 || $commodity['demand'] > 0)
 	<tr>
 	  <td>
 		{{$commodity['category']}}
@@ -148,6 +151,7 @@
 		</a>
 	  </td>
 	</tr>
+	@endif
 	@endforeach
   </tbody>
 </table>

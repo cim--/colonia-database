@@ -428,16 +428,14 @@ class EDDNReader extends Command
                          * and influence ticks, and should be
                          * overwritten. Otherwise, flag for manual
                          * attention. */
-                        if (!\App\Util::fairlyNearTick($latest->created_at->timestamp)) {
+                        if (!\App\Util::fairlyNearTick($latest->created_at->timestamp, 20)) {
                         
                             Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
                             $this->error("Data discrepancy - verify manually");
                         } else {
                             $overwrite = true;
-                            /* Pilot phase: flag that we're doing
-                             * this: expect we'll be able to remove
-                             * this later. */
-                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
+                            // commented out for now
+                            //                            Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - overwriting.");
                             $this->error("Data discrepancy - overwriting");
                             if (!$this->monitoronly) {
                                 $reset = Influence::where('system_id', $system->id)
@@ -461,11 +459,11 @@ class EDDNReader extends Command
                 // data is too close to existing data, may be stale
                 // usort() in process() above ensures we're looking at
                 // the largest one which is most likely to change anyway
-                if (\App\Util::fairlyNearTick()) {
+                if (\App\Util::fairlyNearTick(null, 4)) {
                     $this->error("Data looks stale - skipping");
                     return;
                 } else {
-                    $this->info("Data unchanged - processing after 10 hours");
+                    $this->info("Data unchanged - processing after 4 hours");
                 }
             }
         }
@@ -671,6 +669,10 @@ class EDDNReader extends Command
                 // for now, don't automatically update
             }
         }
+
+        // update distance
+        $station->distance = (int)$event['message']['DistFromStarLS'];
+        $station->save();
     }
 
     private function processCommodityReserveEvent($event) {

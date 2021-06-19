@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Models\Alert;
 use App\Models\System;
+use App\Models\Faction;
 use App\Models\History;
 use App\Models\Expansioncache;
 use App\Models\Eddnevent;
@@ -52,6 +54,7 @@ class UpdateHistory extends Command
             $this->updateExpansionCache();
             $this->clearEventData();
             $this->calculateRisks();
+            $this->validateOwnerships();
         });
         //
     }
@@ -280,6 +283,30 @@ class UpdateHistory extends Command
             }
             $system->risk = $risk;
             $system->save();
+        }
+    }
+
+    private function validateOwnerships()
+    {
+        // ignore non-influence factions
+        $specials = Faction::where('virtual', 1)->pluck('id');
+        
+        foreach (System::all() as $system) {
+            $factions = $system->latestFactions()->pluck('faction_id');
+            $factionids = $factions->merge($specials);
+            
+            foreach ($system->stations as $station) {
+                if (!$factionids->contains($station->faction_id)) {
+                    Alert::alert("Owner of ".$station->name." in ".$system->displayName()." is not present");
+                }
+            }
+
+            foreach ($system->installations as $installation) {
+                if (!$factionids->contains($installation->faction_id)) {
+                    Alert::alert("Owner of ".$installation->displayName()." in ".$system->displayName()." is not present");
+                }
+            }
+            
         }
     }
 }

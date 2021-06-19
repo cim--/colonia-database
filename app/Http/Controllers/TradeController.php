@@ -121,26 +121,33 @@ class TradeController extends Controller
             foreach ($commodity->reserves as $reserve) {
                 if (!isset($stations[$reserve->station_id])) {
                     $stations[$reserve->station_id] = 1;
+                    if ($reserve->station->marketStateChange()) {
+                        $stations[$reserve->station_id] = 2;
+                    }
                 }
                 
                 $total += $reserve->reserves;
                 if ($reserve->reserves > 0) {
                     $stock += $reserve->reserves;
                     $exported[$reserve->station->economy->id] = $reserve->station->economy;
+                    if ($stations[$reserve->station_id] == 1) {
                     if ($bestbuy === null || $bestbuy > $reserve->price) {
                         if ($reserve->price !== null) {
                             $bestbuy = $reserve->price;
                             $bestbuyplace = $reserve->station->name;
                         }
                     }
+                    }
                 } else {
                     $demand -= $reserve->reserves;
                     $imported[$reserve->station->economy->id] = $reserve->station->economy;
+                    if ($stations[$reserve->station_id] == 1) {
                     if ($bestsell === null || $bestsell < $reserve->price) {
                         if ($reserve->price !== null) {
                             $bestsell = $reserve->price;
                             $bestsellplace = $reserve->station->name;
                         }
+                    }
                     }
                 }
                 if ($reserve->date->lt($oldest)) {
