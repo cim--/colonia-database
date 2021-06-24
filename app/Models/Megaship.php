@@ -49,6 +49,10 @@ class Megaship extends Model
                 /* 11, 18, 25 June and 2, 9 July 2020 were skipped without affecting phase */
                 $weeks -= 4;
             }
+            if ($this->commissioned->lt('2021-05-20')) {
+                /* 20 May 2021 appeared to update the counter twice */
+                $weeks += 1;
+            }
 
             if ($phase % 2 == 1) {
                 $moves = floor(($weeks+1)/2);
