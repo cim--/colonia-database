@@ -150,6 +150,18 @@ class EDDNReader extends Command
         case "Trakath":
             $badpop = 1900;
             break;
+        case "Tenjin":
+            $badpop = 1500;
+            break;
+        case "Pennsylvania":
+            $badpop = 2000;
+            break;
+            //        case "Desy": // uncomment when it changes
+            //            $badpop = 20000;
+            //            break;
+        case "Metztli":
+            $badpop = 15000;
+            break;
         default:
             return false; // none known for this system
         }
