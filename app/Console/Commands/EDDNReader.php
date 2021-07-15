@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\System;
 use App\Models\Station;
+use App\Models\Stationclass;
 use App\Models\Faction;
 use App\Models\State;
 use App\Models\Influence;
@@ -678,7 +679,24 @@ class EDDNReader extends Command
         if (isset($event['message']['StationFaction']) && is_array($event['message']['StationFaction'])) {
             if (strtolower($station->faction->name) != strtolower($event['message']['StationFaction']['Name'])) {
                 Alert::alert("Ownership changed ".$station->name." was '".$station->faction->name."' is now '".$event['message']['StationFaction']['Name']."'");
+                $faction = Faction::where('name', $event['message']['StationFaction']['Name'])->first();
+                if ($faction) {
+                    $station->changeOwnership($faction);
+                } else {
+                    Alert::alert("Unrecognised faction ".$event['message']['StationFaction']['Name']);
+                }
                 // for now, don't automatically update
+            }
+        }
+
+        if ($station->stationclass->name == "Small Planetary Factory") {
+            // update factory sizes on docking
+            if ($event['message']['LandingPads']['Large'] > 0) {
+                $class = Stationclass::where('name', 'Large Planetary Factory')->first();
+                $station->stationclass_id = $class->id;
+            } elseif ($event['message']['LandingPads']['Medium'] > 0) {
+                $class = Stationclass::where('name', 'Medium Planetary Factory')->first();
+                $station->stationclass_id = $class->id;
             }
         }
 

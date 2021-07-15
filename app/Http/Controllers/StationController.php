@@ -93,7 +93,6 @@ class StationController extends Controller
         $station->distance = $request->input('distance');
         $station->stationclass_id = $request->input('stationclass_id');
         $station->economy_id = $request->input('economy_id');
-        $station->faction_id = $request->input('faction_id');
         $station->primary = $request->input('primary', 0);
         $station->strategic = $request->input('strategic', 0);
         $station->eddb = $request->input('eddb');
@@ -117,30 +116,16 @@ class StationController extends Controller
         
         $station->facilities()->sync($facsettings);
 
-        if ($oldfaction && $oldfaction != $station->faction_id) {
-            $tick = \App\Util::tick();
-            // station has changed ownership
-            $loss = new History;
-            $loss->location_id = $station->id;
-            $loss->location_type = 'App\Models\Station';
-            $loss->faction_id = $oldfaction;
-            $loss->date = $tick;
-            $loss->expansion = false;
-            $loss->description = 'lost control of';
-            $loss->save();
+        $newfaction = $request->input('faction_id');
 
-            $gain = new History;
-            $gain->location_id = $station->id;
-            $gain->location_type = 'App\Models\Station';
-            $gain->faction_id = $station->faction_id;
-            $gain->date = $tick;
-            $gain->expansion = true;
-            $gain->description = 'took control of';
-            $gain->save();
-
-            /* Governance change will affect outfitting - reset */
-            $station->modules()->detach();
-            $station->ships()->detach();
+        if ($oldfaction) {
+            if ($oldfaction != $newfaction) {
+                $station->changeOwnership(Faction::find($newfaction));
+            }
+        } else {
+            // initial setup only
+            $station->faction_id = $newfaction;
+            $station->save();
         }
         
         return redirect()->route('stations.show', $station->id);
