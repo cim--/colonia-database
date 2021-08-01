@@ -10,7 +10,7 @@ class Region extends Model
     
     public function economies()
     {
-        return $this->belongsToMany('App\Models\Economy')->withPivot('frequency', 'stationfrequency');
+        return $this->belongsToMany('App\Models\Economy')->withPivot('frequency', 'stationfrequency', 'factoryfrequency');
     }
 
     public function governments()
