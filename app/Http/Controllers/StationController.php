@@ -86,6 +86,9 @@ class StationController extends Controller
     private function updateModel(Request $request, Station $station)
     {
         $oldfaction = $station->faction_id;
+        if (!$oldfaction) {
+            $station->faction_id = $request->input('faction_id');
+        }
         
         $station->name = $request->input('name');
         $station->system_id = $request->input('system_id');
