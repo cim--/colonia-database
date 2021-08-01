@@ -180,4 +180,36 @@ class Station extends Model
             $q->where('name', 'Commodities');
         })->notFactory()->present()->with('faction', 'system')->orderBy('name')->get();
     }
+
+    public function changeOwnership(Faction $newfaction)
+    {
+        $oldfaction = $this->faction;
+
+        $this->faction_id = $newfaction->id;
+        $this->save();
+
+        $tick = \App\Util::tick();
+        // station has changed ownership
+        $loss = new History;
+        $loss->location_id = $this->id;
+        $loss->location_type = 'App\Models\Station';
+        $loss->faction_id = $oldfaction->id;
+        $loss->date = $tick;
+        $loss->expansion = false;
+        $loss->description = 'lost control of';
+        $loss->save();
+
+        $gain = new History;
+        $gain->location_id = $this->id;
+        $gain->location_type = 'App\Models\Station';
+        $gain->faction_id = $this->faction_id;
+        $gain->date = $tick;
+        $gain->expansion = true;
+        $gain->description = 'took control of';
+        $gain->save();
+
+        /* Governance change can affect outfitting - reset */
+        $this->modules()->detach();
+        $this->ships()->detach();
+    }
 }

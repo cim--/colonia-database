@@ -29,7 +29,7 @@ class Economy extends Model
 
     public function regions()
     {
-        return $this->belongsToMany('App\Models\Region')->withPivot('frequency', 'stationfrequency');
+        return $this->belongsToMany('App\Models\Region')->withPivot('frequency', 'stationfrequency', 'factoryfrequency');
     }
     
     public function scopeAnalyse($q) {

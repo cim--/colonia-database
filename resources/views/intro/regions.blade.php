@@ -11,6 +11,7 @@
 <tbody>
   @include('intro/regionrow', ['label' => 'Systems', 'here' => $systemcount, 'there' => 'systems'])
   @include('intro/regionrow', ['label' => 'Stations', 'here' => $stationcount, 'there' => 'stations'])
+  @include('intro/regionrow', ['label' => 'Factories', 'here' => $factorycount, 'there' => 'factories'])
   @include('intro/regionrow', ['label' => 'Factions', 'here' => $factioncount, 'there' => 'factions'])
   @include('intro/regionrow', ['label' => 'Population', 'here' => $totalPopulation, 'there' => 'population'])
   @include('intro/regionpcrow', ['label' => 'Reserves (T)', 'here' => $commodityReserves, 'there' => 'stock'])
@@ -32,6 +33,15 @@
 <tbody>
   @foreach ($economies as $economy)
   @include('intro/regionstationeconomyrow', ['economy' => $economy])
+  @endforeach
+</tbody>
+@include('intro/regiontablefoot')
+
+<h2>Factory Economies</h2>
+@include('intro/regiontablehead')
+<tbody>
+  @foreach ($facteconomies as $economy)
+  @include('intro/regionfactoryeconomyrow', ['economy' => $economy])
   @endforeach
 </tbody>
 @include('intro/regiontablefoot')

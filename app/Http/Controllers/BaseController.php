@@ -435,7 +435,8 @@ class BaseController extends Controller
     public function regions() {
         return view('intro/regions', [
             'systemcount' => System::where('population', '>', 0)->count(),
-            'stationcount' => Station::present()->count(),
+            'stationcount' => Station::present()->notFactory()->count(),
+            'factorycount' => Station::present()->factory()->count(),
             'factioncount' => Faction::notHidden()->count(),
             'totalPopulation' => System::sum('population'),
             'commodityReserves' => Reserve::where('current', 1)->where('reserves', '>', 0)->sum('reserves'),
@@ -443,7 +444,13 @@ class BaseController extends Controller
             'economies' => Economy::where('compare', '1')->with(['regions', 'systems', 'stations' => function($q) {
                     $q->whereHas('stationclass', function($sc) {
                         $sc->where('hasSmall', 1);
-                    });
+                    })->notFactory();
+                }
+            ])->orderBy('name')->get(),
+            'facteconomies' => Economy::where('compare', '1')->with(['stations' => function($q) {
+                    $q->whereHas('stationclass', function($sc) {
+                        $sc->where('hasSmall', 1);
+                    })->factory();
                 }
             ])->orderBy('name')->get(),
             'governments' => Government::orderBy('name')->with(['regions', 'factions' => function($q) {

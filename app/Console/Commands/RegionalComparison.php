@@ -117,12 +117,14 @@ class RegionalComparison extends Command
         foreach ($this->data as $key => $region) {
             $region['systems'] = [];
             $region['stations'] = [];
+            $region['factories'] = [];
             $region['factions'] = [];
             $region['population'] = 0;
             $region['stock'] = 0;
             $region['demand'] = 0;
             $region['economies'] = $this->initialiseEconomy();
             $region['stationeconomies'] = $this->initialiseEconomy();
+            $region['factoryeconomies'] = $this->initialiseEconomy();
             $region['governments'] = $this->initialiseGovernment();
             $this->data[$key] = $region;
         }
@@ -195,31 +197,39 @@ class RegionalComparison extends Command
             if ($statinfo->economies == ["Private Enterprise"]) {
                 continue;
             }
+
+            $storeblock = "stations";
+            $statblock = "stationeconomies";
+            if ($statinfo->type == "Odyssey Settlement") {
+                $storeblock = "factories";
+                $statblock = "factoryeconomies";
+            }
             
             foreach ($this->data as $key => $region) {
+
                 if ($region['sphere'] && isset($region['systems'][$statinfo->system_id])) {
-                    $this->data[$key]['stations'][$statinfo->id] = true;
+                    $this->data[$key][$storeblock][$statinfo->id] = true;
 
                     if ($statinfo->economies) {
                         $secos = count($statinfo->economies);
                         foreach ($statinfo->economies as $seco) {
                             if ($seco != "None") {
                                 $econ = $this->ecoName($seco);
-                                if (isset($this->data[$key]['stationeconomies'][$econ])) {
-                                    $this->data[$key]['stationeconomies'][$econ] += 1/$secos;
+                                if (isset($this->data[$key][$statblock][$econ])) {
+                                    $this->data[$key][$statblock][$econ] += 1/$secos;
                                 }
                             }
                         }
                     }
                 } else if ($region['allegiance'] !== null && $region['allegiance'] == $statinfo->allegiance) {
-                    $this->data[$key]['stations'][$statinfo->id] = true;
+                    $this->data[$key][$storeblock][$statinfo->id] = true;
 
                     if ($statinfo->economies) {
                         $secos = count($statinfo->economies);
                         foreach ($statinfo->economies as $seco) {
                             $econ = $this->ecoName($seco);
-                            if (isset($this->data[$key]['stationeconomies'][$econ])) {
-                                $this->data[$key]['stationeconomies'][$econ] += 1/$secos;
+                            if (isset($this->data[$key][$statblock][$econ])) {
+                                $this->data[$key][$statblock][$econ] += 1/$secos;
                             }
                         }
                     }
@@ -260,7 +270,7 @@ class RegionalComparison extends Command
             $stock = $line[3];
             $demand = $line[7];
             foreach ($this->data as $key => $region) {
-                if (isset($region['stations'][$station])) {
+                if (isset($region['stations'][$station]) || isset($region['factories'][$station])) {
                     $this->data[$key]['stock'] += $stock;
                     $this->data[$key]['demand'] += $demand;
                 }
@@ -276,6 +286,7 @@ class RegionalComparison extends Command
                 $report = Region::firstOrNew(['name' => $key]);
                 $report->systems = count($region['systems']);
                 $report->stations = count($region['stations']);
+                $report->factories = count($region['factories']);
                 $report->factions = count($region['factions']);
                 $report->population = $region['population'];
                 $report->stock = $region['stock'];
@@ -287,7 +298,7 @@ class RegionalComparison extends Command
                     $economy = Economy::where('name', $ename)->first();
                     if ($economy) {
                         $report->economies()->detach($economy->id);
-                        $report->economies()->attach($economy->id, ['frequency' => $frequency, 'stationfrequency' => $region['stationeconomies'][$ename]]);
+                        $report->economies()->attach($economy->id, ['frequency' => $frequency, 'stationfrequency' => $region['stationeconomies'][$ename], 'factoryfrequency' => $region['factoryeconomies'][$ename]]);
                     }
                 }
                 foreach ($region['governments'] as $gname => $frequency) {
