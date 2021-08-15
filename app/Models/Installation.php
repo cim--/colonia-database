@@ -38,4 +38,9 @@ class Installation extends Model
     public function isController() {
         return false;
     }
+
+    public function changeOwnership(Faction $newfaction)
+    {
+        $this->faction_id = $newfaction->id;
+    }
 }

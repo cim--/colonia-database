@@ -910,12 +910,14 @@ class EDDNReader extends Command
                 // status='' = recovering, when we might expect a mismatch
                 if ($a1->faction_id != $f1->id && $c->status != '') {
                     Alert::alert("Ownership mismatch in conflict for ".$a1->displayName()." in ".$system->displayName());
+                    $a1->changeOwnership($f1);
                 }
             }
             if ($a2) {
                 $c->asset2()->associate($a2);
                 if ($a2->faction_id != $f2->id && $c->status != '') {
                     Alert::alert("Ownership mismatch in conflict for ".$a2->displayName()." in ".$system->displayName());
+                    $a2->changeOwnership($f2);
                 }
             }
             $c->save();
