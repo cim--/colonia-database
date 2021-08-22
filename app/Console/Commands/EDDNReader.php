@@ -920,6 +920,20 @@ class EDDNReader extends Command
                     $a2->changeOwnership($f2);
                 }
             }
+
+            if ($c->status == '') {
+                // conflict is over
+                if ($conflictdata['Faction1']['WonDays'] > $conflictdata['Faction2']['WonDays'] && $a2 && $a2->faction_id != $f1->id) {
+                    // f1 won, transfer a2
+                    Alert::alert("Conflict victory transfers ".$a2->displayName()." to ".$f1->name." in ".$system->displayName());
+                    $a2->changeOwnership($f1);
+                } elseif ($conflictdata['Faction2']['WonDays'] > $conflictdata['Faction1']['WonDays'] && $a1 && $a1->faction_id != $f2->id) {
+                    // f2 won, transfer a1
+                    Alert::alert("Conflict victory transfers ".$a1->displayName()." to ".$f2->name." in ".$system->displayName());
+                    $a1->changeOwnership($f2);
+                }
+            }
+            
             $c->save();
         }
     }
