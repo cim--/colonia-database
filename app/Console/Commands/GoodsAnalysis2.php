@@ -68,6 +68,7 @@ class GoodsAnalysis2 extends Command
             }
             if (!$this->option('goodsonly')) {
                 $this->runEconomySizeAnalysis();
+                $this->runFactorySizeAnalysis();
             }
         } catch (\Throwable $e) {
             print($e->getTraceAsString());
@@ -380,8 +381,9 @@ class GoodsAnalysis2 extends Command
             // as they'll confuse the analysis
             $q->baseline();
             // hybrids are fine for this, though
-        })
+        }) 
                   ->notFactory()
+                  // factories won't have enough data for this
                   // exclude the Odyssey tiny factory economies
                   ->with('economy')->with('baselinestocks')->get();
 
@@ -464,6 +466,97 @@ class GoodsAnalysis2 extends Command
     }
 
 
+    private function runFactorySizeAnalysis() {
+        /* Hydrogen Fuel appears to be a non-specialised good with the
+         * exception of Colony, which we only have one of
+         * anyway. Empirically, the size of the economy corresponds
+         * roughly to baseline (HFuel/43)^2 - which for single-station
+         * systems is usually approximately the population (but can be
+         * very different for hand-placed stations), and for
+         * multi-station systems gets complicated especially for
+         * secondary stations. */
+        
+        $stations = $stations = Station::whereHas('stationclass', function($q) {
+            $q->where('hasSmall', true)
+              ->orWhere('hasMedium', true)
+              ->orWhere('hasLarge', true);
+        })->whereHas('economy', function($q) {
+            // ignore stations with damaged economies
+            // as they'll confuse the analysis
+            $q->baseline();
+            // hybrids are fine for this, though
+        }) 
+                  ->factory()
+                  // factories won't have enough data for this
+                  // exclude the Odyssey tiny factory economies
+                  ->with('economy')->get();
+
+        $hydrogen = Commodity::where('name', 'HydrogenFuel')->with('effects')->first();
+
+        $cdata = [
+            'supply'=>[],
+            'demand'=>[]
+        ];
+
+        $epoch = $hydrogen->behaviourepoch;
+
+        /* With factories, market records will be extremely sparse and
+         * are unlikely to be clean states. So take the hydrogen fuel
+         * behaviour already established, and use that to assess the
+         * production by reversing state effects on whatever we
+         * already have */
+        
+        foreach ($stations as $station) {
+            $records = Reserve::where('station_id', $station->id)
+                     ->where('commodity_id', $hydrogen->id)
+                     ->whereDate('date', '>', $epoch)
+                     ->with('states')
+                     ->orderBy('date')
+                     ->get();
+            if ($records->count() == 0) {
+                continue;
+            }
+            
+            $results = [];
+            foreach ($records as $record) {
+                $amount = $record->reserves;
+                // now reverse the states
+                if ($amount < 0) {
+                    // don't really have a way to handle *importers*
+                    // maybe anomalous?
+                    continue;
+                }
+                
+                foreach ($record->states as $state) {
+                    $effect = $hydrogen->effects->where('state_id', $state->id)->first();
+                    if (!$effect) {
+                        // unknown effect, so can't use this record
+                        continue 2;
+                    }
+                    $amount /= $effect->supplysize;
+                }
+                $results[] = $amount;
+            }
+            if (count($results) == 0) {
+                continue;
+            }
+            
+            $hfb = $this->median($results);
+
+            if ($station->economy->name == "Colony") {
+                $esf = $this->colonysizefactor;
+            } else {
+                $esf = $this->genericsizefactor;
+            }
+            
+            $economysize = (int)(($hfb*$hfb)/($esf));
+            $station->economysize = $economysize;
+            $station->save();
+            $this->line("F: ".$station->name." = ".$economysize);
+        }
+    }
+
+    
 
     private function stats($arr) {
         if (count($arr) == 0) {
