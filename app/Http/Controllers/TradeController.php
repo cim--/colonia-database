@@ -238,7 +238,8 @@ class TradeController extends Controller
         $states = State::orderBy('name')->get();
         
         $commodities = Commodity::whereHas('reserves', function($q) {
-                $q->where('current', true);
+                $q->where('current', true)
+                    ->where('reserves', '!=', 0);
         })->orderBy('description')->get();
 
         $economies = Economy::where('analyse', true)->orderBy('name')->get();
