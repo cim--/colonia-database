@@ -42,5 +42,6 @@ class Installation extends Model
     public function changeOwnership(Faction $newfaction)
     {
         $this->faction_id = $newfaction->id;
+        $this->save();
     }
 }
