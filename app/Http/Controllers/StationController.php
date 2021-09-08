@@ -390,6 +390,12 @@ class StationController extends Controller
             ];
             
         }
+        if ($sign == 0) {
+            // just in case
+            $reservelabel = $datasets['reserves']['label'] = "Supply";
+        }
+                   
+        
         sort($datasets); // compact
 
         if ($found) {

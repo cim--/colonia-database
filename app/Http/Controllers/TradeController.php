@@ -360,11 +360,11 @@ class TradeController extends Controller
             if (!isset($stations[$station])) {
                 $stations[$station] = $amount;
                 if ($amount > 0) {
-                    $supply[$timestamp] = $lastsupply + $amount;
-                    $lastsupply = $supply[$timestamp];
+                    $supply[$date] = $lastsupply + $amount;
+                    $lastsupply = $supply[$date];
                 } else if ($amount < 0) {
-                    $demand[$timestamp] = $lastdemand - $amount;
-                    $lastdemand = $demand[$timestamp];
+                    $demand[$date] = $lastdemand - $amount;
+                    $lastdemand = $demand[$date];
                 }
             } else {
                 $last = $stations[$station];
@@ -381,11 +381,11 @@ class TradeController extends Controller
                     }
                 }
                 if ($amount > 0) {
-                    $supply[$timestamp] = $lastsupply - $last + $amount;
-                    $lastsupply = $supply[$timestamp];
+                    $supply[$date] = $lastsupply - $last + $amount;
+                    $lastsupply = $supply[$date];
                 } else {
-                    $demand[$timestamp] = $lastdemand + $last - $amount;
-                    $lastdemand = $demand[$timestamp];
+                    $demand[$date] = $lastdemand + $last - $amount;
+                    $lastdemand = $demand[$date];
                 }
                 $stations[$station] = $amount;
             }
