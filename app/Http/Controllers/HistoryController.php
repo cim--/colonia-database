@@ -298,15 +298,44 @@ class HistoryController extends Controller
         while ($start->isPast()) {
             $end = $start->copy()->addWeek();
             $ddate = \App\Util::graphDisplayDate($start);
+
+            // 
+            $infs = Influence::where('date', '>=', $start)->where('date', '<', $end)->get();
+            $matrix = [];
+            foreach ($infs as $inf) {
+                if (!isset($matrix[$inf->system_id])) {
+                    $matrix[$inf->system_id] = [];
+                }
+                $date = $inf->date->format("Y-m-d");
+                if (!isset($matrix[$inf->system_id][$date])) {
+                    $matrix[$inf->system_id][$date] = 1;
+                } else {
+                    $matrix[$inf->system_id][$date]++;
+                }
+            }
+            $syscount = 0;
+            $infcount = 0;
+            foreach ($matrix as $sysrow) {
+                $dcount = 0;
+                $dsum = 0;
+                // for each system, count the number of distinct days
+                // get the average for each system *ignoring* missing days
+                foreach ($sysrow as $dates) {
+                    $dcount++;
+                    $dsum += $dates;
+                }
+                // then add those averages onto infcount and syscount
+                $syscount++;
+                $infcount += $dsum/$dcount;
+            }
             
-            $infs = Influence::where('date', '>=', $start)->where('date', '<', $end)->count();
-            $sys = Influence::where('date', '>=', $start)->where('date', '<', $end)->count(\DB::raw('DISTINCT system_id, date'));
-            if ($sys == 0) {
+                  
+            if ($syscount == 0) {
                 break;
             }
             $datasets['average']['data'][] = [
                 'x' => $ddate,
-                'y' => round($infs/$sys, 2)
+                'y' => round($infcount/$syscount, 2)
             ];
             $start->addWeek();
         }
