@@ -96,7 +96,9 @@ class LogisticsController extends Controller
                         'regen' => 0
                     ];
 
-                    $total += $current->reserves;
+                    if ($current) {
+                        $total += $current->reserves;
+                    }
 
                     $knowneffects = true;
                     $supplyeffects = 1;
@@ -124,15 +126,19 @@ class LogisticsController extends Controller
                                 $option['sbaseline'] = 1;
                             }
                             $option['supplysize'] = $supplyeffects;
-                            $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
+                            if ($option['reserves']) {
+                                $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
+                            } else {
+                                $option['fullness'] = 0;
+                            }
 
                         } else {
                             $option['sbaseline'] = $option['baseline']->reserves;
                             if ($option['sbaseline'] == 0) {
                                 $option['sbaseline'] = 1;
                             }
-                            $option['supplysize'] = 1;
-                            $option['fullness'] = $option['reserves']->reserves / $option['sbaseline'];
+                            $option['supplysize'] = $option['baseline']->reserves;
+                            $option['fullness'] = 1;
                         }
                         
                         if ($commodity->supplycycle > 0) {
@@ -146,14 +152,20 @@ class LogisticsController extends Controller
                         $option['recommendation'] = "Data is old - recheck";
                         $option['score'] = 7;
                     } else if ($haslockdown) {
-                        $option['recommendation'] = "Lockdown - no hauling possible";
+                        $option['recommendation'] = "Lockdown - no hauling possible - improve security";
                         $option['score'] = 0;
+                    } else if (!$current) {
+                        $option['recommendation'] = "State preventing production - improve if possible";
+                        $option['score'] = 1;
                     } else if ($hasinffail) {
                         $option['recommendation'] = "Infrastructure Failure - market sales offline";
                         $option['score'] = 0;
                     } else if ($cbaseline && ($commodity->supplycycle > 0 && $option['fullness'] > 1-(1/$commodity->supplycycle))) {
                         $option['recommendation'] = "Stock is full - haul to avoid wasting production";
                         $option['score'] = 5;
+                    } else if ($option['fullness'] < 0.01) {
+                        $option['recommendation'] = "Stock is empty - wait for production";
+                        $option['score'] = 3;
                     } else if ($knowneffects && $supplyeffects >= 1) {
                         $option['recommendation'] = "Good BGS state - haul if practical";
                         $option['score'] = 4;

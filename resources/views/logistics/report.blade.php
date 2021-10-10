@@ -10,11 +10,15 @@ Logistics Planner - Report
 <p><strong>Target</strong>: {{number_format($volume)}} tonnes in {{$duration}} days.</p>
 <ul>
   @foreach ($commodities as $commodity)
-  <li>{{$commodity->displayName()}}</li>
+      <li>{{$commodity->displayName()}} - production cycle {{number_format($commodity->supplycycle/86400, 1)}} days
+	  @if ($commodity->cycleestimate == "Supply" || $commodity->cycleestimate == "Both")
+	      (low-quality estimate)
+	  @endif
+      </li>
   @endforeach
 </ul>
 
-<p>Current stock is {{number_format($total)}} tonnes and current known restock rates are {{number_format($restock)}} tonnes per day. Optimally, a total of {{number_format($bestcase)}} tonnes can therefore be gathered, which
+<p>Current stock is {{number_format($total)}} tonnes and current estimated restock rates are {{number_format($restock)}} tonnes per day. Optimally, a total of {{number_format($bestcase)}} tonnes can therefore be gathered, which
   @if ($bestcase > $volume)
   <strong>exceeds the target</strong>
   @else
@@ -32,6 +36,7 @@ Logistics Planner - Report
 	  <th>Distance (Ls)</th>
 	  <th>Large Pad?</th>
 	  <th>Reported stock</th>
+	  <th>Last report</th>
 	  <th>Capacity</th>
 	  <th>Stock fullness</th>
 	  <th>Daily restock</th>
@@ -61,7 +66,13 @@ Logistics Planner - Report
 		@include('layout/no')
 		@endif
 	  </td>
-	  <td>{{number_format($option['reserves']->reserves)}}</td>
+	  @if ($option['reserves'])
+	      <td>{{number_format($option['reserves']->reserves)}}</td>
+	      <td data-sort="{{$option['reserves']->created_at->timestamp}}">{{$option['reserves']->created_at->diffForHumans()}}</td>
+	  @else
+	      <td>-</td>
+	      <td data-sort="0">-</td>
+	  @endif
 	  @if (isset($option['sbaseline']))
 	  <td>{{number_format($option['sbaseline'])}}</td>
 	  <td>{{number_format($option['fullness']*100)}}%</td>
