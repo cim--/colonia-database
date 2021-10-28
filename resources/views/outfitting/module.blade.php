@@ -1,12 +1,20 @@
 @extends('layout/layout')
 
+@if ($module->moduletype->type == "suit" || $module->moduletype->type == "personalweapon")
+@section('title', 'Blueprint availability: '.$module->displayName())
+@else
 @section('title', 'Module availability: '.$module->displayName())
+@endif
 
 @section('content')
 
 @include('outfitting/engineertext')
-    
-@if ($module->stations->count() > 0)
+
+@if ($module->moduletype->type == "suit" || $module->moduletype->type == "personalweapon")
+
+<p>All base suits and weapons are available in the region. Pre-engineered items are possible to find but rare.</p>
+
+@elseif ($module->stations->count() > 0)
 <p>This module is produced at the following stations. Note that stations in Lockdown will temporarily not have outfitting available.</p>
 
 @if ($module->restricted)

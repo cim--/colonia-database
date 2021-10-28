@@ -16,7 +16,7 @@ class CreateModuletypesTable extends Migration
         Schema::create('moduletypes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('description');
-            $table->enum('type', ['core', 'optional', 'optionalns', 'utility', 'hardpoint', 'armour']);
+            $table->enum('type', ['core', 'optional', 'optionalns', 'utility', 'hardpoint', 'armour', 'personalweapon', 'suit']);
             $table->timestamps();
         });
     }
