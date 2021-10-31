@@ -123,6 +123,26 @@
   <p>At the end of 3305, the Holloway Biology Centre was also constructed in Colonia, further enhancing the resources and reputation of the region in scientific research.</p>
 </div>
 
+<div class='historybox'>
+    <h2>Regional conflicts</h2>
+
+    <p>3306 and 3307 saw the largest regional conflicts to date, with the <a href="https://drive.google.com/file/d/1HOSLLTjNMdVJqTdCjh4MVFIP8eIk8XEG/view?usp=sharing">Third Regional Conflict</a> involving most of the nebula's largest organisations as the attempts by Explorers' Nation to retain control of Carcosa spiralled into a major war. By the end of the conflict, the Nameless had again been contained to a few minor facilities in Carcosa, but Explorers' Nation's political strength had also been broken, as had much of the original diplomatic order.</p>
+
+    <p>In 3307, the consequences of this continued during the Seventh Regional Conflict, as the Likedeeler of Colonia attempted to consolidate their control over systems shaken up by the previous conflicts - eventually overstretching themselves and collapsing under attacks from a coalition of their enemies.</p>
+</div>
+
+<div class='historybox'>
+    <h2>Renewed scientific and economic development</h2>
+
+    <p>3307 also saw significant expansions to the nebula's scientific and industrial base, with Holloway Biosciences constructing unique experimental vacuum habitats to study Caerulum Pods early in the year.</p>
+
+    <p>In May, the interests of Archon Delaine and Sirius Corporation in the nebula became apparent with the unauthorised construction of the <a href='{{route('stations.show', 125)}}'>Delaine Terminus</a> station, and in response the Council extended its own economic power, with over seventeen hundred new factories being built to provide local sources of raw materials, and additional immigration bringing the nebula's population close to 13 million people.
+
+	<p>Further facilities were provided by the <a href='{{route('engineers.index')}}'>engineers</a> Baltanos, Eleanor Bresa, Rosa Dayette and Yi Shen, who offered infantry equipment enhancements to the wider public for the first time.</p>
+    
+    <p>October 3307 saw the most ambitious joint bubble-Colonia project to date, as the Council worked with Brewer Logistics to substantially enhance the existing Colonia Highway facilities with a fleet of 56 resupply megaships, the first 30 entering service near the end of the month.</p>
+    
+</div>
 
 
 <div class='historybox'>
