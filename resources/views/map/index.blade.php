@@ -162,4 +162,6 @@
   </script>
 </div>
 
+<p>Colonia Bridge systems are not shown.</p>
+
 @endsection
