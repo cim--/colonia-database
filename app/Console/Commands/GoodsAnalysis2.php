@@ -95,7 +95,7 @@ class GoodsAnalysis2 extends Command
 
         if ($this->option('testmode')) {
             $commodities = Commodity::with('effects')
-                         ->where('id', 19)
+                         ->where('id', 39)
                          ->orderBy('name')->get();
         } else {
             $commodities = Commodity::with('effects')
@@ -296,9 +296,10 @@ class GoodsAnalysis2 extends Command
             if ($last !== null) {
                 $lastamount = abs($last->reserves);
             }
-            if ($amount == $max || $amount == 0) {
+            if ($amount == $max || $amount < $max/25) {
                 $last = null; // can't use
-                // 0 might be pinned zero demand
+                // too close to the 0 point might be pinned zero-demand
+                // or just fluctuations around initial restock on supply
             } else if ($last == null) {
                 $last = $reserve; // start again
             } else if ($amount < $lastamount) {
