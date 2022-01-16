@@ -60,6 +60,12 @@ class System extends Model
         return $q->where('population', '>', 0);
     }
 
+    /* Efficient selection function for inhabited systems in the region.
+     * Ignores nearby bridge nodes. Will need periodic updating. */
+    public function scopeInRegion($q) {
+        return $q->where('population', '>', 0)
+                 ->where('z', '>', 19500);
+    }
     
     public function inhabited() {
         return $this->population > 0;
