@@ -334,7 +334,7 @@ var CDBMap = function() {
 			for (var j=i+1;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
 				var dist = getDistance(s1data, s2data);
-				if (dist <= 35) {
+		    	        if (dist <= 20 || (dist <= 35 && s1data.controlling == s2data.controlling)) {
 					var props = {};
 					var coords = [];
 					var cen1 = getCircle(s1data);
@@ -388,10 +388,14 @@ var CDBMap = function() {
 		obj.canvas = new fabric.StaticCanvas('cdbmap');
 
 		obj.canvas.selection = false;
-		
-		AddLinks(); // have to do this first
-		AddSystems();
-		AddNames();
+
+	    console.log('Loading map: '+Date.now());
+	    AddLinks(); // have to do this first
+	    console.log('Added links: '+Date.now());
+	    AddSystems();
+	    console.log('Added systems: '+Date.now());
+	    AddNames();
+	    console.log('Added names: '+Date.now());
 
 		reposition = true;
 		recolour = true;
