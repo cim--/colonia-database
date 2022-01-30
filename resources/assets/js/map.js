@@ -383,23 +383,26 @@ var CDBMap = function() {
 		}
 	}
 
-	obj.Init = function(systems) {
+    obj.Init = function(systems) {
 		obj.systemdata = systems;
 		obj.canvas = new fabric.StaticCanvas('cdbmap');
 
 		obj.canvas.selection = false;
 
 	    console.log('Loading map: '+Date.now());
-	    AddLinks(); // have to do this first
+	AddLinks(); // have to do this first
+
 	    console.log('Added links: '+Date.now());
-	    AddSystems();
+	AddSystems();
+
 	    console.log('Added systems: '+Date.now());
-	    AddNames();
+	AddNames();
+
 	    console.log('Added names: '+Date.now());
 
 		reposition = true;
 		recolour = true;
-		obj.Redraw();
+	obj.Redraw();
 	};
 
 	obj.setProjection = function(newp) {
