@@ -14,6 +14,7 @@ class LogisticsController extends Controller
     const VOLUME = 1;
     const DURATION = 2;
     const COMMODITIES = 3;
+    const NONLOCAL = 4;
     
     public function form()
     {
@@ -46,6 +47,7 @@ class LogisticsController extends Controller
         for ($i=0;5>$i;$i++) {
             $config[self::COMMODITIES][$i] = (int)$request->input('commodity'.$i);
         }
+        $config[self::NONLOCAL] = (int)$request->input('nonlocal', false);
 
         $confstr = base64_encode(json_encode($config));
         return redirect()->route('logistics.report', $confstr);
@@ -58,6 +60,7 @@ class LogisticsController extends Controller
         $destination = Station::find((int)$config[self::STATION]);
         $volume = (int)$config[self::VOLUME];
         $duration = (int)$config[self::DURATION];
+        $nonlocal = isset($config[self::NONLOCAL]) ? (bool)$config[self::NONLOCAL] : false; 
         $commodities = [];
         $effects = [];
         foreach ($config[self::COMMODITIES] as $cid) {
@@ -75,7 +78,11 @@ class LogisticsController extends Controller
         $total = 0;
         $restock = 0;
         
-        $stations = Station::orderBy('name')->tradable()->with('system', 'baselinestocks', 'faction', 'stationclass')->get();
+        $stationsquery = Station::orderBy('name')->tradable()->with('system', 'baselinestocks', 'faction', 'stationclass');
+        if ($nonlocal) {
+            $stationsquery->where('system_id', '!=', $system->id);
+        }
+        $stations = $stationsquery->get();
         foreach ($stations as $station) {
             $distance = $station->system->distanceTo($system);
             $outdated = $station->marketStateChange();
@@ -103,7 +110,7 @@ class LogisticsController extends Controller
                     $knowneffects = true;
                     $supplyeffects = 1;
                     $haslockdown = false;
-                    $hasinffail = false;
+                    $haswar = false;
                     foreach ($option['states'] as $state) {
                         $supplyeffect = $effects[$commodity->id]->where('state_id', $state->id)->first();
                         if (!$supplyeffect) {
@@ -114,8 +121,8 @@ class LogisticsController extends Controller
                         if ($state->name == "Lockdown") {
                             $haslockdown = true;
                         }
-                        if ($state->name == "Infrastructure Failure") {
-                            $hasinffail = true;
+                        if ($state->name == "War") {
+                            $haswar = true;
                         }
                     }
                     if ($cbaseline) {
@@ -148,18 +155,18 @@ class LogisticsController extends Controller
                     }
 
                     // recommendations
-                    if ($outdated) {
-                        $option['recommendation'] = "Data is old - recheck";
-                        $option['score'] = 7;
-                    } else if ($haslockdown) {
+                    if ($haslockdown) {
                         $option['recommendation'] = "Lockdown - no hauling possible - improve security";
                         $option['score'] = 0;
+                    } else if ($haswar && strpos($station->stationclass->name, "Factory")) {
+                        $option['recommendation'] = "War preventing landing - end it first";
+                        $option['score'] = 0;
+                    } else if ($outdated) {
+                        $option['recommendation'] = "Data is old - recheck";
+                        $option['score'] = 7;
                     } else if (!$current) {
                         $option['recommendation'] = "State preventing production - improve if possible";
                         $option['score'] = 1;
-                    } else if ($hasinffail) {
-                        $option['recommendation'] = "Infrastructure Failure - market sales offline";
-                        $option['score'] = 0;
                     } else if ($cbaseline && ($commodity->supplycycle > 0 && $option['fullness'] > 1-(1/$commodity->supplycycle))) {
                         $option['recommendation'] = "Stock is full - haul to avoid wasting production";
                         $option['score'] = 5;
