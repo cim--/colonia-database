@@ -12,3 +12,5 @@
 </ul>
 
 <p>In addition to conventional sources of engineering materials, some <a href='{{route('installations.index')}}'>installations</a> have satellites which can be scanned for data, and miscellaneous manufactured materials (as well as some cargoes required by the Tech Brokers) can be found in the debris around the <a href='{{route('megaships.show',9)}}'>wrecked bulk carrier</a> in Luchtaine or in its cargo holds. Recovery of salvage from this ship is authorised by the Council.</p>
+
+<p>Note that the local ship equipment engineers require a referral from a Sol region engineer, which must be obtained before departure. The materials required to pay tech brokers - especially the Guardian broker - may also be difficult or impossible to obtain locally. Normal engineering materials may all be obtained locally.</p>
