@@ -37,18 +37,18 @@
 	</div>
 	
 	<div>
-	  @include('intro.botbox', ['commands' => ["!mission system"]])
-	  @include('intro.new.missions')
+	    @include('intro.botbox', ['commands' => ["!mission system"]])
+	    @include('intro.new.missions')
+	</div>
+	
+	<div>
+	    @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
+	    @include('intro.new.mining')
 	</div>
 	
   </div>
   <div class='newbox'>
 
-	<div>
-	  @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
-	  @include('intro.new.mining')
-	</div>
-	
 	<div>
 	  @include('intro.botbox', ['commands' => ["!locate facility high-quality"]])
 	  @include('intro.new.outfitting')
