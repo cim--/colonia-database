@@ -75,6 +75,14 @@ class Reserve extends Model
             });
     }
 
+    public function scopeNormalStation($q)
+    {
+        return $q->where('current', 1)
+            ->whereHas('station', function($q2) {
+                $q2->present()->tradable()->notFactory();
+            });
+    }
+
  
     public function stateString()
     {
