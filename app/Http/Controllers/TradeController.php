@@ -121,9 +121,9 @@ class TradeController extends Controller
             foreach ($commodity->reserves as $reserve) {
                 if (!isset($stations[$reserve->station_id])) {
                     $stations[$reserve->station_id] = 1;
-                    if ($reserve->station->marketStateChange()) {
-                        $stations[$reserve->station_id] = 2;
-                    }
+                    //                    if ($reserve->station->marketStateChange()) {
+                    //                        $stations[$reserve->station_id] = 2;
+                    //                    }
                 }
                 
                 $total += $reserve->reserves;

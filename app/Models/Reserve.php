@@ -75,6 +75,7 @@ class Reserve extends Model
             });
     }
 
+ 
     public function stateString()
     {
         return $this->states->sortBy('name')->implode('name', ',');
