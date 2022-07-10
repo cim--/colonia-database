@@ -73,7 +73,7 @@ class Module extends Model
             }
             $name .= " ".$this->type;
             return $name;
-        } else if ($this->moduletype->type == "optionalns") {
+        } else if ($this->moduletype->type == "optionalns" || $this->moduletype->type == "suit" || $this->moduletype->type == "personalweapon") {
             return $this->moduletype->description;
         } else if ($this->moduletype->type == "utility") {
             return $this->moduletype->description." ".$this->type;

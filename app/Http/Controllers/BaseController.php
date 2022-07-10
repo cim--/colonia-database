@@ -195,9 +195,9 @@ class BaseController extends Controller
         arsort($governments);
 
         $avgcoordinates = \App\Util::coloniaCoordinates((object)[
-            'x' => System::where('population', '>', 0)->avg('x'),
-            'y' => System::where('population', '>', 0)->avg('y'),
-            'z' => System::where('population', '>', 0)->avg('z')
+            'x' => System::inRegion()->avg('x'),
+            'y' => System::inRegion()->avg('y'),
+            'z' => System::inRegion()->avg('z')
         ]);
         $maxdist = 0;
         $ecsize = 0;
@@ -210,7 +210,8 @@ class BaseController extends Controller
                 $ecsize += $system->economySize();
                 $ccoords = $system->coloniaCoordinates();
                 $dist = \App\Util::distance($ccoords, $avgcoordinates);
-                if ($dist > $maxdist) {
+                /* Exclude bridge nodes, will need periodic updating */
+                if ($dist > $maxdist && $dist < 100) {
                     $maxdist = $dist;
                 }
                 $terraformable += $system->cfthmc;

@@ -54,22 +54,23 @@ var CDBMap = function() {
 		ReadConfig();
 		console.log(config);
 	}
-	
-	var phaseColors = [
-		'#ff7777', // CCS 0
-		'#ff8877', // CCS 1
-		'#77ff77', // CEI 1
-		'#77ffdd', // CEI 2
-		'#77ffff', // CEI 3
-		'#ff9977', // CCS 2
-		'#77ddff', // CEI 4
-		'#ffaa77', // CCS 3
-		'#7777ff', // CEI 5
-		'#aa77ff', // CEI 6
-		'#99cccc', // Misc 1
-		'#ffbb77', // CCS 4
-		'#ffcc77', // CCS 5
-	];
+    
+    var phaseColors = [
+	'#ff7777', // CCS 0
+	'#ff8877', // CCS 1
+	'#77ff77', // CEI 1
+	'#77ffdd', // CEI 2
+	'#77ffff', // CEI 3
+	'#ff9977', // CCS 2
+	'#77ddff', // CEI 4
+	'#ffaa77', // CCS 3
+	'#7777ff', // CEI 5
+	'#aa77ff', // CEI 6
+	'#99cccc', // Misc 1
+	'#ffbb77', // CCS 4
+	'#ffcc77', // CCS 5
+	'#aadddd', // Bridge
+    ];
 
 	var factionColors = [
 		'#444444',
@@ -333,7 +334,7 @@ var CDBMap = function() {
 			for (var j=i+1;j<obj.systemdata.length;j++) {
 				var s2data = obj.systemdata[j];
 				var dist = getDistance(s1data, s2data);
-				if (dist <= 35) {
+		    	        if (dist <= 20 || (dist <= 35 && s1data.controlling == s2data.controlling)) {
 					var props = {};
 					var coords = [];
 					var cen1 = getCircle(s1data);
@@ -382,19 +383,26 @@ var CDBMap = function() {
 		}
 	}
 
-	obj.Init = function(systems) {
+    obj.Init = function(systems) {
 		obj.systemdata = systems;
 		obj.canvas = new fabric.StaticCanvas('cdbmap');
 
 		obj.canvas.selection = false;
-		
-		AddLinks(); // have to do this first
-		AddSystems();
-		AddNames();
+
+	    console.log('Loading map: '+Date.now());
+	AddLinks(); // have to do this first
+
+	    console.log('Added links: '+Date.now());
+	AddSystems();
+
+	    console.log('Added systems: '+Date.now());
+	AddNames();
+
+	    console.log('Added names: '+Date.now());
 
 		reposition = true;
 		recolour = true;
-		obj.Redraw();
+	obj.Redraw();
 	};
 
 	obj.setProjection = function(newp) {

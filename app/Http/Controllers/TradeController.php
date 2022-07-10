@@ -78,10 +78,12 @@ class TradeController extends Controller
     }
 
     public function reserves() {
+        ini_set('memory_limit',512*1024*1024).
+        
         $commodities = Commodity::whereHas('reserves', function($q) {
-            $q->current();
+            $q->normalStation();
         })->with(['reserves' => function($q) {
-            $q->where('current', true);
+            $q->normalStation();
         }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
                      ->orderBy('description')->get();
 
@@ -121,9 +123,9 @@ class TradeController extends Controller
             foreach ($commodity->reserves as $reserve) {
                 if (!isset($stations[$reserve->station_id])) {
                     $stations[$reserve->station_id] = 1;
-                    if ($reserve->station->marketStateChange()) {
-                        $stations[$reserve->station_id] = 2;
-                    }
+                    //                    if ($reserve->station->marketStateChange()) {
+                    //                        $stations[$reserve->station_id] = 2;
+                    //                    }
                 }
                 
                 $total += $reserve->reserves;

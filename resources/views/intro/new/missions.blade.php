@@ -3,7 +3,7 @@
 <p>With so many partner organisations running the Colonia region, there's always work available for independent pilots-for-hire, especially those who take the time to establish their name locally. Mostly the requirements up here are very similar to those in the Sol region, but those running passenger liners should note that:</p>
 
 <ul>
-  <li>Local Tour VIP passenger requests are not on offer, as all local tourist beacons are currently in a single system.</li>
+  <li>Local Tour VIP passenger requests are not on offer.</li>
   <li>A large number of long-range passenger requests to visit tourist sites in the Sol region are available, and a bit of forward planning may allow a profitable grand tour to be set up. These requests do tend to crowd out the more usual long-range exploration surveys, however.</li>
 </ul>
 

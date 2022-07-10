@@ -158,10 +158,13 @@ class EDDNReader extends Command
             $badpop = 2000;
             break;
             //        case "Desy": // uncomment when it changes
-            //            $badpop = 20000;
-            //            break;
+            //                        $badpop = 20000;
+            //                        break;
         case "Metztli":
             $badpop = 15000;
+            break;
+        case "HIP 23759":
+            $badpop = 2500;
             break;
         default:
             return false; // none known for this system

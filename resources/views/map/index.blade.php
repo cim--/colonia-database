@@ -97,7 +97,8 @@
 </div>                                      
 <div id='cdbmapcontainer'>
   <canvas id='cdbmap' width='1200' height='1200'></canvas>
-  <script type='text/javascript'>CDBMap.Init(
+  <script type='text/javascript'>$(document).ready(function() {
+       CDBMap.Init(
   [
   @foreach ($systems as $system)
   {
@@ -158,8 +159,11 @@
   @if (!$loop->last) , @endif
   @endforeach
   ]
-  )
+       );
+   });
   </script>
 </div>
+
+<p>Colonia Bridge systems are not shown.</p>
 
 @endsection

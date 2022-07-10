@@ -20,12 +20,16 @@ Logistics Planner
   {!! Form::select('station_id', $stations) !!}
 </div>
 <div class='form-field'>
-  {!! Form::label('volume', "Total Volume") !!}
-  {!! Form::text('volume', 1200000) !!}
+    {!! Form::label('volume', "Total Volume") !!}
+    {!! Form::text('volume', 1200000) !!}
 </div>
 <div class='form-field'>
-  {!! Form::label('duration', "Planned duration (days)") !!}
-  {!! Form::text('duration', 7) !!}
+    {!! Form::label('duration', "Planned duration (days)") !!}
+    {!! Form::text('duration', 7) !!}
+</div>
+<div class='form-field'>
+    {!! Form::label('nonlocal', "Exclude stations in destination system") !!}
+    {!! Form::checkbox('nonlocal', 1) !!}
 </div>
 
 <fieldset>

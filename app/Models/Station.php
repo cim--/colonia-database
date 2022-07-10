@@ -153,6 +153,10 @@ class Station extends Model
         $fstates = $this->currentStateList();
         $rstates = $reserve->states;
 
+        if (!$fstates) {
+            return true; // unable to get current state list
+        }
+        
         if ($fstates->count() != $rstates->count()) {
             return true; // different number of states
         }

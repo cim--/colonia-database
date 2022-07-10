@@ -4,6 +4,8 @@
 
 @section('content')
 
+    <p><strong>Reserves in factories are excluded from these summaries for efficiency.</strong> Details can be found on the commodity-specific pages.</p>
+    
 <p>
   Total surplus/deficit in markets:
   <strong>

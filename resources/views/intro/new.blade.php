@@ -37,18 +37,18 @@
 	</div>
 	
 	<div>
-	  @include('intro.botbox', ['commands' => ["!mission system"]])
-	  @include('intro.new.missions')
+	    @include('intro.botbox', ['commands' => ["!mission system"]])
+	    @include('intro.new.missions')
+	</div>
+	
+	<div>
+	    @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
+	    @include('intro.new.mining')
 	</div>
 	
   </div>
   <div class='newbox'>
 
-	<div>
-	  @include('intro.botbox', ['commands' => ["!locate feature metallic rings", "!locate state Boom"]])
-	  @include('intro.new.mining')
-	</div>
-	
 	<div>
 	  @include('intro.botbox', ['commands' => ["!locate facility high-quality"]])
 	  @include('intro.new.outfitting')
@@ -70,7 +70,7 @@
 		<li>The Colonia Council faction has been placed as an initial (non-native) faction in most systems, and while it has since Retreated from many of these it still retains a substantial presence.</li>
 		<li>Over half of the factions are player-founded, mostly through the Colonia Expansion Initiative. While the Sol bubble has approximately one player faction for every 10 systems, here the ratio is one player faction for every two systems.</li>
 		<li>Systems have low NPC population levels but often relatively high player population levels, which allows for rapid changes in influence levels.</li>
-		<li>The area does not fall within any Powerplay bubbles and it is in practice impossible for any power in the Sol bubble to accumulate enough CC to expand here.</li>
+		<li>The area does not fall within any Powerplay bubbles and it is in practice impossible for any power in the Sol bubble to accumulate enough CC to expand here, though Sirius and Kumo representatives are present in a minor role.</li>
 	  </ul>
 
 	  <p>Two of the systems - Colonia and Ratraii - are restricted. Factions may not expand into those systems, and factions already present may not fight for control of assets.</p>
@@ -78,7 +78,10 @@
 	  <p>Criminals will be transported to the Odin's Crag detention facility in Eol Prou LW-L c8-127. This also covers the Kashyapa highway system, with Polo Harbour marking the start of the Gandharvi jurisdiction.</p>
 	</div>
 	<div>
-	  @include('intro.new.tourism')
+	    @include('intro.new.tourism')
+	</div>
+	<div>
+	    @include('intro.new.highway')
 	</div>
   </div>
 </div>
