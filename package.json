@@ -27,7 +27,7 @@
     "fabric": "^1.7.9",
     "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.2",
     "laravel-elixir": "^6.0.0-9",
     "laravel-elixir-vue-2": "^0.3.0",
     "laravel-elixir-webpack-official": "^1.0.10",
