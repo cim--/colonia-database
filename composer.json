@@ -5,12 +5,13 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
+        "php": ">=7.3",
         "barryvdh/laravel-debugbar": "^3.2",
         "doctrine/dbal": "^2.5",
         "fx3costa/laravelchartjs": "^2.2",
-        "laravel/framework": "6.*",
-        "laravel/tinker": "~1.0",
+        "laravel/framework": "8.*",
+        "laravel/tinker": "~2.0",
+        "laravel/ui": "^3.0",
         "laravelcollective/html": "^6",
         "nesbot/carbon": "^2.3",
         "team-reflex/discord-php": "^5.0"
@@ -18,7 +19,7 @@
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~7.0"
+        "phpunit/phpunit": "~9.0"
     },
     "autoload": {
         "classmap": [
