@@ -100,6 +100,15 @@ class EDDNReader extends Command
             return;
         }
 
+        if (!isset($event['header']['gameversion']) ||
+            $event['header']['gameversion'] == '' ||
+            substr($event['header']['gameversion'], 0, 1) == "3") {
+            // ignore legacy entry
+            // and ignore entries with no version header
+            $this->error("Ignoring no gameversion");
+            return;
+        }
+        
         if (!isset($event['message']['timestamp'])) {
             return;
         }
