@@ -23,6 +23,8 @@ visible change.</p>
 
 <p>You can update this data without needing to log in by entering the system while running an EDDN-connected application (e.g. EDDiscovery, ED Market Connector or EDDI). On consoles, <a href="https://www.edsm.net/en/settings/import/capi">EDSM provides a synchronisation tool</a>.</p>
 
+<p>Only the Live version of the game is supported. Data from Legacy or which has an unknown version is ignored. You must use an application which supports Odyssey U14.</p>
+
 <p>The easiest things to update are listed first. Numbers after each item indicate the days since the last update. Systems with unusual influence movements or control conflicts are <span class='systemrisk5'>highlighted</span> and may benefit from more frequent data collection. Stations with state changes since last market data collection are <span class='marketstatechange'>also highlighted</span> as their market data is most likely to be outdated.</p>
 
 {!! Form::open(['route' => 'progress', 'method' => 'GET']) !!}
