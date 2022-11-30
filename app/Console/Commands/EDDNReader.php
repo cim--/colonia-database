@@ -99,13 +99,12 @@ class EDDNReader extends Command
             // this uploaderID is on a server sending unreliable information
             return;
         }
-        //$event['header']['gameversion'] = "4.0"; // TEST
         if (!isset($event['header']['gameversion']) ||
             $event['header']['gameversion'] == '' ||
-            substr($event['header']['gameversion'], 0, 4) == "CAPI" ||
+            //            substr($event['header']['gameversion'], 0, 4) == "CAPI" ||
             substr($event['header']['gameversion'], 0, 1) == "3" 
         ) {
-            // TODO: CAPI versions may be safe to handle later
+            // TODO: CAPI-live specificity is probably coming
 
             // ignore legacy entry
             // and ignore entries with no version header
