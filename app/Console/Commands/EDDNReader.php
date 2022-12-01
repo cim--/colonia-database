@@ -101,11 +101,9 @@ class EDDNReader extends Command
         }
         if (!isset($event['header']['gameversion']) ||
             $event['header']['gameversion'] == '' ||
-            //            substr($event['header']['gameversion'], 0, 4) == "CAPI" ||
+            substr($event['header']['gameversion'], 0, 11) == "CAPI-legacy" ||
             substr($event['header']['gameversion'], 0, 1) == "3" 
         ) {
-            // TODO: CAPI-live specificity is probably coming
-
             // ignore legacy entry
             // and ignore entries with no version header
             //$this->error("Ignoring no gameversion"); // TEST
