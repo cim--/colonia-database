@@ -65,17 +65,18 @@ class TrafficEstimates extends Command
     private function estimateTrafficLevel(System $system) {
 //        $this->info($system->name);
 
-        $recent = Systemreport::whereNotNull('eddncount')->where('system_id', $system->id)->where('estimated', false)->orderBy('date', 'desc')->take(10)->get();
+        // due to legacy/live split don't use data before U14 to estimate
+        $recent = Systemreport::whereNotNull('eddncount')->where('system_id', $system->id)->where('estimated', false)->whereDate('date', '>', '2022-11-30')->orderBy('date', 'desc')->take(10)->get();
         $ratios = [];
         foreach ($recent as $report) {
             if ($report->traffic > 0 && $report->eddncount > 0) {
                 $ratios[] = $report->traffic / $report->eddncount;
             }
         }
-        if (count($ratios) < 5) {
+        //if (count($ratios) < 5) {
             // insufficient data to get an average
-            return;
-        }
+        // return;
+            //}
         $ratios = collect($ratios);
 
 //        $this->line("Average: ".$ratios->median());
