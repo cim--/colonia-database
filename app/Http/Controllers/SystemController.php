@@ -219,7 +219,9 @@ class SystemController extends Controller
 
     public function showHistory(Request $request, System $system)
     {
-        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
+        $mindefault = (date("Y", strtotime("-3 years"))+1286).date("-m-d", strtotime("-3 years"));
+
+        list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges($mindefault);
 
         
         $influences = Influence::where('system_id', $system->id)
