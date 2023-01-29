@@ -14,7 +14,7 @@
         "laravel/ui": "^3.0",
         "laravelcollective/html": "^6",
         "nesbot/carbon": "^2.3",
-        "team-reflex/discord-php": "^5.0"
+        "team-reflex/discord-php": "^7.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
