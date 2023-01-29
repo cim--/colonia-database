@@ -20,6 +20,7 @@ use App\Models\Installation;
 use App\Models\Project;
 use App\Models\Objective;
 use App\Models\Contribution;
+use Discord\WebSockets\Intents;
 
 class DiscordBot extends Command
 {
@@ -62,8 +63,9 @@ class DiscordBot extends Command
             'prefix' => env('DISCORD_COMMAND_PREFIX', '!'),
             'defaultHelpCommand' => false,
             'discordOptions' => [
+                'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT,
                 'disabledEvents' => ['PRESENCE_UPDATE'] // don't use it and the implementation can cause the client to crash
-            ]
+            ],
         ]);
 
         $this->registerHelpCommand();
@@ -110,7 +112,7 @@ class DiscordBot extends Command
     private function syntaxCheck($params) {
         foreach ($params as $param) {
             if (strpos($param, '@') !== false) {
-                throw new Exception("Syntax check");
+                throw new \Exception("Syntax check");
             }
         }
     }
