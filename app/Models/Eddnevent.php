@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Eddnevent extends Model
 {
-    protected $dates = ['created_at', 'updated_at', 'eventtime'];
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime', 'eventtime' => 'datetime'];
 
     public function system()
     {

@@ -10,10 +10,10 @@ class History extends Model
 {
     protected $table = 'historys';
     
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'date'
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'date' => 'datetime'
     ];
 
     public function location() {

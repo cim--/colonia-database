@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Megaship extends Model
 {
-    protected $dates = ["created_at", "updated_at", "commissioned", "decommissioned"];
+    protected $casts = ["created_at" => 'datetime', "updated_at" => 'datetime', "commissioned" => 'datetime', "decommissioned" => 'datetime'];
 
     protected $firstmove = "2018-07-05";
    

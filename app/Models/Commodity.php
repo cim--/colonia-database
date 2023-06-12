@@ -8,7 +8,7 @@ class Commodity extends Model
 {
     protected $fillable = ['name'];
 
-    protected $dates = ['created_at', 'updated_at', 'behaviourepoch'];
+    protected $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime', 'behaviourepoch' => 'datetime'];
     
     public function reserves()
     {
