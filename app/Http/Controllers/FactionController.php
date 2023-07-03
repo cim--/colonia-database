@@ -7,6 +7,7 @@ use App\Models\Faction;
 use App\Models\Ethos;
 use App\Models\State;
 use App\Models\System;
+use App\Models\Conflict;
 use App\Models\Influence;
 use App\Models\Government;
 use Illuminate\Http\Request;
@@ -121,9 +122,13 @@ class FactionController extends Controller
                     'mode' => 'dataset',
                 ]
             ]);
+
+        $conflicts = Conflict::where('faction1_id', $faction->id)
+                   ->orWhere('faction2_id', $faction->id)->with('system')->get();
         
         return view('factions/show', [
             'faction' => $faction,
+            'conflicts' => $conflicts,
             'systems' => $faction->latestSystems(),
             'chart' => $chart
         ]);

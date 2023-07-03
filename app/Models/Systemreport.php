@@ -10,10 +10,10 @@ class Systemreport extends Model
 {
     protected $fillable = ['date', 'system_id'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'date'
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'date' => 'datetime'
     ];
     
     public function system() {

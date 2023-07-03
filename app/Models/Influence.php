@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Influence extends Model
 {
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'date'
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'date' => 'datetime'
     ];
     
     public function system() {

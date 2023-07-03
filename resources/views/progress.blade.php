@@ -73,7 +73,7 @@ visible change.</p>
     class='marketstatechange'
     @endif
     >
-	<a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
+	{{$station->system->displayName()}}: <a href="{{route('stations.show',$station->id)}}">{{$station->name}}</a>
 	@include('progressage', ['date' => \App\Util::age($station->reserves[0]->created_at, $today)+$age])
   </li>
   @endif

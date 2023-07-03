@@ -174,7 +174,7 @@ class Station extends Model
 
     public static function marketUpdateData()
     {
-        return Station::with(['reserves' => function($q) {
+        $data = Station::with(['reserves' => function($q) {
             $q->where('current', 1);
         }])->whereHas('stationclass', function($q) {
             $q->where('hasSmall', true)
@@ -182,7 +182,13 @@ class Station extends Model
               ->orWhere('hasLarge', true);
         })->whereHas('facilities', function($q) {
             $q->where('name', 'Commodities');
-        })->notFactory()->present()->with('faction', 'system')->orderBy('name')->get();
+        })->notFactory()->present()->with('faction', 'system')->get();
+        return $data->sort(function ($a, $b) {
+            if ($a->system_id != $b->system_id) {
+                return strcmp($a->system->displayName(), $b->system->displayName());
+            }
+            return strcmp($a->name, $b->name);
+        });
     }
 
     public function changeOwnership(Faction $newfaction)

@@ -5,16 +5,16 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.3",
+        "php": ">=8.0",
         "barryvdh/laravel-debugbar": "^3.2",
         "doctrine/dbal": "^2.5",
-        "fx3costa/laravelchartjs": "^2.2",
-        "laravel/framework": "8.*",
+        "fx3costa/laravelchartjs": "^3.0",
+        "laravel/framework": "10.*",
         "laravel/tinker": "~2.0",
-        "laravel/ui": "^3.0",
+        "laravel/ui": "^4.2",
         "laravelcollective/html": "^6",
         "nesbot/carbon": "^2.3",
-        "team-reflex/discord-php": "^5.0"
+        "team-reflex/discord-php": "^7.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

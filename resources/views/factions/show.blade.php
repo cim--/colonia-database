@@ -130,6 +130,50 @@
 
   </div>
   <div class='col-sm-6'>
+
+      @if ($conflicts->count() > 0)
+	  <h2>Conflicts</h2>
+	  <table class='table table-bordered datatable' data-paging='false' data-order='[[1, "asc"]]' data-searching='false' data-info='false'>
+	      <thead>
+		  <tr>
+		      <th>System</th><th>State</th><th>Faction 1</th><th>Score</th><th>Faction 2</th>
+		  </tr>
+	      </thead>
+	      <tbody>
+		  @foreach ($conflicts as $conflict)
+		      <tr
+			  @if (($conflict->asset1 && $conflict->asset1->isController()) || ($conflict->asset2 && $conflict->asset2->isController()))
+			  class='controlconflict'
+			  @endif
+			  >
+			  <td>{{ $conflict->system->displayName() }}</td>
+			  <td>{{ucwords($conflict->status)}} {{ucwords($conflict->type)}}</td>
+			  <td>
+			      @include($conflict->faction1->government->icon)
+			      <a href='{{route('factions.show', $conflict->faction1->id)}}'>
+				  {{$conflict->faction1->name}}
+			      </a>
+			      @if ($conflict->asset1)
+				  (<a href='{{route($conflict->asset1->displayRoute(), $conflict->asset1->id)}}'>{{$conflict->asset1->displayName()}}</a>)
+			      @endif
+			  </td>
+			  <td>{{$conflict->score}}</td>
+			  <td>
+			      @include($conflict->faction2->government->icon)
+			      <a href='{{route('factions.show', $conflict->faction2->id)}}'>
+				  {{$conflict->faction2->name}}
+			      </a>
+			      @if ($conflict->asset2)
+				  (<a href='{{route($conflict->asset2->displayRoute(), $conflict->asset2->id)}}'>{{$conflict->asset2->displayName()}}</a>)
+			      @endif
+			  </td>
+		      </tr>
+		  @endforeach
+	      </tbody>
+	  </table>
+      @endif
+
+      
 	<h2>Stations</h2>
 	<table class='table table-bordered datatable'>
 	  <thead>
