@@ -232,14 +232,10 @@ class ReportController extends Controller
 
     public function states() {
 
-        $factions = Faction::orderBy('name')->notHidden()->notVirtual()->get();
         $tdatas = [];
         $labels = [];
         $states = State::orderBy('name')->get();
-        foreach ($factions as $faction) {
-            $tdatas[] = \App\Util::stateBars($faction, $states, true);
-            $labels[] = $faction->name;
-        }
+        $tdatas[] = \App\Util::summaryStateBars($states, true);
 
         $datasets = [];
         foreach ($states as $state) {
@@ -263,17 +259,17 @@ class ReportController extends Controller
         $chart = app()->chartjs
             ->name("statetimes")
             ->type("horizontalBar")
-            ->size(["height" => 100+(10*$factions->count()), "width"=>500])
+            ->size(["height" => 200, "width"=>500])
             ->labels($labels)
             ->datasets($datasets)
             ->options([
                 'scales' => [
                     'yAxes' => [
-                        [ 'stacked' => true ]
+                        [ 'stacked' => false ]
                     ],
                     'xAxes' => [
                         [
-                            'stacked' => true,
+                            'stacked' => false,
                             'position' => 'top',
                             'ticks' => [
                                 'min' => 0,
@@ -290,7 +286,7 @@ class ReportController extends Controller
 
 
         
-        $desc = "The percentages of time each faction spends in particular states are shown here.";
+        $desc = "The percentages of time factions across Colonia spend in particular states are shown here.";
         return view('reports/report', [
             'report' => "States",
             'chart' => $chart,

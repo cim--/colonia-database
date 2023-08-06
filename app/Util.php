@@ -215,6 +215,32 @@ class Util {
         return $datasets;
     }
 
+    public static function summaryStateBars($stateos, $percent = false) {
+        $states = [];
+        foreach ($stateos as $state) {
+            $states[$state->id] = $state;
+        }
+        $total = 0;
+        
+        $statedata = [];
+        $infs = \DB::select("SELECT influence_state.state_id, COUNT(*) AS ct FROM influence_state INNER JOIN influences ON (influence_id = influences.id) GROUP BY influence_state.state_id");
+
+        foreach ($infs as $inf) {
+            $statedata[$states[$inf->state_id]->name] = $inf->ct;
+            $total += $inf->ct;
+        }
+        
+        $datasets = [];
+        foreach ($statedata as $state => $counter) {
+            $datasets[$state] = [
+                'label' => $state,
+                'data' => [$percent ? round($counter*100/$total, 2) : $counter],
+                'backgroundColor' => \App\Util::stateColour($state)
+            ];
+        }
+        return $datasets;
+    }
+
     public static function sigFig($number, $figures=3) {
         if ($number == 0) {
             return 0;
