@@ -411,6 +411,24 @@ class BaseController extends Controller
             'success' => 'Alert acknowledged'
         ]);
     }
+
+    public function clearAlerts() {
+        $user = \Auth::user();
+        if (!$user) {
+            \App::abort(403);
+        }
+        if ($user->rank < 2) {
+            \App::abort(403);
+        } 
+        
+        Alert::where('processed', 0)->update(['processed' => 1]);
+        
+        return redirect()->route('progress')->with('status',
+        [
+            'success' => 'All alerts acknowledged'
+        ]);
+    }
+    
     
     public function about() {
         return view('intro/about');

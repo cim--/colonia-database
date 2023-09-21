@@ -115,15 +115,22 @@ visible change.</p>
 @else
 <ul>
   @foreach ($alerts as $alert)
-  <li>{{\App\Util::displayDate($alert->created_at)}}: {{$alert->alert}}
-	@if($userrank >= 2)
-	{!! Form::open(['route' => ['acknowledge', $alert->id], 'method'=>'Delete']) !!}
-	{!! Form::submit("X") !!}
-	{!! Form::close() !!}
-	@endif
-  </li>
+      <li>{{\App\Util::displayDate($alert->created_at)}}: {{$alert->alert}}
+	  @if($userrank >= 2)
+	      {!! Form::open(['route' => ['acknowledge', $alert->id], 'method'=>'Delete']) !!}
+	      {!! Form::submit("X") !!}
+	      {!! Form::close() !!}
+	  @endif
+      </li>
   @endforeach
 </ul>
+
+@if($userrank >= 2)
+    {!! Form::open(['route' => ['clearalerts'], 'method'=>'Delete']) !!}
+    {!! Form::submit("Acknowledge all Alerts") !!}
+    {!! Form::close() !!}
+@endif
+
 @endif
 
 @endsection
