@@ -143,9 +143,8 @@ class FactionController extends Controller
         $influences = Influence::where('faction_id', $faction->id)
             ->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<', $maxrangecomp)
-            ->with('system')
             ->orderBy('date')
-            ->get();
+            ->cursor();
 
         $systems = [];
         $dates = [];
@@ -155,13 +154,19 @@ class FactionController extends Controller
         $seen = [];
         $lastdate = null;
 
-        $exists = \DB::select("SELECT system_id, date FROM influences GROUP BY system_id, date");
+        $exists = \DB::select("SELECT system_id, date FROM influences WHERE faction_id = ? GROUP BY system_id, date", [$faction->id]);
         $infexists = [];
         foreach ($exists as $existent) {
             $infexists[$existent->system_id][$existent->date] = 1;
         }
 
-        $infstate = \DB::table("influence_state")->select('influence_id', 'state_id')->whereIn('influence_id', $influences->pluck('id'))->get();
+        $infstate = \DB::table("influence_state")
+                  ->select('influence_state.influence_id', 'influence_state.state_id')
+                  ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
+                  ->where('faction_id', $faction->id)
+                  ->whereDate('date', '>=', $minrange)
+                  ->whereDate('date', '<', $maxrangecomp)
+                  ->cursor();
         $infstates = [];
         foreach ($infstate as $link) {
             if (!isset($infstates[$link->influence_id])) {
@@ -207,7 +212,9 @@ class FactionController extends Controller
             }
             
             $dates[$date] = 1;
-            $systems[$system] = $influence->system;
+            if (!isset($systems[$system])) {
+                $systems[$system] = $influence->system;
+            }
 
             $entries[$date][$system] = [
                 $influence->influence,
