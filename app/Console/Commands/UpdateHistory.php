@@ -294,16 +294,26 @@ class UpdateHistory extends Command
         foreach (System::all() as $system) {
             $factions = $system->latestFactions()->pluck('faction_id');
             $factionids = $factions->merge($specials);
+
+            $controller = $system->controllingFaction();
             
             foreach ($system->stations as $station) {
                 if (!$factionids->contains($station->faction_id)) {
                     Alert::alert("Owner of ".$station->name." in ".$system->displayName()." is not present");
+                    if ($controller->id != $station->faction_id) {
+                        // assume a retreat and reassign to controller
+                        $station->changeOwnership($controller);
+                    }
                 }
             }
 
             foreach ($system->installations as $installation) {
                 if (!$factionids->contains($installation->faction_id)) {
                     Alert::alert("Owner of ".$installation->displayName()." in ".$system->displayName()." is not present");
+                    if ($controller->id != $installation->faction_id) {
+                        // assume a retreat and reassign to controller
+                        $installation->changeOwnership($controller);
+                    }
                 }
             }
             
