@@ -42,10 +42,10 @@
 	<tr>
 	  <td data-sort='{{$date}}'>{{\App\Util::displayDate(new \Carbon\Carbon($date))}}</td>
 	  @foreach ($factions as $factionid => $faction)
-	  <td>
-		@if(isset($history[$date][$factionid]))
-		{{$history[$date][$factionid][0]}}
-		@include('components.stateicons', ['states' => $history[$date][$factionid][1]])
+	      <td>
+		  @if(isset($history[$date][$factionid]))
+		      {{$history[$date][$factionid][0]}}
+		      @include('components.stateiconsmap', ['statekeys' => $history[$date][$factionid][1], 'states' => $states ])
 		@else
 		
 		@endif

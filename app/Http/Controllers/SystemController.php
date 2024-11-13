@@ -227,10 +227,8 @@ class SystemController extends Controller
         $influences = Influence::where('system_id', $system->id)
             ->whereDate('date', '>=', $minrange)
             ->whereDate('date', '<', $maxrangecomp)
-            ->with('faction')
-            ->with('states')
             ->orderBy('date')
-            ->get();
+            ->cursor();
 
         $factions = [];
         $dates = [];
@@ -239,6 +237,21 @@ class SystemController extends Controller
         $datasets = [];
 
         $lastdate = null;
+
+        $infstate = \DB::table("influence_state")
+                  ->select('influence_state.influence_id', 'influence_state.state_id')
+                  ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
+                  ->where('system_id', $system->id)
+                  ->whereDate('date', '>=', $minrange)
+                  ->whereDate('date', '<', $maxrangecomp)
+                  ->cursor();
+        $infstates = [];
+        foreach ($infstate as $link) {
+            if (!isset($infstates[$link->influence_id])) {
+                $infstates[$link->influence_id] = [];
+            }
+            $infstates[$link->influence_id][$link->state_id] = 1;
+        }
         
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
@@ -272,9 +285,14 @@ class SystemController extends Controller
             }
             
             $dates[$date] = 1;
-            $factions[$faction] = $influence->faction;
+            if (!isset($factions[$faction])) {
+                $factions[$faction] = $influence->faction;
+            }
 
-            $entries[$date][$faction] = [$influence->influence, $influence->states];
+            $entries[$date][$faction] = [
+                $influence->influence,
+                isset($infstates[$influence->id]) ? $infstates[$influence->id] : []
+            ];
 
             $datasets[$influence->faction_id]['data'][] = [
                 'x' => \App\Util::graphDisplayDate($influence->date),
@@ -326,7 +344,8 @@ class SystemController extends Controller
             'factions' => $factions,
             'dates' => $dates,
             'minrange' => $minrange,
-            'maxrange' => $maxrange
+            'maxrange' => $maxrange,
+            'states' => State::idList(),
         ]);
     }
 
@@ -349,7 +368,8 @@ class SystemController extends Controller
         $datasets = [];
 
         $lastdate = null;
-        
+
+       
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
             if ($lastdate != $influence->date) {
