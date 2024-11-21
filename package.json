@@ -20,7 +20,7 @@
     "buble": "^0.15.2",
     "chart.js": "^2.9.4",
     "css-loader": "^0.27.3",
-    "d3": "^4.13.0",
+    "d3": "^7.8.2",
     "d3-cloud": "^1.2.5",
     "datatables.net": "^1.13.1",
     "datatables.net-bs": "^1.13.1",
