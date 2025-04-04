@@ -224,7 +224,8 @@ class EDDNReader extends Command
             $colonia->y = 0;
             $colonia->z = 0;
             if (\App\Util::distance($coords, $colonia) < 250) {
-                Alert::alert("New inhabited system ".$event['message']['StarSystem']);
+                // colonisation makes this too noisy
+                //                Alert::alert("New inhabited system ".$event['message']['StarSystem']);
             }
         }
     }
