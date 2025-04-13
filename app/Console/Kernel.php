@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
         Commands\EventGaps::class,
         Commands\FactoryImporter::class,
         Commands\TradeCleanup::class,
-        //
+        Commands\AddNewShip::class,
     ];
 
     /**

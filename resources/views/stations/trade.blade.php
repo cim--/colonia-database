@@ -50,9 +50,7 @@ Reserves at {{$station->name}}
 	@foreach ($reserves as $reserve)
 	<tr>
 	  <td>
-		<a href="{{route('reserves.commodity.reference', [$reserve->id, $station->id])}}">
-		  {{$reserve->displayName()}}
-		</a>
+	      {{$reserve->displayName()}}
 	  </td>
 	  <td>
 		@if ($reserve->reserves->first()->reserves > 0)

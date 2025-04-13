@@ -24,6 +24,7 @@
 	  <th rowspan='2'>Name</th>
 	  <th colspan='6'>Supply</th>
 	  <th colspan='6'>Demand</th>
+	  <th rowspan='2'>Median Ratio</th>
 	</tr>
 	<tr>
 	  <th>Minimum</th>
@@ -38,6 +39,7 @@
 	  <th>High quartile</th>
 	  <th>Maximum</th>
 	  <th>Variation</th>
+
 	</tr>
   </thead>
   <tbody>
@@ -70,6 +72,11 @@
 	  @else
 	  <td></td>
 	  @endif
+	  <td>
+	      @if ($commodity->commoditystat->demandmed && $commodity->commoditystat->supplymed)
+		  {{ number_format($commodity->commoditystat->supplymed/$commodity->commoditystat->demandmed, 2) }}
+	      @endif
+	  </td>
 	</tr>
 	@endif
 	@endforeach
