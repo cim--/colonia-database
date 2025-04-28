@@ -72,9 +72,9 @@
 		  <td data-sort="1">Probable Export</td>
 	      @elseif ($commodity->supplystats[2] > 0)
 		  <td data-sort="2">Possible Export</td>
-	      @elseif ($commodity->supplystats[2] > 0)
+	      @elseif ($commodity->supplystats[3] > 0)
 		  <td data-sort="3">Possible Import</td>
-	      @elseif ($commodity->supplystats[2] > 0)
+	      @elseif ($commodity->supplystats[4] > 0)
 		  <td data-sort="4">Probable Import</td>
 	      @else
 		  <td data-sort="5">Import</td>
