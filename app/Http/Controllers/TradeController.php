@@ -866,4 +866,76 @@ class TradeController extends Controller
             'clabels' => $clabels,
         ]);
     }
+
+    public function specialisationHybrid(Request $request) {
+        $gcommodities = Commodity::whereHas('commoditystat')->with('commoditystat')->orderBy('category')->orderBy('name')->get();
+        $economies = Economy::analyse()->whereHas('stations')->with('stations', function($q) {
+            $q->notFactory();
+        })->orderBy('name')->get();
+
+        // set weights
+        $weights = [];
+        foreach ($economies as $idx => $economy) {
+            $weights[$economy->id] = $request->input('eco'.$economy->id, $idx ? 0 : 1);
+        }
+
+        // get commodities as hash
+        $commodities = [];
+        foreach ($gcommodities as $commodity) {
+            $commodity->exports = [];
+            $commodity->imports = [];
+            $commodities[$commodity->id] = $commodity;
+        }
+        
+        // search for import and export types
+        foreach ($economies as $economy) {
+            foreach ($economy->stations as $station) {
+                $reserves = $station->reserves()->where('current', 1)->get();
+                foreach ($reserves as $reserve) {
+                    if ($reserve->reserves > 0) {
+                        $exports = $commodities[$reserve->commodity_id]->exports;
+                        $exports[$economy->id] = $economy;
+                        $commodities[$reserve->commodity_id]->exports = $exports;
+                    } else if ($reserve->reserves < 0) {
+                        $imports = $commodities[$reserve->commodity_id]->imports;
+                        $imports[$economy->id] = $economy;
+                        $commodities[$reserve->commodity_id]->imports = $imports;
+                    }
+                }
+            }
+        }
+
+        // calculate likely supply/demand levels for each commodity
+        foreach ($commodities as $commodity) {
+            $exportweight = 0;
+            $importweight = 0;
+            foreach ($commodity->exports as $eid => $econ) {
+                $exportweight += $weights[$eid];
+            }
+            foreach ($commodity->imports as $eid => $econ) {
+                $importweight += $weights[$eid];
+            }
+
+            if ($importweight > 0 || $exportweight > 0) {
+                $positions = [
+                    $exportweight * $commodity->commoditystat->supplymin - $importweight * $commodity->commoditystat->demandmax,
+                    $exportweight * $commodity->commoditystat->supplylowq - $importweight * $commodity->commoditystat->demandhighq,
+                    $exportweight * $commodity->commoditystat->supplymed - $importweight * $commodity->commoditystat->demandmed,
+                    $exportweight * $commodity->commoditystat->supplyhighq - $importweight * $commodity->commoditystat->demandlowq,
+                    $exportweight * $commodity->commoditystat->supplymax - $importweight * $commodity->commoditystat->demandmin
+                ];
+                $commodity->supplystats = $positions;
+            }
+            if ($commodity->name == "Beer") {
+                //dd($commodity->name, $importweight, $exportweight, $commodity->supplystats, $commodity->imports, $weights);
+            }
+        }
+        
+        
+        return view('trade/specialisationhybrid', [
+            'commodities' => $commodities,
+            'economies' => $economies,
+            'weights' => $weights
+        ]);
+    }
 }
