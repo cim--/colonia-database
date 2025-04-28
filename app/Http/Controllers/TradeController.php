@@ -702,8 +702,36 @@ class TradeController extends Controller
     }
 
     public function specialisation() {
-        $commodities = Commodity::whereHas('commoditystat')->with('commoditystat')->orderBy('category')->orderBy('name')->get();
-        $economies = Economy::analyse()->whereHas('stations')->orderBy('name')->get();
+        $gcommodities = Commodity::whereHas('commoditystat')->with('commoditystat')->orderBy('category')->orderBy('name')->get();
+        $economies = Economy::analyse()->whereHas('stations')->with('stations', function($q) {
+            $q->notFactory();
+        })->orderBy('name')->get();
+
+        $commodities = [];
+        foreach ($gcommodities as $commodity) {
+            $commodity->exports = [];
+            $commodity->imports = [];
+            $commodities[$commodity->id] = $commodity;
+        }
+
+        foreach ($economies as $economy) {
+            foreach ($economy->stations as $station) {
+                $reserves = $station->reserves()->where('current', 1)->get();
+                foreach ($reserves as $reserve) {
+                    if ($reserve->reserves > 0) {
+                        $exports = $commodities[$reserve->commodity_id]->exports;
+                        $exports[$economy->id] = $economy;
+                        $commodities[$reserve->commodity_id]->exports = $exports;
+                    } else if ($reserve->reserves < 0) {
+                        $imports = $commodities[$reserve->commodity_id]->imports;
+                        $imports[$economy->id] = $economy;
+                        $commodities[$reserve->commodity_id]->imports = $imports;
+                    }
+                }
+            }
+        }
+        
+        
         return view('trade/specialisation', [
             'commodities' => $commodities,
             'economies' => $economies
