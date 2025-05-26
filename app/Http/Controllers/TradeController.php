@@ -896,7 +896,8 @@ class TradeController extends Controller
                         $exports = $commodities[$reserve->commodity_id]->exports;
                         $exports[$economy->id] = $economy;
                         $commodities[$reserve->commodity_id]->exports = $exports;
-                    } else if ($reserve->reserves < 0) {
+                    } else if ($reserve->reserves < -1) {
+                        // demand of 1 can be caused by data oddities
                         $imports = $commodities[$reserve->commodity_id]->imports;
                         $imports[$economy->id] = $economy;
                         $commodities[$reserve->commodity_id]->imports = $imports;
