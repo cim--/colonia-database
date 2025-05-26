@@ -870,36 +870,57 @@ class TradeController extends Controller
     public function specialisationHybrid(Request $request) {
         $gcommodities = Commodity::whereHas('commoditystat')->with('commoditystat')->orderBy('category')->orderBy('name')->get();
         $economies = Economy::analyse()->whereHas('stations')->with('stations', function($q) {
-            $q->notFactory();
+            $q->notFactory()->dockable()->tradable();
         })->orderBy('name')->get();
 
+        // insert data
+        $terraforming = Economy::where('name', 'Terraforming')->first(); 
+        
         // set weights
         $weights = [];
         foreach ($economies as $idx => $economy) {
             $weights[$economy->id] = $request->input('eco'.$economy->id, $idx ? 0 : 1);
         }
+        $weights[$terraforming->id] = $request->input('eco'.$terraforming->id, $idx ? 0 : 1);
 
         // get commodities as hash
         $commodities = [];
         foreach ($gcommodities as $commodity) {
             $commodity->exports = [];
             $commodity->imports = [];
+            if (in_array(trim($commodity->description), ["Semiconductors", "Superconductors", "Polymers", "Atmospheric Processors", "Aquaponic Systems", "Land Enrichment Systems", "Synthetic Fabrics"])) {
+                // imports not shared with Colony
+                $imports = $commodity->imports;
+                $imports[$terraforming->id] = $terraforming;
+                $commodity->imports = $imports;
+            }
             $commodities[$commodity->id] = $commodity;
         }
         
         // search for import and export types
         foreach ($economies as $economy) {
+
             foreach ($economy->stations as $station) {
                 $reserves = $station->reserves()->where('current', 1)->get();
                 foreach ($reserves as $reserve) {
                     if ($reserve->reserves > 0) {
                         $exports = $commodities[$reserve->commodity_id]->exports;
                         $exports[$economy->id] = $economy;
+                        if ($economy->name == "Colony") {
+                            // Terraforming has same exports as Colony
+                            $exports[$terraforming->id] = $terraforming;
+                        }
                         $commodities[$reserve->commodity_id]->exports = $exports;
                     } else if ($reserve->reserves < -1) {
                         // demand of 1 can be caused by data oddities
                         $imports = $commodities[$reserve->commodity_id]->imports;
                         $imports[$economy->id] = $economy;
+                        if ($economy->name == "Colony") {
+                            // Terraforming has mostly same exports as Colony
+                            if (!in_array(trim($commodities[$reserve->commodity_id]->description), ["Progenitor Cells", "Performance Enhancers"])) {
+                                $imports[$terraforming->id] = $terraforming;
+                            }
+                        }
                         $commodities[$reserve->commodity_id]->imports = $imports;
                     }
                 }
@@ -931,7 +952,7 @@ class TradeController extends Controller
                 //dd($commodity->name, $importweight, $exportweight, $commodity->supplystats, $commodity->imports, $weights);
             }
         }
-        
+        $economies[] = $terraforming;
         
         return view('trade/specialisationhybrid', [
             'commodities' => $commodities,
