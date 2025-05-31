@@ -19,6 +19,8 @@
 
 <p>This table shows the expected ranges for supply and demand for a station with the above economy proportions, per economic unit. Positive values represent supply, negative values represent demand. A political state of None is assumed.</p>
 
+<p>The 'Contraband' economy is the 'new' Service type used by newly-colonised systems, while the 'Service' economy is the traditional type used rarely by older systems.</p>
+
 <table class='table table-bordered datatable' data-page-length='25'>
   <thead>
 	<tr>

@@ -874,7 +874,8 @@ class TradeController extends Controller
         })->orderBy('name')->get();
 
         // insert data
-        $terraforming = Economy::where('name', 'Terraforming')->first(); 
+        $terraforming = Economy::where('name', 'Terraforming')->first();
+        $contraband = Economy::where('name', 'Contraband')->first(); 
         
         // set weights
         $weights = [];
@@ -882,6 +883,7 @@ class TradeController extends Controller
             $weights[$economy->id] = $request->input('eco'.$economy->id, $idx ? 0 : 1);
         }
         $weights[$terraforming->id] = $request->input('eco'.$terraforming->id, $idx ? 0 : 1);
+        $weights[$contraband->id] = $request->input('eco'.$contraband->id, $idx ? 0 : 1);
 
         // get commodities as hash
         $commodities = [];
@@ -893,6 +895,11 @@ class TradeController extends Controller
                 $imports = $commodity->imports;
                 $imports[$terraforming->id] = $terraforming;
                 $commodity->imports = $imports;
+            }
+            if (in_array(trim($commodity->description), ["Nerve Agents","Consumer Technology","Beer","Liquor","Narcotics","Onionhead Gamma Strain","Tobacco","Wine","Slaves","Battle Weapons","Landmines","Personal Weapons"])) {
+                $exports = $commodity->exports;
+                $exports[$contraband->id] = $contraband;
+                $commodity->exports = $exports;
             }
             $commodities[$commodity->id] = $commodity;
         }
@@ -953,6 +960,7 @@ class TradeController extends Controller
             }
         }
         $economies[] = $terraforming;
+        $economies[] = $contraband;
         
         return view('trade/specialisationhybrid', [
             'commodities' => $commodities,
