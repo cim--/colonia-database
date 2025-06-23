@@ -197,10 +197,19 @@ Route::get('/specialisation', [
     'uses' => 'TradeController@specialisation'
 ]);
 
+Route::get('/specialisation/hybrid', [
+    'as' => 'specialisation.hybrid',
+    'uses' => 'TradeController@specialisationHybrid'
+]);
+Route::post('/specialisation/hybrid', [
+    'as' => 'specialisation.hybrid',
+    'uses' => 'TradeController@specialisationHybrid'
+]);
 Route::get('/specialisation/{economy}', [
     'as' => 'specialisation.economy',
     'uses' => 'TradeController@specialisationEconomy'
 ]);
+
 
 Route::get('/logistics', [
     'as' => 'logistics',

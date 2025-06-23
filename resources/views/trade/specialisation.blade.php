@@ -17,22 +17,26 @@
 
 <p>This table shows the variation in baseline trade quantities, adjusted for economy size. Tonnage is normally proportional to the square root of the economy size.</p>
 
+<p><a href="{{ route('specialisation.hybrid') }}">Estimate hybrid economy outputs</a></p>
+
 <table class='table table-bordered datatable' data-page-length='25'>
   <thead>
 	<tr>
 	  <th rowspan='2'>Category</th>
 	  <th rowspan='2'>Name</th>
-	  <th colspan='6'>Supply</th>
-	  <th colspan='6'>Demand</th>
+	  <th colspan='7'>Supply</th>
+	  <th colspan='7'>Demand</th>
 	  <th rowspan='2'>Median Ratio</th>
 	</tr>
 	<tr>
-	  <th>Minimum</th>
+	    <th>Economies</th>
+	    <th>Minimum</th>
 	  <th>Low quartile</th>
 	  <th>Median</th>
 	  <th>High quartile</th>
 	  <th>Maximum</th>
 	  <th>Variation</th>
+	  <th>Economies</th>
 	  <th>Minimum</th>
 	  <th>Low quartile</th>
 	  <th>Median</th>
@@ -52,6 +56,15 @@
 		  {{$commodity->displayName()}}
 		</a>
 	  </td>
+	  <td data-search="
+			   @foreach ($commodity->exports ?? [] as $economy)
+			   {{ $economy->name }}
+			   @endforeach
+			   ">
+	      @foreach ($commodity->exports ?? [] as $economy)
+		  @include($economy->icon)
+	      @endforeach
+	  </td>
 	  <td>{{$commodity->commoditystat->supplymin}}</td>
 	  <td>{{$commodity->commoditystat->supplylowq}}</td>
 	  <td>{{$commodity->commoditystat->supplymed}}</td>
@@ -62,6 +75,15 @@
 	  @else
 	  <td></td>
 	  @endif
+	  <td data-search="
+@foreach ($commodity->imports ?? [] as $economy)
+	      {{ $economy->name }}
+@endforeach
+">
+	      @foreach ($commodity->imports ?? [] as $economy)
+		  @include($economy->icon)
+	      @endforeach
+	  </td>
 	  <td>{{$commodity->commoditystat->demandmin}}</td>
 	  <td>{{$commodity->commoditystat->demandlowq}}</td>
 	  <td>{{$commodity->commoditystat->demandmed}}</td>
