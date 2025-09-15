@@ -79,13 +79,13 @@ class TradeController extends Controller
 
     public function reserves() {
         ini_set('memory_limit',512*1024*1024).
-        
-        $commodities = Commodity::whereHas('reserves', function($q) {
-            $q->normalStation();
-        })->with(['reserves' => function($q) {
-            $q->normalStation();
-        }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
-                     ->orderBy('description')->get();
+    
+    $commodities = Commodity::whereHas('reserves', function($q) {
+        $q->normalStation();
+    })->with(['reserves' => function($q) {
+        $q->normalStation();
+    }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
+			    ->orderBy('description')->get();
 
         $cdata = [];
         $total = 0;
@@ -133,23 +133,23 @@ class TradeController extends Controller
                     $stock += $reserve->reserves;
                     $exported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($stations[$reserve->station_id] == 1) {
-                    if ($bestbuy === null || $bestbuy > $reserve->price) {
-                        if ($reserve->price !== null) {
-                            $bestbuy = $reserve->price;
-                            $bestbuyplace = $reserve->station->name;
-                        }
-                    }
+			if ($bestbuy === null || $bestbuy > $reserve->price) {
+                            if ($reserve->price !== null) {
+				$bestbuy = $reserve->price;
+				$bestbuyplace = $reserve->station->name;
+                            }
+			}
                     }
                 } else {
                     $demand -= $reserve->reserves;
                     $imported[$reserve->station->economy->id] = $reserve->station->economy;
                     if ($stations[$reserve->station_id] == 1) {
-                    if ($bestsell === null || $bestsell < $reserve->price) {
-                        if ($reserve->price !== null) {
-                            $bestsell = $reserve->price;
-                            $bestsellplace = $reserve->station->name;
-                        }
-                    }
+			if ($bestsell === null || $bestsell < $reserve->price) {
+                            if ($reserve->price !== null) {
+				$bestsell = $reserve->price;
+				$bestsellplace = $reserve->station->name;
+                            }
+			}
                     }
                 }
                 if ($reserve->date->lt($oldest)) {
@@ -240,8 +240,8 @@ class TradeController extends Controller
         $states = State::orderBy('name')->get();
         
         $commodities = Commodity::whereHas('reserves', function($q) {
-                $q->where('current', true)
-                    ->where('reserves', '!=', 0);
+            $q->where('current', true)
+              ->where('reserves', '!=', 0);
         })->orderBy('description')->get();
 
         $economies = Economy::where('analyse', true)->orderBy('name')->get();
@@ -277,7 +277,7 @@ class TradeController extends Controller
 
     public function effectsState(State $state) {
         $commodities = Commodity::whereHas('reserves', function($q) {
-                $q->where('current', true);
+            $q->where('current', true);
         })->orderBy('name')->get();
         
         $effects = Effect::where('state_id', $state->id)->get();
@@ -296,8 +296,8 @@ class TradeController extends Controller
         $mincheck = $minrange->copy()->subWeeks(2);
 
         $reserves = Reserve::where('commodity_id', $commodity->id)
-                  ->whereDate('created_at', '>=', $mincheck)
-                  ->orderBy('created_at');
+			   ->whereDate('created_at', '>=', $mincheck)
+			   ->orderBy('created_at');
         
         $supply = [];
         $demand = [];
@@ -435,55 +435,55 @@ class TradeController extends Controller
         sort($datasets); // compact
 
         $chart = app()->chartjs
-                ->name("reservehistory")
-                ->type("line")
-                ->size(["height" => 400, "width"=>1000])
-                ->datasets($datasets)
-                ->options(['scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback_datetime@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'left',
-                            'scaleLabel' => [
-                                'labelString' => "Supply",
-                                'display' => true
-                            ],
-                            'ticks' => [
-                                'min' => 0
-                            ],
-                            'id' => 'supply'
-                        ],
-                        [
-                            'type' => 'linear',
-                            'position' => 'right',
-                            'scaleLabel' => [
-                                'labelString' => "Demand",
-                                'display' => true
-                            ],
-                            'ticks' => [
-                                'min' => 0
-                            ],
-                            'id' => 'demand'
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_datetime_title@@",
-                        'label' => "@@tooltip_label_datetime@@"
-                    ]
-                ] 
-                ]
-                ); 
+                      ->name("reservehistory")
+                      ->type("line")
+                      ->size(["height" => 400, "width"=>1000])
+                      ->datasets($datasets)
+                      ->options(['scales' => [
+			  'xAxes' => [
+                              [
+				  'type' => 'linear',
+				  'position' => 'bottom',
+				  'ticks' => [
+                                      'callback' => "@@chart_xaxis_callback_datetime@@"
+				  ]
+                              ]
+			  ],
+			  'yAxes' => [
+                              [
+				  'type' => 'linear',
+				  'position' => 'left',
+				  'scaleLabel' => [
+                                      'labelString' => "Supply",
+                                      'display' => true
+				  ],
+				  'ticks' => [
+                                      'min' => 0
+				  ],
+				  'id' => 'supply'
+                              ],
+                              [
+				  'type' => 'linear',
+				  'position' => 'right',
+				  'scaleLabel' => [
+                                      'labelString' => "Demand",
+                                      'display' => true
+				  ],
+				  'ticks' => [
+                                      'min' => 0
+				  ],
+				  'id' => 'demand'
+                              ]
+			  ]
+                      ],
+				 'tooltips' => [
+				     'callbacks' => [
+					 'title' => "@@tooltip_label_datetime_title@@",
+					 'label' => "@@tooltip_label_datetime@@"
+				     ]
+				 ] 
+                      ]
+                      ); 
         
         return view('trade/reservehistory', [
             'commodity' => $commodity,
@@ -544,8 +544,8 @@ class TradeController extends Controller
         $mincheck = $minrange->copy()->subWeeks(2);
         
         $reserves = Reserve::where('commodity_id', $commodity->id)
-                  ->whereDate('created_at', '>=', $mincheck)
-                  ->orderBy('created_at');
+			   ->whereDate('created_at', '>=', $mincheck)
+			   ->orderBy('created_at');
 
         $dates = [];
         $exports = [];
@@ -654,43 +654,43 @@ class TradeController extends Controller
         sort($datasets); // compact
 
         $chart = app()->chartjs
-                ->name("reservehistory")
-                ->type("line")
-                ->size(["height" => 400, "width"=>1000])
-                ->datasets($datasets)
-                ->options(['scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback_datetime@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'left',
-                            'scaleLabel' => [
-                                'labelString' => "Price",
-                                'display' => true
-                            ],
-                            'ticks' => [
-                                'min' => 0
-                            ],
-                            'id' => 'price'
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_datetime_title@@",
-                        'label' => "@@tooltip_label_datetime@@"
-                    ]
-                ] 
-                ]
-                ); 
+                      ->name("reservehistory")
+                      ->type("line")
+                      ->size(["height" => 400, "width"=>1000])
+                      ->datasets($datasets)
+                      ->options(['scales' => [
+			  'xAxes' => [
+                              [
+				  'type' => 'linear',
+				  'position' => 'bottom',
+				  'ticks' => [
+                                      'callback' => "@@chart_xaxis_callback_datetime@@"
+				  ]
+                              ]
+			  ],
+			  'yAxes' => [
+                              [
+				  'type' => 'linear',
+				  'position' => 'left',
+				  'scaleLabel' => [
+                                      'labelString' => "Price",
+                                      'display' => true
+				  ],
+				  'ticks' => [
+                                      'min' => 0
+				  ],
+				  'id' => 'price'
+                              ]
+			  ]
+                      ],
+				 'tooltips' => [
+				     'callbacks' => [
+					 'title' => "@@tooltip_label_datetime_title@@",
+					 'label' => "@@tooltip_label_datetime@@"
+				     ]
+				 ] 
+                      ]
+                      ); 
         
         return view('trade/reservehistory', [
             'commodity' => $commodity,
@@ -743,7 +743,7 @@ class TradeController extends Controller
 
         $sys = [];
         foreach ($stations as $idx => $station) {
-//            $sys[$station->id] = 5+(10*$idx);
+	    //            $sys[$station->id] = 5+(10*$idx);
             $sys[$station->id] = $idx;
             $slabels[$idx] = $station->displayName();
         }
@@ -853,11 +853,11 @@ class TradeController extends Controller
         ];
 
         $chart = app()->chartjs
-                ->name("specialisationeconomy")
-                ->type("bubble")
-                ->size(["height" => 100+(25*$stations->count()), "width"=>1000])
-                ->datasets($datasets)
-                ->options($options);
+                      ->name("specialisationeconomy")
+                      ->type("bubble")
+                      ->size(["height" => 100+(25*$stations->count()), "width"=>1000])
+                      ->datasets($datasets)
+                      ->options($options);
         
         return view('trade/specialisationeconomy', [
             'economy' => $economy,
@@ -884,6 +884,26 @@ class TradeController extends Controller
         }
         $weights[$terraforming->id] = $request->input('eco'.$terraforming->id, $idx ? 0 : 1);
         $weights[$contraband->id] = $request->input('eco'.$contraband->id, $idx ? 0 : 1);
+
+	// colony economies have two largest components protected
+	$primaryid = 0; $secondaryid = 0;
+	$mode = $request->input('mode', 't');
+	if ($mode == 'c') {
+	    $primary = 0; $secondary = 0;	
+	    foreach ($weights as $ecoid => $weight) {
+		if ($weight > 0) {
+		    if ($weight >= $primary) {
+			$secondaryid = $primaryid;
+			$primaryid = $ecoid;
+			$secondary = $primary;
+			$primary = $weight;
+		    } else if ($weight > $secondary) {
+			$secondaryid = $ecoid;
+			$secondary = $weight;
+		    }
+		}
+	    }
+	}
 
         // get commodities as hash
         $commodities = [];
@@ -936,10 +956,16 @@ class TradeController extends Controller
 
         // calculate likely supply/demand levels for each commodity
         foreach ($commodities as $commodity) {
+	    $commodity->exportprotection = 0;
             $exportweight = 0;
             $importweight = 0;
             foreach ($commodity->exports as $eid => $econ) {
                 $exportweight += $weights[$eid];
+		if ($eid == $primaryid) {
+		    $commodity->exportprotection |= 2;
+		} else if ($eid == $secondaryid) {
+		    $commodity->exportprotection |= 1;
+		}
             }
             foreach ($commodity->imports as $eid => $econ) {
                 $importweight += $weights[$eid];
@@ -965,7 +991,10 @@ class TradeController extends Controller
         return view('trade/specialisationhybrid', [
             'commodities' => $commodities,
             'economies' => $economies,
-            'weights' => $weights
+            'weights' => $weights,
+	    'primaryeco' => Economy::find($primaryid),
+	    'secondaryeco' => Economy::find($secondaryid),
+	    'mode' => $mode
         ]);
     }
 }
