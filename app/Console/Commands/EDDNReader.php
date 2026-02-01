@@ -746,7 +746,7 @@ class EDDNReader extends Command
         foreach ($event['message']['commodities'] as $cdata) {
 	    if (substr($cdata['name'],0,1) == "$") {
 		// bad sender, block message
-		$this->error("Ignoring bad sender with $-; commodities")
+		$this->error("Ignoring bad sender with $-; commodities");
 		return;
 	    }
             $commodity = Commodity::firstOrCreate(['name' => $cdata['name']]);
