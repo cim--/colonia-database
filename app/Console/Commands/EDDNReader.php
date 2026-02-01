@@ -744,6 +744,11 @@ class EDDNReader extends Command
         Reserve::where('station_id', $station->id)->update(['current' => false]);
 
         foreach ($event['message']['commodities'] as $cdata) {
+	    if (substr($cdata['name'],0,1) == "$") {
+		// bad sender, block message
+		$this->error("Ignoring bad sender with $-; commodities")
+		return;
+	    }
             $commodity = Commodity::firstOrCreate(['name' => $cdata['name']]);
             if ($commodity->averageprice != $cdata['meanPrice']) {
                 if ($commodity->averageprice) {
