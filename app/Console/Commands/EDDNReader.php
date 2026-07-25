@@ -684,7 +684,7 @@ class EDDNReader extends Command
         $station = Station::where('name', $event['message']['StationName'])
 			  ->where('system_id', $system->id)->first();
         if (!$station) {
-	    if (strpos($event['message']['StationName']) !== false, '$Operations') {
+	    if (strpos($event['message']['StationName'], '$Operations') !== false) {
 		Alert::alert("Unknown station ".$event['message']['StationName']." in ".$system->displayName());
 	    }
             return;
