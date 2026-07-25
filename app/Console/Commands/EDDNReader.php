@@ -146,38 +146,38 @@ class EDDNReader extends Command
 
     private function unreliableFSDEvent($event) {
         switch ($event['message']['StarSystem']) {
-        case "Colonia":
-            $badpop = 750;
-            break;
-        case "Ogmar":
-            $badpop = 4500;
-            break;
-        case "Ratraii":
-            $badpop = 25000;
-            break;
-        case "Hephaestus":
-            $badpop = 3200;
-            break;
-        case "Trakath":
-            $badpop = 1900;
-            break;
-        case "Tenjin":
-            $badpop = 1500;
-            break;
-        case "Pennsylvania":
-            $badpop = 2000;
-            break;
-            //        case "Desy": // uncomment when it changes
-            //                        $badpop = 20000;
-            //                        break;
-        case "Metztli":
-            $badpop = 15000;
-            break;
-        case "HIP 23759":
-            $badpop = 2500;
-            break;
-        default:
-            return false; // none known for this system
+            case "Colonia":
+		$badpop = 750;
+		break;
+            case "Ogmar":
+		$badpop = 4500;
+		break;
+            case "Ratraii":
+		$badpop = 25000;
+		break;
+            case "Hephaestus":
+		$badpop = 3200;
+		break;
+            case "Trakath":
+		$badpop = 1900;
+		break;
+            case "Tenjin":
+		$badpop = 1500;
+		break;
+            case "Pennsylvania":
+		$badpop = 2000;
+		break;
+		//        case "Desy": // uncomment when it changes
+		//                        $badpop = 20000;
+		//                        break;
+            case "Metztli":
+		$badpop = 15000;
+		break;
+            case "HIP 23759":
+		$badpop = 2500;
+		break;
+            default:
+		return false; // none known for this system
         }
         if ($event['message']['Population'] == $badpop) {
             \Log::info("Blacklisted data", [
@@ -191,8 +191,8 @@ class EDDNReader extends Command
 
     private function processFSDJump($event) {
         $system = System::where('name', $event['message']['StarSystem'])
-            ->orWhere('catalogue', $event['message']['StarSystem'])
-            ->first();
+			->orWhere('catalogue', $event['message']['StarSystem'])
+			->first();
         if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
 
             if ($this->unreliableFSDEvent($event)) {
@@ -207,7 +207,7 @@ class EDDNReader extends Command
             $eddnevent->system_id = $system->id;
             $eddnevent->eventtime = Carbon::now();
             $eddnevent->save();
-                    
+            
             $this->line("[".date("YmdHis")."] FSDJump event for ".$system->displayName());
 
             $this->processSystemData($event, $system);
@@ -231,8 +231,8 @@ class EDDNReader extends Command
 
     private function processLocation($event) {
         $system = System::where('name', $event['message']['StarSystem'])
-            ->orWhere('catalogue', $event['message']['StarSystem'])
-            ->first();
+			->orWhere('catalogue', $event['message']['StarSystem'])
+			->first();
         if ($system && $system->population > 0 && isset($event['message']['Factions'])) {
 
             if ($this->unreliableFSDEvent($event)) {
@@ -337,18 +337,18 @@ class EDDNReader extends Command
                     $hap = 2;
                 }
 		/*
-                if ($faction['FactionState'] != "None") {
-                    $fstate = $this->renameState($faction['FactionState']);
-                    $state = State::where('name', $fstate)->first();
-                    if (!$state) {
-                        $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
-                        Alert::alert($error);
-                        \Log::error($error);
-                        $this->error($error);
-                        return;
-                    }
-                    $active[] = $state;
-		}
+                   if ($faction['FactionState'] != "None") {
+                   $fstate = $this->renameState($faction['FactionState']);
+                   $state = State::where('name', $fstate)->first();
+                   if (!$state) {
+                   $error = "Unrecognised faction state ".$fstate." for ".$faction['Name']." in ".$system->displayName();
+                   Alert::alert($error);
+                   \Log::error($error);
+                   $this->error($error);
+                   return;
+                   }
+                   $active[] = $state;
+		   }
 		 */
                 if (count($active) == 0) {
                     $active[] = State::where('name', 'None')->first();
@@ -413,12 +413,12 @@ class EDDNReader extends Command
         $target = \App\Util::tick();
 
         $latest = Influence::where('system_id', $system->id)
-            ->where('faction_id', $influences[0]['faction']->id)
-            ->where('current', 1)
-            ->first();
+			   ->where('faction_id', $influences[0]['faction']->id)
+			   ->where('current', 1)
+			   ->first();
         $exists = Influence::where('system_id', $system->id)
-            ->where('date', $target->format("Y-m-d 00:00:00"))
-            ->count();
+			   ->where('date', $target->format("Y-m-d 00:00:00"))
+			   ->count();
         $overwrite = false;
 
         if ($exists > 0) {
@@ -426,13 +426,13 @@ class EDDNReader extends Command
 
             // ignore pending states for now
             /*           // but it might have been manually entered so
-            // there might be pending states still to get
-            \DB::transaction(function() use ($influences) {
-                foreach ($influences as $influence) {
-                    $this->updatePendingStates($influence['faction'], $influence['pending']);
-                }
-                $this->info("Updated pending states");
-                }); */
+               // there might be pending states still to get
+               \DB::transaction(function() use ($influences) {
+               foreach ($influences as $influence) {
+               $this->updatePendingStates($influence['faction'], $influence['pending']);
+               }
+               $this->info("Updated pending states");
+               }); */
             if ($latest) {
                 // we have data for this tick but the influence values
                 // don't match this - double-tick? missed tick? other
@@ -441,9 +441,9 @@ class EDDNReader extends Command
                     // check for the obvious case - cached data from previous tick
                     $lasttarget = $target->copy()->subDay();
                     $last = Influence::where('system_id', $system->id)
-                        ->where('faction_id', $influences[0]['faction']->id)
-                        ->where('date', $lasttarget->format("Y-m-d 00:00:00"))
-                        ->first();
+				     ->where('faction_id', $influences[0]['faction']->id)
+				     ->where('date', $lasttarget->format("Y-m-d 00:00:00"))
+				     ->first();
                     if ($last && abs($last->influence - $influences[0]['influence']) > 0.1) {
                         // also different to previous day's figure
                         
@@ -455,7 +455,7 @@ class EDDNReader extends Command
                          * overwritten. Otherwise, flag for manual
                          * attention. */
                         if (!\App\Util::fairlyNearTick($latest->created_at->timestamp, 20)) {
-                        
+                            
                             Alert::alert("EDDN influence discrepancy in ".$system->displayName()." - verify manually.");
                             $this->error("Data discrepancy - verify manually");
                         } else {
@@ -465,9 +465,9 @@ class EDDNReader extends Command
                             $this->error("Data discrepancy - overwriting");
                             if (!$this->monitoronly) {
                                 $reset = Influence::where('system_id', $system->id)
-                                       ->where('date', $target->format("Y-m-d 00:00:00"))
-                                       ->where('current', 1)
-                                       ->delete();
+						  ->where('date', $target->format("Y-m-d 00:00:00"))
+						  ->where('current', 1)
+						  ->delete();
                             }
                         }
                     }
@@ -502,14 +502,14 @@ class EDDNReader extends Command
         
         \DB::transaction(function() use ($system, $influences, $target) {
             Influence::where('system_id', $system->id)
-                ->where('current', true)
-                ->update(['current' => false]);
+                     ->where('current', true)
+                     ->update(['current' => false]);
 
             foreach ($influences as $influence) {
                 $io = new Influence;
                 $io->system_id = $system->id;
                 $io->faction_id = $influence['faction']->id;
-//                $io->state_id = $influence['state']->id;
+		//                $io->state_id = $influence['state']->id;
                 $io->influence = $influence['influence'];
                 $io->happiness = $influence['happiness'];
                 $io->current = 1;
@@ -524,11 +524,11 @@ class EDDNReader extends Command
             ]);
             $this->info("Updated influence for ".$system->displayName());
 
-/*            foreach ($influences as $influence) {
-                $this->updatePendingStates($influence['faction'], $influence['pending']);
-            }
-            $this->info("Updated pending states"); */
-                            
+	    /*            foreach ($influences as $influence) {
+               $this->updatePendingStates($influence['faction'], $influence['pending']);
+               }
+               $this->info("Updated pending states"); */
+            
         });
     }
 
@@ -593,14 +593,14 @@ class EDDNReader extends Command
         }
 
         if ($this->monitoronly) {
-//            $this->info("Monitor only: no updated pending states for ".$faction->name);
+	    //            $this->info("Monitor only: no updated pending states for ".$faction->name);
             return;
         }
 
         
         $faction->states()->sync($sync);
         
-//        $this->info("Updated pending states for ".$faction->name);
+	//        $this->info("Updated pending states for ".$faction->name);
     }
 
     private function updateSecurity($system, $message) {
@@ -609,9 +609,9 @@ class EDDNReader extends Command
             if ($population > 0) {
                 if ($population != $system->population) {
                     Alert::alert($system->displayName()." population change reported from ".$system->population." to ".$population);
-// seeing some odd events here
-//                    $system->population = $population;
-//                    $system->save();
+		    // seeing some odd events here
+		    //                    $system->population = $population;
+		    //                    $system->save();
                 } 
             } else {
                 $this->error("Population 0 reported by Journal");
@@ -620,25 +620,25 @@ class EDDNReader extends Command
 
         if (isset($message['SystemSecurity'])) {
             switch ($message['SystemSecurity']) {
-            case '$SYSTEM_SECURITY_high;':
-                $system->security = "High";
-                $this->removeBroker($system);
-                break;
-            case '$SYSTEM_SECURITY_medium;':
-                $system->security = "Medium";
-                $this->removeBroker($system);
-                break;
-            case '$SYSTEM_SECURITY_low;':
-                $system->security = "Low";
-                $this->addBroker($system);
-                break;
-            case '$GALAXY_MAP_INFO_state_anarchy;':
-            case '$GAlAXY_MAP_INFO_state_anarchy;':
-                $system->security = "Anarchy";
-                $this->addBroker($system);
-                break;
-            default:
-                $this->error("Unrecognised security level ".$message['SystemSecurity']);
+		case '$SYSTEM_SECURITY_high;':
+                    $system->security = "High";
+                    $this->removeBroker($system);
+                    break;
+		case '$SYSTEM_SECURITY_medium;':
+                    $system->security = "Medium";
+                    $this->removeBroker($system);
+                    break;
+		case '$SYSTEM_SECURITY_low;':
+                    $system->security = "Low";
+                    $this->addBroker($system);
+                    break;
+		case '$GALAXY_MAP_INFO_state_anarchy;':
+		case '$GAlAXY_MAP_INFO_state_anarchy;':
+                    $system->security = "Anarchy";
+                    $this->addBroker($system);
+                    break;
+		default:
+                    $this->error("Unrecognised security level ".$message['SystemSecurity']);
             }
             $system->save();
         }
@@ -669,8 +669,8 @@ class EDDNReader extends Command
 
     private function processStationDocking($event) {
         $system = System::where('name', $event['message']['StarSystem'])
-            ->orWhere('catalogue', $event['message']['StarSystem'])
-            ->first();
+			->orWhere('catalogue', $event['message']['StarSystem'])
+			->first();
         if (!$system) {
             return;
         }
@@ -682,9 +682,11 @@ class EDDNReader extends Command
         }
         
         $station = Station::where('name', $event['message']['StationName'])
-            ->where('system_id', $system->id)->first();
+			  ->where('system_id', $system->id)->first();
         if (!$station) {
-            Alert::alert("Unknown station ".$event['message']['StationName']." in ".$system->displayName());
+	    if (strpos($event['message']['StationName']) !== false, '$Operations') {
+		Alert::alert("Unknown station ".$event['message']['StationName']." in ".$system->displayName());
+	    }
             return;
         }
         $this->line("[".date("YmdHis")."] Docking event for ".$system->displayName().": ".$station->name);
@@ -720,14 +722,14 @@ class EDDNReader extends Command
 
     private function processCommodityReserveEvent($event) {
         $system = System::where('name', $event['message']['systemName'])
-            ->orWhere('catalogue', $event['message']['systemName'])
-            ->first();
+			->orWhere('catalogue', $event['message']['systemName'])
+			->first();
         if (!$system) {
             return;
         }
- 
+	
         $station = Station::where('name', $event['message']['stationName'])
-            ->where('system_id', $system->id)->first();
+			  ->where('system_id', $system->id)->first();
         if (!$station) {
             // no alert - the Docking event should already have done it
             return;
@@ -770,7 +772,7 @@ class EDDNReader extends Command
             $reserve->date = new Carbon($event['message']['timestamp']);
             $reserve->commodity_id = $commodity->id;
             $reserve->station_id = $station->id;
-//            $reserve->state_id = $state->id;
+	    //            $reserve->state_id = $state->id;
 
             if ($cdata['stock'] > 0) {
                 $reserve->reserves = $cdata['stock'];
@@ -790,16 +792,16 @@ class EDDNReader extends Command
             // EDDI 3.4.1/3.4.2 gives odd outfitting data at times
             return;
         }
-           
+        
         $system = System::where('name', $event['message']['systemName'])
-            ->orWhere('catalogue', $event['message']['systemName'])
-            ->first();
+			->orWhere('catalogue', $event['message']['systemName'])
+			->first();
         if (!$system) {
             return;
         }
         
         $station = Station::where('name', $event['message']['stationName'])
-            ->where('system_id', $system->id)->first();
+			  ->where('system_id', $system->id)->first();
         if (!$station) {
             // no alert - the Docking event should already have done it
             return;
@@ -826,13 +828,13 @@ class EDDNReader extends Command
         \DB::transaction(function() use ($station, $modules) { 
             // set availability to false
             \DB::table('module_station')->where('station_id', $station->id)
-                                        ->update(['current' => false]);
+               ->update(['current' => false]);
             // sync modules found now
             $station->modules()->syncWithoutDetaching($modules);
             // any that have been available which aren't now, mark unreliable
             \DB::table('module_station')->where('station_id', $station->id)
-                                        ->where('current', false)
-                                        ->update(['unreliable' => true]);
+               ->where('current', false)
+               ->update(['unreliable' => true]);
         });
 
     }
@@ -846,14 +848,14 @@ class EDDNReader extends Command
 	// allowing Odyssey events for now
         
         $system = System::where('name', $event['message']['systemName'])
-            ->orWhere('catalogue', $event['message']['systemName'])
-            ->first();
+			->orWhere('catalogue', $event['message']['systemName'])
+			->first();
         if (!$system) {
             return;
         }
 
         $station = Station::where('name', $event['message']['stationName'])
-            ->where('system_id', $system->id)->first();
+			  ->where('system_id', $system->id)->first();
         if (!$station) {
             // no alert - the Docking event should already have done it
             return;
@@ -881,13 +883,13 @@ class EDDNReader extends Command
         \DB::transaction(function() use ($station, $ships) { 
             // set availability to false
             \DB::table('ship_station')->where('station_id', $station->id)
-                                      ->update(['current' => false]);
+               ->update(['current' => false]);
             // sync modules found now
             $station->ships()->syncWithoutDetaching($ships);
             // any that have been available which aren't now, mark unreliable
             \DB::table('ship_station')->where('station_id', $station->id)
-                                      ->where('current', false)
-                                      ->update(['unreliable' => true]);
+               ->where('current', false)
+               ->update(['unreliable' => true]);
         });
 
     }
