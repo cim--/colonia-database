@@ -718,6 +718,9 @@ class TradeController extends Controller
             foreach ($economy->stations as $station) {
                 $reserves = $station->reserves()->where('current', 1)->get();
                 foreach ($reserves as $reserve) {
+		    if (!isset($commodities[$reserve->commodity_id])) {
+			continue;
+		    }
                     if ($reserve->reserves > 0) {
                         $exports = $commodities[$reserve->commodity_id]->exports;
                         $exports[$economy->id] = $economy;
@@ -930,71 +933,74 @@ class TradeController extends Controller
             foreach ($economy->stations as $station) {
                 $reserves = $station->reserves()->where('current', 1)->get();
                 foreach ($reserves as $reserve) {
-                    if ($reserve->reserves > 0) {
+		    if (!isset($commodities[$reserve->commodity_id])) {
+			continue;
+		    }
+		    if ($reserve->reserves > 0) {
                         $exports = $commodities[$reserve->commodity_id]->exports;
                         $exports[$economy->id] = $economy;
                         if ($economy->name == "Colony") {
-                            // Terraforming has same exports as Colony
-                            $exports[$terraforming->id] = $terraforming;
+			    // Terraforming has same exports as Colony
+			    $exports[$terraforming->id] = $terraforming;
                         }
                         $commodities[$reserve->commodity_id]->exports = $exports;
-                    } else if ($reserve->reserves < -1) {
+		    } else if ($reserve->reserves < -1) {
                         // demand of 1 can be caused by data oddities
                         $imports = $commodities[$reserve->commodity_id]->imports;
                         $imports[$economy->id] = $economy;
                         if ($economy->name == "Colony") {
-                            // Terraforming has mostly same exports as Colony
-                            if (!in_array(trim($commodities[$reserve->commodity_id]->description), ["Progenitor Cells", "Performance Enhancers"])) {
+			    // Terraforming has mostly same exports as Colony
+			    if (!in_array(trim($commodities[$reserve->commodity_id]->description), ["Progenitor Cells", "Performance Enhancers"])) {
                                 $imports[$terraforming->id] = $terraforming;
-                            }
+			    }
                         }
                         $commodities[$reserve->commodity_id]->imports = $imports;
-                    }
+		    }
                 }
-            }
-        }
+	    }
+	}
 
-        // calculate likely supply/demand levels for each commodity
-        foreach ($commodities as $commodity) {
+	// calculate likely supply/demand levels for each commodity
+	foreach ($commodities as $commodity) {
 	    $commodity->exportprotection = 0;
-            $exportweight = 0;
-            $importweight = 0;
-            foreach ($commodity->exports as $eid => $econ) {
-                $exportweight += $weights[$eid];
+	    $exportweight = 0;
+	    $importweight = 0;
+	    foreach ($commodity->exports as $eid => $econ) {
+		$exportweight += $weights[$eid];
 		if ($eid == $primaryid) {
 		    $commodity->exportprotection |= 2;
 		} else if ($eid == $secondaryid) {
 		    $commodity->exportprotection |= 1;
 		}
-            }
-            foreach ($commodity->imports as $eid => $econ) {
-                $importweight += $weights[$eid];
-            }
+	    }
+	    foreach ($commodity->imports as $eid => $econ) {
+		$importweight += $weights[$eid];
+	    }
 
-            if ($importweight > 0 || $exportweight > 0) {
-                $positions = [
-                    $exportweight * $commodity->commoditystat->supplymin - $importweight * $commodity->commoditystat->demandmax,
-                    $exportweight * $commodity->commoditystat->supplylowq - $importweight * $commodity->commoditystat->demandhighq,
-                    $exportweight * $commodity->commoditystat->supplymed - $importweight * $commodity->commoditystat->demandmed,
-                    $exportweight * $commodity->commoditystat->supplyhighq - $importweight * $commodity->commoditystat->demandlowq,
-                    $exportweight * $commodity->commoditystat->supplymax - $importweight * $commodity->commoditystat->demandmin
-                ];
-                $commodity->supplystats = $positions;
-            }
-            if ($commodity->name == "Beer") {
-                //dd($commodity->name, $importweight, $exportweight, $commodity->supplystats, $commodity->imports, $weights);
-            }
-        }
-        $economies[] = $terraforming;
-        $economies[] = $contraband;
-        
-        return view('trade/specialisationhybrid', [
-            'commodities' => $commodities,
-            'economies' => $economies,
-            'weights' => $weights,
+	    if ($importweight > 0 || $exportweight > 0) {
+		$positions = [
+		    $exportweight * $commodity->commoditystat->supplymin - $importweight * $commodity->commoditystat->demandmax,
+		    $exportweight * $commodity->commoditystat->supplylowq - $importweight * $commodity->commoditystat->demandhighq,
+		    $exportweight * $commodity->commoditystat->supplymed - $importweight * $commodity->commoditystat->demandmed,
+		    $exportweight * $commodity->commoditystat->supplyhighq - $importweight * $commodity->commoditystat->demandlowq,
+		    $exportweight * $commodity->commoditystat->supplymax - $importweight * $commodity->commoditystat->demandmin
+		];
+		$commodity->supplystats = $positions;
+	    }
+	    if ($commodity->name == "Beer") {
+		//dd($commodity->name, $importweight, $exportweight, $commodity->supplystats, $commodity->imports, $weights);
+	    }
+	}
+	$economies[] = $terraforming;
+	$economies[] = $contraband;
+	
+	return view('trade/specialisationhybrid', [
+	    'commodities' => $commodities,
+	    'economies' => $economies,
+	    'weights' => $weights,
 	    'primaryeco' => Economy::find($primaryid),
 	    'secondaryeco' => Economy::find($secondaryid),
 	    'mode' => $mode
-        ]);
+	]);
     }
 }
