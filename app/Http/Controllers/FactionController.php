@@ -101,30 +101,30 @@ class FactionController extends Controller
         $datasets = \App\Util::stateBars($faction, $states);
         sort($datasets); // compact
         $chart = app()->chartjs
-            ->name("statetimes")
-            ->type("horizontalBar")
-            ->size(["height" => 100, "width"=>500])
-            ->labels(['States'])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'yAxes' => [
-                        [ 'stacked' => true ]
-                    ],
-                    'xAxes' => [
-                        [
-                            'stacked' => true,
-                            'label' => 'system-days'
-                        ]
-                    ],
-                ],
-                'tooltips' => [
-                    'mode' => 'dataset',
-                ]
-            ]);
+		      ->name("statetimes")
+		      ->type("horizontalBar")
+		      ->size(["height" => 100, "width"=>500])
+		      ->labels(['States'])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'yAxes' => [
+				  [ 'stacked' => true ]
+			      ],
+			      'xAxes' => [
+				  [
+				      'stacked' => true,
+				      'label' => 'system-days'
+				  ]
+			      ],
+			  ],
+			  'tooltips' => [
+			      'mode' => 'dataset',
+			  ]
+		      ]);
 
         $conflicts = Conflict::where('faction1_id', $faction->id)
-                   ->orWhere('faction2_id', $faction->id)->with('system')->get();
+			     ->orWhere('faction2_id', $faction->id)->with('system')->get();
         
         return view('factions/show', [
             'faction' => $faction,
@@ -136,15 +136,17 @@ class FactionController extends Controller
 
     public function showHistory(Request $request, Faction $faction)
     {
+	$this->authcheck();
+
         $mindefault = (date("Y", strtotime("-99 days"))+1286).date("-m-d", strtotime("-99 days"));
 
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges($mindefault);
         
         $influences = Influence::where('faction_id', $faction->id)
-            ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp)
-            ->orderBy('date')
-            ->cursor();
+			       ->whereDate('date', '>=', $minrange)
+			       ->whereDate('date', '<', $maxrangecomp)
+			       ->orderBy('date')
+			       ->cursor();
 
         $systems = [];
         $dates = [];
@@ -161,12 +163,12 @@ class FactionController extends Controller
         }
 
         $infstate = \DB::table("influence_state")
-                  ->select('influence_state.influence_id', 'influence_state.state_id')
-                  ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
-                  ->where('faction_id', $faction->id)
-                  ->whereDate('date', '>=', $minrange)
-                  ->whereDate('date', '<', $maxrangecomp)
-                  ->cursor();
+                       ->select('influence_state.influence_id', 'influence_state.state_id')
+                       ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
+                       ->where('faction_id', $faction->id)
+                       ->whereDate('date', '>=', $minrange)
+                       ->whereDate('date', '<', $maxrangecomp)
+                       ->cursor();
         $infstates = [];
         foreach ($infstate as $link) {
             if (!isset($infstates[$link->influence_id])) {
@@ -231,36 +233,36 @@ class FactionController extends Controller
         krsort($dates);
 
         $chart = app()->chartjs
-            ->name("influencehistory")
-            ->type("line")
-            ->size(["height" => 350, "width"=>1000])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_percent@@"
-                    ]
-                ]
-            ]);
+		      ->name("influencehistory")
+		      ->type("line")
+		      ->size(["height" => 350, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'ticks' => [
+					  'min' => 0
+				      ]
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_percent@@"
+			      ]
+			  ]
+		      ]);
         
         return view('factions/showhistory', [
             'chart' => $chart,
@@ -276,15 +278,17 @@ class FactionController extends Controller
 
     public function showHappiness(Request $request, Faction $faction)
     {
+	$this->authcheck();
+
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         $influences = Influence::where('faction_id', $faction->id)
-            ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp)
-            ->whereNotNull('happiness')
-            ->with('system')
-            ->orderBy('date')
-            ->get();
+			       ->whereDate('date', '>=', $minrange)
+			       ->whereDate('date', '<', $maxrangecomp)
+			       ->whereNotNull('happiness')
+			       ->with('system')
+			       ->orderBy('date')
+			       ->get();
 
         $systems = [];
         $dates = [];
@@ -344,35 +348,35 @@ class FactionController extends Controller
         krsort($dates);
 
         $chart = app()->chartjs
-            ->name("influencehistory")
-            ->type("line")
-            ->size(["height" => 350, "width"=>1000])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'type' => 'category',
-                            'labels' => ['Elated','Happy','Discontented','Unhappy','Despondent'],
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_percent@@"
-                    ]
-                ]
-            ]);
+		      ->name("influencehistory")
+		      ->type("line")
+		      ->size(["height" => 350, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'type' => 'category',
+				      'labels' => ['Elated','Happy','Discontented','Unhappy','Despondent'],
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_percent@@"
+			      ]
+			  ]
+		      ]);
         
         return view('factions/showhappiness', [
             'chart' => $chart,
@@ -453,8 +457,8 @@ class FactionController extends Controller
         $pending = $request->input('pending');
         if (!is_array($pending)) {
             return redirect()->route('factions.edit', $faction->id)->with('status',
-            [
-                'warning' => 'You must select at least one state (which may be "None")'
+									  [
+									      'warning' => 'You must select at least one state (which may be "None")'
             ]);
         }
 
@@ -472,8 +476,8 @@ class FactionController extends Controller
         ]);
         
         return redirect()->route('factions.show', $faction->id)->with('status',
-        [
-            'success' => 'Pending states updated'
+								      [
+									  'success' => 'Pending states updated'
         ]);
     }
 
@@ -524,5 +528,5 @@ class FactionController extends Controller
             'grid' => $grid
         ]);
     }
-        
+    
 }

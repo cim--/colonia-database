@@ -26,6 +26,7 @@ class StationController extends Controller
      */
     public function index()
     {
+	$this->authcheck();
         $stations = Station::with('system', 'economy', 'stationclass', 'faction', 'faction.government', 'facilities')->where('removed', 0)->get();
         //
         return view('stations/index', [
@@ -212,12 +213,13 @@ class StationController extends Controller
 
     public function trade(Station $station)
     {
+	$this->authcheck();
         $reserves = Commodity::whereHas('reserves', function($q) use ($station) {
             $q->where('station_id', $station->id)->where('current', true);
         })->with(['reserves' => function($q) use ($station) {
             $q->where('station_id', $station->id)
               ->where('current', true);
-            }])->with('commoditystat')->orderBy('name')->get();
+        }])->with('commoditystat')->orderBy('name')->get();
 
         $supply = 0;
         $demand = 0;
@@ -248,11 +250,11 @@ class StationController extends Controller
     }
     private function outfittingPage(Station $station, $reqcurrent) {
         $coremodules = Moduletype::where('type', 'core')->whereHas('modules.stations')->with(['modules' => function($q) use ($station, $reqcurrent) {
-                $q->isAvailableAtStation($station, $reqcurrent);
+            $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
 
         $optionalmodules = Moduletype::where('type', 'optional')->whereHas('modules.stations')->with(['modules' => function($q) use ($station, $reqcurrent) { 
-                $q->isAvailableAtStation($station, $reqcurrent);
+            $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
 
         $optionalnsmodules = Moduletype::where('type', 'optionalns')->with(['modules' => function($q) use ($station, $reqcurrent) {
@@ -261,7 +263,7 @@ class StationController extends Controller
         }])->orderBy('description')->get();
         
         $armours = Moduletype::where('type', 'armour')->with(['modules' => function($q) use ($station, $reqcurrent) {
-                $q->isAvailableAtStation($station, $reqcurrent);
+            $q->isAvailableAtStation($station, $reqcurrent);
         }])->orderBy('description')->get();
         $ships = Module::whereHas('moduletype', function($q) {
             $q->where('type', 'armour');
@@ -273,23 +275,23 @@ class StationController extends Controller
         ksort($shiptypes);
 
         $weapons = Moduletype::where('type', 'hardpoint')->with(['modules' => function($q) use ($station, $reqcurrent) {
-                $q->isAvailableAtStation($station, $reqcurrent);
-                $q->withCount('stations');
-            }])->orderBy('description')->get();
+            $q->isAvailableAtStation($station, $reqcurrent);
+            $q->withCount('stations');
+        }])->orderBy('description')->get();
 
         $utilities = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereIn('type', ['A','B','C','D','E']);
         })->with(['modules' => function($q) use ($station, $reqcurrent) {
-                $q->withCount('stations');
-                $q->isAvailableAtStation($station, $reqcurrent);
-            }])->orderBy('description')->get();
+            $q->withCount('stations');
+            $q->isAvailableAtStation($station, $reqcurrent);
+        }])->orderBy('description')->get();
         
         $utilitiesns = Moduletype::where('type', 'utility')->whereHas('modules', function($q) {
             $q->whereNotIn('type', ['A','B','C','D','E']);
         })->with(['modules' => function($q) use ($station, $reqcurrent) {
-                $q->withCount('stations');
-                $q->isAvailableAtStation($station, $reqcurrent);
-            }])->orderBy('description')->get();
+            $q->withCount('stations');
+            $q->isAvailableAtStation($station, $reqcurrent);
+        }])->orderBy('description')->get();
 
         
         return view('stations/outfitting', [
@@ -327,6 +329,7 @@ class StationController extends Controller
     }
 
     public function tradeHistory(Request $request, Station $station, Commodity $commodity) {
+	$this->authcheck();
         $datasets = [
             'price' => [
                 'label' => "Price",
@@ -349,12 +352,12 @@ class StationController extends Controller
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         $entries = Reserve::where('station_id', $station->id)
-            ->where('commodity_id', $commodity->id)
-            ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrange->copy()->addDay())
-            ->where('price', '!=', 0)
-            ->with('states')
-            ->orderBy('created_at');
+			  ->where('commodity_id', $commodity->id)
+			  ->whereDate('date', '>=', $minrange)
+			  ->whereDate('date', '<', $maxrange->copy()->addDay())
+			  ->where('price', '!=', 0)
+			  ->with('states')
+			  ->orderBy('created_at');
 
         $found = false;
         $sign = 0;
@@ -377,7 +380,7 @@ class StationController extends Controller
                 // fix supply-zero reporting issue
                 $reservenum = 0;
             }
-                
+            
             $datasets['price']['data'][] = [
                 'x' => \App\Util::graphDisplayDateTime($entry->created_at),
                 'y' => $entry->price,
@@ -394,57 +397,57 @@ class StationController extends Controller
             // just in case
             $reservelabel = $datasets['reserves']['label'] = "Supply";
         }
-                   
+        
         
         sort($datasets); // compact
 
         if ($found) {
             $chart = app()->chartjs
-                ->name("tradehistory")
-                ->type("line")
-                ->size(["height" => 400, "width"=>1000])
-                ->datasets($datasets)
-                ->options(['scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback_datetime@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'id' => 'price',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => "Price",
-                                'display' => true
-                            ],
-                        ],
-                        [
-                            'id' => 'reserves',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => $reservelabel,
-                                'display' => true
-                            ],
-                            'position' => 'right',
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_datetime_title@@",
-                        'label' => "@@tooltip_label_datetime@@"
-                    ]
-                ] 
-                ]); 
+			  ->name("tradehistory")
+			  ->type("line")
+			  ->size(["height" => 400, "width"=>1000])
+			  ->datasets($datasets)
+			  ->options(['scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback_datetime@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'id' => 'price',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => "Price",
+					  'display' => true
+				      ],
+				  ],
+				  [
+				      'id' => 'reserves',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => $reservelabel,
+					  'display' => true
+				      ],
+				      'position' => 'right',
+				  ]
+			      ]
+			  ],
+				     'tooltips' => [
+					 'callbacks' => [
+					     'title' => "@@tooltip_label_datetime_title@@",
+					     'label' => "@@tooltip_label_datetime@@"
+					 ]
+				     ] 
+			  ]); 
         } else {
             $chart = null;
         }

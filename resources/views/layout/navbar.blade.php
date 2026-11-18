@@ -13,16 +13,20 @@
 		<li><a href="{{route('map')}}">Map</a></li>
 		<li><a href="{{route('distances')}}">Distances</a></li>
 		<li><a title='Comparing Colonia to other settlements' href="{{route('intro.regions')}}">Regions</a></li>
-		<li><a href="{{route('history')}}">Events</a></li>
-     		<li><a href="{{route('history.trends')}}">Activity</a></li>
-                <li><a href="{{route('history.spacetrends')}}">Movement</a></li>
+		@if(Auth::user())
+		    <li><a href="{{route('history')}}">Events</a></li>
+     		    <li><a href="{{route('history.trends')}}">Activity</a></li>
+                    <li><a href="{{route('history.spacetrends')}}">Movement</a></li>
+		@endif
 	  </ul>
 	</li>
 	<li><div>Catalogues</div>
 	  <ul >
 		<li><a href="{{route('systems.index')}}">Systems</a></li>
 		<li><a href="{{route('factions.index')}}">Factions</a></li>
-		<li><a href="{{route('stations.index')}}">Stations</a></li>
+		@if(Auth::user())
+		    <li><a href="{{route('stations.index')}}">Stations</a></li>
+		@endif
      	<li><a href="{{route('megaships.index')}}">Megaships</a></li>
         <li><a href="{{route('installations.index')}}">Installations</a></li>
         <li><a href="{{route('sites.index')}}">Sites</a></li>
@@ -39,8 +43,10 @@
 	  </ul>
 	</li>
 	<li><div>Economy and Technology</div>
-	  <ul class='compactnav'>
-		<li><a href="{{route('reserves')}}">Reserves</a></li>
+	    <ul class='compactnav'>
+		@if(Auth::user())
+		    <li><a href="{{route('reserves')}}">Reserves</a></li>
+		@endif
      	<li><a href="{{route('effects')}}">Effects</a></li>
         <li><a href="{{route('specialisation')}}">Specialities</a></li>
 		<li><a href="{{route('trade')}}">Trading</a></li>

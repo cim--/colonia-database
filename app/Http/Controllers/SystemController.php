@@ -23,8 +23,8 @@ class SystemController extends Controller
     public function index()
     {
         $systems = System::with('phase', 'economy', 'stations', 'stations.faction', 'stations.faction.government', 'stations.economy', 'facilities')
-            ->withCount('installations', 'megashiproutes', 'sites')
-            ->get();
+			 ->withCount('installations', 'megashiproutes', 'sites')
+			 ->get();
         //
         
         return view('systems/index', [
@@ -105,7 +105,7 @@ class SystemController extends Controller
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
         
         $reportbuilder->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp);
+		      ->whereDate('date', '<', $maxrangecomp);
         
         $reports = $reportbuilder->get();
         $datasets = [
@@ -149,57 +149,57 @@ class SystemController extends Controller
         rsort($datasets); // compact
         
         $chart = app()->chartjs
-            ->name("reporthistory")
-            ->type("line")
-            ->size(["height" => 400, "width"=>1000])
-            ->datasets($datasets)
-            ->options(['scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'id' => 'ships',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => "Ships",
-                                'display' => true
-                            ],
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ],
-                        [
-                            'id' => 'credits',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => "Credits",
-                                'display' => true
-                            ],
-                            'position' => 'right',
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_number@@"
-                    ]
-                ]
-            ]);
+		      ->name("reporthistory")
+		      ->type("line")
+		      ->size(["height" => 400, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options(['scales' => [
+			  'xAxes' => [
+                              [
+				  'type' => 'linear',
+				  'position' => 'bottom',
+				  'ticks' => [
+                                      'callback' => "@@chart_xaxis_callback@@"
+				  ]
+                              ]
+			  ],
+			  'yAxes' => [
+                              [
+				  'id' => 'ships',
+				  'gridLines' => [
+                                      'display' => false
+				  ],
+				  'scaleLabel' => [
+                                      'labelString' => "Ships",
+                                      'display' => true
+				  ],
+				  'ticks' => [
+                                      'min' => 0
+				  ]
+                              ],
+                              [
+				  'id' => 'credits',
+				  'gridLines' => [
+                                      'display' => false
+				  ],
+				  'scaleLabel' => [
+                                      'labelString' => "Credits",
+                                      'display' => true
+				  ],
+				  'position' => 'right',
+				  'ticks' => [
+                                      'min' => 0
+				  ]
+                              ]
+			  ]
+                      ],
+				 'tooltips' => [
+				     'callbacks' => [
+					 'title' => "@@tooltip_label_title@@",
+					 'label' => "@@tooltip_label_number@@"
+				     ]
+				 ]
+		      ]);
 
 
         
@@ -219,16 +219,18 @@ class SystemController extends Controller
 
     public function showHistory(Request $request, System $system)
     {
+	$this->authcheck();
+
         $mindefault = (date("Y", strtotime("-3 years"))+1286).date("-m-d", strtotime("-3 years"));
 
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges($mindefault);
 
         
         $influences = Influence::where('system_id', $system->id)
-            ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp)
-            ->orderBy('date')
-            ->cursor();
+			       ->whereDate('date', '>=', $minrange)
+			       ->whereDate('date', '<', $maxrangecomp)
+			       ->orderBy('date')
+			       ->cursor();
 
         $factions = [];
         $dates = [];
@@ -239,12 +241,12 @@ class SystemController extends Controller
         $lastdate = null;
 
         $infstate = \DB::table("influence_state")
-                  ->select('influence_state.influence_id', 'influence_state.state_id')
-                  ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
-                  ->where('system_id', $system->id)
-                  ->whereDate('date', '>=', $minrange)
-                  ->whereDate('date', '<', $maxrangecomp)
-                  ->cursor();
+                       ->select('influence_state.influence_id', 'influence_state.state_id')
+                       ->join('influences', 'influences.id', '=', 'influence_state.influence_id')
+                       ->where('system_id', $system->id)
+                       ->whereDate('date', '>=', $minrange)
+                       ->whereDate('date', '<', $maxrangecomp)
+                       ->cursor();
         $infstates = [];
         foreach ($infstate as $link) {
             if (!isset($infstates[$link->influence_id])) {
@@ -305,36 +307,36 @@ class SystemController extends Controller
         krsort($dates);
 
         $chart = app()->chartjs
-            ->name("influencehistory")
-            ->type("line")
-            ->size(["height" => 350, "width"=>1000])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_percent@@"
-                    ]
-                ]
-            ]);
+		      ->name("influencehistory")
+		      ->type("line")
+		      ->size(["height" => 350, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'ticks' => [
+					  'min' => 0
+				      ]
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_percent@@"
+			      ]
+			  ]
+		      ]);
 
         
         return view('systems/showhistory', [
@@ -351,15 +353,17 @@ class SystemController extends Controller
 
     public function showHappiness(Request $request, System $system)
     {
+	$this->authcheck();
+
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
         
         $influences = Influence::where('system_id', $system->id)
-            ->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp)
-            ->whereNotNull('happiness')
-            ->with('faction')
-            ->orderBy('date')
-            ->get();
+			       ->whereDate('date', '>=', $minrange)
+			       ->whereDate('date', '<', $maxrangecomp)
+			       ->whereNotNull('happiness')
+			       ->with('faction')
+			       ->orderBy('date')
+			       ->get();
 
         $factions = [];
         $dates = [];
@@ -369,7 +373,7 @@ class SystemController extends Controller
 
         $lastdate = null;
 
-       
+	
         foreach ($influences as $influence) {
             $date = $influence->date->format("Y-m-d");
             if ($lastdate != $influence->date) {
@@ -417,35 +421,35 @@ class SystemController extends Controller
         krsort($dates);
 
         $chart = app()->chartjs
-            ->name("influencehistory")
-            ->type("line")
-            ->size(["height" => 350, "width"=>1000])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'type' => 'category',
-                            'labels' => ['Elated','Happy','Discontented','Unhappy','Despondent'],
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_percent@@"
-                    ]
-                ]
-            ]);
+		      ->name("influencehistory")
+		      ->type("line")
+		      ->size(["height" => 350, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'type' => 'category',
+				      'labels' => ['Elated','Happy','Discontented','Unhappy','Despondent'],
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_percent@@"
+			      ]
+			  ]
+		      ]);
 
         
         return view('systems/showhappiness', [
@@ -585,18 +589,18 @@ class SystemController extends Controller
         }
         if (!$valid) {
             return redirect()->route('systems.edit', $system->id)->with('status',
-            [
-                'warning' => 'Faction influences must add up to 100 and be between 1 and 100 each'
+									[
+									    'warning' => 'Faction influences must add up to 100 and be between 1 and 100 each'
             ]);
         }
         
         Influence::where('system_id', $system->id)
-            ->where('date', $target->format("Y-m-d 00:00:00"))
-            ->delete();
+		 ->where('date', $target->format("Y-m-d 00:00:00"))
+		 ->delete();
 
         Influence::where('system_id', $system->id)
-            ->where('current', true)
-            ->update(['current' => false]);
+		 ->where('current', true)
+		 ->update(['current' => false]);
         
         for($i=0;$i<=7;$i++) {
             if ($factions[$i] != 0) {
@@ -617,10 +621,10 @@ class SystemController extends Controller
             'user' => $user->name
         ]);
         return redirect()->route('systems.show', $system->id)->with('status',
-        [
-            'success' => 'Faction influences updated'
+								    [
+									'success' => 'Faction influences updated'
         ]);
-//
+	//
     }
 
     private function updateModel(Request $request, System $system)
@@ -666,11 +670,11 @@ class SystemController extends Controller
         $bounties = $request->input('bounties');
 
         if (!is_numeric($traffic) || (int)$traffic < 0 ||
-        !is_numeric($crime) || (int)$crime < 0 ||
-        !is_numeric($bounties) || (int)$bounties < 0) {
+            !is_numeric($crime) || (int)$crime < 0 ||
+            !is_numeric($bounties) || (int)$bounties < 0) {
             return redirect()->route('systems.editreport', $system->id)->with('status',
-            [
-                'warning' => 'All reports must be non-negative integers'
+									      [
+										  'warning' => 'All reports must be non-negative integers'
             ]);
         }
 
@@ -682,8 +686,8 @@ class SystemController extends Controller
         }
         
         return redirect()->route('systems.show', $system->id)->with('status',
-        [
-            'success' => 'Reports updated'
+								    [
+									'success' => 'Reports updated'
         ]);
     }
     

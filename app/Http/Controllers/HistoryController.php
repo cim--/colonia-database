@@ -15,6 +15,7 @@ class HistoryController extends Controller
 {
     
     public function index() {
+	$this->authcheck();
 
         $history = History::with('location', 'location.economy', 'faction', 'faction.government')->orderBy('date', 'desc')->get();
         
@@ -65,6 +66,8 @@ class HistoryController extends Controller
 
 
     public function trends(Request $request) {
+	$this->authcheck();
+
         $reports = Systemreport::orderBy('date');
 
         $minrange = Carbon::parse($request->input('minrange', '3303-03-01'));
@@ -82,7 +85,7 @@ class HistoryController extends Controller
         $maxrangecomp = $maxrange->copy()->addDay();
         
         $reports->whereDate('date', '>=', $minrange)
-            ->whereDate('date', '<', $maxrangecomp);
+		->whereDate('date', '<', $maxrangecomp);
         
         $datasets = [
             'traffic' => [
@@ -159,7 +162,7 @@ class HistoryController extends Controller
                 ];
                 $averages[$prop][] = $$prop;
                 if (count($averages[$prop]) == 28) {
-                     $datasets['avg'.$prop]['data'][] = [
+                    $datasets['avg'.$prop]['data'][] = [
                         'x' => \App\Util::graphDisplayDate($date),
                         'y' => floor(array_sum($averages[$prop])/28)
                     ];
@@ -188,60 +191,60 @@ class HistoryController extends Controller
         
         rsort($datasets);
         $chart = app()->chartjs
-            ->name("reporthistory")
-            ->type("line")
-            ->size(["height" => 400, "width"=>1000])
-            ->datasets($datasets)
-            ->options([
-                'scales' => [
-                    'xAxes' => [
-                        [
-                            'type' => 'linear',
-                            'position' => 'bottom',
-                            'ticks' => [
-                                'callback' => "@@chart_xaxis_callback@@"
-                            ]
-                        ]
-                    ],
-                    'yAxes' => [
-                        [
-                            'id' => 'ships',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => "Ships",
-                                'display' => true
-                            ],
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ],
-                        [
-                            'id' => 'credits',
-                            'gridLines' => [
-                                'display' => false
-                            ],
-                            'scaleLabel' => [
-                                'labelString' => "Credits",
-                                'display' => true
-                            ],
-                            'position' => 'right',
-                            'ticks' => [
-                                'min' => 0
-                            ]
-                        ]
-                    ]
-                ],
-                'tooltips' => [
-                    'callbacks' => [
-                        'title' => "@@tooltip_label_title@@",
-                        'label' => "@@tooltip_label_number@@"
-                    ]
-                ],
-            ]);
+		      ->name("reporthistory")
+		      ->type("line")
+		      ->size(["height" => 400, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'id' => 'ships',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => "Ships",
+					  'display' => true
+				      ],
+				      'ticks' => [
+					  'min' => 0
+				      ]
+				  ],
+				  [
+				      'id' => 'credits',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => "Credits",
+					  'display' => true
+				      ],
+				      'position' => 'right',
+				      'ticks' => [
+					  'min' => 0
+				      ]
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_number@@"
+			      ]
+			  ],
+		      ]);
 
-      
+	
         
         return view('history/trends', [
             'chart' => $chart,
@@ -258,6 +261,7 @@ class HistoryController extends Controller
 
 
     public function spaceTrends(Request $request) {
+	$this->authcheck();
 
         $start = Carbon::parse(Influence::min('date'));
 
@@ -329,7 +333,7 @@ class HistoryController extends Controller
                 $infcount += $dsum/$dcount;
             }
             
-                  
+            
             if ($syscount == 0) {
                 break;
             }
@@ -361,7 +365,7 @@ class HistoryController extends Controller
                 'x' => $ddate,
                 'y' => $edata->num
             ];
-                 $lastweek = $edata->week;
+            $lastweek = $edata->week;
         }
 
         $lastweek = -7;
@@ -395,62 +399,62 @@ class HistoryController extends Controller
 
         
         $chart = app()->chartjs
-               ->name("spacehistory")
-               ->type("line")
-               ->size(["height" => 400, "width"=>1000])
-               ->datasets($datasets)
-               ->options([
-                   'scales' => [
-                       'xAxes' => [
-                           [
-                               'type' => 'linear',
-                               'position' => 'bottom',
-                               'ticks' => [
-                                   'callback' => "@@chart_xaxis_callback@@"
-                               ]
-                           ]
-                       ],
-                       'yAxes' => [
-                           [
-                               'id' => 'presence',
-                               'gridLines' => [
-                                   'display' => false
-                               ],
-                               'scaleLabel' => [
-                                   'labelString' => "Presence",
-                                   'display' => true
-                               ],
-                               'ticks' => [
-                                   'min' => 0,
-                                   'max' => 8
-                               ]
-                           ],
-                           [
-                               'id' => 'movements',
-                               'gridLines' => [
-                                   'display' => false
-                               ],
-                               'scaleLabel' => [
-                                   'labelString' => "Movement",
-                                   'display' => true
-                               ],
-                               'position' => 'right',
-                           ]
-                       ]
-                   ],
-                   'tooltips' => [
-                       'callbacks' => [
-                           'title' => "@@tooltip_label_title@@",
-                           'label' => "@@tooltip_label_number@@"
-                       ]
-                   ],
-               ]);
+		      ->name("spacehistory")
+		      ->type("line")
+		      ->size(["height" => 400, "width"=>1000])
+		      ->datasets($datasets)
+		      ->options([
+			  'scales' => [
+			      'xAxes' => [
+				  [
+				      'type' => 'linear',
+				      'position' => 'bottom',
+				      'ticks' => [
+					  'callback' => "@@chart_xaxis_callback@@"
+				      ]
+				  ]
+			      ],
+			      'yAxes' => [
+				  [
+				      'id' => 'presence',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => "Presence",
+					  'display' => true
+				      ],
+				      'ticks' => [
+					  'min' => 0,
+					  'max' => 8
+				      ]
+				  ],
+				  [
+				      'id' => 'movements',
+				      'gridLines' => [
+					  'display' => false
+				      ],
+				      'scaleLabel' => [
+					  'labelString' => "Movement",
+					  'display' => true
+				      ],
+				      'position' => 'right',
+				  ]
+			      ]
+			  ],
+			  'tooltips' => [
+			      'callbacks' => [
+				  'title' => "@@tooltip_label_title@@",
+				  'label' => "@@tooltip_label_number@@"
+			      ]
+			  ],
+		      ]);
 
         return view('history/space', [
             'chart' => $chart,
             //            'minrange' => $minrange,
             //            'maxrange' => $maxrange,
         ]);
-            
+        
     }
 }

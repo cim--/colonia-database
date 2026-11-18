@@ -10,4 +10,11 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected function authcheck()
+    {
+	if (!\Auth::user()) {
+	    abort(403);
+	}
+    }
 }

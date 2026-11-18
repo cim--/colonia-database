@@ -15,7 +15,7 @@ use App\Models\Tradebalance;
 
 class TradeController extends Controller
 {
-    
+
     public function index(Request $request) {
         $stations = Station::with('system', 'economy', 'faction')->dockable()->present()->orderBy('name')->get();
 
@@ -78,14 +78,15 @@ class TradeController extends Controller
     }
 
     public function reserves() {
+	$this->authcheck();
         ini_set('memory_limit',512*1024*1024).
-    
-    $commodities = Commodity::whereHas('reserves', function($q) {
-        $q->normalStation();
-    })->with(['reserves' => function($q) {
-        $q->normalStation();
-    }, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
-			    ->orderBy('description')->get();
+	
+	$commodities = Commodity::whereHas('reserves', function($q) {
+            $q->normalStation();
+	})->with(['reserves' => function($q) {
+            $q->normalStation();
+	}, 'reserves.station', 'reserves.station.economy', 'reserves.station.faction', 'effects', 'baselinestocks'])
+				->orderBy('description')->get();
 
         $cdata = [];
         $total = 0;
@@ -215,6 +216,7 @@ class TradeController extends Controller
     }
 
     public function commodity(Commodity $commodity) {
+	$this->authcheck();
         $reserves = $commodity->reserves()->current()->with('station', 'station.system', 'station.economy')->get();
         $commodity->load('baselinestocks');
         return view('trade/commodity', [
@@ -226,6 +228,7 @@ class TradeController extends Controller
     }
 
     public function commodityWithReference(Commodity $commodity, Station $station) {
+	$this->authcheck();
         $reserves = $commodity->reserves()->current()->with('station', 'station.system', 'station.economy')->get();
 
         return view('trade/commodity', [
@@ -290,6 +293,7 @@ class TradeController extends Controller
     }
 
     public function commodityHistory(Request $request, Commodity $commodity) {
+	$this->authcheck();
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         // don't need to start more than 2 weeks back
@@ -538,6 +542,7 @@ class TradeController extends Controller
 
     
     public function commodityPriceHistory(Request $request, Commodity $commodity) {
+	$this->authcheck();
         list ($minrange, $maxrange, $maxrangecomp) = \App\Util::graphRanges();
 
         // don't need to start more than 2 weeks back
